@@ -5,7 +5,7 @@ The home page uses the app's current IAO monogram and semantic colour palette. T
 ## Brand sources
 
 - Logo: `Invest.AO/logo.icon/Assets/Investao Logo Icon.svg` in the adjacent app checkout. Both `public/investao-logo.svg` and `app/icon.svg` preserve this asset's geometry, black background, and white mark.
-- Colours: `Invest.AO/Core/DesignSystem/SemanticColors.swift`. Light background #F5F7FA, surfaces #FFFFFF, primary text #101318, secondary text #5D6675, accent #146DFF, positive #07875B, separators #DDE2E9.
+- Colours: `Invest.AO/Core/DesignSystem/SemanticColors.swift`, dark appearance. Background #090B0F, card surfaces #171B22, elevated surfaces #12151B, primary text #F5F7FA, secondary text #A6AFBD, accent #5A9BFF, positive #35C98B, separators #2A303A. The website uses this dark appearance regardless of the visitor's system preference, with dark browser controls and dark text on blue buttons for contrast.
 - The older gold orbit icon under Design/AppIcon is not the active app logo.
 - Removed the generic green/ivory theme, invented bar-chart mark, serif headlines, floating cards, and simulated phone.
 

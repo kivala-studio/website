@@ -1,15 +1,17 @@
 @import "tailwindcss";
 
-/* Source: Invest.AO/Core/DesignSystem/SemanticColors.swift (light appearance).
+/* Source: Invest.AO/Core/DesignSystem/SemanticColors.swift (dark appearance).
    Green is reserved for positive market movements, as in the app. */
 :root {
-  --background: #f5f7fa;
-  --surface: #ffffff;
-  --foreground: #101318;
-  --secondary: #5d6675;
-  --accent: #146dff;
-  --positive: #07875b;
-  --separator: #dde2e9;
+  color-scheme: dark;
+  --background: #090b0f;
+  --surface: #171b22;
+  --elevated: #12151b;
+  --foreground: #f5f7fa;
+  --secondary: #a6afbd;
+  --accent: #5a9bff;
+  --positive: #35c98b;
+  --separator: #2a303a;
 }
 @theme inline {
   --color-background: var(--background);
@@ -42,7 +44,7 @@ summary:focus-visible {
 }
 ::selection {
   background: var(--accent);
-  color: white;
+  color: var(--background);
 }
 .container {
   max-width: 1320px;
@@ -144,13 +146,13 @@ h1 > span {
   margin-top: 30px;
   padding: 17px 20px;
   background: var(--accent);
-  color: white;
+  color: var(--background);
   font-size: 13px;
   border-radius: 8px;
   transition: background 0.2s;
 }
 .primary-link:hover {
-  background: #095be0;
+  background: #82b3ff;
 }
 .primary-link span {
   font-size: 19px;
@@ -433,8 +435,8 @@ td {
   max-width: 480px;
 }
 .launch {
-  background: var(--foreground);
-  color: var(--background);
+  background: var(--elevated);
+  color: var(--foreground);
   padding-block: 64px;
 }
 .launch-inner {
@@ -511,7 +513,7 @@ footer {
   left: 16px;
   z-index: 10;
   background: var(--accent);
-  color: white;
+  color: var(--background);
   padding: 12px;
   border-radius: 8px;
 }
