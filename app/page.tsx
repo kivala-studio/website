@@ -1,5 +1,8 @@
 import Image from "next/image";
 import MarketExplorer from "./market-explorer";
+import DeviceFrame from "./device-frame";
+import "./landing.css";
+import "./product-layout.css";
 
 function Brand() {
   return (
@@ -27,6 +30,36 @@ const questions = [
   ],
 ];
 
+const screenshots = [
+  {
+    id: "visao-do-mercado",
+    label: "01 / VISÃO DO MERCADO",
+    title: "Começa pelo conjunto.",
+    description:
+      "Consulta o índice sintético invest.ao, o volume negociado e os títulos que acompanhas. Vê o estado do mercado e a data dos dados para perceberes o contexto de cada sessão.",
+    image: "market-overview.png",
+    alt: "Ecrã de mercado da invest.ao com índice sintético, gráfico mensal, data dos dados, volume negociado e títulos a acompanhar.",
+  },
+  {
+    id: "detalhe-do-titulo",
+    label: "02 / DETALHE DO TÍTULO",
+    title: "Conhece cada movimento.",
+    description:
+      "Abre um título para consultar o preço em kwanzas, a variação e o histórico. Escolhe o período do gráfico e explora o desempenho, a abertura, o máximo e o mínimo, no mesmo ecrã.",
+    image: "asset-detail.png",
+    alt: "Detalhe de um título na invest.ao com preço em kwanzas, gráfico de um mês, desempenho por período e estatísticas de preço.",
+  },
+  {
+    id: "comparar-titulos",
+    label: "03 / COMPARAÇÃO",
+    title: "Põe os títulos lado a lado.",
+    description:
+      "Compara a evolução de vários títulos no mesmo gráfico. Alterna entre preço e desempenho e escolhe o intervalo de tempo para veres como cada um se comportou.",
+    image: "asset-comparison.png",
+    alt: "Comparação de dois títulos na invest.ao, com linhas azul e laranja, vista de desempenho e período de seis meses seleccionado.",
+  },
+];
+
 export default function Home() {
   return (
     <>
@@ -39,14 +72,16 @@ export default function Home() {
         </a>
         <nav aria-label="Navegação principal">
           <a href="#aplicacao">A aplicação</a>
+          <a href="#experimentar">Experimentar</a>
           <a href="#perguntas">Perguntas frequentes</a>
         </nav>
         <a className="header-link" href="#lancamento">
-          Para iPhone <span aria-hidden="true">↗</span>
+          Para iPhone
         </a>
       </header>
       <main id="conteudo">
         <section className="hero container" aria-labelledby="hero-title">
+          <div className="hero-copy">
           <div className="edition-line">
             <span>UMA PERSPECTIVA SOBRE O MERCADO ANGOLANO</span>
             <span>FEITA EM ANGOLA · AO</span>
@@ -57,15 +92,6 @@ export default function Home() {
               <br />
               <em>A tua perspectiva.</em>
             </h1>
-            <div className="hero-location">
-              <span>AO</span>
-              <p>
-                Acções.
-                <br />
-                Obrigações.
-                <br />O mercado angolano.
-              </p>
-            </div>
           </div>
           <div className="hero-bottom">
             <span className="hero-index">
@@ -80,14 +106,48 @@ export default function Home() {
               <br className="desktop-break" /> Tudo começa com uma visão mais
               clara.
             </p>
-            <a className="primary-link" href="#aplicacao">
-              Explorar a aplicação <span aria-hidden="true">↓</span>
-            </a>
+            <div className="hero-actions">
+              <a className="primary-link" href="#aplicacao">Explorar a aplicação <span aria-hidden="true">↓</span></a>
+              <a className="hero-secondary" href="#lancamento">Em breve para iPhone</a>
+            </div>
           </div>
+          </div>
+          <figure className="hero-device">
+            <div className="hero-device-stage">
+              <div className="hero-phone hero-phone-left" aria-hidden="true"><DeviceFrame src="/screenshots/asset-detail.png" alt="" /></div>
+              <div className="hero-phone hero-phone-main"><DeviceFrame src="/screenshots/market-overview.png" alt="A aplicação invest.ao no iPhone: índice sintético, evolução do mercado e títulos a acompanhar." hero /></div>
+              <div className="hero-phone hero-phone-right" aria-hidden="true"><DeviceFrame src="/screenshots/asset-comparison.png" alt="" /></div>
+            </div>
+            <figcaption>Captura da aplicação · Valores à data da captura</figcaption>
+          </figure>
+        </section>
+        <section className="screenshots-section container" id="aplicacao" aria-labelledby="screenshots-title">
+          <div className="screenshots-heading">
+            <h2 id="screenshots-title">Do mercado ao detalhe.</h2>
+            <p>A invest.ao, por dentro.</p>
+          </div>
+          <div className="screenshots-grid">
+            {screenshots.map((screen) => (
+              <article className="screenshot-feature" key={screen.id} aria-labelledby={screen.id}>
+                <div className="screenshot-copy">
+                  <span className="label">{screen.label}</span>
+                  <h3 id={screen.id}>{screen.title}</h3>
+                  <p>{screen.description}</p>
+                  <a className="text-link" href="#experimentar">Experimentar a interface</a>
+                </div>
+                <figure>
+                  <div className="screenshot-display">
+                    <DeviceFrame src={`/screenshots/${screen.image}`} alt={screen.alt} />
+                  </div>
+                </figure>
+              </article>
+            ))}
+          </div>
+          <p className="screenshots-note">Capturas da aplicação. Os valores e as datas apresentados pertencem ao momento da captura e não são cotações em tempo real.</p>
         </section>
         <section
           className="application"
-          id="aplicacao"
+          id="experimentar"
           aria-labelledby="application-title"
         >
           <div className="container">
@@ -123,7 +183,7 @@ export default function Home() {
                 <br />E uma forma tua de o acompanhar.
               </p>
               <a className="text-link" href="#lancamento">
-                Em breve para iPhone <span aria-hidden="true">↗</span>
+                Em breve para iPhone
               </a>
             </div>
             <div className="feature-list">
@@ -185,9 +245,6 @@ export default function Home() {
               Estamos a preparar a aplicação. Quando estiver disponível,
               encontras aqui o link para a App Store.
             </p>
-            <span className="launch-signature" aria-hidden="true">
-              invest.ao ↗
-            </span>
           </div>
           <div className="faq" id="perguntas">
             <span className="label">ANTES DE COMEÇARES</span>

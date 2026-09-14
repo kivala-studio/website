@@ -1,0 +1,140 @@
+/* Product composition inspired by Exodus and Coinbase Wallet, with app colours. */
+@keyframes enter-softly {
+  from { opacity: 0; translate: 0 18px; }
+  to { opacity: 1; translate: 0 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-copy { animation: enter-softly 650ms ease-out both; }
+  .hero-device { animation: enter-softly 850ms 120ms ease-out both; }
+  .primary-link, .header-link, .hero-secondary {
+    transition: background-color 180ms ease, border-color 180ms ease, translate 180ms ease;
+  }
+  .site-header nav a, .text-link { transition: color 180ms ease; }
+  .screenshot-feature, .feature-row { transition: border-color 250ms ease; }
+  @media (hover: hover) {
+    .primary-link:hover, .header-link:hover, .hero-secondary:hover { translate: 0 -2px; }
+    .screenshot-feature:hover, .feature-row:hover { border-color: #5a9bff55; }
+  }
+  @supports (animation-timeline: view()) {
+    .screenshot-feature, .perspective-intro, .launch {
+      animation: enter-softly linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 22%;
+    }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+.site-header { min-height: 76px; margin-top: 20px; padding: 12px 24px; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; }
+.header-link { background: var(--accent); border-color: var(--accent); color: var(--paper); font-weight: 600; border-radius: 12px; }
+.header-link:hover { background: #85b5ff; color: var(--paper); }
+.hero { display: block; padding-block: 85px 50px; text-align: center; }
+.hero-copy { max-width: 900px; margin-inline: auto; }
+.hero .edition-line { display: block; padding: 0; border: 0; font-size: 10px; letter-spacing: .09em; }
+.hero .hero-heading { padding: 25px 0; }
+.hero h1 { font-size: clamp(58px, 7vw, 92px); font-weight: 600; line-height: 1.03; letter-spacing: -.065em; }
+.hero h1 em { color: var(--accent); font-weight: 500; }
+.hero .hero-bottom { align-items: center; gap: 28px; }
+.hero .hero-bottom p { max-width: 550px; font-size: 17px; line-height: 1.7; }
+.hero-actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 18px; }
+.hero .primary-link { padding: 18px 26px; font-size: 14px; border-radius: 12px; font-weight: 600; }
+.hero-secondary { display: inline-flex; gap: 18px; align-items: center; min-height: 52px; padding: 14px 24px; border: 1px solid var(--line); border-radius: 12px; font-size: 13px; }
+.hero-secondary:hover { border-color: var(--accent); }
+.hero-device { width: 100%; margin: 65px auto 0; }
+.hero-device-stage { position: relative; isolation: isolate; height: 680px; max-width: 890px; margin-inline: auto; }
+.hero-device-stage::before { content: ""; position: absolute; z-index: -1; inset: 8% -4% 0; border-radius: 50%; background: radial-gradient(ellipse, #5a9bff1c, #12151b00 68%); }
+.hero-phone { position: absolute; }
+.hero-phone-main { width: 300px; left: calc(50% - 150px); top: 0; z-index: 2; }
+.hero-phone-left { width: 256px; left: calc(50% - 374px); top: 72px; transform: rotate(-9deg); }
+.hero-phone-right { width: 256px; right: calc(50% - 374px); top: 72px; transform: rotate(9deg); }
+.hero-device .device-frame { box-shadow: inset 0 0 0 2px #343b46, 0 25px 65px #0009; }
+.hero-device figcaption { margin-top: 14px; font-size: 10px; }
+.screenshots-section { padding-block: 85px 70px; border-top: 0; }
+.screenshots-heading { display: flex; flex-direction: column-reverse; align-items: center; gap: 16px; text-align: center; margin-bottom: 55px; }
+.screenshots-heading h2 { font-size: clamp(38px, 5vw, 60px); line-height: 1.08; font-weight: 550; letter-spacing: -.05em; }
+.screenshots-heading p { font-size: 12px; color: var(--accent); }
+.screenshots-grid { display: grid; grid-template-columns: 1fr; gap: 28px; }
+.screenshot-feature { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto; grid-row: auto; gap: 60px; align-items: center; padding: 55px 70px; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; }
+.screenshot-copy { max-width: 450px; }
+.screenshot-copy .label { color: var(--accent); font-size: 10px; letter-spacing: .08em; }
+.screenshot-copy h3 { font-size: clamp(32px, 3.8vw, 48px); font-weight: 550; letter-spacing: -.05em; line-height: 1.1; margin-block: 22px; }
+.screenshot-copy p { font-size: 15px; line-height: 1.85; }
+.screenshot-copy .text-link { color: var(--ink); font-size: 13px; }
+.screenshot-feature figure { width: 260px; margin: 0; justify-self: center; }
+.screenshot-feature:nth-child(2) .screenshot-copy { order: 2; }
+.screenshot-feature:nth-child(2) figure { order: 1; }
+.screenshot-feature figcaption { text-align: center; }
+.screenshots-note { text-align: center; margin: 28px auto 0; }
+.application { border-block: 0; background: transparent; padding-block: 50px; }
+.application-heading { margin-bottom: 25px; }
+.application-heading h2 { font-size: 32px; }
+.perspective { padding-block: 70px; }
+.perspective .section-heading { display: none; }
+.perspective-body { display: block; }
+.perspective-intro { text-align: center; margin: 0 auto 40px; }
+.perspective-intro h2 { font-size: 48px; }
+.perspective-intro p { margin-top: 20px; }
+.perspective-intro .text-link { margin-top: 20px; }
+.feature-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; border-top: 0; }
+.feature-row { display: block; padding: 28px; border: 1px solid var(--line); border-radius: 20px; background: var(--card); }
+.feature-number { display: block; margin-bottom: 22px; color: var(--accent); }
+.feature-row h3 { font-size: 22px; line-height: 1.25; }
+.closing { display: flex; flex-direction: column; gap: 80px; padding-top: 50px; border-top: 0; }
+.launch { padding: 65px 30px; text-align: center; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); }
+.launch h2 { font-size: 68px; }
+.launch-status { justify-content: center; }
+.launch p { margin: 18px auto 0; max-width: 450px; }
+.faq { width: min(760px, 100%); margin-inline: auto; }
+.faq > .label, .faq h2 { display: block; text-align: center; }
+.faq h2 { font-size: 40px; }
+.faq-footnote { text-align: center; }
+@media (max-width: 1050px) {
+  .screenshot-feature { padding: 40px; gap: 35px; }
+  .hero-phone-left { left: calc(50% - 335px); }
+  .hero-phone-right { right: calc(50% - 335px); }
+  .site-header { gap: 20px; }
+  .site-header nav { gap: 20px; }
+}
+@media (max-width: 760px) {
+  .site-header { margin-top: 12px; padding: 12px 16px; border-radius: 16px; }
+  .site-header nav { justify-content: center; gap: 20px; font-size: 10px; }
+  .header-link { padding: 10px 12px; font-size: 11px; }
+  .hero { padding-block: 50px 30px; }
+  .hero .edition-line { font-size: 8px; }
+  .hero h1 { font-size: clamp(34px, 8.6vw, 60px); }
+  .hero .hero-heading { padding-block: 22px; }
+  .hero .hero-bottom p { font-size: 14px; }
+  .hero-actions { gap: 12px; }
+  .hero .primary-link { padding: 15px 20px; font-size: 13px; }
+  .hero-secondary { padding: 12px 18px; font-size: 12px; }
+  .hero-device { margin-top: 45px; width: 100%; }
+  .hero-device-stage { height: 525px; }
+  .hero-phone-main { width: 232px; left: calc(50% - 116px); }
+  .hero-phone-left, .hero-phone-right { width: 174px; top: 58px; }
+  .hero-phone-left { left: 4px; transform: rotate(-5deg); }
+  .hero-phone-right { right: 4px; transform: rotate(5deg); }
+  .hero-device-stage::before { inset-inline: 0; }
+  .hero-device figcaption { font-size: 9px; }
+  .hero-phone .device-frame { padding: 5px; border-radius: 34px; }
+  .hero-phone .device-screen { border-radius: 27px; }
+  .screenshots-section { padding-block: 45px; }
+  .screenshots-heading { margin-bottom: 30px; gap: 10px; }
+  .screenshots-heading h2 { font-size: 34px; }
+  .screenshot-feature { grid-template-columns: 1fr; padding: 28px 22px; gap: 28px; }
+  .screenshot-copy h3 { font-size: 32px; margin-block: 18px; }
+  .screenshot-copy p { font-size: 14px; }
+  .screenshot-feature figure { width: min(260px, 100%); }
+  .screenshot-feature:nth-child(2) .screenshot-copy, .screenshot-feature:nth-child(2) figure { order: initial; }
+  .application { padding-block: 25px; }
+  .application-heading h2 { font-size: 26px; }
+  .perspective { padding-block: 45px; }
+  .perspective-intro h2 { font-size: 38px; }
+  .feature-list { grid-template-columns: 1fr; gap: 14px; }
+  .feature-row { padding: 24px; }
+  .closing { padding-top: 20px; gap: 50px; }
+  .launch { padding: 40px 22px; }
+  .launch h2 { font-size: 46px; }
+  .faq h2 { font-size: 32px; }
+}
