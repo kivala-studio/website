@@ -283,6 +283,7 @@ export default function Home() {
         </div>
         <div className="footer-bottom">
           <span>© {new Date().getFullYear()} Invest.ao</span>
+          <a href="/policy">Política de privacidade</a>
           <p>
             Informação para acompanhar o mercado. Não constitui aconselhamento
             financeiro nem uma plataforma de negociação.
