@@ -78,9 +78,6 @@ export default function MarketExplorer() {
           >
             <span>{item.number}</span>
             {item.name}
-            <span className="view-arrow" aria-hidden="true">
-              ↗
-            </span>
           </button>
         ))}
         <span className="demo-label">PRÉ-VISUALIZAÇÃO</span>
@@ -127,7 +124,7 @@ export default function MarketExplorer() {
                 tua conta.
               </p>
               <button type="button" onClick={returnToMarket}>
-                Conhecer os títulos <span aria-hidden="true">↗</span>
+                Conhecer os títulos
               </button>
             </div>
           ) : visibleAssets.length > 0 ? (
@@ -186,7 +183,7 @@ export default function MarketExplorer() {
                 encontra-o aqui.
               </p>
               <button type="button" onClick={returnToMarket}>
-                Explorar títulos <span aria-hidden="true">↗</span>
+                Explorar títulos
               </button>
             </div>
           )}

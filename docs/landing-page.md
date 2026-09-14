@@ -1,6 +1,14 @@
 # Invest.ao landing page
 
-The home page uses the app's current IAO monogram and semantic colour palette. The navigation wordmark retains the original Geist font, 27px size, 650 weight, and -1.3px letter spacing.
+The home page uses the app's current IAO monogram and semantic colour palette. The navigation wordmark uses Geist; page text uses the platform system font.
+
+## Product presentation
+
+- References inspected on 15 September 2026: https://www.exodus.com and https://wallet.coinbase.com. The centred headline, overlapping devices, and spacious product sections inform the composition; colours remain the app's own dark theme.
+- Three original app screenshots appear in CSS device frames. The market overview leads the hero, with title details and comparisons alongside it. Dedicated feature sections explain each screen. Screenshots are non-clickable.
+- CSS entrance, hover and progressive scroll transitions respect reduced-motion settings; unsupported scroll animations leave content visible.
+- Screenshot prices and dates are historical captures, clearly labelled separately from the interactive demo. No crypto trading, security, or availability claims were borrowed from the references.
+- `app/product-layout.css` owns the product presentation overrides; `app/landing.css` owns app theme tokens and device frames.
 
 ## Brand sources
 
@@ -12,7 +20,7 @@ The home page uses the app's current IAO monogram and semantic colour palette. T
 ## Content and launch
 
 - Portuguese copy describes market discovery, portfolio tracking, favourites, and market updates.
-- The market table is explicitly an illustration, with fictitious prices and changes. It is not represented as an app screenshot or live market data.
+- The interactive market preview uses BAI and BCGA with unavailable quotes. It contains no invented prices, performance charts, or simulated app screenshots. Favourites are held only in memory and reset on reload.
 - Launch for iPhone remains in preparation. Add the verified App Store URL when available.
 - No new runtime dependencies or personal-data collection. Native links and FAQ disclosures work without client-side JavaScript.
 
