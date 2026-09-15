@@ -13,25 +13,25 @@ const views = [
     id: "mercado",
     name: "Mercado",
     number: "01",
-    title: "Uma visão do mercado.",
+    title: "Explore os títulos do mercado.",
     description:
-      "Conhece os títulos e escolhe o que acompanhar. Experimenta guardar um favorito nesta lista.",
+      "Consulte os títulos desta demonstração e seleccione a estrela para guardar um favorito.",
   },
   {
     id: "carteira",
     name: "Carteira",
     number: "02",
-    title: "O conjunto das tuas posições.",
+    title: "As suas posições, organizadas.",
     description:
-      "Um espaço para reunires as tuas posições e acompanhares a composição da tua carteira.",
+      "Um espaço para reunir as suas posições e acompanhar a composição da carteira.",
   },
   {
     id: "favoritos",
     name: "Favoritos",
     number: "03",
-    title: "A tua lista. O teu critério.",
+    title: "Os títulos que pretende acompanhar.",
     description:
-      "Os títulos que guardas no separador Mercado ficam aqui. Uma lista escolhida por ti.",
+      "Os títulos guardados no separador Mercado ficam reunidos nesta lista de favoritos.",
   },
 ] as const;
 
@@ -86,7 +86,7 @@ export default function MarketExplorer() {
         <div className="explorer-context">
           <span className="label">
             {active === "carteira"
-              ? "A TUA CARTEIRA"
+              ? "CARTEIRA DE TÍTULOS"
               : "MERCADO DE CAPITAIS · AO"}
           </span>
           <h3>{view.title}</h3>
@@ -117,11 +117,11 @@ export default function MarketExplorer() {
           {active === "carteira" ? (
             <div className="empty-state portfolio-empty">
               <span className="label">AINDA SEM POSIÇÕES</span>
-              <h4>O primeiro título é o ponto de partida.</h4>
+              <h4>Organize a carteira na aplicação.</h4>
               <p>
-                Na aplicação, poderás reunir as tuas posições e consultar a
-                composição da carteira. Esta pré-visualização não está ligada à
-                tua conta.
+                Na aplicação, poderá reunir as suas posições e consultar a
+                composição da carteira. Esta demonstração não permite adicionar
+                posições nem está ligada a uma conta.
               </p>
               <button type="button" onClick={returnToMarket}>
                 Conhecer os títulos
@@ -177,10 +177,10 @@ export default function MarketExplorer() {
           ) : (
             <div className="empty-state">
               <span className="label">AINDA SEM FAVORITOS</span>
-              <h4>A tua lista está por começar.</h4>
+              <h4>Guarde o primeiro favorito.</h4>
               <p>
-                Guarda um título usando a estrela no separador Mercado. Depois,
-                encontra-o aqui.
+                Seleccione a estrela junto de um título no separador Mercado.
+                O título ficará disponível nesta lista.
               </p>
               <button type="button" onClick={returnToMarket}>
                 Explorar títulos
@@ -191,7 +191,7 @@ export default function MarketExplorer() {
             <span className="status-dot" />
             <span>
               {active === "carteira"
-                ? "O conjunto e o detalhe, no mesmo lugar."
+                ? "Pré-visualização da carteira · Sem posições associadas"
                 : "Pré-visualização da interface · Sem cotações de mercado"}
             </span>
           </div>

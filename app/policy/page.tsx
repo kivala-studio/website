@@ -1,12 +1,12 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMetadata } from "../../lib/seo";
 import "./policy.css";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Política de Privacidade | Invest.ao",
   description: "Como a Invest.ao recolhe, utiliza, conserva e elimina os seus dados pessoais.",
-  openGraph: { title: "Política de Privacidade | Invest.ao", description: "Informações de privacidade da aplicação e do sítio Web da Invest.ao.", locale: "pt_PT", type: "website" },
-};
+  path: "/policy",
+});
 
 export default function PrivacyPolicy() {
   return (

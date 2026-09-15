@@ -2,8 +2,16 @@ import Image from "next/image";
 import MarketExplorer from "./market-explorer";
 import DeviceFrame from "./device-frame";
 import PageMotion from "./page-motion";
+import { SiteSchema } from "./site-schema";
+import { pageMetadata, siteDescription, siteTitle } from "../lib/seo";
 import "./landing.css";
 import "./product-layout.css";
+
+export const metadata = pageMetadata({
+  title: siteTitle,
+  description: siteDescription,
+  path: "/",
+});
 
 function Brand() {
   return (
@@ -23,21 +31,21 @@ const chapters = [
     label: "VISÃO DO MERCADO",
     title: (
       <>
-        Começa
+        O mercado,
         <br />
-        pelo conjunto.
+        numa visão geral.
       </>
     ),
     description:
-      "Consulta o índice sintético invest.ao, o volume negociado e os títulos que acompanhas. O contexto de cada sessão, num só lugar.",
+      "Consulte o índice sintético Invest.ao, a evolução do mercado e o volume negociado. A data dos dados permite situar a informação de cada sessão.",
     details: [
       "Índice e evolução do mercado",
       "Volume negociado",
       "Estado do mercado e data dos dados",
     ],
     image: "market-overview.png",
-    alt: "Ecrã de mercado da invest.ao com índice sintético, gráfico mensal, data dos dados, volume negociado e títulos a acompanhar.",
-    caption: "O mercado angolano, numa visão mais clara.",
+    alt: "Ecrã de mercado da Invest.ao com índice sintético, gráfico mensal, data dos dados, volume negociado e títulos a acompanhar.",
+    caption: "Evolução, volume e data dos dados do mercado angolano.",
   },
   {
     id: "detalhe-do-titulo",
@@ -45,21 +53,21 @@ const chapters = [
     label: "DETALHE DO TÍTULO",
     title: (
       <>
-        Conhece cada
+        Preço e histórico
         <br />
-        movimento.
+        de cada título.
       </>
     ),
     description:
-      "Abre um título para consultar o preço em kwanzas, a variação e o histórico. Do primeiro olhar ao detalhe que faz a diferença.",
+      "Consulte o preço em kwanzas, a variação e o histórico de cada título. Seleccione um período para analisar a evolução e as estatísticas de preço.",
     details: [
-      "Preço e variação em kwanzas",
+      "Preço em kwanzas e variação",
       "Histórico por período",
       "Abertura, máximo e mínimo",
     ],
     image: "asset-detail.png",
-    alt: "Detalhe de um título na invest.ao com preço em kwanzas, gráfico de um mês, desempenho por período e estatísticas de preço.",
-    caption: "Mais contexto para formares a tua perspectiva.",
+    alt: "Detalhe de um título na Invest.ao com preço em kwanzas, gráfico de um mês, desempenho por período e estatísticas de preço.",
+    caption: "Histórico e estatísticas para acompanhar cada título.",
   },
   {
     id: "comparar-titulos",
@@ -67,32 +75,40 @@ const chapters = [
     label: "COMPARAÇÃO",
     title: (
       <>
-        Lado a lado.
+        Compare títulos,
         <br />
-        Tudo mais claro.
+        lado a lado.
       </>
     ),
     description:
-      "Compara a evolução de vários títulos no mesmo gráfico. Escolhe o intervalo de tempo e vê como cada um se comportou.",
+      "Compare a evolução de vários títulos no mesmo gráfico. Alterne entre preço e desempenho e seleccione o período de comparação.",
     details: [
       "Vários títulos, um gráfico",
       "Preço ou desempenho",
-      "Períodos à tua escolha",
+      "Selecção do período de análise",
     ],
     image: "asset-comparison.png",
-    alt: "Comparação de dois títulos na invest.ao, com linhas azul e laranja, vista de desempenho e período de seis meses seleccionado.",
-    caption: "O conjunto e o detalhe, na mesma perspectiva.",
+    alt: "Comparação de dois títulos na Invest.ao, com linhas azul e laranja, vista de desempenho e período de seis meses seleccionado.",
+    caption: "Vários títulos, comparados no mesmo período.",
   },
 ];
 
 const questions = [
   [
-    "O que posso fazer na Invest.ao?",
-    "Explorar títulos do mercado angolano, organizar a tua carteira e guardar favoritos. Uma aplicação para reunir a informação que queres acompanhar.",
+    "O que é a Invest.ao?",
+    "A Invest.ao é uma aplicação para acompanhar o mercado de capitais de Angola. Reúne informação sobre acções e outros títulos, preços em kwanzas, histórico e comparação, com espaços para organizar a carteira e guardar favoritos.",
   ],
   [
     "Posso comprar e vender títulos?",
-    "A Invest.ao é uma ferramenta de informação e acompanhamento. Não executa ordens de compra ou venda.",
+    "Não. A Invest.ao é uma ferramenta de informação e acompanhamento, não uma corretora. Não executa ordens de compra ou venda de títulos.",
+  ],
+  [
+    "A aplicação presta aconselhamento financeiro?",
+    "Não. A informação apresentada destina-se ao acompanhamento do mercado e não constitui aconselhamento financeiro nem uma recomendação de investimento.",
+  ],
+  [
+    "Os valores apresentados neste site são actuais?",
+    "As imagens são capturas da aplicação e mostram os valores e as datas do momento da captura. A demonstração interactiva não apresenta cotações de mercado. Este site não fornece cotações em tempo real.",
   ],
   [
     "Quando posso descarregar a aplicação?",
@@ -103,6 +119,7 @@ const questions = [
 export default function Home() {
   return (
     <div className="landing-page">
+      <SiteSchema />
       <PageMotion />
       <a className="skip-link" href="#conteudo">
         Saltar para o conteúdo
@@ -114,7 +131,7 @@ export default function Home() {
           </a>
           <nav className="desktop-nav" aria-label="Navegação principal">
             <a href="#aplicacao">A aplicação</a>
-            <a href="#experimentar">Experimentar</a>
+            <a href="#experimentar">Demonstração</a>
             <a href="#perguntas">Perguntas frequentes</a>
           </nav>
           <a className="launch-link" href="#lancamento">
@@ -126,7 +143,7 @@ export default function Home() {
             </summary>
             <nav aria-label="Navegação móvel">
               <a href="#aplicacao">A aplicação</a>
-              <a href="#experimentar">Experimentar</a>
+              <a href="#experimentar">Demonstração</a>
               <a href="#perguntas">Perguntas frequentes</a>
               <a href="#lancamento">Em breve para iPhone</a>
             </nav>
@@ -139,21 +156,22 @@ export default function Home() {
           <div className="container opening-layout">
             <div className="opening-copy">
               <h1 id="hero-title">
-                <span>O teu mercado.</span>
-                <span>A tua</span>
-                <span className="accent-text">perspectiva.</span>
+                <span>O mercado </span>
+                <span>de capitais </span>
+                <span>de Angola. </span>
+                <span className="accent-text">Mais claro.</span>
               </h1>
               <p className="opening-description opening-enter">
-                Conhece os títulos. Acompanha a tua carteira.
-                <br />
-                Segue o que acontece no mercado angolano.
+                A Invest.ao é a aplicação para acompanhar acções e outros títulos
+                do mercado angolano. Consulte preços e histórico, organize a
+                carteira e guarde os seus favoritos.
               </p>
               <div className="opening-actions opening-enter">
                 <a className="solid-button" href="#aplicacao">
                   Explorar a aplicação
                 </a>
                 <a className="quiet-link" href="#experimentar">
-                  Experimentar <span aria-hidden="true">→</span>
+                  Ver demonstração <span aria-hidden="true">→</span>
                 </a>
               </div>
             </div>
@@ -166,13 +184,13 @@ export default function Home() {
               <div className="opening-phone">
                 <DeviceFrame
                   src="/screenshots/market-overview.png"
-                  alt="A aplicação invest.ao no iPhone: índice sintético, evolução do mercado e títulos a acompanhar."
+                  alt="A aplicação Invest.ao no iPhone: índice sintético, evolução do mercado e títulos a acompanhar."
                   hero
                 />
               </div>
             </figure>
             <div className="opening-baseline">
-              <span>MERCADO DE CAPITAIS, MAIS PERTO.</span>
+              <span>INFORMAÇÃO SOBRE O MERCADO ANGOLANO.</span>
               <a href="#perspectiva">
                 DESCOBRIR{" "}
                 <span className="scroll-indicator" aria-hidden="true">
@@ -191,47 +209,44 @@ export default function Home() {
           aria-labelledby="perspective-title"
         >
           <p className="eyebrow" data-reveal>
-            A TUA PERSPECTIVA COMEÇA AQUI
+            ACOMPANHAR O MERCADO DE CAPITAIS
           </p>
           <h2 id="perspective-title" className="statement" data-reveal>
-            Há um mercado
+            Informação do mercado.
             <br />
-            para conhecer.
+            <span className="muted-text">Carteira organizada.</span>
             <br />
-            <span className="muted-text">E uma forma </span>
-            <span className="accent-text">tua</span>
-            <br />
-            <span className="muted-text">de o acompanhar.</span>
+            <span className="accent-text">Tudo numa aplicação.</span>
           </h2>
           <div className="principles">
             <article data-reveal>
               <span className="principle-symbol" aria-hidden="true">
                 01
               </span>
-              <h3>Conhece antes de acompanhar.</h3>
+              <h3>Conheça os títulos e os emitentes.</h3>
               <p>
-                Explora acções e obrigações. Conhece os títulos e os seus
-                emitentes para perceberes o que faz parte do mercado angolano.
+                Consulte os títulos do mercado angolano, identifique os emitentes
+                e acompanhe a evolução dos preços ao longo do tempo.
               </p>
             </article>
             <article data-reveal>
               <span className="principle-symbol" aria-hidden="true">
                 02
               </span>
-              <h3>Vê a carteira por inteiro.</h3>
+              <h3>Organize a sua carteira.</h3>
               <p>
-                Reúne as tuas posições e acompanha a composição da tua carteira.
-                Passa da visão geral ao detalhe de cada título.
+                Reúna as suas posições para acompanhar a composição da carteira
+                e consultar o detalhe de cada título.
               </p>
             </article>
             <article data-reveal>
               <span className="principle-symbol" aria-hidden="true">
                 03
               </span>
-              <h3>Dá atenção ao que te interessa.</h3>
+              <h3>Acompanhe os seus favoritos.</h3>
               <p>
-                Guarda os teus favoritos e consulta as actualizações dos títulos
-                que acompanhas. A tua lista, com o teu critério.
+                Guarde os títulos que pretende acompanhar numa lista de favoritos
+                e aceda à respectiva informação num só lugar.
               </p>
             </article>
           </div>
@@ -242,16 +257,16 @@ export default function Home() {
           aria-labelledby="product-title"
         >
           <div className="container story-heading" data-reveal>
-            <p className="eyebrow">A INVEST.AO, POR DENTRO</p>
+            <p className="eyebrow">FUNCIONALIDADES DA INVEST.AO</p>
             <h2 id="product-title">
-              Do mercado
+              Mercado, histórico
               <br />
-              <span className="muted-text">ao detalhe.</span>
+              <span className="muted-text">e comparação.</span>
             </h2>
             <p>
-              Três perspectivas.
+              Do contexto de cada sessão
               <br />
-              Uma visão mais clara.
+              ao detalhe de cada título.
             </p>
           </div>
           {chapters.map((chapter) => (
@@ -273,7 +288,7 @@ export default function Home() {
                     ))}
                   </ul>
                   <a className="quiet-link" href="#experimentar">
-                    Experimentar a interface
+                    Ver demonstração da interface
                   </a>
                 </div>
                 <figure className="chapter-visual" data-reveal>
@@ -303,16 +318,16 @@ export default function Home() {
         >
           <div className="split-heading" data-reveal>
             <div>
-              <p className="eyebrow">EXPLORA AO TEU RITMO</p>
+              <p className="eyebrow">DEMONSTRAÇÃO INTERACTIVA</p>
               <h2 id="try-title">
-                Menos distância.
+                Mercado, carteira
                 <br />
-                <span className="accent-text">Mais contexto.</span>
+                <span className="accent-text">e favoritos.</span>
               </h2>
             </div>
             <p>
-              Experimenta a interface. Explora os títulos, muda de perspectiva e
-              guarda o que te interessa.
+              Explore os três espaços da aplicação. Alterne entre separadores e
+              guarde um título nos favoritos para experimentar a interface.
             </p>
           </div>
           <div data-reveal>
@@ -330,16 +345,16 @@ export default function Home() {
           aria-labelledby="questions-title"
         >
           <div data-reveal>
-            <p className="eyebrow">ANTES DE COMEÇARES</p>
+            <p className="eyebrow">SOBRE A APLICAÇÃO</p>
             <h2 id="questions-title">
-              Vale a pena
+              Perguntas
               <br />
-              <span className="muted-text">saber.</span>
+              <span className="muted-text">frequentes.</span>
             </h2>
             <p className="questions-caption">
-              Informação para acompanhar.
+              Funcionalidades, informação
               <br />
-              As decisões continuam a ser tuas.
+              e disponibilidade da Invest.ao.
             </p>
           </div>
           <div className="question-list" data-reveal>
@@ -367,17 +382,17 @@ export default function Home() {
               <span className="status-dot" /> EM PREPARAÇÃO PARA IPHONE
             </p>
             <h2 id="launch-title">
-              O teu mercado.
+              Em breve,
               <br />
-              <span>Contigo.</span>
+              <span>no seu iPhone.</span>
             </h2>
             <div className="finale-bottom">
               <p>
-                Estamos a preparar a aplicação. Quando estiver disponível,
-                encontras aqui o link para a App Store.
+                O lançamento está em preparação. O link oficial da App Store
+                será publicado nesta página quando a aplicação estiver disponível.
               </p>
               <a className="solid-button" href="#experimentar">
-                Entretanto, explora
+                Explorar a demonstração
               </a>
             </div>
           </div>
@@ -389,9 +404,9 @@ export default function Home() {
             <Brand />
           </a>
           <p>
-            De Angola.
+            O mercado de capitais de Angola.
             <br />
-            Para o teu dia-a-dia.
+            Informação para acompanhar.
           </p>
           <a href="#conteudo" className="quiet-link">
             Voltar ao início <span aria-hidden="true">↑</span>
@@ -400,9 +415,10 @@ export default function Home() {
         <div className="footer-information">
           <span>© {new Date().getFullYear()} Invest.ao</span>
           <a href="/policy">Política de privacidade</a>
+          <a href="mailto:info@invest.ao">Contacto: info@invest.ao</a>
           <p>
-            Informação para acompanhar o mercado. Não constitui aconselhamento
-            financeiro nem uma plataforma de negociação.
+            A Invest.ao fornece informação para acompanhar o mercado. Não presta
+            aconselhamento financeiro nem executa operações de compra ou venda.
           </p>
         </div>
         <div className="footer-wordmark" aria-hidden="true">

@@ -133,6 +133,7 @@ html:has(.landing-page) {
   display: block;
 }
 .opening-description {
+  max-width: 48ch;
   font-size: 15px;
   color: var(--muted);
   line-height: 1.85;
@@ -568,8 +569,9 @@ html:has(.landing-page) {
 }
 .footer-information {
   display: flex;
+  flex-wrap: wrap;
   align-items: start;
-  gap: 44px;
+  gap: 16px 44px;
   margin-top: 44px;
   padding-top: 28px;
   border-top: 1px solid var(--line);
@@ -582,6 +584,7 @@ html:has(.landing-page) {
 }
 .footer-information a {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   gap: 14px;
 }
