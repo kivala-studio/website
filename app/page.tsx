@@ -138,10 +138,6 @@ export default function Home() {
           <div className="opening-glow" aria-hidden="true" />
           <div className="container opening-layout">
             <div className="opening-copy">
-              <p className="eyebrow opening-enter">
-                <span className="status-dot" /> FEITA EM ANGOLA. PARA O TEU
-                DIA-A-DIA.
-              </p>
               <h1 id="hero-title">
                 <span>O teu mercado.</span>
                 <span>A tua</span>
@@ -167,9 +163,6 @@ export default function Home() {
                 <span />
                 <span />
               </div>
-              <span className="visual-coordinate" aria-hidden="true">
-                AO / 01
-              </span>
               <div className="opening-phone">
                 <DeviceFrame
                   src="/screenshots/market-overview.png"
@@ -177,9 +170,6 @@ export default function Home() {
                   hero
                 />
               </div>
-              <figcaption>
-                Captura da aplicação · Valores à data da captura
-              </figcaption>
             </figure>
             <div className="opening-baseline">
               <span>MERCADO DE CAPITAIS, MAIS PERTO.</span>

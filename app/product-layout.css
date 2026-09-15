@@ -1,5 +1,6 @@
 /* Deep-inspired editorial pacing, using Invest.ao's own app palette and imagery. */
 .landing-page {
+  --masthead-height: 89px;
   font-family: var(--font-geist-sans), sans-serif;
   overflow: clip;
 }
@@ -50,7 +51,7 @@ html:has(.landing-page) {
   align-items: center;
   justify-content: space-between;
   gap: 26px;
-  height: 88px;
+  height: calc(var(--masthead-height) - 1px);
 }
 .masthead a {
   min-height: 44px;
@@ -112,16 +113,18 @@ html:has(.landing-page) {
 .opening-layout {
   display: grid;
   grid-template-columns: 1.3fr 1fr;
+  grid-template-rows: 1fr auto;
+  min-height: calc(100svh - var(--masthead-height));
   align-items: center;
   gap: 0 20px;
-  padding-top: 74px;
+  padding-top: clamp(24px, 4svh, 56px);
 }
 .opening-copy {
   position: relative;
   z-index: 2;
 }
 .opening h1 {
-  font-size: clamp(66px, 7.3vw, 108px);
+  font-size: clamp(56px, min(7.3vw, 10.5svh), 108px);
   line-height: 0.99;
   margin: 31px 0 30px;
   letter-spacing: -0.065em;
@@ -176,7 +179,11 @@ html:has(.landing-page) {
 .opening-phone {
   position: relative;
   z-index: 1;
-  width: 260px;
+  width: clamp(
+    180px,
+    calc((100svh - var(--masthead-height) - 180px) / 2.4),
+    260px
+  );
   margin: 0 auto;
   transform: rotate(6deg);
 }
@@ -184,21 +191,6 @@ html:has(.landing-page) {
   box-shadow:
     0 35px 85px #000a,
     0 0 65px #5a9bff12;
-}
-.opening-visual figcaption {
-  position: relative;
-  margin-top: 32px;
-  text-align: center;
-  font-size: 9px;
-  color: var(--muted);
-}
-.visual-coordinate {
-  position: absolute;
-  top: 5%;
-  right: 0;
-  color: #a6afbd80;
-  font-size: 9px;
-  letter-spacing: 0.1em;
 }
 .orbital-stage {
   position: absolute;
@@ -235,8 +227,9 @@ html:has(.landing-page) {
   justify-content: space-between;
   align-items: center;
   border-top: 1px solid var(--line);
-  padding-block: 24px;
-  margin-top: 58px;
+  align-self: end;
+  padding-block: 12px;
+  margin-top: clamp(20px, 4svh, 44px);
   color: var(--muted);
   font-size: 9px;
   letter-spacing: 0.08em;
@@ -702,14 +695,8 @@ html:has(.landing-page) {
     gap: 14px;
     padding-inline: 12px;
   }
-  .opening-layout {
-    padding-top: 54px;
-  }
   .opening h1 {
-    font-size: clamp(57px, 7.2vw, 80px);
-  }
-  .opening-phone {
-    width: 230px;
+    font-size: clamp(48px, min(7.2vw, 10.5svh), 80px);
   }
   .opening-description {
     font-size: 13px;
@@ -735,6 +722,9 @@ html:has(.landing-page) {
   }
 }
 @media (max-width: 760px) {
+  .landing-page {
+    --masthead-height: 73px;
+  }
   .landing-page .container {
     width: calc(100% - 40px);
   }
@@ -742,7 +732,6 @@ html:has(.landing-page) {
     scroll-padding-top: 86px;
   }
   .masthead-inner {
-    height: 72px;
     gap: 14px;
   }
   .masthead .brand {
@@ -810,6 +799,7 @@ html:has(.landing-page) {
   }
   .opening-layout {
     grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
     gap: 0;
     padding-top: 48px;
   }
@@ -846,15 +836,8 @@ html:has(.landing-page) {
   .opening-phone {
     width: 220px;
   }
-  .visual-coordinate {
-    right: 10px;
-  }
   .orbital-stage {
     inset-inline: 0;
-  }
-  .opening-visual figcaption {
-    font-size: 8px;
-    margin-top: 24px;
   }
   .opening-baseline {
     margin-top: 32px;

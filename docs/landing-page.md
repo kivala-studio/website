@@ -6,7 +6,7 @@ Reference inspected on 15 September 2026: [Deep Beyond](https://www.deep.ao/en).
 
 The page moves through:
 
-1. An oversized headline and a real market screenshot, framed by decorative blue orbital lines.
+1. A viewport-height opening with an oversized headline and a real market screenshot, framed by decorative blue orbital lines. The navigation and hero fill the first screen together; type and device size adapt to the viewport height, and the scroll cue sits at the bottom. Mobile and unusually short windows can grow beyond this minimum to keep all content accessible.
 2. A statement of purpose and three benefits: market discovery, portfolio tracking, and favourites.
 3. Three full-width chapters covering the market overview, title details, and comparison. Each pairs specific features with an actual app screenshot; the middle chapter reverses the desktop composition.
 4. The existing interactive market preview.
