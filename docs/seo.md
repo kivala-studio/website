@@ -8,6 +8,8 @@ The homepage title and main heading used an abstract slogan rather than identify
 
 `https://www.invest.ao` failed certificate validation: the certificate covered only `invest.ao`. Both hostnames resolved to `216.198.79.1`. This requires a hosting/domain fix; application redirects cannot repair a TLS handshake that fails before the HTTP request.
 
+Resolved during this task: `www.invest.ao` was added to the existing Vercel project with a valid certificate and a 308 permanent redirect to `https://invest.ao/`. Live HTTP checks confirmed the HTTPS redirect with normal certificate validation and a 200 response from the destination. HTTP www redirects to HTTPS www, then to the canonical apex.
+
 ## Changes
 
 - Professional Portuguese throughout the homepage, feature descriptions, interactive demonstration, FAQs and footer. The title and H1 now identify the Angolan capital market. Existing design and product screenshots are retained.
@@ -26,7 +28,7 @@ After Search Console begins collecting data, use actual queries and impressions 
 ## Release and indexing checklist
 
 1. Merge and deploy the SEO pull request. Confirm the production homepage and `/policy` return 200, their canonicals use `https://invest.ao`, and `/robots.txt`, `/sitemap.xml` and `/opengraph-image` return 200.
-2. In Vercel's website project, configure `www.invest.ao` with a valid certificate and a permanent redirect to `https://invest.ao`. Confirm required DNS records before changing anything. Recheck both HTTP and HTTPS variants with normal certificate validation enabled.
+2. The Vercel `www.invest.ao` certificate and permanent redirect are already repaired. Recheck both HTTP and HTTPS variants after deployment with normal certificate validation enabled.
 3. Open Google Search Console, select the prepared URL-prefix property `https://invest.ao/`, and complete HTML tag verification after the new tag is live. The verification tag is public ownership proof and must remain deployed. A DNS-verified Domain property can later cover all hostnames and protocols if DNS access is available.
 4. Submit `https://invest.ao/sitemap.xml` in Sitemaps. Use URL Inspection on the homepage and privacy page; run the live test and request indexing where appropriate. Record Google's selected canonical and any indexing exclusions.
 5. After data is available, establish a baseline for branded and non-branded impressions, clicks, click-through rate and average position. Review again after several weeks. Also inspect mobile usability and Core Web Vitals when enough field data exists.
@@ -39,6 +41,9 @@ Google may take days or weeks to crawl changes. Search Console verification and 
 - Production-server HTTP checks: distinct page titles and canonical URLs; exactly one H1 per page; indexable successful pages; Google verification tag; Open Graph/Twitter metadata; parseable homepage JSON-LD; both sitemap URLs; permissive robots declaration; social PNG dimensions; unknown route returns 404 with `noindex`.
 - Browser checks: desktop and mobile layout, headline wrapping, and adding a demonstration favourite then viewing the favourites tab.
 - Independent review found no actionable metadata, structured-data, route or product-claim defects.
+- Vercel successfully deployed the PR preview. Greptile reported that the account reached its 50-credit trial limit, so no completed Greptile confidence review is available. This is an external review blocker, not a passing review.
+
+Implementation PR: [Improve Invest.ao search visibility and professionalise website copy](https://github.com/kivala-studio/website/pull/8). Production rollout and Search Console verification/submission remain pending merge and deployment.
 
 ## References
 
