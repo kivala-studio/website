@@ -1,0 +1,17 @@
+body:has(.policy-page) { background: #090b0f; color: #f5f7fa; color-scheme: dark; }
+.policy-page { width: min(780px, calc(100% - 40px)); margin: 0 auto; padding: 32px 0 60px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.8; }
+.policy-page nav { display: flex; justify-content: space-between; align-items: center; gap: 20px; font-size: 14px; }
+.policy-page nav a:first-child { color: #f5f7fa; font-size: 24px; font-weight: 650; letter-spacing: -1px; }
+.policy-page header { margin: 64px 0 32px; }
+.policy-page header > span { color: #5a9bff; font-size: 11px; letter-spacing: .12em; }
+.policy-page h1 { font-size: clamp(38px, 7vw, 56px); font-weight: 600; line-height: 1.15; letter-spacing: -.04em; margin: 14px 0; }
+.policy-page h2 { font-size: 23px; line-height: 1.4; font-weight: 550; margin-bottom: 16px; letter-spacing: -.02em; }
+.policy-page p, .policy-page li { color: #a6afbd; font-size: 16px; }
+.policy-page p + p { margin-top: 16px; }
+.policy-page section { margin-top: 36px; border-top: 1px solid #2a303a; padding-top: 28px; }
+.policy-page ul { padding-left: 22px; }
+.policy-page li + li { margin-top: 14px; }
+.policy-page strong { color: #f5f7fa; font-weight: 550; }
+.policy-page a { color: #5a9bff; text-decoration: underline; text-underline-offset: 4px; }
+.policy-page a:focus-visible { outline: 2px solid #5a9bff; outline-offset: 5px; }
+.policy-page footer { border-top: 1px solid #2a303a; margin-top: 44px !important; padding-top: 24px; }
