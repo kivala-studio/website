@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const alt =
-  "Invest.ao — Mercado de capitais em Angola. Em breve para iPhone.";
+  "Invest.ao — Mercado de capitais em Angola. Descobre aqui. Acompanha no iPhone..";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -19,11 +19,11 @@ export default function OpenGraphImage() {
           color: "#f5f7fa",
           padding: "64px 76px",
           fontFamily: "sans-serif",
-          borderBottom: "12px solid #2381f8",
+          borderBottom: "12px solid #5a9bff",
         }}
       >
         <div style={{ display: "flex", fontSize: 42, letterSpacing: -2 }}>
-          invest<span style={{ color: "#2381f8" }}>.</span>ao
+          invest<span style={{ color: "#5a9bff" }}>.</span>ao
         </div>
         <div
           style={{
@@ -35,17 +35,17 @@ export default function OpenGraphImage() {
           }}
         >
           <span>Mercado de capitais</span>
-          <span style={{ color: "#2381f8" }}>em Angola.</span>
+          <span style={{ color: "#5a9bff" }}>em Angola.</span>
         </div>
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
-            color: "#a5afbd",
+            color: "#a6afbd",
             fontSize: 26,
           }}
         >
-          <span>Em breve para iPhone</span>
+          <span>Descobre aqui. Acompanha no iPhone.</span>
           <span>invest.ao</span>
         </div>
       </div>
