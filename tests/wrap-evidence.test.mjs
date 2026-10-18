@@ -45,12 +45,20 @@ function evidence() {
         kind: d.is_open ? "regular" : "non_trading",
       })),
     },
-    observations: ["2026-10-09", "2026-10-16"].map((day, i) => ({
+    observations: [
+      "2026-10-09",
+      "2026-10-12",
+      "2026-10-13",
+      "2026-10-14",
+      "2026-10-15",
+      "2026-10-16",
+    ].map((day, i) => ({
       record_id: `row-${i}`,
+      ingestion_run_id: "fixture-ingestion",
       asset_id: "asset",
       currency_code: "AOA",
       dataset: "price_history.equities",
-      price: i ? "110" : "100",
+      price: String(100 + i * 2),
       observed_at: `${day}T14:00:00Z`,
       collected_at: `${day}T15:30:00Z`,
       is_final: true,

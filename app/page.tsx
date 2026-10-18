@@ -6,6 +6,7 @@ import MarketExplorer from "./market-explorer";
 import { DataError, NewsList } from "./public-content";
 import MarketSpotlight from "./components/market-spotlight";
 import MarketPulse, { type PulseRow } from "./components/market-pulse";
+import InsightSection from "./components/insight-section";
 import HomeAccount from "./components/home-account";
 import Icon from "./components/invest-icon";
 import { SiteSchema } from "./site-schema";
@@ -72,6 +73,7 @@ export default async function Home() {
         )}
         <HomeAccount />
       </div>
+      <InsightSection surface="home" />
       <section className="home-market-section">
         <div className="section-title">
           <div>

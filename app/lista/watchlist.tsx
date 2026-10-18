@@ -1,4 +1,5 @@
 "use client";
+import InsightSection from "../components/insight-section";
 import Link from "next/link";
 import { useCallback, useState } from "react";
 import { useAccount } from "../components/account-provider";
@@ -76,6 +77,15 @@ export default function Watchlist({ market }: { market: Market | null }) {
             Anular
           </button>
         </div>
+      )}
+      {state.data && !state.error && (
+        <InsightSection
+          surface="watchlist"
+          revision={state.data
+            .map((w) => w.security_id)
+            .sort()
+            .join(",")}
+        />
       )}
       <div className="split-layout">
         <section>

@@ -1,4 +1,5 @@
 "use client";
+import InsightSection from "../components/insight-section";
 import PortfolioPerformance from "./performance";
 import { useClock } from "../components/use-clock";
 import Link from "next/link";
@@ -127,6 +128,12 @@ export default function Portfolio({
       )}
       {state.data && !calculated.error && (
         <>
+          {!securityID && (
+            <InsightSection
+              surface="portfolio"
+              revision={JSON.stringify(state.data)}
+            />
+          )}
           <div className="metric-grid">
             <div>
               <span>Custo das posições abertas</span>

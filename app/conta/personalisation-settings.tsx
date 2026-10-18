@@ -1,10 +1,11 @@
 "use client";
+import { updateExposure } from "../../lib/content-exposure";
 import { useState } from "react";
 import { useAccount } from "../components/account-provider";
 import { usePersonalisation } from "../components/personalisation-provider";
 import { Feedback } from "../components/async-state";
 export default function PersonalisationSettings() {
-  const { privateMode } = useAccount();
+  const { privateMode, client, user } = useAccount();
   const { resetBehavior, error, refresh } = usePersonalisation();
   const [message, setMessage] = useState("");
   const [failure, setFailure] = useState("");
@@ -52,6 +53,38 @@ export default function PersonalisationSettings() {
         Esta reposição afecta a ordenação neste navegador. Não elimina os
         contadores da conta nem altera as preferências na app.
       </p>
+      <h3>Preferências de utilidade</h3>
+      <p className="fine-print">
+        As escolhas “Não foi útil” e “Mostrar menos deste tipo” ficam neste
+        navegador durante 56 dias. A relevância financeira mantém prioridade.
+        Não alteram os teus alertas nem retiram instrumentos da lista.
+      </p>
+      <button
+        className="secondary-button"
+        disabled={privateMode}
+        onClick={async () => {
+          setMessage("");
+          setFailure("");
+          try {
+            if (!client || !user) throw new Error("Account unavailable");
+            await updateExposure(
+              user.id,
+              async () => {
+                const { data } = await client.auth.getSession();
+                return data.session?.user.id === user.id;
+              },
+              (old) => ({ ...old, feedback: [] }),
+            );
+            setMessage("Preferências de utilidade repostas neste navegador.");
+          } catch {
+            setFailure(
+              "Não foi possível repor as preferências. Tenta novamente.",
+            );
+          }
+        }}
+      >
+        Repor preferências de utilidade
+      </button>
       <Feedback message={message} error={failure} />
     </section>
   );

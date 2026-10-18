@@ -11,7 +11,11 @@ export type Security = {
   security_type: string;
   issuer_id: string | null;
   is_active: boolean;
-  issuers?: { name: string; short_name?: string | null } | null;
+  issuers?: {
+    name: string;
+    short_name?: string | null;
+    sector?: string | null;
+  } | null;
 };
 export type Quality = {
   status: string;

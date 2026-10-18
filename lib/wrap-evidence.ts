@@ -1,3 +1,4 @@
+import Decimal from "decimal.js";
 import type { Quality, Security } from "./public-data";
 export type WrapWindow = {
   period_type: string;
@@ -34,6 +35,7 @@ export type WrapEvidence = {
   };
   observations: {
     record_id: string;
+    ingestion_run_id?: string;
     asset_id: string;
     currency_code: string;
     dataset: string;
@@ -64,10 +66,11 @@ export function wrapRows(
   period: WrapWindow,
   securities: Security[],
   now: number,
-  context: "release" | "historical-repair" = "release",
+  context: "release" | "historical-repair" | "insight" = "release",
 ) {
   if (
     !evidence ||
+    !Number.isFinite(now) ||
     evidence.contract_version !== 3 ||
     !validDay(period.starts_on) ||
     !validDay(period.ends_on) ||
@@ -94,6 +97,7 @@ export function wrapRows(
     !(Date.parse(snapshot.valid_until) > now) ||
     !(Date.parse(snapshot.fetched_at) <= now) ||
     !(Date.parse(evidence.fetched_at) <= now) ||
+    now - Date.parse(evidence.fetched_at) >= 15 * 60000 ||
     evidence.calendar.length !== expectedCount ||
     snapshot.days.length !== expectedCount
   )
@@ -131,6 +135,9 @@ export function wrapRows(
     )
     .at(-1)?.day;
   if (!baseline || !end || evidence.baseline_day !== baseline) return null;
+  const sessions = evidence.calendar.filter(
+    (d) => d.is_open && d.day >= baseline && d.day <= end,
+  );
   const recordIDs = new Set<string>();
   if (
     evidence.observations.some((o) => {
@@ -142,24 +149,47 @@ export function wrapRows(
     return null;
   return securities
     .flatMap((security) => {
-      const eligible = evidence.observations.filter(
+      const series = evidence.observations
+        .filter(
+          (o) =>
+            o.asset_id === security.id &&
+            Date.parse(o.observed_at) >=
+              Date.parse(`${baseline}T00:00:00+01:00`) &&
+            Date.parse(o.observed_at) <
+              Date.parse(`${end}T00:00:00+01:00`) + dayMs,
+        )
+        .sort((a, b) => Date.parse(a.observed_at) - Date.parse(b.observed_at));
+      if (
+        series.length !== sessions.length ||
+        series.some(
+          (o, i) =>
+            Date.parse(o.observed_at) !==
+            Date.parse(`${sessions[i].day}T${sessions[i].closes_at}+01:00`),
+        )
+      )
+        return [];
+      const eligible = series.filter(
         (o) =>
           o.asset_id === security.id &&
           o.currency_code === security.currency &&
           o.dataset.startsWith("price_history.") &&
           o.is_final &&
+          !!o.record_id &&
+          !!o.ingestion_run_id &&
           Number.isFinite(Number(o.price)) &&
           Number(o.price) > 0 &&
           /^[a-f0-9]{64}$/i.test(o.source_sha256) &&
           o.parser_version &&
           Date.parse(o.observed_at) <= now &&
           Date.parse(o.collected_at) <= now &&
+          Date.parse(o.collected_at) <= Date.parse(evidence.fetched_at) &&
           Date.parse(o.collected_at) >= Date.parse(o.observed_at) &&
           o.data_quality?.status === "valid" &&
           o.data_quality.reasons.length === 0 &&
           (!o.data_quality.validUntilEpoch ||
             o.data_quality.validUntilEpoch * 1000 > now),
       );
+      if (eligible.length !== series.length) return [];
       const startPoints = eligible.filter(
           (o) => luandaDay(o.observed_at) === baseline,
         ),
@@ -170,10 +200,15 @@ export function wrapRows(
       return [
         {
           security,
-          change: (finish / start - 1) * 100,
+          change: new Decimal(endPoints[0].price)
+            .div(startPoints[0].price)
+            .minus(1)
+            .times(100)
+            .toNumber(),
           start,
           end: finish,
           records: [startPoints[0].record_id, endPoints[0].record_id],
+          series,
         },
       ];
     })
