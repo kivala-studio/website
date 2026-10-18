@@ -64,6 +64,7 @@ export function wrapRows(
   period: WrapWindow,
   securities: Security[],
   now: number,
+  context: "release" | "historical-repair" = "release",
 ) {
   if (
     !evidence ||
@@ -71,7 +72,10 @@ export function wrapRows(
     !validDay(period.starts_on) ||
     !validDay(period.ends_on) ||
     Date.parse(period.available_at) > now ||
-    !(Date.parse(period.expires_at) > now)
+    (context === "release" && !(Date.parse(period.expires_at) > now)) ||
+    (context === "historical-repair" &&
+      (Date.parse(period.ends_on) > now ||
+        now - Date.parse(period.ends_on) >= 730 * dayMs))
   )
     return null;
   const snapshot = evidence.calendar_snapshot;

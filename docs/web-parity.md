@@ -12,22 +12,22 @@ This is an implementation and verification inventory, not a claim that all iOS b
 
 ## Implemented
 
-| iOS capability                                  | Web surface                       | Notes                                                                                                                                 |
-| ----------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Home, market overview and proprietary indicator | `/`                               | Interactive equity chart, verified indicator, account counts, editorial feed                                                          |
-| Instrument discovery/search                     | `/mercado`, `/pesquisa`           | Category filters, sorting, issuer/name/symbol/ISIN lookup                                                                             |
-| Instrument detail                               | `/mercado/[id]`                   | Daily/intraday history, issuer context, order book, reports, dividends, related articles, share                                       |
-| Comparison and chart export                     | `/comparar`                       | Common observation dates, rebased percentage changes, accessible table and SVG export                                                 |
-| Google/Apple sign-in, profile, onboarding       | `/conta`, `/auth/callback`        | Same identities and metadata; returns to the requested feature after login; older accounts are not forced through new onboarding      |
-| Watchlist                                       | `/lista`                          | Add, remove/undo, reorder, per-instrument automatic alerts                                                                            |
-| Price/movement alerts                           | `/alertas`                        | Create, edit, pause, delete; correct bond percentage units                                                                            |
-| Manual portfolio                                | `/carteira`, `/carteira/[id]`     | Buy/sell/edit/delete, weighted cost, realised/unrealised values, allocation, exact-day historical coverage                            |
-| Simulator                                       | `/simular`                        | General or eligible AOA equity/fund scenario, monthly contributions, whole/fractional units and uninvested cash                       |
-| News/article/source reading                     | `/noticias`, `/noticias/[slug]`   | Published-only queries, related instruments, native share/copy                                                                        |
-| Activity centre                                 | `/actividade`, `/actividade/[id]` | Account records plus deduplicated legacy alerts/recaps; read state, filters, safe previews and validated frozen portfolio details     |
-| Calendar and new admissions                     | `/agenda`                         | Verified BODIVA sessions, issuer dividend dates, sourced listing announcements, personal issuer-event filter                          |
-| Weekly/monthly summaries                        | `/resumos`                        | Authenticated evidence contract; market/watchlist/eligible no-flow portfolio stories, native soundtrack, page export, underlying data |
-| Profile/preferences/privacy/account deletion    | `/conta`                          | Shared notification preferences; non-Apple deletion RPC; Apple browser flow requires backend platform-return deployment               |
+| iOS capability                                  | Web surface                       | Notes                                                                                                                                                                        |
+| ----------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Home, market overview and proprietary indicator | `/`                               | Interactive equity chart, verified indicator, account counts, editorial feed                                                                                                 |
+| Instrument discovery/search                     | `/mercado`, `/pesquisa`           | Category filters, sorting, issuer/name/symbol/ISIN lookup                                                                                                                    |
+| Instrument detail                               | `/mercado/[id]`                   | Daily/intraday history, issuer context, order book, reports, dividends, related articles, share                                                                              |
+| Comparison and chart export                     | `/comparar`                       | Common observation dates, rebased percentage changes, accessible table and SVG export                                                                                        |
+| Google/Apple sign-in, profile, onboarding       | `/conta`, `/auth/callback`        | Same identities and metadata; returns to the requested feature after login; older accounts are not forced through new onboarding                                             |
+| Watchlist                                       | `/lista`                          | Add, remove/undo, reorder, per-instrument automatic alerts                                                                                                                   |
+| Price/movement alerts                           | `/alertas`                        | Create, edit, pause, delete; correct bond percentage units                                                                                                                   |
+| Manual portfolio                                | `/carteira`, `/carteira/[id]`     | Buy/sell/edit/delete, weighted cost, realised/unrealised values, allocation, exact-day historical coverage                                                                   |
+| Simulator                                       | `/simular`                        | General or eligible AOA equity/fund scenario, monthly contributions, whole/fractional units and uninvested cash                                                              |
+| News/article/source reading                     | `/noticias`, `/noticias/[slug]`   | Published-only queries, related instruments, native share/copy                                                                                                               |
+| Activity centre                                 | `/actividade`, `/actividade/[id]` | Account records plus deduplicated legacy alerts/recaps; read state, filters, safe previews and validated frozen portfolio details                                            |
+| Calendar and new admissions                     | `/agenda`                         | Verified BODIVA sessions, issuer dividend dates, sourced listing announcements, personal issuer-event filter                                                                 |
+| Weekly/monthly summaries                        | `/resumos`                        | Authenticated evidence contract; market/watchlist/eligible no-flow portfolio stories, native soundtrack, page export, immutable editions, resume history and underlying data |
+| Profile/preferences/privacy/account deletion    | `/conta`                          | Shared notification preferences; non-Apple deletion RPC; Apple browser flow requires backend platform-return deployment                                                      |
 
 ## Personalisation and notification detail
 
@@ -37,10 +37,20 @@ This is an implementation and verification inventory, not a claim that all iOS b
 - Resetting interests applies to this browser, keeps explicit holdings/list/alerts, and resumes behavioral ranking tomorrow, matching iOS daily aggregate semantics. It does not erase shared activity or reset the other device.
 - Portfolio notification detail calls the owner-scoped frozen-evidence RPC. It validates versions, dates, expiry, source identifiers, positive quantities/prices, position contributions and reconciled totals. It shows original values and dates, never today's holdings substituted into an earlier event. Privacy hides amounts, positions and provenance. Missing/withdrawn/expired evidence has no financial fallback.
 
+## Recap editions and playback
+
+- The first verified composition is saved atomically in account-scoped IndexedDB, including original catalogue, evidence, holdings inputs, watchlist membership and rendered story content. Later market/portfolio changes cannot overwrite it. Historical playback revalidates the saved evidence at its capture time and checks the stored financial presentation against that evidence.
+- Weekly editions are retained for 730 days from first creation; monthly editions for 56 days. Saved periods remain accessible when the current release list is empty or unavailable. Unsupported or damaged history is an explicit error, never a cache miss that authorizes regeneration.
+- “Recriar personalização” obtains fresh evidence and current watchlist membership, requires every watched instrument to have complete coverage, and appends an edition. Original market and portfolio stories remain unchanged. Optimistic revision checks prevent a second tab from overwriting a newer edition. Users can switch back to the original.
+- Correction-domain support requires an explicit source revision, explanation, reason and predecessor. Corrections cannot change captured holdings/watchlist membership. There is no automatic inference of a financial correction from changed live data, and no production correction-receipt feed has been connected.
+- Resume position and completion are per edition. Availability/completion are idempotent; rebuilds start fresh. Weekly lifecycle events use the same daily aggregate contract as iOS and respect privacy capture. Closing-tab abandonment writes are best effort under browser lifecycle constraints.
+- Confirmed non-Apple account deletion removes that account's local archive and blocks in-flight writes from recreating it. Apple callback completion/cleanup still needs a verified return receipt and signed-in verification.
+- A temporary development-only page with fictional values verified player navigation and privacy masking, then was removed. It was not an authenticated account test or a deployed route.
+
 ## Verification performed
 
 - Production build, TypeScript and ESLint.
-- Focused finance, quotation and recap-contract tests, plus six checks for frozen notification evidence and personalisation weights, cross-account isolation, decay and reset cutoffs.
+- Focused finance, quotation and recap-contract tests, six notification-evidence/personalisation checks, and eight recap archive/storage checks. The latest update ran 14 checks covering the affected recap, storage and personalisation contracts, including concurrent IndexedDB writes using fake-indexeddb.
 - Production dependency audit.
 - Live anonymous API checks and ownership rejection for private tables.
 - Browser checks: public homepage, comparison data and range switching, exact zero-growth simulation, agenda rendering, signed-out notification-detail gate with preserved return path, and account entry screen.
@@ -49,9 +59,10 @@ This is an implementation and verification inventory, not a claim that all iOS b
 
 - Signed-in browser verification of existing-user data, account switching, preferences and CRUD. The implementation uses deployed contracts but a user session has not yet been supplied for this check. Use a designated disposable account for write/delete checks, never real investment records.
 - Background browser push delivery. Activity and preference management are present, but there is no Web Push subscription/transport yet; the existing delivery service is APNs-only.
-- Native usefulness feedback and exposure-aware content selection, immutable recap editions/correction workflow and lifecycle analytics still need porting. Shared behavioral counters and browser-local interest reset are implemented; current recap stories derive from fresh verified data and current holdings/watchlist.
+- Native usefulness feedback and exposure-aware content selection still need porting. Shared interests, browser-local reset, immutable recap editions, explicit watchlist rebuild and per-edition playback/lifecycle journals are implemented. Additional native recap story families and their ranking still need parity work.
 - Native home/watchlist/portfolio insight generation and ranking still need parity work. Calendar personalisation currently covers issuer dividend events; personalised week-ahead editorial selection remains outstanding.
 - iOS-only OS surfaces (widgets, Shortcuts/App Intents, haptics and native notification settings) need explicit browser equivalents or a documented platform exception.
+- Finish Apple deletion result handling/local cleanup using a verified return receipt; the backend return platform is prepared, but the web currently only initiates the flow.
 - Verify production OAuth allowlisting and deploy the Apple web return backend dependency before enabling the deletion path. No production configuration or database changes were applied by this work.
 
 ## Financial boundaries

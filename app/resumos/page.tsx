@@ -23,13 +23,10 @@ export default async function Page() {
           verificadas.
         </p>
       </header>
-      {windows === null ? (
-        <DataError content="os períodos disponíveis" />
-      ) : (
-        <AccountGate feature="Os resumos do mercado">
-          <Wraps windows={available} market={market.data} />
-        </AccountGate>
-      )}
+      {windows === null && <DataError content="os períodos disponíveis" />}
+      <AccountGate feature="Os resumos do mercado">
+        <Wraps windows={available} market={market.data} />
+      </AccountGate>
     </PublicShell>
   );
 }

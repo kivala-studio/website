@@ -5,7 +5,12 @@ export type ActivityKind =
   | "chart_range"
   | "watchlist_add"
   | "watchlist_remove"
-  | "wrap_open";
+  | "wrap_open"
+  | "wrap_available"
+  | "wrap_opened"
+  | "wrap_completed"
+  | "wrap_abandoned"
+  | "wrap_shared";
 export type ActivityEvent = {
   kind: ActivityKind;
   securityID?: string;
@@ -33,6 +38,26 @@ export const isUUID = (value: unknown): value is string =>
   typeof value === "string" &&
   /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(value);
 export function validActivity(event: ActivityEvent) {
+  if (
+    [
+      "wrap_available",
+      "wrap_opened",
+      "wrap_completed",
+      "wrap_abandoned",
+      "wrap_shared",
+    ].includes(event.kind)
+  ) {
+    const day = event.variant?.match(/^weekly-(\d{4}-\d{2}-\d{2})$/)?.[1];
+    return (
+      !event.securityID &&
+      !event.relatedID &&
+      !!day &&
+      Number.isFinite(Date.parse(day)) &&
+      new Date(day).toISOString().slice(0, 10) === day &&
+      new Date(`${day}T12:00:00Z`).getUTCDay() === 1
+    );
+  }
+
   if (event.kind === "wrap_open")
     return !event.securityID && !event.relatedID && !event.variant;
   if (!isUUID(event.securityID)) return false;
