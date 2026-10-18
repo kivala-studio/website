@@ -44,16 +44,19 @@ This is an implementation and verification inventory, not a claim that all iOS b
 - “Recriar personalização” obtains fresh evidence and current watchlist membership, requires every watched instrument to have complete coverage, and appends an edition. Original market and portfolio stories remain unchanged. Optimistic revision checks prevent a second tab from overwriting a newer edition. Users can switch back to the original.
 - Correction-domain support requires an explicit source revision, explanation, reason and predecessor. Corrections cannot change captured holdings/watchlist membership. There is no automatic inference of a financial correction from changed live data, and no production correction-receipt feed has been connected.
 - Resume position and completion are per edition. Availability/completion are idempotent; rebuilds start fresh. Weekly lifecycle events use the same daily aggregate contract as iOS and respect privacy capture. Closing-tab abandonment writes are best effort under browser lifecycle constraints.
-- Confirmed non-Apple account deletion removes that account's local archive and blocks in-flight writes from recreating it. Apple callback completion/cleanup still needs a verified return receipt and signed-in verification.
+- Confirmed deletion removes that account's local archive and blocks in-flight writes from recreating it. Apple completion now requires a signed, short-lived receipt bound to the initiating browser; cancelled and failed returns preserve local data. Shared cleanup checks the current session owner and removes only the deleted owner's archives and local discovery aggregates. Live Apple verification is still pending.
 - A temporary development-only page with fictional values verified player navigation and privacy masking, then was removed. It was not an authenticated account test or a deployed route.
 
 ## Verification performed
 
 - Production build, TypeScript and ESLint.
+- Five focused Apple receipt/cleanup checks: HMAC contract, browser ownership, tampering, expiry, authenticated outcomes and preserving another account already active on return.
 - Focused finance, quotation and recap-contract tests, six notification-evidence/personalisation checks, and eight recap archive/storage checks. The latest update ran 14 checks covering the affected recap, storage and personalisation contracts, including concurrent IndexedDB writes using fake-indexeddb.
 - Production dependency audit.
 - Live anonymous API checks and ownership rejection for private tables.
 - Browser checks: public homepage, comparison data and range switching, exact zero-growth simulation, agenda rendering, signed-out notification-detail gate with preserved return path, and account entry screen.
+
+- Apple return checks: the invalid-receipt route redirects without setting cookies, the result endpoint rejects missing receipts, and an unsigned `status=deleted` URL leaves the normal account screen. No real account was deleted.
 
 ## Still required for complete parity / release
 
@@ -62,8 +65,20 @@ This is an implementation and verification inventory, not a claim that all iOS b
 - Native usefulness feedback and exposure-aware content selection still need porting. Shared interests, browser-local reset, immutable recap editions, explicit watchlist rebuild and per-edition playback/lifecycle journals are implemented. Additional native recap story families and their ranking still need parity work.
 - Native home/watchlist/portfolio insight generation and ranking still need parity work. Calendar personalisation currently covers issuer dividend events; personalised week-ahead editorial selection remains outstanding.
 - iOS-only OS surfaces (widgets, Shortcuts/App Intents, haptics and native notification settings) need explicit browser equivalents or a documented platform exception.
-- Finish Apple deletion result handling/local cleanup using a verified return receipt; the backend return platform is prepared, but the web currently only initiates the flow.
 - Verify production OAuth allowlisting and deploy the Apple web return backend dependency before enabling the deletion path. No production configuration or database changes were applied by this work.
+
+## Apple deletion deployment dependency
+
+Backend PR 73 adds the platform and browser-challenge migrations and signs web outcomes.
+Deploy both migrations before the function, configure its `APPLE_WEBSITE_RETURN_URL`
+as `https://invest.ao/api/account/apple-deletion/complete`, and set the same server-only
+`APPLE_WEBSITE_RECEIPT_SECRET` in both deployments (32 random bytes, 64 hex characters).
+The website requires the verified user/receipt version from `/start` and uses HttpOnly,
+Secure, SameSite=Lax host cookies; serve over HTTPS. Missing configuration fails closed.
+Ordinary status query parameters never authorize cleanup. The callback consumes its
+browser binding, and acknowledgement consumes the result cookie. No secret, deployment
+or real account deletion was performed. Real Apple authorization and concurrent account
+switching still need a designated non-production disposable account.
 
 ## Financial boundaries
 

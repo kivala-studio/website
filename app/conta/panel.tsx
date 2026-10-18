@@ -8,7 +8,8 @@ import Onboarding from "./onboarding";
 import type { Security } from "../../lib/public-data";
 import Icon from "../components/invest-icon";
 import PersonalisationSettings from "./personalisation-settings";
-import { deleteAccountArchives } from "../../lib/wrap-storage";
+import { clearAccountLocalData } from "../../lib/clear-account-local-data";
+import { finishDeletedAccount } from "../../lib/account-cleanup";
 import { SettingsPanel } from "./settings";
 
 export default function AccountPanel({
@@ -346,17 +347,11 @@ function Profile() {
                 location.assign(target.href);
                 return;
               }
-              const deletedUserID = user!.id;
-              await client!.auth.signOut({ scope: "local" });
-              await deleteAccountArchives(deletedUserID);
-              if (navigator.locks)
-                await navigator.locks.request(
-                  `investao.personalisation.v1.${deletedUserID}`,
-                  () =>
-                    localStorage.removeItem(
-                      `investao.personalisation.v1.${deletedUserID}`,
-                    ),
-                );
+              await finishDeletedAccount(
+                client!,
+                user!.id,
+                clearAccountLocalData,
+              );
             }, "")
           }
         >
