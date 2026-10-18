@@ -77,7 +77,7 @@ export default async function Page({
             {market.error ? (
               <DataError content="os instrumentos" />
             ) : (
-              <MarketExplorer rows={rows} />
+              <MarketExplorer rows={rows} searchResults />
             )}
           </section>
           <section className="public-section">

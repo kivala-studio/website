@@ -1,11 +1,13 @@
 "use client";
 import { useCallback, useState } from "react";
+import { usePersonalisation } from "../components/personalisation-provider";
 import type { Security } from "../../lib/public-data";
 import { date, kind } from "../../lib/market-presentation";
 import { ranges, fetchHistory } from "../components/history-chart";
 import { ResourceState, useResource } from "../components/async-state";
 import LineChart from "../components/line-chart";
 export default function Comparison({ securities }: { securities: Security[] }) {
+  const { record } = usePersonalisation();
   const preferred = securities.filter((s) => kind(s) === "Acções");
   const [first, setFirst] = useState(
     preferred[0]?.id || securities[0]?.id || "",
@@ -18,7 +20,17 @@ export default function Comparison({ securities }: { securities: Security[] }) {
       <div className="form-grid">
         <label>
           Primeiro instrumento
-          <select value={first} onChange={(e) => setFirst(e.target.value)}>
+          <select
+            value={first}
+            onChange={(e) => {
+              setFirst(e.target.value);
+              record({
+                kind: "comparison",
+                securityID: e.target.value,
+                relatedID: second,
+              });
+            }}
+          >
             {securities.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.symbol} · {s.issuers?.name || s.name}
@@ -28,7 +40,17 @@ export default function Comparison({ securities }: { securities: Security[] }) {
         </label>
         <label>
           Segundo instrumento
-          <select value={second} onChange={(e) => setSecond(e.target.value)}>
+          <select
+            value={second}
+            onChange={(e) => {
+              setSecond(e.target.value);
+              record({
+                kind: "comparison",
+                securityID: first,
+                relatedID: e.target.value,
+              });
+            }}
+          >
             {securities.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.symbol} · {s.issuers?.name || s.name}

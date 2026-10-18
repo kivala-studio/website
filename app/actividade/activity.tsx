@@ -130,7 +130,7 @@ export default function Activity() {
               : row.security_id
                 ? `/mercado/${row.security_id}`
                 : row.category === "portfolio_daily"
-                  ? "/carteira"
+                  ? `/actividade/${row.id}`
                   : null,
       };
     });
@@ -234,6 +234,7 @@ export default function Activity() {
             ["alerts", "Alertas"],
             ["asset_movement", "Movimentos"],
             ["market_recap", "Resumos"],
+            ["portfolio_daily", "Carteira"],
           ].map(([value, label]) => (
             <button
               key={value}

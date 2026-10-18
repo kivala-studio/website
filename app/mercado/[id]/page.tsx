@@ -1,3 +1,4 @@
+import { RecordAssetView } from "../../components/personalisation-provider";
 import ShareButton from "../../components/share-button";
 import Link from "next/link";
 import HistoryChart from "../../components/history-chart";
@@ -91,6 +92,7 @@ export default async function InstrumentPage({ params }: Props) {
       ) : null}
       <ShareButton title="Instrumento · invest.ao" />
       <InstrumentActions id={s.id} />
+      <RecordAssetView securityID={s.id} />
       <HistoryChart security={s} />
       <InstrumentResearch security={s} />
       {issuer?.data?.description ? (

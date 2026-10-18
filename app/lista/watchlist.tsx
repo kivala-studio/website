@@ -10,8 +10,10 @@ import {
 import { watchlist, type Watch } from "../../lib/account-data";
 import type { Market } from "../../lib/public-data";
 import { kind, reading } from "../../lib/market-presentation";
+import { usePersonalisation } from "../components/personalisation-provider";
 import MarketReading from "../market-reading";
 export default function Watchlist({ market }: { market: Market | null }) {
+  const { record, refresh } = usePersonalisation();
   const { client, user } = useAccount();
   const load = useCallback(() => watchlist(client!, user!.id), [client, user]);
   const state = useResource(load);
@@ -26,6 +28,7 @@ export default function Watchlist({ market }: { market: Market | null }) {
       const { error } = await fn();
       if (error) throw error;
       await state.reload();
+      refresh();
       return true;
     } catch {
       setError("Não foi possível actualizar a lista. Tenta novamente.");
@@ -61,8 +64,13 @@ export default function Watchlist({ market }: { market: Market | null }) {
                     .from("watchlist_items")
                     .insert({ ...removed, user_id: user!.id }),
                 )
-              )
+              ) {
+                record({
+                  kind: "watchlist_add",
+                  securityID: removed.security_id,
+                });
                 setRemoved(null);
+              }
             }}
           >
             Anular
@@ -176,8 +184,13 @@ export default function Watchlist({ market }: { market: Market | null }) {
                               .eq("user_id", user!.id)
                               .eq("security_id", row.security_id),
                           )
-                        )
+                        ) {
+                          record({
+                            kind: "watchlist_remove",
+                            securityID: row.security_id,
+                          });
                           setRemoved(row);
+                        }
                       }}
                     >
                       Remover
@@ -217,19 +230,22 @@ export default function Watchlist({ market }: { market: Market | null }) {
                   className="add-button"
                   aria-label={`Adicionar ${s.symbol}`}
                   disabled={busy || state.loading || !!state.error}
-                  onClick={() =>
-                    mutate(() =>
-                      client!.from("watchlist_items").insert({
-                        user_id: user!.id,
-                        security_id: s.id,
-                        sort_order:
-                          Math.max(
-                            -1,
-                            ...state.data!.map((row) => row.sort_order),
-                          ) + 1,
-                      }),
+                  onClick={async () => {
+                    if (
+                      await mutate(() =>
+                        client!.from("watchlist_items").insert({
+                          user_id: user!.id,
+                          security_id: s.id,
+                          sort_order:
+                            Math.max(
+                              -1,
+                              ...state.data!.map((row) => row.sort_order),
+                            ) + 1,
+                        }),
+                      )
                     )
-                  }
+                      record({ kind: "watchlist_add", securityID: s.id });
+                  }}
                 >
                   +
                 </button>

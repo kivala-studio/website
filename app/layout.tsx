@@ -3,6 +3,7 @@ import { siteDescription, siteName, siteTitle, siteUrl } from "../lib/seo";
 import "./globals.css";
 import "./workspace.css";
 import { AccountProvider } from "./components/account-provider";
+import { PersonalisationProvider } from "./components/personalisation-provider";
 import { connection } from "next/server";
 
 export const metadata: Metadata = {
@@ -32,7 +33,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       className="h-full antialiased"
     >
       <body className="min-h-full flex flex-col">
-        <AccountProvider config={config}>{children}</AccountProvider>
+        <AccountProvider config={config}>
+          <PersonalisationProvider>{children}</PersonalisationProvider>
+        </AccountProvider>
       </body>
     </html>
   );

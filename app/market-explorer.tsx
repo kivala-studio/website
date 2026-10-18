@@ -1,4 +1,6 @@
 "use client";
+import { usePersonalisation } from "./components/personalisation-provider";
+import { interestWeight } from "../lib/personalisation";
 import Link from "next/link";
 import { useState } from "react";
 import { kind, type Reading } from "../lib/market-presentation";
@@ -8,10 +10,13 @@ export type MarketRow = { security: Security; value: Reading };
 export default function MarketExplorer({
   rows,
   search = false,
+  searchResults = false,
 }: {
   rows: MarketRow[];
   search?: boolean;
+  searchResults?: boolean;
 }) {
+  const { profile, record, ready } = usePersonalisation();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("Todos");
   const [sort, setSort] = useState("symbol");
@@ -29,9 +34,13 @@ export default function MarketExplorer({
         ).includes(normalized(query.trim())),
     )
     .sort((a, b) =>
-      sort === "change"
-        ? (b.value.change ?? -Infinity) - (a.value.change ?? -Infinity)
-        : a.security.symbol.localeCompare(b.security.symbol),
+      sort === "personal"
+        ? interestWeight(profile, [b.security.id]) -
+            interestWeight(profile, [a.security.id]) ||
+          a.security.symbol.localeCompare(b.security.symbol)
+        : sort === "change"
+          ? (b.value.change ?? -Infinity) - (a.value.change ?? -Infinity)
+          : a.security.symbol.localeCompare(b.security.symbol),
     );
   return (
     <>
@@ -72,6 +81,9 @@ export default function MarketExplorer({
           <label className="sort-control">
             Ordenar
             <select value={sort} onChange={(e) => setSort(e.target.value)}>
+              {ready && (
+                <option value="personal">Relação com a tua conta</option>
+              )}
               <option value="symbol">Símbolo</option>
               <option value="change">Variação disponível</option>
             </select>
@@ -87,6 +99,10 @@ export default function MarketExplorer({
           <Link
             prefetch={false}
             href={`/mercado/${s.id}`}
+            onClick={() => {
+              if (searchResults || query.trim())
+                record({ kind: "search_select", securityID: s.id });
+            }}
             className="market-row"
             key={s.id}
           >

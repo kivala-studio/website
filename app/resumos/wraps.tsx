@@ -1,8 +1,9 @@
 "use client";
+import { usePersonalisation } from "../components/personalisation-provider";
 import WrapStories from "./stories";
 import { useClock } from "../components/use-clock";
 import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAccount } from "../components/account-provider";
 import { useResource, ResourceState } from "../components/async-state";
 import { date, number, priceText } from "../../lib/market-presentation";
@@ -21,6 +22,10 @@ export default function Wraps({
   windows: Window[];
   market: Market | null;
 }) {
+  const { record } = usePersonalisation();
+  useEffect(() => {
+    record({ kind: "wrap_open" });
+  }, [record]);
   const [choice, setChoice] = useState(0);
   const selected = windows[choice];
   if (!selected)

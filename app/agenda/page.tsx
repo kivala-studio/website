@@ -1,3 +1,4 @@
+import Events from "./events";
 import ListingEvents from "../components/listing-events";
 import Link from "next/link";
 import { PublicShell } from "../public-shell";
@@ -32,7 +33,7 @@ export default async function Page() {
   const end = new Date(Date.parse(`${start}T12:00:00Z`) + 14 * 86400000)
     .toISOString()
     .slice(0, 10);
-  const [calendar, dividends] = await Promise.all([
+  const [calendar, dividends, securities] = await Promise.all([
     read<Calendar>("rpc/get_market_calendar", {
       starts_on: start,
       ends_on: end,
@@ -43,6 +44,10 @@ export default async function Page() {
       order: "payment_date.desc.nullslast",
       limit: "1000",
     }).catch(() => null),
+    read<{ id: string; issuer_id: string }[]>("securities", {
+      select: "id,issuer_id",
+      limit: "1000",
+    }).catch(() => []),
   ]);
   const valid =
     calendar?.contract_version === 2 &&
@@ -60,6 +65,9 @@ export default async function Page() {
         .filter(([day]) => day && day >= start && day <= end)
         .map(([day, title]) => ({
           id: `${d.id}-${title}`,
+          assets: securities
+            .filter((s) => s.issuer_id === d.issuer_id)
+            .map((s) => s.id),
           day: day!,
           title,
           issuer: d.issuers?.name || "Emitente",
@@ -83,39 +91,8 @@ export default async function Page() {
           <h2>Eventos dos emitentes</h2>
           {dividends === null ? (
             <DataError content="os eventos" />
-          ) : events.length ? (
-            events.map((e) => (
-              <article className="calendar-row" key={e.id}>
-                <div className="calendar-date">
-                  {e.day.slice(-2)}
-                  <small>
-                    {new Intl.DateTimeFormat("pt-AO", {
-                      month: "short",
-                    }).format(new Date(`${e.day}T12:00:00Z`))}
-                  </small>
-                </div>
-                <div>
-                  <h3>{e.issuer}</h3>
-                  <p>
-                    {e.title} · {date(e.day)}
-                  </p>
-                  {/^https:\/\//.test(e.source) && (
-                    <a
-                      className="text-button"
-                      href={e.source}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Fonte do anúncio
-                    </a>
-                  )}
-                </div>
-              </article>
-            ))
           ) : (
-            <p className="empty-state">
-              Não há eventos anunciados neste período na fonte disponível.
-            </p>
+            <Events events={events} />
           )}
           <p className="fine-print">
             As datas de dividendos mantêm-se como foram anunciadas. Uma sessão

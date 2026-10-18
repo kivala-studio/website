@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 import type { HistoryPoint } from "../../lib/history";
 import { date, kind } from "../../lib/market-presentation";
 import type { Security } from "../../lib/public-data";
+import { usePersonalisation } from "./personalisation-provider";
 import LineChart from "./line-chart";
 import IntradayChart from "./intraday-chart";
 import { useResource, ResourceState } from "./async-state";
@@ -15,6 +16,7 @@ export async function fetchHistory(id: string): Promise<HistoryPoint[]> {
   return response.json();
 }
 export default function HistoryChart({ security }: { security: Security }) {
+  const { record } = usePersonalisation();
   const [range, setRange] = useState<keyof typeof ranges | "1D">("1A");
   const load = useCallback(() => fetchHistory(security.id), [security.id]);
   const state = useResource(load);
@@ -39,7 +41,14 @@ export default function HistoryChart({ security }: { security: Security }) {
           <button
             key={key}
             aria-pressed={range === key}
-            onClick={() => setRange(key as keyof typeof ranges | "1D")}
+            onClick={() => {
+              setRange(key as keyof typeof ranges | "1D");
+              record({
+                kind: "chart_range",
+                securityID: security.id,
+                variant: key,
+              });
+            }}
           >
             {key}
           </button>

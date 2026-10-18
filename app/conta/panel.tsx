@@ -7,6 +7,7 @@ import { returnPath, needsOnboarding } from "../../lib/navigation";
 import Onboarding from "./onboarding";
 import type { Security } from "../../lib/public-data";
 import Icon from "../components/invest-icon";
+import PersonalisationSettings from "./personalisation-settings";
 import { SettingsPanel } from "./settings";
 
 export default function AccountPanel({
@@ -283,6 +284,7 @@ function Profile() {
         <Feedback error={error} message={message} />
       </section>
       <SettingsPanel />
+      <PersonalisationSettings />
       <section className="form-panel danger-panel">
         <h2>Eliminar conta</h2>
         <p>
