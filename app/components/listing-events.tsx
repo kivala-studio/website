@@ -1,3 +1,4 @@
+import Icon from "./invest-icon";
 import Link from "next/link";
 import { read } from "../../lib/public-data";
 import { date } from "../../lib/market-presentation";
@@ -40,12 +41,15 @@ export default async function ListingEvents() {
         (r.confirmation_url && /^https:\/\//.test(r.confirmation_url))),
   );
   return (
-    <section className="dashboard-panel public-section">
-      <h2>Admissões à BODIVA</h2>
+    <section className="dashboard-panel listing-events">
+      <div className="section-title">
+        <h2>Admissões à BODIVA</h2>
+        <Icon name="markets" size={24} />
+      </div>
       {rows === null ? (
         <p className="error-state">Não foi possível consultar os anúncios.</p>
       ) : !valid?.length ? (
-        <p className="empty-state">
+        <p className="calendar-empty">
           Sem novas admissões anunciadas neste momento.
         </p>
       ) : (

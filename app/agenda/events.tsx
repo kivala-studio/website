@@ -96,7 +96,7 @@ export default function Events({ events }: { events: CalendarEvent[] }) {
         ))
       )}
       {!shown.length && (!personalized || ready) && (
-        <p className="empty-state">
+        <p className="calendar-empty">
           {personalized
             ? "Não há eventos dos teus instrumentos anunciados neste período. Todos os eventos continuam disponíveis no separador ao lado."
             : "Não há eventos anunciados neste período na fonte disponível."}
