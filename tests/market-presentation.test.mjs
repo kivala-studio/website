@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { reading, priceText } from "../lib/market-presentation.ts";
+import { reading, priceText, usableQuote } from "../lib/market-presentation.ts";
 const now = Date.parse("2026-10-13T12:00:00Z");
 const security = {
   id: "equity",
@@ -99,4 +99,23 @@ test("equities and bonds retain their different quotation units", () => {
     /%$/,
   );
   assert.equal(priceText(security, null), "Indisponível");
+});
+
+test("closed-session valuation uses the verified quote, never a display reference", () => {
+  const m = market();
+  m.quotes.overview[0].status = "closed";
+  m.quotes.prices[0].trading_date = "2026-10-12";
+  m.closes = [
+    {
+      security_id: security.id,
+      price: 97,
+      trading_date: "2026-10-12",
+      confirmed_at: "2026-10-12T16:00:00Z",
+      verified_change_percent: 1,
+    },
+  ];
+  assert.equal(usableQuote(security, m, now).price, 100);
+  assert.equal(usableQuote(security, m, now + 61000), null);
+  m.quotes.prices = [];
+  assert.equal(usableQuote(security, m, now), null);
 });

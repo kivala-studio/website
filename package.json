@@ -7,10 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test:finance": "node --experimental-strip-types --test tests/finance.test.mjs",
     "test:market": "node --experimental-strip-types --test tests/market-presentation.test.mjs"
   },
   "dependencies": {
-    "next": "16.3.4",
+    "@supabase/supabase-js": "2.118.0",
+    "decimal.js": "10.6.0",
+    "next": "16.4.2",
     "qrcode-generator": "^2.0.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",
@@ -22,7 +25,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.3.4",
+    "eslint-config-next": "16.4.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

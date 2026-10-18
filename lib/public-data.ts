@@ -11,7 +11,7 @@ export type Security = {
   security_type: string;
   issuer_id: string | null;
   is_active: boolean;
-  issuers?: { name: string } | null;
+  issuers?: { name: string; short_name?: string | null } | null;
 };
 export type Quality = {
   status: string;
@@ -89,7 +89,7 @@ export type Article = {
 };
 
 // Only an anonymous publishable key is accepted. Never use a service-role key.
-async function read<T>(
+export async function read<T>(
   path: string,
   parameters: Record<string, string> = {},
 ): Promise<T> {
@@ -136,7 +136,7 @@ export const getMarket = cache(async (): Promise<Result<Market>> => {
     const [securities, quotes, closeResult] = await Promise.all([
       all<Security>("securities", {
         select:
-          "id,symbol,isin,name,currency,security_type,issuer_id,is_active,issuers(name)",
+          "id,symbol,isin,name,currency,security_type,issuer_id,is_active,issuers(name,short_name)",
         order: "symbol,id",
       }),
       read<Quotes>("rpc/get_current_market_quotes"),

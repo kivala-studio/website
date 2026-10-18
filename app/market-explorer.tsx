@@ -13,16 +13,26 @@ export default function MarketExplorer({
   search?: boolean;
 }) {
   const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("Todos");
+  const [sort, setSort] = useState("symbol");
   const normalized = (v: string) =>
     v
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
       .toLowerCase();
-  const shown = rows.filter(({ security: s }) =>
-    normalized(`${s.symbol} ${s.name ?? ""} ${s.issuers?.name ?? ""}`).includes(
-      normalized(query.trim()),
-    ),
-  );
+  const shown = rows
+    .filter(
+      ({ security: s }) =>
+        (category === "Todos" || kind(s) === category) &&
+        normalized(
+          `${s.symbol} ${s.name ?? ""} ${s.issuers?.name ?? ""}`,
+        ).includes(normalized(query.trim())),
+    )
+    .sort((a, b) =>
+      sort === "change"
+        ? (b.value.change ?? -Infinity) - (a.value.change ?? -Infinity)
+        : a.security.symbol.localeCompare(b.security.symbol),
+    );
   return (
     <>
       {search ? (
@@ -40,6 +50,34 @@ export default function MarketExplorer({
           </p>
         </div>
       ) : null}
+      {search && (
+        <>
+          <div className="filter-tabs">
+            {[
+              "Todos",
+              "Acções",
+              "Fundos",
+              "Obrigações",
+              "Obrigações do Tesouro",
+            ].map((label) => (
+              <button
+                key={label}
+                aria-pressed={category === label}
+                onClick={() => setCategory(label)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <label className="sort-control">
+            Ordenar
+            <select value={sort} onChange={(e) => setSort(e.target.value)}>
+              <option value="symbol">Símbolo</option>
+              <option value="change">Variação disponível</option>
+            </select>
+          </label>
+        </>
+      )}
       <div className="market-list">
         <div className="market-labels" aria-hidden="true">
           <span>Instrumento / tipo</span>

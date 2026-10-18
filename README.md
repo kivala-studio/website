@@ -1,36 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# invest.ao web
 
-## Getting Started
+The browser client for the same invest.ao accounts and market data used by iOS. Next.js App Router renders public market/editorial content at request time; authenticated browser requests use Supabase Auth and the existing ownership policies.
 
-First, run the development server:
+## Local development
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```sh
+npm ci
+cp .env.example .env.local
+npm run dev -- --port 3100
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Set `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` in `.env.local`. Only modern publishable keys (`sb_publishable_…`) are accepted. Never put a service-role key in the website environment. The publishable key is deliberately delivered to the browser; private rows remain protected by the user's JWT and database RLS.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Account configuration
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Enable the existing Google/Apple providers and allow the website's exact `/auth/callback` URL in Supabase Auth, including `http://localhost:3100/auth/callback` for local testing. Email access supports a magic link or an OTP when the configured template includes one. Use the same provider as iOS to recover the same account.
 
-## Learn More
+The website uses the existing watchlist, notification preferences/rules, transaction ledger and account-notification RPCs. No separate web accounts or parallel portfolio database are created. Appearance and privacy are browser-local preferences, matching the device-local iOS model.
 
-To learn more about Next.js, take a look at the following resources:
+Apple account deletion additionally requires the backend platform-return change and `APPLE_WEBSITE_RETURN_URL=https://invest.ao/conta`. The same-origin web endpoint forwards the confirmed account's bearer to the existing Apple flow, checks that the backend supports a web return, and never uses a service credential. Existing native callback configuration must remain unchanged. Do not test deletion against a real account as part of routine verification.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Verification
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```sh
+npm run lint
+npm run build
+node --experimental-strip-types --test tests/market-presentation.test.mjs tests/finance.test.mjs tests/wrap-evidence.test.mjs
+npm audit --omit=dev
+```
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Focused checks cover price/reference eligibility, quotation units, financial precision, backdated sells, historical coverage, monthly compounding and verified recap evidence. See [the parity inventory](docs/web-parity.md) for implementation coverage and remaining release checks.

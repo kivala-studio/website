@@ -11,10 +11,12 @@ export default function MarketReading({
   security,
   value,
   large = false,
+  context = large,
 }: {
   security: Security;
   value: Reading;
   large?: boolean;
+  context?: boolean;
 }) {
   const [expired, setExpired] = useState(false);
   useEffect(() => {
@@ -54,7 +56,7 @@ export default function MarketReading({
           ? "Variação indisponível"
           : `${change > 0 ? "↑ +" : change < 0 ? "↓ " : "= "}${number(change)}%`}
       </div>
-      {large ? (
+      {context ? (
         <>
           <span>
             {change === null

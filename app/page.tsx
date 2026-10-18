@@ -1,148 +1,124 @@
 import Link from "next/link";
-import Image from "next/image";
-import { Suspense } from "react";
-import { PublicShell, AppInvitation } from "./public-shell";
-import { MarketContent, RecentNews, LoadingContent } from "./public-content";
-import AppPrompt from "./app-prompt";
-import { appDistribution } from "../lib/app-distribution";
+import { PublicShell } from "./public-shell";
+import { getMarket, getNews, read } from "../lib/public-data";
+import { reading, date, kind } from "../lib/market-presentation";
+import MarketExplorer from "./market-explorer";
+import { DataError, NewsList } from "./public-content";
+import MarketSpotlight from "./components/market-spotlight";
+import MarketPulse, { type PulseRow } from "./components/market-pulse";
+import HomeAccount from "./components/home-account";
+import Icon from "./components/invest-icon";
 import { SiteSchema } from "./site-schema";
-import { pageMetadata, siteDescription, siteTitle } from "../lib/seo";
-export const metadata = pageMetadata({
-  title: siteTitle,
-  description: siteDescription,
-  path: "/",
-});
-export default function Home() {
+export default async function Home() {
+  const [market, news, pulse] = await Promise.all([
+    getMarket(),
+    getNews(),
+    read<PulseRow[]>("quality_market_pulse_history", {
+      select: "trading_date,value,daily_change_percent,data_quality",
+      order: "trading_date.desc",
+      limit: "30",
+    }).catch(() => null),
+  ]);
+  const rows =
+    market.data?.securities.map((security) => ({
+      security,
+      value: reading(security, market.data!),
+    })) || [];
+  const equities = rows.filter((row) => kind(row.security) === "Acções");
+  const overview = market.data?.quotes.overview[0];
+  const status: Record<string, string> = {
+    open: "Sessão aberta",
+    closed: "Sessão encerrada",
+    opening_soon: "Abertura em breve",
+  };
   return (
     <PublicShell>
       <SiteSchema />
-      <section className="home-opening">
-        <p className="eyebrow">MERCADO DE CAPITAIS · ANGOLA</p>
-        <h1>
-          Descobre o mercado.
-          <br />
-          <span className="accent-text">Acompanha o que importa.</span>
-        </h1>
-        <div className="hero-summary" id="perspectiva">
+      <header className="page-heading heading-line">
+        <div>
+          <p className="eyebrow">INVESTIR COMEÇA POR ENTENDER.</p>
+          <h1>
+            O teu lugar no
+            <br />
+            <span>mercado angolano.</span>
+          </h1>
           <p>
-            Consulta cotações e notícias do mercado angolano. No app para
-            iPhone, acompanha os instrumentos que te interessam.
+            Os números, as notícias e os teus investimentos. Tudo na tua
+            invest.ao.
           </p>
-          <AppPrompt
-            feature="discover"
-            position="hero"
-            {...appDistribution()}
-          />
         </div>
-      </section>
-      <section id="experimentar" className="public-section">
+        <span className="date-chip">
+          {date(new Date().toISOString())} · Luanda
+        </span>
+      </header>
+      <div className="market-session-line">
+        <span>
+          <i className="session-dot" />
+          {status[overview?.status || ""] || "Estado indisponível"}
+        </span>
+        <span>{rows.length} instrumentos</span>
+        <span>
+          Referência:{" "}
+          {overview?.last_updated_at
+            ? date(overview.last_updated_at)
+            : "indisponível"}
+        </span>
+      </div>
+      <div className="home-lead">
+        {market.data ? (
+          <MarketSpotlight market={market.data} />
+        ) : (
+          <DataError content="o mercado" />
+        )}
+        <HomeAccount />
+      </div>
+      <section className="home-market-section">
         <div className="section-title">
           <div>
-            <p className="eyebrow">CONSULTA PÚBLICA</p>
-            <h2 id="visao-do-mercado">O mercado, à vista.</h2>
+            <p className="eyebrow">EXPLORAR</p>
+            <h2>Conhece as empresas.</h2>
           </div>
-          <Link href="/mercado">Ver instrumentos →</Link>
+          <Link href="/mercado">Ver todos os instrumentos</Link>
         </div>
-        <Suspense fallback={<LoadingContent />}>
-          <MarketContent preview />
-        </Suspense>
+        {market.error ? (
+          <DataError content="o mercado" />
+        ) : (
+          <MarketExplorer
+            rows={(equities.length ? equities : rows).slice(0, 7)}
+          />
+        )}
       </section>
+      <MarketPulse rows={pulse} />
+      <div className="home-discovery">
+        <Link href="/resumos">
+          <Icon name="history" size={28} />
+          <div>
+            <span>A SEMANA EM PERSPECTIVA</span>
+            <h2>O que mudou no mercado?</h2>
+            <p>Revisita os movimentos e os fechos verificados.</p>
+          </div>
+          <Icon name="chevron-right" />
+        </Link>
+        <Link href="/simular">
+          <Icon name="calculator" size={28} />
+          <div>
+            <span>EXPLORA UMA HIPÓTESE</span>
+            <h2>E se começasses hoje?</h2>
+            <p>Simula o efeito do tempo e dos teus reforços.</p>
+          </div>
+          <Icon name="chevron-right" />
+        </Link>
+      </div>
       <section className="public-section">
         <div className="section-title">
-          <div>
-            <p className="eyebrow">INFORMAÇÃO PUBLICADA</p>
-            <h2>Notícias do mercado.</h2>
-          </div>
-          <Link href="/noticias">Todas as notícias →</Link>
+          <h2>Para ler com contexto</h2>
+          <Link href="/noticias">Todas as notícias</Link>
         </div>
-        <Suspense fallback={<LoadingContent />}>
-          <RecentNews />
-        </Suspense>
-      </section>
-      <section id="aplicacao" className="public-section app-story">
-        <div>
-          <p className="eyebrow">CONTINUA NO IPHONE</p>
-          <h2>
-            Do que descobres
-            <br />
-            ao que acompanhas.
-          </h2>
-          <p>
-            O site dá-te uma visão do mercado. O app reúne os teus favoritos, os
-            alertas que configuras e as posições que registas.
-          </p>
-          <div className="app-features">
-            <div>
-              <h3>Os teus instrumentos</h3>
-              <p>Guarda favoritos numa lista de acompanhamento.</p>
-              <AppPrompt
-                feature="watchlist"
-                position="benefits"
-                {...appDistribution()}
-              />
-            </div>
-            <div id="comparar-titulos">
-              <h3 id="detalhe-do-titulo">Mais contexto</h3>
-              <p>Consulta o histórico e compara a evolução de instrumentos.</p>
-              <AppPrompt
-                feature="compare"
-                position="benefits"
-                {...appDistribution()}
-              />
-            </div>
-            <div>
-              <h3>A tua carteira</h3>
-              <p>Regista posições e acompanha a sua composição.</p>
-              <AppPrompt
-                feature="portfolio"
-                position="benefits"
-                {...appDistribution()}
-              />
-            </div>
-          </div>
-        </div>
-        <figure className="app-capture">
-          <Image
-            src="/screenshots/asset-comparison.png"
-            width={402}
-            height={874}
-            alt="Captura do app iOS a comparar dois instrumentos por desempenho"
-            sizes="(max-width: 760px) 240px, 280px"
-          />
-          <figcaption>
-            Captura do app iOS. Valores e datas do momento da captura.
-          </figcaption>
-        </figure>
-      </section>
-      <section id="perguntas" className="public-section faq">
-        <h2>Antes de continuar.</h2>
-        <details>
-          <summary>Posso comprar ou vender aqui?</summary>
-          <p>
-            O invest.ao é uma ferramenta de informação e acompanhamento. Não
-            executa ordens de compra ou venda e não presta aconselhamento
-            financeiro.
-          </p>
-        </details>
-        <details>
-          <summary>Os preços são em tempo real?</summary>
-          <p>
-            Apresentamos os dados disponíveis nas fontes existentes, com a data
-            e o tipo de referência. Confirma a actualidade em cada instrumento.
-          </p>
-        </details>
-        <details>
-          <summary>Como obtenho o app?</summary>
-          <p>
-            {appDistribution().url
-              ? "Usa o convite para aceder à distribuição oficial para iPhone. No desktop, podes ler o QR code com a câmara do iPhone."
-              : "O destino oficial para iPhone ainda não foi confirmado neste site."}{" "}
-            A consulta pública não exige instalação.
-          </p>
-        </details>
-      </section>
-      <section id="lancamento">
-        <AppInvitation position="closing" />
+        {news.error ? (
+          <DataError content="as notícias" />
+        ) : (
+          <NewsList articles={news.data.slice(0, 3)} />
+        )}
       </section>
     </PublicShell>
   );

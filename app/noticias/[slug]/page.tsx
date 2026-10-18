@@ -1,9 +1,10 @@
+import ShareButton from "../../components/share-button";
 /* Editorial images have arbitrary public hosts and load lazily without a proxy. */
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Markdown from "react-markdown";
-import { PublicShell, AppInvitation } from "../../public-shell";
+import { PublicShell, FeatureInvitation } from "../../public-shell";
 import { DataError } from "../../public-content";
 import { Consultation } from "../../app-prompt";
 import { getArticle } from "../../../lib/public-data";
@@ -50,6 +51,7 @@ export default async function ArticlePage({ params }: Props) {
           </p>
           <h1>{a.title}</h1>
           <p>{a.summary}</p>
+          <ShareButton title={a.title} />
         </header>
         <div className="prose">
           <Markdown
@@ -85,7 +87,6 @@ export default async function ArticlePage({ params }: Props) {
                       {source.source_title ||
                         source.news_sources?.name ||
                         "Consultar fonte"}{" "}
-                      ↗
                     </a>
                   </li>
                 ) : null,
@@ -104,7 +105,7 @@ export default async function ArticlePage({ params }: Props) {
           </section>
         ) : null}
       </article>
-      <AppInvitation
+      <FeatureInvitation
         feature={a.news_article_securities.length ? "watchlist" : "discover"}
         position="article-end"
       />

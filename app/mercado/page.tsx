@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { PublicShell, AppInvitation } from "../public-shell";
+import { PublicShell, FeatureInvitation } from "../public-shell";
 import { MarketContent, LoadingContent } from "../public-content";
 import { Consultation } from "../app-prompt";
 import { pageMetadata } from "../../lib/seo";
@@ -23,7 +23,7 @@ export default function MarketPage() {
       <Suspense fallback={<LoadingContent />}>
         <MarketContent />
       </Suspense>
-      <AppInvitation feature="alerts" position="market-bottom" />
+      <FeatureInvitation feature="alerts" position="market-bottom" />
     </PublicShell>
   );
 }

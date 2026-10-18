@@ -206,3 +206,27 @@ export function reading(s: Security, m: Market, now = Date.now()): Reading {
     source: null,
   };
 }
+
+// A display-only official reference must never become a valuation or simulation
+// input. A verified last-session quote can remain eligible while the market is closed.
+export function usableQuote(
+  s: Security,
+  market: Market,
+  now = Date.now(),
+): Reading | null {
+  if (!s.is_active) return null;
+  const quote = reading(
+    s,
+    {
+      ...market,
+      closes: [],
+      quotes: { ...market.quotes, reference_prices: [] },
+    },
+    now,
+  );
+  return quote.price !== null &&
+    !quote.stale &&
+    quote.label === "Cotação BODIVA"
+    ? quote
+    : null;
+}

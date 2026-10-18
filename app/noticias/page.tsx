@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PublicShell, AppInvitation } from "../public-shell";
+import { PublicShell, FeatureInvitation } from "../public-shell";
 import { NewsList, DataError } from "../public-content";
 import { Consultation } from "../app-prompt";
 import { getNews } from "../../lib/public-data";
@@ -43,7 +43,7 @@ export default async function NewsPage({
           </nav>
         </>
       )}
-      <AppInvitation position="news-bottom" />
+      <FeatureInvitation position="news-bottom" />
     </PublicShell>
   );
 }

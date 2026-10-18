@@ -5,7 +5,7 @@ export const siteUrl = "https://invest.ao";
 export const siteName = "Invest.ao";
 export const siteTitle = "Invest.ao | Mercado de capitais em Angola";
 export const siteDescription =
-  "Descobre o mercado de capitais angolano. Consulta instrumentos, referências de preços BODIVA e notícias publicadas. Acompanha o que te interessa no app iOS.";
+  "Descobre o mercado de capitais angolano. Consulta instrumentos, referências de preços BODIVA e notícias publicadas. Acompanha a tua carteira, lista e alertas na web e no iPhone.";
 export const socialImage = {
   url: "/opengraph-image",
   width: 1200,

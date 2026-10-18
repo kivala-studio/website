@@ -101,7 +101,6 @@ export function NewsList({ articles }: { articles: Article[] }) {
               href={`/noticias/${encodeURIComponent(a.slug)}`}
             >
               {a.title}
-              <span aria-hidden="true"> ↗</span>
             </Link>
           </h3>
           <p>{a.summary}</p>

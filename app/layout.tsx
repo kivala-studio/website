@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
 import { siteDescription, siteName, siteTitle, siteUrl } from "../lib/seo";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import "./workspace.css";
+import { AccountProvider } from "./components/account-provider";
+import { connection } from "next/server";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -22,10 +19,21 @@ export const metadata: Metadata = {
   verification: { google: "MqYaNrOBpjV0IM7w-0X5W2rO-GK4hY_wjn3d3Ko93ig" },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  await connection();
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_PUBLISHABLE_KEY;
+  const config =
+    url && key?.startsWith("sb_publishable_") ? { url, key } : null;
   return (
-    <html lang="pt-AO" className={`${geistSans.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html
+      data-scroll-behavior="smooth"
+      lang="pt-AO"
+      className="h-full antialiased"
+    >
+      <body className="min-h-full flex flex-col">
+        <AccountProvider config={config}>{children}</AccountProvider>
+      </body>
     </html>
   );
 }

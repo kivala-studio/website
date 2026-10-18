@@ -1,6 +1,10 @@
+import ShareButton from "../../components/share-button";
 import Link from "next/link";
+import HistoryChart from "../../components/history-chart";
+import InstrumentActions from "../../components/instrument-actions";
+import InstrumentResearch from "../../components/instrument-research";
 import { notFound } from "next/navigation";
-import { PublicShell, AppInvitation } from "../../public-shell";
+import { PublicShell } from "../../public-shell";
 import { DataError, NewsList } from "../../public-content";
 import { Consultation } from "../../app-prompt";
 import MarketReading from "../../market-reading";
@@ -85,7 +89,10 @@ export default async function InstrumentPage({ params }: Props) {
           Ausência de cotação não indica vencimento ou reembolso.
         </p>
       ) : null}
-      <AppInvitation feature="watchlist" position="instrument-price" compact />
+      <ShareButton title="Instrumento · invest.ao" />
+      <InstrumentActions id={s.id} />
+      <HistoryChart security={s} />
+      <InstrumentResearch security={s} />
       {issuer?.data?.description ? (
         <section className="public-section prose">
           <h2>Sobre o emitente.</h2>
