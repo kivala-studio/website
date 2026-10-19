@@ -9,7 +9,7 @@ export function returnPath(value: string | null): string | null {
   const url = new URL(value, "https://invest.ao");
   if (
     url.origin !== "https://invest.ao" ||
-    !/^\/(?:mercado|carteira|lista|alertas|actividade|resumos|simular|comparar|pesquisa|agenda|noticias)(?:\/|$)/.test(
+    !/^\/(?:dashboard|mercado|carteira|lista|alertas|actividade|resumos|simular|comparar|pesquisa|agenda|noticias)(?:\/|$)/.test(
       url.pathname,
     )
   )

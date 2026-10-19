@@ -7,7 +7,7 @@ import { useAccount } from "./account-provider";
 import Icon from "./invest-icon";
 
 const links = [
-  ["/", "Início", "home"],
+  ["/dashboard", "Início", "home"],
   ["/mercado", "Explorar", "markets"],
   ["/carteira", "Carteira", "portfolio"],
   ["/lista", "Lista", "watchlist"],
@@ -56,8 +56,8 @@ export default function WorkspaceShell({
       >
         <Link
           className="workspace-brand"
-          href="/"
-          aria-label="invest.ao — início"
+          href="/dashboard"
+          aria-label="invest.ao — dashboard"
         >
           <Image src="/investao-logo.svg" width={31} height={31} alt="" />
           <span>
@@ -72,7 +72,7 @@ export default function WorkspaceShell({
               href={href}
               onClick={() => setMenu(false)}
               aria-current={
-                (href === "/" ? path === href : path.startsWith(href))
+                path === href || path.startsWith(`${href}/`)
                   ? "page"
                   : undefined
               }
@@ -90,6 +90,7 @@ export default function WorkspaceShell({
             {user ? "Perfil e definições" : "Entrar / criar conta"}{" "}
             <span></span>
           </Link>
+          <Link href="/">Sobre a invest.ao</Link>
           <Link href="/policy">Privacidade</Link>
         </div>
       </aside>
@@ -100,7 +101,7 @@ export default function WorkspaceShell({
             href={href}
             onClick={() => setMenu(false)}
             aria-current={
-              (href === "/" ? path === href : path.startsWith(href))
+              path === href || path.startsWith(`${href}/`)
                 ? "page"
                 : undefined
             }

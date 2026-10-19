@@ -2,6 +2,8 @@
 
 The browser client for the same invest.ao accounts and market data used by iOS. Next.js App Router renders public market/editorial content at request time; authenticated browser requests use Supabase Auth and the existing ownership policies.
 
+The public landing page is served at `/`; its dashboard buttons open `/dashboard`. Workspace home navigation returns to `/dashboard`, and “Sobre a invest.ao” opens the landing page.
+
 ## Local development
 
 ```sh
