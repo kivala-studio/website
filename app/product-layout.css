@@ -326,7 +326,7 @@ html:has(.landing-page) {
   border-top: 1px solid var(--line);
   background: var(--surface);
 }
-.landing-page .product-chapter:nth-of-type(2) {
+.landing-page .product-chapter:nth-of-type(even) {
   background: var(--paper);
 }
 .landing-page .chapter-layout {
@@ -410,10 +410,10 @@ html:has(.landing-page) {
   font-size: 10px;
   line-height: 1.7;
 }
-.landing-page .product-chapter:nth-of-type(2) .chapter-copy {
+.landing-page .product-chapter:nth-of-type(even) .chapter-copy {
   order: 2;
 }
-.landing-page .product-chapter:nth-of-type(2) .chapter-visual {
+.landing-page .product-chapter:nth-of-type(even) .chapter-visual {
   order: 1;
 }
 .landing-page .capture-note {
@@ -930,8 +930,8 @@ html:has(.landing-page) {
     left: 0;
     top: 20%;
   }
-  .landing-page .product-chapter:nth-of-type(2) .chapter-copy,
-  .landing-page .product-chapter:nth-of-type(2) .chapter-visual {
+  .landing-page .product-chapter:nth-of-type(even) .chapter-copy,
+  .landing-page .product-chapter:nth-of-type(even) .chapter-visual {
     order: initial;
   }
   .landing-page .chapter-visual figcaption {

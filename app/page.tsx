@@ -37,14 +37,14 @@ const chapters = [
       </>
     ),
     description:
-      "Consulte o índice sintético Invest.ao, a evolução do mercado e o volume negociado. A data dos dados permite situar a informação de cada sessão.",
+      "Consulte o Indicador invest.ao, o volume da sessão e o número de negócios. Acompanhe os títulos da sua lista com a data dos fechos de referência.",
     details: [
-      "Índice e evolução do mercado",
-      "Volume negociado",
+      "Indicador invest.ao e evolução do mercado",
+      "Volume da sessão e número de negócios",
       "Estado do mercado e data dos dados",
     ],
     image: "market-overview.png",
-    alt: "Ecrã de mercado da Invest.ao com índice sintético, gráfico mensal, data dos dados, volume negociado e títulos a acompanhar.",
+    alt: "Início da Invest.ao com o Indicador invest.ao, fechos de 19 de Outubro de 2026, volume da sessão, número de negócios e lista de acompanhamento.",
     caption: "Evolução, volume e data dos dados do mercado angolano.",
   },
   {
@@ -59,15 +59,15 @@ const chapters = [
       </>
     ),
     description:
-      "Consulte o preço em kwanzas, a variação e o histórico de cada título. Seleccione um período para analisar a evolução e as estatísticas de preço.",
+      "Consulte o preço em kwanzas, a variação e o histórico de cada título. Seleccione um período para analisar a evolução, comparar títulos ou criar um alerta.",
     details: [
       "Preço em kwanzas e variação",
       "Histórico por período",
-      "Abertura, máximo e mínimo",
+      "Comparação e criação de alertas",
     ],
     image: "asset-detail.png",
-    alt: "Detalhe de um título na Invest.ao com preço em kwanzas, gráfico de um mês, desempenho por período e estatísticas de preço.",
-    caption: "Histórico e estatísticas para acompanhar cada título.",
+    alt: "Detalhe da acção BODIVA na Invest.ao, com preço em kwanzas, histórico de três meses e botões para comparar e criar um alerta.",
+    caption: "Preço, histórico e alertas para acompanhar cada título.",
   },
   {
     id: "comparar-titulos",
@@ -81,15 +81,37 @@ const chapters = [
       </>
     ),
     description:
-      "Compare a evolução de vários títulos no mesmo gráfico. Alterne entre preço e desempenho e seleccione o período de comparação.",
+      "Compare a evolução de vários títulos no mesmo gráfico. Consulte a variação de preço no período comum e seleccione o período de comparação.",
     details: [
       "Vários títulos, um gráfico",
-      "Preço ou desempenho",
+      "Variação de preço no período comum",
       "Selecção do período de análise",
     ],
     image: "asset-comparison.png",
-    alt: "Comparação de dois títulos na Invest.ao, com linhas azul e laranja, vista de desempenho e período de seis meses seleccionado.",
+    alt: "Comparação entre BODIVA e BAI na Invest.ao, com a variação de preço em linhas azul e laranja e período de seis meses seleccionado.",
     caption: "Vários títulos, comparados no mesmo período.",
+  },
+  {
+    id: "actividade-do-mercado",
+    number: "04",
+    label: "ACTIVIDADE",
+    title: (
+      <>
+        Os movimentos,
+        <br />
+        com contexto.
+      </>
+    ),
+    description:
+      "Acompanhe os movimentos importantes do mercado e os títulos da sua lista. Consulte as notificações por data e alterne entre movimentos e notícias.",
+    details: [
+      "Movimentos importantes do mercado",
+      "Actualizações da lista de acompanhamento",
+      "Movimentos e notícias organizados por data",
+    ],
+    image: "activity.png",
+    alt: "Actividade da Invest.ao com separadores de movimentos e notícias, notificações de variações de preço e actualizações da lista de acompanhamento.",
+    caption: "Movimentos e notificações dos títulos que acompanha.",
   },
 ];
 
@@ -183,8 +205,8 @@ export default function Home() {
               </div>
               <div className="opening-phone">
                 <DeviceFrame
-                  src="/screenshots/market-overview.png"
-                  alt="A aplicação Invest.ao no iPhone: índice sintético, evolução do mercado e títulos a acompanhar."
+                  src="/screenshots/2026-10-20/market-overview.png"
+                  alt="A aplicação Invest.ao no iPhone: panorama do mercado, Indicador invest.ao e lista de acompanhamento."
                   hero
                 />
               </div>
@@ -259,9 +281,9 @@ export default function Home() {
           <div className="container story-heading" data-reveal>
             <p className="eyebrow">FUNCIONALIDADES DA INVEST.AO</p>
             <h2 id="product-title">
-              Mercado, histórico
+              Mercado, histórico,
               <br />
-              <span className="muted-text">e comparação.</span>
+              <span className="muted-text">comparação e actividade.</span>
             </h2>
             <p>
               Do contexto de cada sessão
@@ -297,7 +319,7 @@ export default function Home() {
                   </span>
                   <div className="chapter-phone">
                     <DeviceFrame
-                      src={`/screenshots/${chapter.image}`}
+                      src={`/screenshots/2026-10-20/${chapter.image}`}
                       alt={chapter.alt}
                     />
                   </div>
