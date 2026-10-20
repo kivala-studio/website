@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { pageMetadata } from "../../lib/seo";
 import "../policy/policy.css";
+import { CookiePreferencesButton } from "../components/cookie-consent";
 
 export const metadata = pageMetadata({
   title: "Política de Cookies | invest.ao",
@@ -32,6 +33,11 @@ export default function CookiesPolicy() {
             <thead><tr><th scope="col">Mecanismo</th><th scope="col">Finalidade</th><th scope="col">Duração</th></tr></thead>
             <tbody>
               <tr>
+                <th scope="row">Escolha de cookies<br /><code>investao.cookie-consent.v1</code> em localStorage</th>
+                <td>Guardar se aceitaste todos os mecanismos ou rejeitaste os opcionais neste navegador. Essencial para respeitar a tua escolha.</td>
+                <td>180 dias. Se o armazenamento estiver bloqueado, a escolha só se mantém durante a visita.</td>
+              </tr>
+              <tr>
                 <th scope="row"><code>__Host-investao-apple-attempt</code><br />Cookie de segurança</th>
                 <td>Associar o regresso da autorização Apple ao navegador que iniciou um pedido de eliminação da conta. Só é criado nesse processo.</td>
                 <td>Até 5 minutos; removido quando o regresso é validado.</td>
@@ -53,8 +59,8 @@ export default function CookiesPolicy() {
               </tr>
               <tr>
                 <th scope="row">Preferências funcionais da conta<br />Registos locais <code>investao.…</code></th>
-                <td>Guardar sinais de utilização, observações já apresentadas e escolhas de personalização. Alguns sinais são sincronizados com a tua conta para adaptar a informação apresentada.</td>
-                <td>Conforme os limites de validade dos registos, as opções da conta e a limpeza dos dados do site.</td>
+                <td>Com a tua autorização, guardar sinais de utilização, observações já apresentadas e escolhas de personalização. Inclui o identificador local <code>investao.intelligence.installation</code>. Alguns sinais são sincronizados com a tua conta para adaptar a informação apresentada.</td>
+                <td>Conforme os limites de validade dos registos e as opções da conta. Os registos locais opcionais são removidos quando rejeitas os opcionais.</td>
               </tr>
               <tr>
                 <th scope="row">Histórico de resumos<br /><code>investao-wrap-history</code> em IndexedDB</th>
@@ -73,12 +79,15 @@ export default function CookiesPolicy() {
       </section>
       <section>
         <h2>4. Como podes gerir os teus dados?</h2>
+        <p>Na primeira visita, podes aceitar todos ou rejeitar os opcionais com igual facilidade. Até escolheres, os mecanismos opcionais de personalização ficam desativados. Os mecanismos essenciais de acesso, segurança, preferências que escolhes e funcionalidades solicitadas da conta mantêm-se disponíveis.</p>
+        <CookiePreferencesButton />
+        <p>Podes alterar ou retirar a autorização a qualquer momento neste botão. Rejeitar os opcionais interrompe o registo e a utilização de atividade para personalização neste navegador e remove os respetivos registos locais. Não elimina os contadores já sincronizados com a conta nem altera as escolhas feitas noutros dispositivos.</p>
         <p>Podes terminar sessão e alterar a aparência, a privacidade e as opções de personalização na tua conta. Nas definições do navegador, podes consultar, bloquear ou eliminar cookies e dados locais de invest.ao.</p>
         <p>Bloquear ou eliminar estes dados pode terminar a sessão, repor preferências e remover o histórico guardado apenas neste navegador. Limpar os dados do site não elimina, por si só, a tua conta nem os dados já guardados no serviço. O modo de privacidade oculta valores no ecrã; não apaga cookies ou dados locais.</p>
       </section>
       <section>
         <h2>5. Alterações e contacto</h2>
-        <p>Atualizaremos esta página se os mecanismos ou as suas finalidades mudarem. Se introduzirmos utilizações que exijam uma escolha prévia, apresentaremos essa escolha antes de as ativar.</p>
+        <p>Atualizaremos esta página se os mecanismos ou as suas finalidades mudarem. Se introduzirmos novas finalidades opcionais, pediremos uma nova escolha antes de as ativar.</p>
         <p>Para questões sobre cookies ou dados pessoais, escreve para <a href="mailto:info@invest.ao">info@invest.ao</a>. Para mais informação sobre o tratamento de dados, consulta a <Link href="/policy">Política de Privacidade</Link>.</p>
       </section>
       <footer><Link href="/">Voltar à invest.ao</Link></footer>

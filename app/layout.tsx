@@ -5,6 +5,7 @@ import "./workspace.css";
 import { AccountProvider } from "./components/account-provider";
 import { PersonalisationProvider } from "./components/personalisation-provider";
 import { connection } from "next/server";
+import { CookieConsentProvider } from "./components/cookie-consent";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -33,9 +34,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       className="h-full antialiased"
     >
       <body className="min-h-full flex flex-col">
-        <AccountProvider config={config}>
-          <PersonalisationProvider>{children}</PersonalisationProvider>
-        </AccountProvider>
+        <CookieConsentProvider>
+          <AccountProvider config={config}>
+            <PersonalisationProvider>{children}</PersonalisationProvider>
+          </AccountProvider>
+        </CookieConsentProvider>
       </body>
     </html>
   );

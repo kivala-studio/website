@@ -11,6 +11,8 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { useAccount } from "./account-provider";
 import { useClock } from "./use-clock";
 import { useResource } from "./async-state";
+import { useCookieConsent } from "./cookie-consent";
+import { optionalStorageAllowed } from "../../lib/cookie-consent";
 import { ledger, watchlist } from "../../lib/account-data";
 import { positions } from "../../lib/finance";
 import {
@@ -98,8 +100,9 @@ export function PersonalisationProvider({
   children: React.ReactNode;
 }) {
   const { client, user } = useAccount();
+  const { optional } = useCookieConsent();
   return user && client ? (
-    <Session key={user.id} client={client} userID={user.id}>
+    <Session key={`${user.id}:${optional}`} client={client} userID={user.id} optional={optional}>
       {children}
     </Session>
   ) : (
@@ -121,10 +124,12 @@ function Session({
   children,
   client,
   userID,
+  optional,
 }: {
   children: React.ReactNode;
   client: SupabaseClient;
   userID: string;
+  optional: boolean;
 }) {
   const { privateMode } = useAccount();
   const now = useClock();
@@ -134,7 +139,7 @@ function Session({
   const abort = useRef<AbortController | null>(null);
   const load = useCallback(async () => {
     const rows: ActivityAggregate[] = [];
-    for (let offset = 0; ; offset += 500) {
+    for (let offset = 0; optional && optionalStorageAllowed(); offset += 500) {
       const { data, error } = await client
         .from("user_activity_daily")
         .select(
@@ -174,7 +179,7 @@ function Session({
         .map((p) => p.securityID),
       alerts,
     };
-  }, [client, userID]);
+  }, [client, userID, optional]);
   const state = useResource(load);
   const { reload } = state;
   const sync = useCallback(
@@ -183,6 +188,7 @@ function Session({
       // Web Locks serialize cumulative counters across tabs and retries.
       if (
         privateMode ||
+        !optionalStorageAllowed() ||
         !signal ||
         signal.aborted ||
         !navigator.locks ||
@@ -193,7 +199,7 @@ function Session({
         await navigator.locks.request(key, { signal }, async () => {
           if (signal.aborted) return;
           const { data } = await client.auth.getSession();
-          if (data.session?.user.id !== userID || signal.aborted) return;
+          if (data.session?.user.id !== userID || signal.aborted || !optionalStorageAllowed()) return;
           const saved = localActivity(key, userID);
           const now = Date.now();
           if (
@@ -228,7 +234,7 @@ function Session({
             saved.pending.includes(aggregateKey(row)),
           );
           for (let offset = 0; offset < pending.length; offset += 100) {
-            if (signal.aborted) return;
+            if (signal.aborted || !optionalStorageAllowed()) return;
             const { error } = await client
               .from("user_activity_daily")
               .upsert(pending.slice(offset, offset + 100), {
@@ -238,7 +244,7 @@ function Session({
               .abortSignal(signal);
             if (error) throw error;
           }
-          if (!signal.aborted) {
+          if (!signal.aborted && optionalStorageAllowed()) {
             saved.pending = [];
             localStorage.setItem(key, JSON.stringify(saved));
             setSince(saved.since);
@@ -257,7 +263,7 @@ function Session({
     void Promise.resolve().then(() => {
       if (controller.signal.aborted) return;
       try {
-        setSince(localActivity(key, userID).since);
+        if (optionalStorageAllowed()) setSince(localActivity(key, userID).since);
       } catch {
         /* Unavailable local storage leaves personalisation optional. */
       }
@@ -286,10 +292,10 @@ function Session({
     [sync],
   );
   async function resetBehavior() {
-    if (!navigator.locks) return false;
+    if (!navigator.locks || !optionalStorageAllowed()) return false;
     try {
       return await navigator.locks.request(key, async () => {
-        if (abort.current?.signal.aborted) return false;
+        if (abort.current?.signal.aborted || !optionalStorageAllowed()) return false;
         const saved = localActivity(key, userID);
         saved.since =
           Date.parse(`${activityDay(Date.now())}T00:00:00+01:00`) + 86400000;
@@ -308,7 +314,7 @@ function Session({
           held: state.data.held,
           watched: state.data.watched,
           alerts: state.data.alerts,
-          behavior: behavioralInterest(state.data.rows, userID, now, since),
+          behavior: optional ? behavioralInterest(state.data.rows, userID, now, since) : {},
         };
   return (
     <Context.Provider

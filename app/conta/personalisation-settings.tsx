@@ -4,8 +4,10 @@ import { useState } from "react";
 import { useAccount } from "../components/account-provider";
 import { usePersonalisation } from "../components/personalisation-provider";
 import { Feedback } from "../components/async-state";
+import { CookiePreferencesButton, useCookieConsent } from "../components/cookie-consent";
 export default function PersonalisationSettings() {
   const { privateMode, client, user } = useAccount();
+  const { optional } = useCookieConsent();
   const { resetBehavior, error, refresh } = usePersonalisation();
   const [message, setMessage] = useState("");
   const [failure, setFailure] = useState("");
@@ -23,6 +25,8 @@ export default function PersonalisationSettings() {
         registo e a ordenação pessoal.
       </p>
       {privateMode && <p>Personalização em pausa neste dispositivo.</p>}
+      {!optional && <p>O registo de atividade está desativado pela tua escolha de cookies. A carteira, a lista e os alertas continuam disponíveis.</p>}
+      <CookiePreferencesButton />
       {error && (
         <p role="status">
           Não foi possível sincronizar os interesses. O restante conteúdo
@@ -34,6 +38,7 @@ export default function PersonalisationSettings() {
       )}
       <button
         className="secondary-button"
+        disabled={!optional || privateMode}
         onClick={async () => {
           setMessage("");
           setFailure("");
@@ -61,7 +66,7 @@ export default function PersonalisationSettings() {
       </p>
       <button
         className="secondary-button"
-        disabled={privateMode}
+        disabled={privateMode || !optional}
         onClick={async () => {
           setMessage("");
           setFailure("");

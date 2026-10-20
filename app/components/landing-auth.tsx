@@ -5,11 +5,13 @@ import { useAccount } from "./account-provider";
 import { needsOnboarding, returnPath } from "../../lib/navigation";
 import AccountPanel from "../conta/panel";
 import Icon from "./invest-icon";
+import { useCookieConsent } from "./cookie-consent";
 
 export default function LandingAuth() {
   const params = useSearchParams();
   const router = useRouter();
   const { user } = useAccount();
+  const { ready, promptOpen } = useCookieConsent();
   const dialog = useRef<HTMLDialogElement>(null);
   const requested = params.get("entrar") === "1";
   const next = returnPath(params.get("next")) || "/dashboard";
@@ -30,7 +32,7 @@ export default function LandingAuth() {
 
   useEffect(() => {
     const modal = dialog.current;
-    if (!modal || !requested || user) return;
+    if (!modal || !requested || user || !ready || promptOpen) return;
     const previousOverflow = document.body.style.overflow;
     modal.showModal();
     document.body.style.overflow = "hidden";
@@ -38,7 +40,7 @@ export default function LandingAuth() {
       modal.close();
       document.body.style.overflow = previousOverflow;
     };
-  }, [requested, user]);
+  }, [requested, user, ready, promptOpen]);
 
   return (
     <dialog

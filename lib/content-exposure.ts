@@ -3,10 +3,11 @@ import {
   pruneExposure,
   type Exposure,
 } from "./insight-personalisation.ts";
+import { optionalStorageAllowed } from "./cookie-consent.ts";
 const removed = new Set<string>();
 const keyFor = (userID: string) => `investao.exposure.v1.${userID}`;
 export function readExposure(userID: string, now = Date.now()): Exposure {
-  if (removed.has(userID)) return emptyExposure();
+  if (removed.has(userID) || !optionalStorageAllowed()) return emptyExposure();
   const raw = JSON.parse(localStorage.getItem(keyFor(userID)) || "null");
   if (raw?.deleted) return emptyExposure();
   if (raw && (raw.version !== 1 || raw.userID !== userID || !raw.exposure))
@@ -18,10 +19,10 @@ export async function updateExposure(
   authorize: () => Promise<boolean>,
   update: (value: Exposure) => Exposure,
 ) {
-  if (!navigator.locks || removed.has(userID))
+  if (!navigator.locks || removed.has(userID) || !optionalStorageAllowed())
     throw new Error("Local preferences unavailable");
   return navigator.locks.request(keyFor(userID), async () => {
-    if (removed.has(userID) || !(await authorize()))
+    if (removed.has(userID) || !(await authorize()) || !optionalStorageAllowed())
       throw new Error("Account changed");
     const raw = JSON.parse(localStorage.getItem(keyFor(userID)) || "null");
     if (raw?.deleted) throw new Error("Account was deleted");

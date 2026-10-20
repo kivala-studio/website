@@ -8,6 +8,8 @@ The browser icon, Apple touch icon and brand mark use the native `PalancaMark.im
 
 The public cookies/storage policy is at `/cookies`, with links from the landing footer, privacy policy and sign-in modal. Its inventory covers the short-lived Apple deletion cookies, browser authentication, preferences, personalisation and recap archives.
 
+On the first visit, the consent prompt offers equally prominent accept-all and reject-optional actions. `investao.cookie-consent.v1` stores the choice for 180 days; the landing footer, policy and account settings can reopen it. Behavioural personalisation and exposure/installation storage stay off until acceptance. Rejecting stops those reads/writes and removes their local records; it does not delete existing server-side account data. Essential authentication, user-selected appearance/privacy settings and requested account features remain available. When browser storage is blocked, the choice lasts only for the current visit. The prompt takes precedence over landing sign-in so two dialogs never compete for focus.
+
 ## Local development
 
 ```sh

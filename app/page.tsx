@@ -2,6 +2,7 @@ import Image from "next/image";
 import AppMark from "./components/app-mark";
 import Link from "./components/workspace-link";
 import LandingAuth from "./components/landing-auth";
+import { CookiePreferencesButton } from "./components/cookie-consent";
 import { Suspense } from "react";
 import LandingMarket, { LandingMarketLoading } from "./landing-market";
 import { appDistribution } from "../lib/app-distribution";
@@ -433,6 +434,7 @@ export default function Home() {
           <span>© {new Date().getFullYear()} Invest.ao</span>
           <a href="/policy">Política de privacidade</a>
           <a href="/cookies">Política de cookies</a>
+          <CookiePreferencesButton />
           <a href="mailto:info@invest.ao">Contacto: info@invest.ao</a>
           <p>
             A Invest.ao fornece informação para acompanhar o mercado. Não presta

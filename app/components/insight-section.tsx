@@ -3,6 +3,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useAccount } from "./account-provider";
 import { usePersonalisation } from "./personalisation-provider";
+import { CookiePreferencesButton, useCookieConsent } from "./cookie-consent";
+import { optionalStorageAllowed } from "../../lib/cookie-consent";
 import { useResource, ResourceState, Feedback } from "./async-state";
 import { useClock } from "./use-clock";
 import Icon from "./invest-icon";
@@ -22,6 +24,7 @@ import type { VerifiedInsight } from "../../lib/verified-insights";
 import { date } from "../../lib/market-presentation";
 let fallbackIdentity: string | undefined;
 function identity() {
+  if (!optionalStorageAllowed()) return (fallbackIdentity ??= crypto.randomUUID());
   try {
     const key = "investao.intelligence.installation";
     const old = localStorage.getItem(key);
@@ -41,6 +44,7 @@ export default function InsightSection({
   revision?: string;
 }) {
   const { user, privateMode } = useAccount();
+  const { optional } = useCookieConsent();
   if (!user) return null;
   if (privateMode)
     return (
@@ -51,7 +55,7 @@ export default function InsightSection({
       </section>
     );
   return (
-    <Session key={`${user.id}:${surface}:${revision}`} surface={surface} />
+    <Session key={`${user.id}:${surface}:${revision}:${optional}`} surface={surface} />
   );
 }
 function Session({ surface }: { surface: InsightSurface }) {
@@ -71,7 +75,7 @@ function Session({ surface }: { surface: InsightSurface }) {
   const load = useCallback(async () => {
     const result = await loadInsights(client!, user!.id);
     let exposure: Exposure = emptyExposure(),
-      storage = true;
+      storage = optionalStorageAllowed();
     try {
       exposure = readExposure(user!.id);
     } catch {
@@ -143,7 +147,7 @@ function Session({ surface }: { surface: InsightSurface }) {
     );
   }
   async function record(insight: VerifiedInsight, opened: boolean) {
-    if (document.hidden) return;
+    if (document.hidden || !optionalStorageAllowed()) return;
     try {
       await updateExposure(user!.id, authorize, (old) =>
         recordExposure(old, insight, opened, Date.now()),
@@ -259,6 +263,7 @@ export function InsightCard({
   onOpen: () => void;
   onFeedback: (scope: Usefulness["scope"] | null) => Promise<void>;
 }) {
+  const { optional } = useCookieConsent();
   const ref = useRef<HTMLElement | null>(null),
     seen = useRef(false),
     callbacks = useRef({ onSeen });
@@ -341,7 +346,7 @@ export function InsightCard({
             Consultar os dados <Icon name="chevron-right" size={14} />
           </Link>
         </p>
-        <div className="insight-feedback">
+        {optional ? <div className="insight-feedback">
           <span>Esta observação foi útil?</span>
           {(
             [
@@ -366,7 +371,7 @@ export function InsightCard({
               {label}
             </button>
           ))}
-        </div>
+        </div> : <CookiePreferencesButton />}
       </details>
     </article>
   );
