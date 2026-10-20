@@ -26,13 +26,23 @@ npm run dev -- --port 3100
 
 Set `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` in `.env.local`. Only modern publishable keys (`sb_publishable_…`) are accepted. Never put a service-role key in the website environment. The publishable key is deliberately delivered to the browser; private rows remain protected by the user's JWT and database RLS.
 
+## Vercel deployment configuration
+
+Set `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` explicitly in the Vercel project's Production and Preview environment variables, using the same project and active publishable key as the apps. Local `.env.local` files are ignored by Git and do not configure Vercel. Both variables are public configuration; do not substitute a service-role or secret key.
+
+Redeploy after changing these variables: existing deployments retain their previous configuration. Without them, the landing price panel cannot read market data and the sign-in modal cannot create its authentication client. Verify the deployed landing prices and a real Google callback after deployment; a successful build alone does not establish either.
+
+Public reads remain uncached and retry a database statement timeout once within the original ten-second request budget. Other errors fail immediately. Market-backed navigation links avoid automatic route prefetching by default to reduce background query load; an explicit prefetch setting can still be supplied to the shared workspace link.
+
 ## Account configuration
 
 Enable the existing Google/Apple providers and allow the website's exact `/auth/callback` URL in Supabase Auth, including `http://localhost:3100/auth/callback` for local testing and `https://invest.ao/auth/callback` for production. The provider receives that stable callback URL; the requested workspace route/query is kept in this tab's `investao.auth-return.v1` sessionStorage record, expires after 30 minutes and is consumed once on return. Legacy callback `next` parameters remain supported and validated. The browser SDK detects/exchanges the PKCE code once; the callback reuses its initialization result instead of exchanging it twice. Cancelled or failed callbacks reopen the modal with a fixed, safe explanation and the original internal destination. The supported sign-in methods are Google and Apple; email authentication is not offered. Use the same provider as iOS to recover the same account.
 
+Keep the native Site URL and callback schemes intact when adding web redirects. A configured native Site URL does not automatically allow the website callback: an unlisted `redirect_to` falls back to the Site URL, which can send the browser to the mobile callback instead of completing its session. Production currently explicitly allows `https://invest.ao/auth/callback`; localhost and each preview origin require their own allowlist entries before provider testing.
+
 Focused auth checks: `node --experimental-strip-types --test tests/web-auth.test.mjs`. These use the installed browser client and intercepted, fictional token/user responses; they verify PKCE code exchange, session reload, sign-out, exact provider redirect URLs, safe one-time destinations and callback errors. They do not replace real Google/Apple consent and provider-return checks.
 
-See the [web auth verification report](docs/web-auth-verification.md) for confirmed checks and the remaining live provider/allowlist verification.
+See the [web auth verification report](docs/web-auth-verification.md) for confirmed production Google/price checks and the remaining provider coverage.
 
 The website uses the existing watchlist, notification preferences/rules, transaction ledger and account-notification RPCs. No separate web accounts or parallel portfolio database are created. Appearance and privacy are browser-local preferences, matching the device-local iOS model.
 
@@ -44,6 +54,7 @@ Apple account deletion additionally requires the backend platform-return change 
 npm run lint
 npm run build
 node --experimental-strip-types --test tests/market-presentation.test.mjs tests/finance.test.mjs tests/wrap-evidence.test.mjs
+node --experimental-strip-types --test tests/public-fetch.test.mjs
 npm audit --omit=dev
 ```
 

@@ -1,5 +1,6 @@
 import "server-only";
 import { cache } from "react";
+import { fetchPublicData } from "./public-fetch";
 
 export type Result<T> = { data: T; error: false } | { data: null; error: true };
 export type Security = {
@@ -109,13 +110,7 @@ export async function read<T>(
     throw new Error("Invalid data origin");
   url.search = new URLSearchParams(parameters).toString();
   // Request-time reads: no stale-while-revalidate for prices or withdrawn articles.
-  const response = await fetch(url, {
-    headers: { apikey: key },
-    cache: "no-store",
-    signal: AbortSignal.timeout(10000),
-  });
-  if (!response.ok) throw new Error("Public data unavailable");
-  return response.json();
+  return fetchPublicData<T>(url, key);
 }
 
 async function all<T>(

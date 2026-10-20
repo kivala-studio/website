@@ -110,6 +110,7 @@ function WorkspaceFrame({
         <Link
           className="workspace-brand"
           href="/dashboard"
+          prefetch={false}
           aria-label="invest.ao — dashboard"
         >
           <AppMark size={31} />
@@ -123,6 +124,7 @@ function WorkspaceFrame({
             <Link
               key={href}
               href={href}
+              prefetch={false}
               onClick={() => setMenu(false)}
               aria-current={
                 path === href || path.startsWith(`${href}/`)
@@ -140,7 +142,7 @@ function WorkspaceFrame({
           <span className="market-label">
             <i /> BODIVA · Angola
           </span>
-          <Link href="/conta" onClick={() => setMenu(false)}>
+          <Link href="/conta" prefetch={false} onClick={() => setMenu(false)}>
             {user ? "Perfil e definições" : "Entrar / criar conta"}{" "}
             <span></span>
           </Link>
@@ -154,6 +156,7 @@ function WorkspaceFrame({
           <Link
             key={href}
             href={href}
+            prefetch={false}
             onClick={() => setMenu(false)}
             aria-current={
               path === href || path.startsWith(`${href}/`)
