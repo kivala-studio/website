@@ -1209,6 +1209,7 @@ html:has(.landing-page) {
 .landing-page .landing-auth .form-panel { padding: 0; margin: 0; border: 0; background: transparent; border-radius: 0; box-shadow: none; }
 .landing-page .landing-auth .form-panel h2 { font-size: 30px; margin-block: 16px; }
 .landing-page .landing-auth .form-panel > p:not(.eyebrow) { color: var(--muted); font-size: 13px; line-height: 1.8; }
+.landing-page .landing-auth .form-panel > p.error-state { padding: 16px; background: color-mix(in srgb, var(--negative) 10%, var(--card)); color: var(--negative); }
 .landing-page .landing-auth .oauth-buttons { margin-block: 24px; }
 .landing-page .landing-auth .oauth-buttons button { min-height: 48px; background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; font-size: 13px; }
 .landing-page .landing-auth .oauth-buttons button:hover { border-color: var(--accent); }

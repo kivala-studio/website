@@ -21,6 +21,7 @@ export default function LandingAuth() {
     const remaining = new URLSearchParams(query);
     remaining.delete("entrar");
     remaining.delete("next");
+    remaining.delete("auth_error");
     dialog.current?.close();
     window.history.replaceState(null, "", remaining.size ? `/?${remaining}` : "/");
   }

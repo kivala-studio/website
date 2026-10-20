@@ -53,6 +53,11 @@ export default function CookiesPolicy() {
                 <td>A sessão pode manter-se entre visitas, enquanto for válida, até terminares sessão ou limpares os dados do site. Os verificadores são consumidos no processo de acesso.</td>
               </tr>
               <tr>
+                <th scope="row">Regresso após início de sessão<br /><code>investao.auth-return.v1</code> em sessionStorage</th>
+                <td>Essencial para regressares à página interna que pediste depois de entrar com Google ou Apple, neste separador.</td>
+                <td>Consumido no regresso; validade máxima de 30 minutos. O navegador remove-o ao terminar a sessão do separador.</td>
+              </tr>
+              <tr>
                 <th scope="row">Definições<br /><code>investao.appearance</code><br /><code>investao.privacy</code></th>
                 <td>Memorizar a aparência e a opção de ocultar valores pessoais neste navegador.</td>
                 <td>Até alterares as definições ou limpares os dados do site.</td>
