@@ -1,3 +1,7 @@
+## Actualização — 13 de Outubro de 2026
+
+O site passou a consulta pública de mercado e notícias. A demonstração de favoritos foi retirada. O sitemap inclui `/`, `/mercado`, `/noticias` e `/policy`; os detalhes têm títulos e URLs canónicas próprios e são descobertos nas listagens. A auditoria abaixo é histórica e não prova o estado actual de alojamento, TLS ou indexação. Ver [WEB_TO_APP_FUNNEL.md](WEB_TO_APP_FUNNEL.md) para a implementação e limites actuais.
+
 # Invest.ao search visibility and copy
 
 ## Audit — 15 September 2026

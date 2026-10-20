@@ -5,12 +5,12 @@ export const siteUrl = "https://invest.ao";
 export const siteName = "Invest.ao";
 export const siteTitle = "Invest.ao | Mercado de capitais em Angola";
 export const siteDescription =
-  "Acompanhe o mercado de capitais em Angola com a Invest.ao. Consulte títulos, compare a evolução dos preços e organize a sua carteira. Em breve para iPhone.";
+  "Descobre o mercado de capitais angolano. Consulta instrumentos, referências de preços BODIVA e notícias publicadas. Acompanha a tua carteira, lista e alertas na web e no iPhone.";
 export const socialImage = {
   url: "/opengraph-image",
   width: 1200,
   height: 630,
-  alt: "Invest.ao — Mercado de capitais em Angola. Em breve para iPhone.",
+  alt: "invest.ao — Consulta pública do mercado de capitais angolano.",
 };
 
 export function pageMetadata({

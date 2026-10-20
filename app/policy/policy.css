@@ -15,3 +15,12 @@ body:has(.policy-page) { background: #090b0f; color: #f5f7fa; color-scheme: dark
 .policy-page a { color: #5a9bff; text-decoration: underline; text-underline-offset: 4px; }
 .policy-page a:focus-visible { outline: 2px solid #5a9bff; outline-offset: 5px; }
 .policy-page footer { border-top: 1px solid #2a303a; margin-top: 44px !important; padding-top: 24px; }
+.policy-table-wrap { margin-block: 20px; overflow-x: auto; border: 1px solid #2a303a; border-radius: 8px; }
+.policy-table-wrap:focus-visible { outline: 2px solid #5a9bff; outline-offset: 4px; }
+.policy-table { width: 100%; min-width: 660px; border-collapse: collapse; text-align: left; }
+.policy-table th, .policy-table td { padding: 16px; vertical-align: top; border-bottom: 1px solid #2a303a; font-size: 13px; line-height: 1.75; }
+.policy-table thead th { color: #f5f7fa; font-weight: 600; background: #12151b; }
+.policy-table tbody th { color: #f5f7fa; font-weight: 500; width: 28%; }
+.policy-table td { color: #a6afbd; }
+.policy-table tr:last-child > * { border-bottom: 0; }
+.policy-table code { font-size: 11px; overflow-wrap: anywhere; }

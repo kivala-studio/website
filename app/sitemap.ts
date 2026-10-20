@@ -3,5 +3,9 @@ import { siteUrl } from "../lib/seo";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // Only published canonical pages; omit invented modification dates.
-  return [{ url: siteUrl }, { url: `${siteUrl}/policy` }];
+  return [
+    { url: siteUrl },
+    { url: `${siteUrl}/policy` },
+    { url: `${siteUrl}/cookies` },
+  ];
 }

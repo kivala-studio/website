@@ -8,7 +8,7 @@ const siteSchema = {
       "@id": `${siteUrl}/#organization`,
       name: siteName,
       url: siteUrl,
-      logo: `${siteUrl}/investao-logo.svg`,
+      logo: `${siteUrl}/icon.svg`,
       email: "info@invest.ao",
     },
     {
