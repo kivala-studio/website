@@ -13,4 +13,13 @@ The computer-use browser security policy blocked navigation from the Google butt
 
 Allow `http://localhost:3100/auth/callback` for local testing and `https://invest.ao/auth/callback` for production in the Supabase redirect configuration. Real verification must check return to the requested page, persisted access after reload, onboarding when applicable, and sign-out returning protected routes to the landing modal. Live redirect allowlisting remains unconfirmed by this audit.
 
+### Manual acceptance check (repeat for each provider)
+
+1. Open `http://localhost:3100/?entrar=1&next=%2Fpesquisa%3Fq%3DBAI` and complete sign-in with Google or Apple in that same tab.
+2. Confirm the browser returns to `/pesquisa?q=BAI`. If onboarding is required, finish or skip its optional steps and confirm that the same destination opens afterward.
+3. Reload and confirm that the account remains signed in. Open `/conta`, sign out, then visit `/pesquisa?q=BAI` again; the landing sign-in modal must open with that destination preserved.
+4. Start another attempt and cancel at the provider, where cancellation is available. Confirm that the landing modal explains the cancellation and still retains the search destination.
+
+Record the provider, tested origin and observed results separately. A Google result does not verify Apple, and a localhost result does not verify the production redirect allowlist. For the PR preview, the exact callback is `https://website-git-feat-web-app-parity-jos-tonys-projects.vercel.app/auth/callback`; it also needs an allowed redirect before a preview provider round trip can succeed.
+
 References: [Supabase redirect URLs](https://supabase.com/docs/guides/auth/redirect-urls), [Google sign-in](https://supabase.com/docs/guides/auth/social-login/auth-google), [Apple sign-in](https://supabase.com/docs/guides/auth/social-login/auth-apple). The installed `@supabase/auth-js` source was also inspected to confirm its PKCE initialization behavior.
