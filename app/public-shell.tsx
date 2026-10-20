@@ -4,7 +4,7 @@ import WorkspaceShell from "./components/workspace-shell";
 export function Brand() {
   return (
     <span className="brand">
-      <Image src="/investao-logo.svg" width={32} height={32} alt="" />
+      <Image src="/investao-app-icon.jpg" width={32} height={32} alt="" />
       <span>
         invest<span className="brand-dot">.</span>ao
       </span>

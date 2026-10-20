@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const alt =
-  "Invest.ao — Mercado de capitais em Angola. Descobre aqui. Acompanha no iPhone..";
+  "Invest.ao — Mercado de capitais em Angola. O teu mercado, na web e no iPhone.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -45,7 +45,7 @@ export default function OpenGraphImage() {
             fontSize: 26,
           }}
         >
-          <span>Descobre aqui. Acompanha no iPhone.</span>
+          <span>O teu mercado, na web e no iPhone.</span>
           <span>invest.ao</span>
         </div>
       </div>

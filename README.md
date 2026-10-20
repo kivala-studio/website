@@ -2,7 +2,9 @@
 
 The browser client for the same invest.ao accounts and market data used by iOS. Next.js App Router renders public market/editorial content at request time; authenticated browser requests use Supabase Auth and the existing ownership policies.
 
-The public landing page is served at `/`; its dashboard buttons open `/dashboard`. Workspace home navigation returns to `/dashboard`, and “Sobre a invest.ao” opens the landing page.
+The public landing page is served at `/`; its dashboard buttons open `/dashboard`. The streamed price panel reuses `getMarket` and `reading`, including reference dates and expiry behaviour. Download links and the desktop QR code use `appDistribution`; an absent or invalid distribution URL falls back to the web dashboard. Workspace home navigation returns to `/dashboard`, and “Sobre a invest.ao” opens the landing page.
+
+The browser icon, Apple touch icon and brand images use the published iOS artwork for App Store ID `6812907673` (`ao.invest.iosapp`).
 
 ## Local development
 

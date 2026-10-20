@@ -59,7 +59,7 @@ export default function WorkspaceShell({
           href="/dashboard"
           aria-label="invest.ao — dashboard"
         >
-          <Image src="/investao-logo.svg" width={31} height={31} alt="" />
+          <Image src="/investao-app-icon.jpg" width={31} height={31} alt="" />
           <span>
             invest<span>.</span>ao
           </span>
