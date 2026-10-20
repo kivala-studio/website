@@ -32,7 +32,16 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       data-scroll-behavior="smooth"
       lang="pt-AO"
       className="h-full antialiased"
+      suppressHydrationWarning
     >
+      <head>
+        {/* Apply the browser-local choice before any themed content paints. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{const theme=localStorage.getItem("investao.appearance");if(["system","light","dark"].includes(theme))document.documentElement.dataset.theme=theme}catch{}`,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         <CookieConsentProvider>
           <AccountProvider config={config}>

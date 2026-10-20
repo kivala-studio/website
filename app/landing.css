@@ -1,17 +1,4 @@
-/* Dark appearance from the app's SemanticColors.swift and DesignTokens.swift. */
-.landing-page {
-  color-scheme: dark;
-  --paper: #090b0f;
-  --ink: #f5f7fa;
-  --muted: #a6afbd;
-  --line: #2a303a;
-  --accent: #5a9bff;
-  --surface: #12151b;
-  --card: #171b22;
-  --positive: #35c98b;
-  --serif: var(--font-geist-sans), sans-serif;
-}
-
+/* Landing surfaces inherit the shared appearance palette. */
 .landing-page .screenshots-section { padding-block: 40px 70px; border-top: 1px solid var(--line); }
 .landing-page .screenshots-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; margin-bottom: 40px; }
 .landing-page .screenshots-heading h2 { font-size: 32px; font-weight: 500; letter-spacing: -.04em; }
@@ -58,7 +45,7 @@
 .landing-page .hero-device { width: 320px; margin: 0; justify-self: end; }
 .landing-page .hero-device figcaption { font-size: 9px; line-height: 1.6; text-align: center; color: var(--muted); margin-top: 18px; }
 html:has(.landing-page) { scroll-padding-top: 32px; }
-.landing-page ::selection { background: var(--accent); color: var(--paper); }
+.landing-page ::selection { background: var(--accent); color: var(--on-accent); }
 .landing-page { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
 .landing-page .container { width: min(1200px, calc(100% - 96px)); }
 .landing-page em { font-style: normal; }
@@ -129,12 +116,12 @@ html:has(.landing-page) { scroll-padding-top: 32px; }
   gap: 30px;
   padding: 16px 20px;
   background: var(--accent);
-  color: var(--paper);
+  color: var(--on-accent);
   font-size: 12px;
   border: 1px solid var(--accent);
   border-radius: 8px;
 }
-.landing-page .primary-link:hover { background: #85b5ff; color: var(--paper); }
+.landing-page .primary-link:hover { background: color-mix(in srgb, var(--accent) 85%, var(--ink)); color: var(--on-accent); }
 
 .landing-page .application { background: var(--surface); border-block: 1px solid var(--line); padding: 35px 0 28px; }
 .landing-page .application-heading { align-items: center; margin-bottom: 25px; }
@@ -159,8 +146,8 @@ html:has(.landing-page) { scroll-padding-top: 32px; }
 .landing-page .ledger-note .status-dot { color: var(--muted); }
 .landing-page .demo-note { margin-top: 15px; max-width: 690px; font-size: 10px; }
 .landing-page .empty-state h4 { font-family: inherit; font-size: 23px; letter-spacing: -.04em; }
-.landing-page .empty-state button { border-radius: 8px; background: var(--accent); color: var(--paper); }
-.landing-page .skip-link { background: var(--accent); color: var(--paper); }
+.landing-page .empty-state button { border-radius: 8px; background: var(--accent); color: var(--on-accent); }
+.landing-page .skip-link { background: var(--accent); color: var(--on-accent); }
 
 .landing-page .perspective { padding-block: 85px 90px; }
 .landing-page .section-heading { margin-bottom: 38px; }

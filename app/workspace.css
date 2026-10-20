@@ -1,75 +1,3 @@
-:root {
-  color-scheme: light;
-  --paper: #f2f3f5;
-  --surface: #ffffff;
-  --card: #ffffff;
-  --ink: #182231;
-  --muted: #485364;
-  --tertiary: #596579;
-  --accent: #1854c5;
-  --on-accent: #ffffff;
-  --positive: #08704c;
-  --negative: #b9233d;
-  --warning: #845000;
-  --line: #c5cdd8;
-  --chart-grid: #cbd2dc;
-  --control-line: #778396;
-  --selected: #e2eafa;
-  --action-surface: #e5e9ef;
-  --accent-soft: #e2eafa;
-  --comparison-orange: #a34e00;
-  --comparison-purple: #7935b5;
-  --positive-soft: #e4f1eb;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --paper: #090b0f;
-    --surface: #12151b;
-    --card: #171b22;
-    --ink: #f5f7fa;
-    --muted: #a6afbd;
-    --tertiary: #747e8e;
-    --accent: #5a9bff;
-    --on-accent: #090b0f;
-    --positive: #35c98b;
-    --negative: #ff6677;
-    --warning: #f5b544;
-    --line: #2a303a;
-    --chart-grid: #252b34;
-    --control-line: #2a303a;
-    --selected: #303238;
-    --action-surface: #171e2b;
-    --accent-soft: #192d4b;
-    --comparison-orange: #ff9400;
-    --comparison-purple: #ad52e0;
-    --positive-soft: #14352c;
-  }
-}
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --paper: #090b0f;
-  --surface: #12151b;
-  --card: #171b22;
-  --ink: #f5f7fa;
-  --muted: #a6afbd;
-  --tertiary: #747e8e;
-  --accent: #5a9bff;
-  --on-accent: #090b0f;
-  --positive: #35c98b;
-  --negative: #ff6677;
-  --warning: #f5b544;
-  --line: #2a303a;
-  --chart-grid: #252b34;
-  --control-line: #2a303a;
-  --selected: #303238;
-  --action-surface: #171e2b;
-  --accent-soft: #192d4b;
-  --comparison-orange: #ff9400;
-  --comparison-purple: #ad52e0;
-  --positive-soft: #14352c;
-}
-
 body {
   font-size: 14px;
 }
@@ -762,12 +690,12 @@ body {
   color: var(--muted);
 }
 .error-state {
-  background: #fff1f2;
-  color: #963645;
+  background: color-mix(in srgb, var(--negative) 10%, var(--card));
+  color: var(--negative);
 }
 .success-state {
-  background: #eaf6f0;
-  color: #23724e;
+  background: var(--positive-soft);
+  color: var(--positive);
 }
 .error-state button,
 .success-state button {
@@ -2107,8 +2035,8 @@ body {
 }
 
 .wrap-experience {
-  background: #090b0f;
-  color: #f5f7fa;
+  background: var(--paper);
+  color: var(--ink);
   padding: 32px;
   border-radius: 24px;
   margin: 24px 0 36px;
@@ -2121,11 +2049,8 @@ body {
   flex: 1;
   height: 8px;
   border: 0;
-  background: #2a303a;
+  background: var(--line);
   border-radius: 8px;
-}
-.wrap-progress button[aria-current] {
-  background: #5a9bff;
 }
 .wrap-toolbar,
 .wrap-navigation {
@@ -2144,14 +2069,17 @@ body {
   gap: 8px;
 }
 .wrap-experience button {
-  color: #f5f7fa;
+  color: var(--ink);
   padding: 8px 12px;
-  border: 1px solid #2a303a;
-  background: #171b22;
+  border: 1px solid var(--line);
+  background: var(--card);
   border-radius: 10px;
 }
 .wrap-experience .wrap-progress button {
   padding: 0;
+}
+.wrap-experience .wrap-progress button[aria-current] {
+  background: var(--accent);
 }
 .wrap-slide {
   display: grid;
@@ -2173,7 +2101,7 @@ body {
 }
 .wrap-slide p,
 .wrap-experience .fine-print {
-  color: #a6afbd;
+  color: var(--muted);
   line-height: 1.7;
 }
 @media (max-width: 640px) {
@@ -2347,7 +2275,7 @@ body {
 .access-status .primary-button { margin-top: 28px; }
 @media (max-width: 600px) {
   .access-header, .access-main { width: calc(100% - 40px); }
-  .access-header { min-height: 80px; gap: 16px; }
+  .access-header { min-height: 80px; gap: 12px; flex-wrap: wrap; padding-block: 16px; }
   .access-header .workspace-brand { font-size: 23px; }
   .access-back { font-size: 11px; gap: 8px; }
   .access-main { padding-top: 32px; }

@@ -94,7 +94,7 @@ export function composeWrapStories({
               value: `${change.gt(0) ? "+" : ""}${number(change.toNumber())} Kz`,
               body: `${number(change.div(initial).times(100).toNumber())}% de variação de preço nas posições sem operações no período. Não inclui dividendos, comissões ou impostos.`,
               personal: true,
-              color: change.gte(0) ? "#35c98b" : "#ff6677",
+              color: change.gte(0) ? "var(--positive)" : "var(--negative)",
             });
           } else if (held.length)
             portfolioOmission =
@@ -122,7 +122,7 @@ export function composeWrapStories({
           title: row.security.issuers?.name || row.security.symbol,
           value: `${row.change > 0 ? "+" : ""}${number(row.change)}%`,
           body: `${row.change > 0 ? "Maior subida" : "Maior descida"} de preço entre as acções com fechos comparáveis. ${row.security.symbol} · base em ${date(baseline)}.`,
-          color: row.change > 0 ? "#35c98b" : "#ff6677",
+          color: row.change > 0 ? "var(--positive)" : "var(--negative)",
         });
   }
   stories.push({

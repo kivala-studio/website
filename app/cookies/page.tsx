@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AppearanceSelect from "../components/appearance-select";
 import { pageMetadata } from "../../lib/seo";
 import "../policy/policy.css";
 import { CookiePreferencesButton } from "../components/cookie-consent";
@@ -14,6 +15,7 @@ export default function CookiesPolicy() {
     <main className="policy-page" lang="pt-AO">
       <nav aria-label="Navegação da política">
         <Link href="/">invest.ao</Link>
+        <AppearanceSelect />
         <Link href="/">Voltar ao início</Link>
       </nav>
       <header>
