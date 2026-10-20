@@ -8,11 +8,12 @@ import { signInPath } from "../../lib/navigation";
 export default function WorkspaceLink({ href, onClick, ...props }: Omit<ComponentProps<typeof Link>, "href"> & { href: string }) {
   const { user } = useAccount();
   const destination = user ? href : signInPath(href);
+  // Market-backed pages should fetch on navigation, rather than all at once.
   return (
     <Link
       {...props}
       href={destination}
-      prefetch={user ? props.prefetch : false}
+      prefetch={user ? props.prefetch ?? false : false}
       onClick={(event) => {
         onClick?.(event);
         if (

@@ -1,25 +1,31 @@
-# Web auth verification — 20 October 2026
+# Production website verification — 20 October 2026
 
-- Live public Auth settings returned HTTP 200 with Google and Apple enabled. This endpoint does not reveal the redirect allowlist or verify the provider credentials/consent round trip.
-- OAuth now requests one exact `/auth/callback` URL per origin. The internal destination/query stays in tab-scoped sessionStorage for at most 30 minutes and is consumed once. Legacy callback destinations remain supported and sanitized.
-- The installed Supabase browser client owns automatic PKCE exchange. The callback waits for/reuses initialization; it does not exchange the same one-time code again. Existing users default to `/dashboard`, and users who need onboarding retain their destination through `/conta`.
-- Cancelled, expired and failed callbacks reopen the landing modal with fixed error messages, without reflecting raw provider text. A browser check of the local cancellation callback returned to `/?entrar=1&next=%2Fpesquisa%3Fq%3DBAI&auth_error=cancelled`, preserved the destination and displayed readable feedback.
-- Four focused checks pass in `tests/web-auth.test.mjs`: exact callback/one-time destinations and expiry; callback error handling; storage-denied fallback; and actual installed-client PKCE exchange, verified-user lookup, reload persistence and local sign-out using intercepted fictional responses. Google/Apple authorization URL generation includes the PKCE challenge and stable callback.
-- Production build/TypeScript, focused ESLint and diff checks pass. No remote Auth configuration, provider secrets, account data or database schema was changed.
+## Confirmed causes and live fixes
 
-## Remaining live provider verification
+The production Vercel project had no environment variables. This prevented both the browser authentication client and the server-rendered landing prices from using Supabase. Added the project's active `SUPABASE_URL` and modern `SUPABASE_PUBLISHABLE_KEY` to Production and Preview, then redeployed the existing `main` commit `c681e01`. The deployment [completed successfully](https://vercel.com/jos-tonys-projects/website/6kXm3c19jmS7JYehhpLc3tctvUSH) and serves [invest.ao](https://invest.ao/).
 
-The computer-use browser security policy blocked navigation from the Google button to the external provider. No alternate browser, direct provider request or other workaround was used. A user must complete real Google and Apple sign-in before end-to-end provider login can be marked verified. No real provider credentials were entered and no account was created.
+A second configuration issue caused the Google loop: Supabase's Site URL was `investao://auth/callback`, and its additional redirect allowlist was empty. Auth logs showed browser OAuth attempts falling back to that native callback. Added the exact `https://invest.ao/auth/callback` URL to the allowlist through the Management API and read the configuration back to verify it. The native Site URL and Google provider configuration were preserved.
 
-Allow `http://localhost:3100/auth/callback` for local testing and `https://invest.ao/auth/callback` for production in the Supabase redirect configuration. Real verification must check return to the requested page, persisted access after reload, onboarding when applicable, and sign-out returning protected routes to the landing modal. Live redirect allowlisting remains unconfirmed by this audit.
+## Verified in production
 
-### Manual acceptance check (repeat for each provider)
+- The public Auth settings endpoint returned HTTP 200 with Google enabled. Anonymous requests to the security catalogue, current quotes RPC and verified closes also returned HTTP 200 using the active publishable key.
+- A signed-out Chrome visit to the landing page displayed five real equity quotations, with source dates and movements: BAI, Caixa Angola, BODIVA, BFA and ENSA. The panel does not require authentication.
+- Selecting **Continuar com Google** completed the real provider round trip, reached the website's `/auth/callback`, established a session and opened `/dashboard` for an existing account.
+- Reloading `/dashboard` retained the authenticated session. Account navigation and the existing account's data were available. A later successful market response displayed 143 instruments and current equity quotations.
+- No Google password was entered by the agent, no new account was created, and no user portfolio, watchlist or notification records were changed. The browser was left signed in. Global sign-out was not used because it can affect the account's other device sessions.
 
-1. Open `http://localhost:3100/?entrar=1&next=%2Fpesquisa%3Fq%3DBAI` and complete sign-in with Google or Apple in that same tab.
-2. Confirm the browser returns to `/pesquisa?q=BAI`. If onboarding is required, finish or skip its optional steps and confirm that the same destination opens afterward.
-3. Reload and confirm that the account remains signed in. Open `/conta`, sign out, then visit `/pesquisa?q=BAI` again; the landing sign-in modal must open with that destination preserved.
-4. Start another attempt and cancel at the provider, where cancellation is available. Confirm that the landing modal explains the cancellation and still retains the search destination.
+Intermittent public Data API HTTP 500 responses were also observed during dashboard checks; the corresponding database logs contained statement timeouts. Anonymous queries currently have a three-second database deadline. Subsequent requests succeeded. The accompanying website change avoids automatic background prefetching of market-backed navigation routes and retries SQLSTATE `57014` once within the existing ten-second request deadline. Reads remain uncached, and permission/other errors are not retried. Three focused HTTP-fixture checks verify fresh-response recovery, bounded retries and immediate failure for other errors. This does not raise database timeouts or change financial-data validation; persistent backend slowness can still surface an error.
 
-Record the provider, tested origin and observed results separately. A Google result does not verify Apple, and a localhost result does not verify the production redirect allowlist. For the PR preview, the exact callback is `https://website-git-feat-web-app-parity-jos-tonys-projects.vercel.app/auth/callback`; it also needs an allowed redirect before a preview provider round trip can succeed.
+## Existing callback behavior and automated coverage
 
-References: [Supabase redirect URLs](https://supabase.com/docs/guides/auth/redirect-urls), [Google sign-in](https://supabase.com/docs/guides/auth/social-login/auth-google), [Apple sign-in](https://supabase.com/docs/guides/auth/social-login/auth-apple). The installed `@supabase/auth-js` source was also inspected to confirm its PKCE initialization behavior.
+OAuth requests one exact `/auth/callback` URL per origin. The internal destination/query remains in tab-scoped sessionStorage for at most 30 minutes and is consumed once. Legacy callback destinations remain supported and sanitized. The installed Supabase client owns automatic PKCE exchange; the callback reuses initialization rather than exchanging a one-time code twice.
+
+`tests/web-auth.test.mjs` covers exact callback URLs, one-time destinations and expiry, fixed error messages, denied storage, and installed-client PKCE exchange/session persistence using intercepted fictional responses. Those checks do not replace the production provider verification above.
+
+## Remaining coverage
+
+- Apple provider consent and return have not been verified by this check. A successful Google login does not establish Apple behavior.
+- Localhost and preview callback allowlisting were not changed or verified. Add each intended callback explicitly before testing that origin.
+- Repeat cancellation, first-account onboarding and custom destination/query checks when testing changes to those paths. This production check used an existing account and the default `/dashboard` destination.
+
+References: [Supabase redirect URLs](https://supabase.com/docs/guides/auth/redirect-urls), [Google sign-in](https://supabase.com/docs/guides/auth/social-login/auth-google), [Management API Auth configuration](https://supabase.com/docs/reference/api/v1-update-auth-service-config).
