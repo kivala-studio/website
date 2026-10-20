@@ -6,7 +6,7 @@ The public landing page is served at `/`; its dashboard buttons open `/dashboard
 
 The browser icon, Apple touch icon and brand mark use the native `PalancaMark.imageset/palanca.png` template artwork, copied into `public/palanca.png`. Branding uses a CSS mask to match the current appearance; the browser and Apple icons use a solid light background.
 
-The [dashboard feature audit](docs/dashboard-feature-audit.md) tracks confirmed unfinished features. A shared registry supplies the dashboard overview and inline “Em desenvolvimento · Em breve” states. Existing working controls remain available; missing data and temporary errors retain their own states. Apple account deletion stays unavailable until its backend is verified and `APPLE_WEB_DELETION_ENABLED=true` is explicitly set alongside the server receipt secret.
+The [dashboard feature audit](docs/dashboard-feature-audit.md) tracks confirmed unfinished features. A shared registry supplies inline “Em desenvolvimento · Em breve” states beside each relevant feature, without a separate dashboard list. Existing working controls remain available; missing data and temporary errors retain their own states. Apple account deletion stays unavailable until its backend is verified and `APPLE_WEB_DELETION_ENABLED=true` is explicitly set alongside the server receipt secret.
 
 The public cookies/storage policy is at `/cookies`, with links from the landing footer, privacy policy and sign-in modal. Its inventory covers the short-lived Apple deletion cookies, browser authentication, preferences, personalisation and recap archives.
 

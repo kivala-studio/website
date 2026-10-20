@@ -21,16 +21,3 @@ export default function DevelopmentState({ feature, compact = false, link = fals
     </aside>
   );
 }
-
-export function DevelopmentOverview({ appleDeletionAvailable }: { appleDeletionAvailable: boolean }) {
-  const features = (Object.keys(webFeatureStatus) as WebFeature[]).filter((feature) => feature !== "appleDeletion" || !appleDeletionAvailable);
-  return (
-    <section className="public-section development-overview" aria-labelledby="development-title">
-      <div className="section-title">
-        <div><p className="eyebrow">A CAMINHO DA WEB</p><h2 id="development-title">Ainda estamos a desenvolver.</h2></div>
-      </div>
-      <p className="development-intro">Estas funcionalidades ainda não estão concluídas. As opções já disponíveis continuam acessíveis.</p>
-      <div className="development-grid">{features.map((feature) => <DevelopmentState key={feature} feature={feature} link />)}</div>
-    </section>
-  );
-}

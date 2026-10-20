@@ -4,16 +4,16 @@ Scope: implementation review of every dashboard section, its sidebar destination
 
 ## Confirmed implementation gaps
 
-The shared `lib/web-feature-status.ts` inventory drives the dashboard's “A caminho da web” cards and the inline “Em desenvolvimento · Em breve” states. These are implementation states, independent of loading, errors, missing financial evidence, empty accounts, privacy and cookie consent.
+The shared `lib/web-feature-status.ts` inventory drives inline “Em desenvolvimento · Em breve” states beside each relevant feature. There is no separate dashboard section listing unfinished work. These are implementation states, independent of loading, errors, missing financial evidence, empty accounts, privacy and cookie consent.
 
 | Feature | What is usable | What is labelled in development | Where shown |
 | --- | --- | --- | --- |
-| Browser notifications | Alert CRUD, shared app preferences, in-site Activity | Background Web Push: no subscription, service worker or browser transport exists | Dashboard, Alertas, Actividade, account notification settings |
-| Personalised week ahead | Verified market sessions, published issuer dates and personal dividend-event filter | Personalised editorial selection of the coming week; the control name exists but no renderer/selection path implements it | Dashboard, Agenda |
-| Saturday discovery | News and existing verified observation cards | Saturday-specific discovery selection; the control name exists without a feature implementation | Dashboard |
-| Richer summaries | Basic market breadth/movers, watchlist and eligible portfolio stories, immutable archives, playback and export | Additional native story families and selection; authoritative correction-receipt feed is not connected | Dashboard, Resumos |
-| Multi-instrument comparison | Two selected instruments, common dates, periods and export | More than two instruments; current state and chart load are fixed to a pair | Dashboard, Comparar |
-| Apple account deletion on web | Existing signed receipt/callback implementation; non-Apple deletion remains available | Apple browser flow requires deployed backend and explicit verification before release | Dashboard and Apple users' account deletion section, while unavailable |
+| Browser notifications | Alert CRUD, shared app preferences, in-site Activity | Background Web Push: no subscription, service worker or browser transport exists | Alertas, Actividade, account notification settings |
+| Personalised week ahead | Verified market sessions, published issuer dates and personal dividend-event filter | Personalised editorial selection of the coming week; the control name exists but no renderer/selection path implements it | Agenda |
+| Saturday discovery | News and existing verified observation cards | Saturday-specific discovery selection; the control name exists without a feature implementation | Notícias |
+| Richer summaries | Basic market breadth/movers, watchlist and eligible portfolio stories, immutable archives, playback and export | Additional native story families and selection; authoritative correction-receipt feed is not connected | Resumos |
+| Multi-instrument comparison | Two selected instruments, common dates, periods and export | More than two instruments; current state and chart load are fixed to a pair | Comparar |
+| Apple account deletion on web | Existing signed receipt/callback implementation; non-Apple deletion remains available | Apple browser flow requires deployed backend and explicit verification before release | Apple users' account deletion section, while unavailable |
 
 Apple deletion is unavailable by default. The server must have both `APPLE_WEB_DELETION_ENABLED=true` and a valid server-only receipt secret before the UI offers it or the start route forwards a request. Set that flag only after the backend deployment and designated-account checks described in `web-parity.md`. Receipt verification/cleanup routes remain available for an already initiated return. This audit did not deploy anything or delete an account.
 

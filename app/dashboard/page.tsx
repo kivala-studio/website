@@ -10,8 +10,6 @@ import InsightSection from "../components/insight-section";
 import HomeAccount from "../components/home-account";
 import Icon from "../components/invest-icon";
 import { pageMetadata } from "../../lib/seo";
-import { DevelopmentOverview } from "../components/development-state";
-import { appleWebDeletionAvailable } from "../../lib/web-feature-config";
 
 export const metadata = {
   ...pageMetadata({
@@ -133,7 +131,6 @@ export default async function Dashboard() {
           <NewsList articles={news.data.slice(0, 3)} />
         )}
       </section>
-      <DevelopmentOverview appleDeletionAvailable={appleWebDeletionAvailable()} />
     </PublicShell>
   );
 }

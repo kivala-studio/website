@@ -68,7 +68,7 @@ This is an implementation and verification inventory, not a claim that all iOS b
 - iOS-only OS surfaces (widgets, Shortcuts/App Intents, haptics and native notification settings) need explicit browser equivalents or a documented platform exception.
 - Verify production OAuth allowlisting and deploy the Apple web return backend dependency before enabling the deletion path. No production configuration or database changes were applied by this work.
 
-The 20 October [dashboard audit](dashboard-feature-audit.md) maps confirmed gaps to shared “Em desenvolvimento · Em breve” UI states on the dashboard and relevant pages. Working features with missing data or pending live verification keep their existing states.
+The 20 October [dashboard audit](dashboard-feature-audit.md) maps confirmed gaps to shared “Em desenvolvimento · Em breve” UI states beside their relevant features. There is no separate dashboard list. Working features with missing data or pending live verification keep their existing states.
 
 ## Apple deletion deployment dependency
 

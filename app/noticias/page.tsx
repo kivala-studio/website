@@ -4,6 +4,7 @@ import { NewsList, DataError } from "../public-content";
 import { Consultation } from "../app-prompt";
 import { getNews } from "../../lib/public-data";
 import { pageMetadata } from "../../lib/seo";
+import DevelopmentState from "../components/development-state";
 export const metadata = pageMetadata({
   title: "Notícias | invest.ao",
   description:
@@ -27,6 +28,7 @@ export default async function NewsPage({
         <h1>Notícias.</h1>
         <p>O contexto por trás do mercado.</p>
       </header>
+      <DevelopmentState feature="saturdayDiscovery" compact />
       {result.error ? (
         <DataError content="as notícias" />
       ) : (
