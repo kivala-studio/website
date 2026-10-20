@@ -12,6 +12,10 @@ The public cookies/storage policy is at `/cookies`, with links from the landing 
 
 On the first visit, the consent prompt offers equally prominent accept-all and reject-optional actions. `investao.cookie-consent.v1` stores the choice for 180 days; the landing footer, policy and account settings can reopen it. Behavioural personalisation and exposure/installation storage stay off until acceptance. Rejecting stops those reads/writes and removes their local records; it does not delete existing server-side account data. Essential authentication, user-selected appearance/privacy settings and requested account features remain available. When browser storage is blocked, the choice lasts only for the current visit. The prompt takes precedence over landing sign-in so two dialogs never compete for focus.
 
+## Appearance
+
+The entire website uses the same light/dark palette and Sistema, Claro and Escuro choices as the apps. The selector is available on the landing header (inside the menu on small screens), access pages, policy pages, workspace sidebar and account settings. The browser-local `investao.appearance` preference applies before the first paint and stays in sync across tabs. Sistema follows live OS changes through CSS and is also the fallback when storage is unavailable or the saved value is invalid. Device screenshots and generated social preview images keep their original artwork.
+
 ## Local development
 
 ```sh

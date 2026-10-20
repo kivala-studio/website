@@ -2,6 +2,7 @@ import Image from "next/image";
 import AppMark from "./components/app-mark";
 import Link from "./components/workspace-link";
 import LandingAuth from "./components/landing-auth";
+import AppearanceSelect from "./components/appearance-select";
 import { CookiePreferencesButton } from "./components/cookie-consent";
 import { Suspense } from "react";
 import LandingMarket, { LandingMarketLoading } from "./landing-market";
@@ -171,6 +172,7 @@ export default function Home() {
             <a href="#precos">Preços do mercado</a>
             <a href="#perguntas">Perguntas frequentes</a>
           </nav>
+          <AppearanceSelect />
           <Link className="launch-link dashboard-link" href="/dashboard">
             Dashboard
           </Link>
@@ -182,6 +184,7 @@ export default function Home() {
               <a href="#aplicacao">Funcionalidades</a>
               <a href="#precos">Preços do mercado</a>
               <a href="#perguntas">Perguntas frequentes</a>
+              <AppearanceSelect />
               <Link href="/dashboard">Ir para o dashboard</Link>
             </nav>
           </details>

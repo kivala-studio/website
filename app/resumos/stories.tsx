@@ -31,6 +31,11 @@ export default function WrapStories({
   const index = Math.min(page, stories.length - 1),
     story = stories[index];
   const hidden = privateMode && story.personal;
+  // Older saved recaps contain literal dark-palette colours.
+  const valueColor = hidden ? "var(--muted)"
+    : story.color === "#35c98b" ? "var(--positive)"
+    : story.color === "#ff6677" ? "var(--negative)"
+    : story.color || "var(--accent)";
   useEffect(() => {
     onPage?.(index);
   }, [index, onPage]);
@@ -95,7 +100,11 @@ export default function WrapStories({
       line += `${word} `;
     }
     if (line) lines.push(line);
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350"><rect width="1080" height="1350" fill="#090b0f"/><text x="80" y="120" fill="#5a9bff" font-family="Arial,sans-serif" font-size="40">invest.ao</text><text x="80" y="240" fill="#a6afbd" font-family="Arial,sans-serif" font-size="26">${escape(date(period.starts_on))} — ${escape(date(period.ends_on))}</text><text x="80" y="420" fill="#f5f7fa" font-family="Arial,sans-serif" font-size="42" textLength="900" lengthAdjust="spacingAndGlyphs">${escape(title)}</text><text x="80" y="580" fill="${hidden ? "#a6afbd" : story.color || "#5a9bff"}" font-family="Arial,sans-serif" font-size="66" textLength="900" lengthAdjust="spacingAndGlyphs">${escape(value)}</text>${lines.map((line, i) => `<text x="80" y="${720 + i * 47}" fill="#a6afbd" font-family="Arial,sans-serif" font-size="32">${escape(line)}</text>`).join("")}<text x="80" y="1230" fill="#a6afbd" font-family="Arial,sans-serif" font-size="22">Fechos BODIVA · Variação de preço · invest.ao/resumos</text></svg>`;
+    const styles = getComputedStyle(document.documentElement);
+    const color = (token: string) => styles.getPropertyValue(token).trim();
+    const exportedValueColor = valueColor.startsWith("var(")
+      ? color(valueColor.slice(4, -1)) : valueColor;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350"><rect width="1080" height="1350" fill="${color("--paper")}"/><text x="80" y="120" fill="${color("--accent")}" font-family="Arial,sans-serif" font-size="40">invest.ao</text><text x="80" y="240" fill="${color("--muted")}" font-family="Arial,sans-serif" font-size="26">${escape(date(period.starts_on))} — ${escape(date(period.ends_on))}</text><text x="80" y="420" fill="${color("--ink")}" font-family="Arial,sans-serif" font-size="42" textLength="900" lengthAdjust="spacingAndGlyphs">${escape(title)}</text><text x="80" y="580" fill="${exportedValueColor}" font-family="Arial,sans-serif" font-size="66" textLength="900" lengthAdjust="spacingAndGlyphs">${escape(value)}</text>${lines.map((line, i) => `<text x="80" y="${720 + i * 47}" fill="${color("--muted")}" font-family="Arial,sans-serif" font-size="32">${escape(line)}</text>`).join("")}<text x="80" y="1230" fill="${color("--muted")}" font-family="Arial,sans-serif" font-size="22">Fechos BODIVA · Variação de preço · invest.ao/resumos</text></svg>`;
     const url = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
     const link = document.createElement("a");
     link.href = url;
@@ -140,7 +149,7 @@ export default function WrapStories({
         </p>
         <h2>{hidden ? "A tua invest.ao" : story.title}</h2>
         <strong
-          style={{ color: hidden ? "#a6afbd" : story.color || "#5a9bff" }}
+          style={{ color: valueColor }}
         >
           {hidden ? "••••••" : story.value}
         </strong>

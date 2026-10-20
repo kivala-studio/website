@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import AppMark from "./app-mark";
+import AppearanceSelect from "./appearance-select";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { useAccount } from "./account-provider";
@@ -64,6 +65,7 @@ function AccessShell({ children }: { children: React.ReactNode }) {
         <Link className="workspace-brand" href="/" aria-label="invest.ao — início">
           <AppMark size={36} /><span>invest<span>.</span>ao</span>
         </Link>
+        <AppearanceSelect />
         <Link className="access-back" href="/">Voltar ao site</Link>
       </header>
       <main className="access-main" id="conteudo">{children}</main>
@@ -134,6 +136,7 @@ function WorkspaceFrame({
           ))}
         </nav>
         <div className="sidebar-bottom">
+          <AppearanceSelect />
           <span className="market-label">
             <i /> BODIVA · Angola
           </span>

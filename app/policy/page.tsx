@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AppearanceSelect from "../components/appearance-select";
 import { pageMetadata } from "../../lib/seo";
 import "./policy.css";
 
@@ -11,7 +12,7 @@ export const metadata = pageMetadata({
 export default function PrivacyPolicy() {
   return (
     <main className="policy-page" lang="pt-PT">
-      <nav aria-label="Navegação da política"><Link href="/">invest.ao</Link><Link href="/">Voltar ao início</Link></nav>
+      <nav aria-label="Navegação da política"><Link href="/">invest.ao</Link><AppearanceSelect /><Link href="/">Voltar ao início</Link></nav>
       <header><span>OS SEUS DADOS</span><h1>Política de Privacidade</h1><p>Última atualização: 20 de outubro de 2026</p></header>
       <p>Esta política explica como a Invest.ao trata os dados pessoais quando utiliza a nossa aplicação para iPhone e o nosso sítio Web. A Invest.ao permite acompanhar o mercado de capitais angolano, guardar favoritos e organizar uma carteira. Não executa ordens de compra ou venda de títulos.</p>
       <section><h2>1. Dados que recolhemos</h2>

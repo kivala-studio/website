@@ -53,18 +53,28 @@ export function AccountProvider({
     }
   }
   useEffect(() => {
+    function syncAppearance(value: string | null) {
+      const theme =
+        value && ["system", "dark", "light"].includes(value) ? value : "system";
+      setTheme(theme);
+      document.documentElement.dataset.theme = theme;
+    }
+    const storage = (event: StorageEvent) => {
+      if (event.key === "investao.appearance" || event.key === null) {
+        syncAppearance(event.key === null ? null : event.newValue);
+      }
+    };
+    window.addEventListener("storage", storage);
     void Promise.resolve().then(() => {
       try {
         setPrivacy(localStorage.getItem("investao.privacy") === "true");
         const saved = localStorage.getItem("investao.appearance");
-        if (saved && ["system", "dark", "light"].includes(saved)) {
-          setTheme(saved);
-          document.documentElement.dataset.theme = saved;
-        }
+        syncAppearance(saved);
       } catch {
         /* System appearance remains active. */
       }
     });
+    return () => window.removeEventListener("storage", storage);
   }, []);
   useEffect(() => {
     if (!client) return;
