@@ -2,6 +2,7 @@ import { PublicShell } from "../public-shell";
 import AccountGate from "../components/account-gate";
 import { getMarket } from "../../lib/public-data";
 import Alerts from "./alerts";
+import DevelopmentState from "../components/development-state";
 export const metadata = {
   title: "Alertas | invest.ao",
   robots: { index: false },
@@ -22,6 +23,7 @@ export default async function Page({
           Actividade.
         </p>
       </header>
+      <DevelopmentState feature="webPush" compact />
       <AccountGate feature="Os teus alertas">
         <Alerts
           securities={market.data?.securities || []}

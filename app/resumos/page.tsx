@@ -3,6 +3,7 @@ import { getMarket, read } from "../../lib/public-data";
 import { DataError } from "../public-content";
 import AccountGate from "../components/account-gate";
 import Wraps, { type Window } from "./wraps";
+import DevelopmentState from "../components/development-state";
 export const metadata = { title: "Resumos do mercado | invest.ao" };
 export default async function Page() {
   const [windows, market] = await Promise.all([
@@ -23,6 +24,7 @@ export default async function Page() {
           verificadas.
         </p>
       </header>
+      <DevelopmentState feature="richerSummaries" compact />
       {windows === null && <DataError content="os períodos disponíveis" />}
       <AccountGate feature="Os resumos do mercado">
         <Wraps windows={available} market={market.data} />

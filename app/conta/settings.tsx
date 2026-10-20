@@ -6,6 +6,7 @@ import {
   ResourceState,
   useResource,
 } from "../components/async-state";
+import DevelopmentState from "../components/development-state";
 const categories = {
   watched_movements_enabled: "Movimentos da minha lista",
   held_asset_movements_enabled: "Movimentos dos activos em carteira",
@@ -64,6 +65,7 @@ export function SettingsPanel() {
         Estas preferências são partilhadas com a app. Consulta as notificações
         na página Actividade.
       </p>
+      <DevelopmentState feature="webPush" compact />
       <ResourceState {...state} retry={state.reload} />
       {state.data && (
         <fieldset disabled={busy || state.loading}>

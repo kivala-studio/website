@@ -11,11 +11,14 @@ import PersonalisationSettings from "./personalisation-settings";
 import { clearAccountLocalData } from "../../lib/clear-account-local-data";
 import { finishDeletedAccount } from "../../lib/account-cleanup";
 import { SettingsPanel } from "./settings";
+import DevelopmentState from "../components/development-state";
 
 export default function AccountPanel({
   securities,
+  appleDeletionAvailable = false,
 }: {
   securities: Security[];
+  appleDeletionAvailable?: boolean;
 }) {
   const { client, user, loading } = useAccount();
   const router = useRouter();
@@ -54,7 +57,7 @@ export default function AccountPanel({
         {needsOnboarding(user) ? (
           <Onboarding securities={securities} />
         ) : (
-          <Profile />
+          <Profile appleDeletionAvailable={appleDeletionAvailable} />
         )}
       </div>
     );
@@ -108,7 +111,7 @@ export default function AccountPanel({
     </div>
   );
 }
-function Profile() {
+function Profile({ appleDeletionAvailable }: { appleDeletionAvailable: boolean }) {
   const {
     config,
     client,
@@ -129,6 +132,8 @@ function Profile() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [confirm, setConfirm] = useState("");
+  const appleAccount = user?.identities?.some((identity) => identity.provider === "apple");
+  const deletionAvailable = !appleAccount || appleDeletionAvailable;
   async function action(fn: () => Promise<void>, success: string) {
     setBusy(true);
     setError("");
@@ -212,6 +217,7 @@ function Profile() {
       <PersonalisationSettings />
       <section className="form-panel danger-panel">
         <h2>Eliminar conta</h2>
+        {!deletionAvailable ? <DevelopmentState feature="appleDeletion" compact link /> : <>
         <p>
           Remove definitivamente a conta, lista, alertas e registos de carteira.
           Esta operação não pode ser anulada.
@@ -241,6 +247,7 @@ function Profile() {
               const apple = verified.user.identities?.some(
                 (identity) => identity.provider === "apple",
               );
+              if (apple && !appleDeletionAvailable) throw new Error("Apple deletion is not available");
               // Keep deletion bound to the credential of the explicitly confirmed account.
               const response = await fetch(
                 apple
@@ -280,6 +287,7 @@ function Profile() {
         >
           Eliminar definitivamente
         </button>
+        </>}
       </section>
     </div>
   );

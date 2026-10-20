@@ -6,6 +6,7 @@ import { read } from "../../lib/public-data";
 import { date } from "../../lib/market-presentation";
 import { todayLuanda } from "../../lib/finance";
 import { DataError } from "../public-content";
+import DevelopmentState from "../components/development-state";
 type Calendar = {
   contract_version: number;
   timezone: string;
@@ -85,6 +86,7 @@ export default async function Page() {
           Horas de Luanda.
         </p>
       </header>
+      <DevelopmentState feature="weekAhead" compact />
       <ListingEvents />
       <div className="split-layout">
         <section className="dashboard-panel">

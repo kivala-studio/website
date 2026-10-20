@@ -76,6 +76,32 @@ body {
 .workspace {
   min-height: 100vh;
 }
+
+.development-badge {
+  display: inline-flex;
+  color: var(--warning);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.development-state {
+  min-width: 0;
+  padding: 22px;
+  border: 1px dashed var(--control-line);
+  border-radius: 18px;
+  background: var(--surface);
+}
+.development-state-heading { display: flex; align-items: center; gap: 8px; color: var(--warning); }
+.development-state h3 { margin: 14px 0 8px; font-size: 17px; line-height: 1.4; font-weight: 600; }
+.development-state p, .development-intro { color: var(--muted); font-size: 13px; line-height: 1.7; }
+.development-state .text-button { display: inline-flex; margin-top: 14px; min-height: 36px; align-items: center; }
+.development-state-compact { margin: 0 0 24px; padding: 18px 20px; }
+.development-state-compact h3 { margin-top: 10px; font-size: 15px; }
+.development-intro { margin: -8px 0 22px; }
+.development-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.form-panel .development-state { margin-block: 18px; }
+@media (max-width: 1100px) { .development-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .development-grid { grid-template-columns: 1fr; } }
 .workspace-sidebar {
   position: fixed;
   inset: 0 auto 0 0;

@@ -14,11 +14,11 @@ This is an implementation and verification inventory, not a claim that all iOS b
 
 | iOS capability                                  | Web surface                       | Notes                                                                                                                                                                        |
 | ----------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Home, market overview and proprietary indicator | `/`                               | Interactive equity chart, verified indicator, account counts, editorial feed                                                                                                 |
+| Home, market overview and proprietary indicator | `/dashboard`                      | Interactive equity chart, verified indicator, account counts, editorial feed; `/` is the public landing page                                                                 |
 | Instrument discovery/search                     | `/mercado`, `/pesquisa`           | Category filters, sorting, issuer/name/symbol/ISIN lookup                                                                                                                    |
 | Instrument detail                               | `/mercado/[id]`                   | Daily/intraday history, issuer context, order book, reports, dividends, related articles, share                                                                              |
 | Comparison and chart export                     | `/comparar`                       | Common observation dates, rebased percentage changes, accessible table and SVG export                                                                                        |
-| Google/Apple sign-in, profile, onboarding       | `/conta`, `/auth/callback`        | Same identities and metadata; returns to the requested feature after login; older accounts are not forced through new onboarding                                             |
+| Google/Apple sign-in, profile, onboarding       | Landing modal, `/conta`, `/auth/callback` | Same identities and metadata; workspace requires login; preserves the requested route/query; `/conta` holds signed-in profile settings                                   |
 | Watchlist                                       | `/lista`                          | Add, remove/undo, reorder, per-instrument automatic alerts                                                                                                                   |
 | Price/movement alerts                           | `/alertas`                        | Create, edit, pause, delete; correct bond percentage units                                                                                                                   |
 | Manual portfolio                                | `/carteira`, `/carteira/[id]`     | Buy/sell/edit/delete, weighted cost, realised/unrealised values, allocation, exact-day historical coverage                                                                   |
@@ -62,10 +62,13 @@ This is an implementation and verification inventory, not a claim that all iOS b
 
 - Signed-in browser verification of existing-user data, account switching, preferences and CRUD. The implementation uses deployed contracts but a user session has not yet been supplied for this check. Use a designated disposable account for write/delete checks, never real investment records.
 - Background browser push delivery. Activity and preference management are present, but there is no Web Push subscription/transport yet; the existing delivery service is APNs-only.
-- Native usefulness feedback and exposure-aware content selection still need porting. Shared interests, browser-local reset, immutable recap editions, explicit watchlist rebuild and per-edition playback/lifecycle journals are implemented. Additional native recap story families and their ranking still need parity work.
-- Native home/watchlist/portfolio insight generation and ranking still need parity work. Calendar personalisation currently covers issuer dividend events; personalised week-ahead editorial selection remains outstanding.
+- Usefulness feedback, exposure-aware selection and home/watchlist/portfolio insight families were added in the 18 October checkpoint. They still require signed-in verification; the old inventory's claim that they were entirely absent was stale. Additional recap story families/ranking and the authoritative correction-receipt feed remain unfinished.
+- Calendar personalisation currently covers issuer dividend events; personalised week-ahead editorial selection and Saturday discovery remain outstanding.
+- Comparison currently supports two instruments. Adding more than two to the same chart remains unfinished.
 - iOS-only OS surfaces (widgets, Shortcuts/App Intents, haptics and native notification settings) need explicit browser equivalents or a documented platform exception.
 - Verify production OAuth allowlisting and deploy the Apple web return backend dependency before enabling the deletion path. No production configuration or database changes were applied by this work.
+
+The 20 October [dashboard audit](dashboard-feature-audit.md) maps confirmed gaps to shared “Em desenvolvimento · Em breve” UI states on the dashboard and relevant pages. Working features with missing data or pending live verification keep their existing states.
 
 ## Apple deletion deployment dependency
 
@@ -79,6 +82,12 @@ Ordinary status query parameters never authorize cleanup. The callback consumes 
 browser binding, and acknowledgement consumes the result cookie. No secret, deployment
 or real account deletion was performed. Real Apple authorization and concurrent account
 switching still need a designated non-production disposable account.
+
+Apple deletion now also requires `APPLE_WEB_DELETION_ENABLED=true` on the website,
+in addition to a valid receipt secret. Leave it false until the dependency and
+designated-account checks are complete. The start route fails closed while disabled;
+Apple users see the development state instead of a confirmation form. Non-Apple
+deletion and previously initiated receipt returns are unchanged.
 
 ## Financial boundaries
 

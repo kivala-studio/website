@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { validReceiptSecret } from "../../../../lib/apple-deletion-receipt";
+import { appleWebDeletionAvailable } from "../../../../lib/web-feature-config";
 import {
   attemptCookie,
   resultCookie,
@@ -15,7 +15,6 @@ export async function POST(request: NextRequest) {
   const authorization = request.headers.get("authorization");
   const key = process.env.SUPABASE_PUBLISHABLE_KEY;
   const base = process.env.SUPABASE_URL;
-  const receiptSecret = process.env.APPLE_WEBSITE_RECEIPT_SECRET;
   if (!authorization?.startsWith("Bearer "))
     return NextResponse.json(
       { error: "Authentication required" },
@@ -24,7 +23,7 @@ export async function POST(request: NextRequest) {
   if (
     !key?.startsWith("sb_publishable_") ||
     !base ||
-    !validReceiptSecret(receiptSecret)
+    !appleWebDeletionAvailable()
   ) {
     return NextResponse.json({ error: "Unavailable" }, { status: 503 });
   }

@@ -3,6 +3,7 @@ import AppleDeletionResult from "./apple-deletion-result";
 import { PublicShell } from "../public-shell";
 import { getMarket } from "../../lib/public-data";
 import AccountPanel from "./panel";
+import { appleWebDeletionAvailable } from "../../lib/web-feature-config";
 export const metadata = {
   title: "A minha conta | invest.ao",
   robots: { index: false },
@@ -28,7 +29,7 @@ export default async function Page({ searchParams }: PageProps<"/conta">) {
         <p>Uma conta. O mesmo mercado, no iPhone e na web.</p>
       </header>
       <AppleDeletionResult />
-      <AccountPanel securities={market.data?.securities || []} />
+      <AccountPanel securities={market.data?.securities || []} appleDeletionAvailable={appleWebDeletionAvailable()} />
     </PublicShell>
   );
 }

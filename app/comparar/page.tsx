@@ -1,6 +1,7 @@
 import { PublicShell } from "../public-shell";
 import { getMarket } from "../../lib/public-data";
 import Comparison from "./comparison";
+import DevelopmentState from "../components/development-state";
 import { DataError } from "../public-content";
 export const metadata = { title: "Comparar instrumentos | invest.ao" };
 export default async function Page() {
@@ -15,6 +16,7 @@ export default async function Page() {
           comum.
         </p>
       </header>
+      <DevelopmentState feature="multiComparison" compact />
       {market.data ? (
         <Comparison securities={market.data.securities} />
       ) : (
