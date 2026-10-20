@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Icon from "./invest-icon";
+import { signInPath } from "../../lib/navigation";
 import { useAccount } from "./account-provider";
 export default function AccountGate({
   children,
@@ -30,7 +31,7 @@ export default function AccountGate({
           Entra com a mesma conta que usas no iPhone. A tua lista, carteira e
           alertas acompanham-te.
         </p>
-        <Link className="primary-button" href={`/conta?next=${encodeURIComponent(path)}`}>
+        <Link className="primary-button" href={signInPath(path)}>
           Entrar ou criar conta
         </Link>
         {!client && (

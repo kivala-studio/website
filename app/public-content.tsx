@@ -70,7 +70,7 @@ export async function MarketContent({
       </p>
       {preview ? (
         <Link className="text-link" href="/mercado">
-          Consultar todo o mercado <span aria-hidden="true">→</span>
+          Consultar todo o mercado
         </Link>
       ) : (
         <form action="/mercado">

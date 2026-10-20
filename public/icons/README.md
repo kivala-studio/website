@@ -5,3 +5,5 @@ These SVG paths are the Regular-M outlines from the iOS app's
 24 × 24 viewBox. The web uses CSS masks so the same semantic colours apply in light
 and dark appearances. Add or replace icons from that native source to keep the two
 clients consistent.
+
+`unlock.svg` reuses the native lock body and keyhole with an open shackle for the web privacy-off state.

@@ -1,5 +1,7 @@
 import Image from "next/image";
-import Link from "next/link";
+import AppMark from "./components/app-mark";
+import Link from "./components/workspace-link";
+import LandingAuth from "./components/landing-auth";
 import { Suspense } from "react";
 import LandingMarket, { LandingMarketLoading } from "./landing-market";
 import { appDistribution } from "../lib/app-distribution";
@@ -18,7 +20,7 @@ export const metadata = pageMetadata({
 function Brand() {
   return (
     <span className="brand">
-      <Image src="/investao-app-icon.jpg" alt="" width={36} height={36} />
+      <AppMark size={36} />
       <span>
         invest<span className="brand-dot">.</span>ao
       </span>
@@ -144,7 +146,7 @@ const questions = [
   ],
   [
     "Preciso de instalar a aplicação para usar a invest.ao?",
-    "Não. O mercado, a carteira, a lista, os alertas, as comparações e as notícias também estão disponíveis na web. A aplicação para iPhone permite continuar com a mesma conta e receber notificações no dispositivo, se as activares.",
+    "Não. O mercado, a carteira, a lista, os alertas, as comparações e as notícias também estão disponíveis na web após iniciares sessão. A aplicação para iPhone permite continuar com a mesma conta e receber notificações no dispositivo, se as activares.",
   ],
 ];
 
@@ -154,6 +156,7 @@ export default function Home() {
     <div className="landing-page">
       <SiteSchema />
       <PageMotion />
+      <Suspense fallback={null}><LandingAuth /></Suspense>
       <a className="skip-link" href="#conteudo">
         Saltar para o conteúdo
       </a>
@@ -168,7 +171,7 @@ export default function Home() {
             <a href="#perguntas">Perguntas frequentes</a>
           </nav>
           <Link className="launch-link dashboard-link" href="/dashboard">
-            Dashboard <span aria-hidden="true">→</span>
+            Dashboard
           </Link>
           <details className="mobile-nav">
             <summary aria-label="Menu de navegação">
@@ -201,16 +204,16 @@ export default function Home() {
               </p>
               <div className="opening-actions opening-enter">
                 <Link className="solid-button" href="/dashboard">
-                  Abrir dashboard <span aria-hidden="true">→</span>
+                  Abrir dashboard
                 </Link>
                 <a className="quiet-link" href="#aplicacao">
-                  Conhecer a invest.ao <span aria-hidden="true">→</span>
+                  Conhecer a invest.ao
                 </a>
               </div>
               <p className="opening-platforms opening-enter">
-                Consulta o mercado sem conta.
+                Consulta os preços aqui. Entra para explorar.
                 {distribution.url && (
-                  <> <a href="#lancamento">Leva-o também no iPhone <span aria-hidden="true">↗</span></a></>
+                  <> <a href="#lancamento">Leva-o também no iPhone</a></>
                 )}
               </p>
             </div>
@@ -307,7 +310,7 @@ export default function Home() {
                 <p>{chapter.description}</p>
                 <ul>{chapter.details.map((detail) => <li key={detail}>{detail}</li>)}</ul>
                 <Link className="quiet-link" href={chapter.href}>
-                  {chapter.action} <span aria-hidden="true">↗</span>
+                  {chapter.action}
                 </Link>
               </article>
             ))}
@@ -334,15 +337,15 @@ export default function Home() {
           </div>
           <div data-reveal>
             <Link className="solid-button" href="/dashboard">
-              Abrir dashboard <span aria-hidden="true">→</span>
+              Abrir dashboard
             </Link>
           </div>
           <nav className="landing-web-links" aria-label="Explorar funcionalidades na web">
-            <Link href="/carteira">Carteira ↗</Link>
-            <Link href="/lista">Lista ↗</Link>
-            <Link href="/alertas">Alertas ↗</Link>
-            <Link href="/simular">Simulador ↗</Link>
-            <Link href="/noticias">Notícias ↗</Link>
+            <Link href="/carteira">Carteira</Link>
+            <Link href="/lista">Lista</Link>
+            <Link href="/alertas">Alertas</Link>
+            <Link href="/simular">Simulador</Link>
+            <Link href="/noticias">Notícias</Link>
           </nav>
         </section>
         <section
@@ -387,11 +390,10 @@ export default function Home() {
                 <p>A tua lista à mão. Os teus alertas no iPhone. Usa a mesma conta para continuar a acompanhar o que importa, onde estiveres.</p>
                 {distribution.url ? (
                   <a className="landing-store-link" href={distribution.url} target="_blank" rel="noopener noreferrer">
-                    <Image src="/investao-app-icon.jpg" alt="" width={42} height={42} />
+                    <AppMark size={42} />
                     <span><small>INVEST.AO PARA IPHONE</small>{distribution.beta ? "Experimentar no TestFlight" : "Descarregar na App Store"}</span>
-                    <span aria-hidden="true">↗</span>
                   </a>
-                ) : <Link className="quiet-link" href="/dashboard">Continuar no dashboard →</Link>}
+                ) : <Link className="quiet-link" href="/dashboard">Continuar no dashboard</Link>}
                 <p className="landing-companion-note">A web continua aqui. A instalação é opcional.</p>
               </div>
               {distribution.url && distribution.qr && (
@@ -430,6 +432,7 @@ export default function Home() {
         <div className="footer-information">
           <span>© {new Date().getFullYear()} Invest.ao</span>
           <a href="/policy">Política de privacidade</a>
+          <a href="/cookies">Política de cookies</a>
           <a href="mailto:info@invest.ao">Contacto: info@invest.ao</a>
           <p>
             A Invest.ao fornece informação para acompanhar o mercado. Não presta

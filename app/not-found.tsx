@@ -10,10 +10,10 @@ export default function NotFound() {
           pública.
         </p>
         <Link className="text-link" href="/mercado">
-          Consultar mercado →
+          Consultar mercado
         </Link>
         <Link className="text-link" href="/noticias">
-          Ler notícias →
+          Ler notícias
         </Link>
       </div>
     </PublicShell>

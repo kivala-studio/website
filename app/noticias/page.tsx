@@ -38,7 +38,7 @@ export default async function NewsPage({
             ) : null}
             <span>Página {page}</span>
             {result.data.length > 12 ? (
-              <Link href={`/noticias?pagina=${page + 1}`}>Mais notícias →</Link>
+              <Link href={`/noticias?pagina=${page + 1}`}>Mais notícias</Link>
             ) : null}
           </nav>
         </>

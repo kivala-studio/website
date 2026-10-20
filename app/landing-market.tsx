@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "./components/workspace-link";
 import { getMarket } from "../lib/public-data";
 import { kind, reading } from "../lib/market-presentation";
 import MarketReading from "./market-reading";
@@ -21,7 +21,7 @@ export default async function LandingMarket() {
         <p className="eyebrow">BODIVA · ACÇÕES</p>
         <h2>O mercado, à vista.</h2>
         <p>Não foi possível consultar os preços neste momento.</p>
-        <Link className="quiet-link" href="/mercado">Voltar a consultar →</Link>
+        <Link className="quiet-link" href="/mercado">Voltar a consultar</Link>
       </div>
     );
   }
@@ -55,7 +55,7 @@ export default async function LandingMarket() {
       </div>
       <div className="landing-quotes-footer">
         <p>Preços por acção em Kz. Confirma a data de cada referência; os valores podem estar desactualizados.</p>
-        <Link className="quiet-link" href="/mercado">Explorar o mercado <span aria-hidden="true">↗</span></Link>
+        <Link className="quiet-link" href="/mercado">Explorar o mercado</Link>
       </div>
     </>
   );

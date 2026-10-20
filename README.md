@@ -2,9 +2,11 @@
 
 The browser client for the same invest.ao accounts and market data used by iOS. Next.js App Router renders public market/editorial content at request time; authenticated browser requests use Supabase Auth and the existing ownership policies.
 
-The public landing page is served at `/`; its dashboard buttons open `/dashboard`. The streamed price panel reuses `getMarket` and `reading`, including reference dates and expiry behaviour. Download links and the desktop QR code use `appDistribution`; an absent or invalid distribution URL falls back to the web dashboard. Workspace home navigation returns to `/dashboard`, and “Sobre a invest.ao” opens the landing page.
+The public landing page is served at `/`; its dashboard buttons open `/dashboard`. Workspace routes wait for the verified browser session and send signed-out visitors to `/?entrar=1&next=…`, which opens Google/Apple sign-in in a modal over the landing page; after sign-in and onboarding, the original route and query are restored. Apple deletion returns keep their receipt-verification path available after sign-out. Legacy `/conta` links also open the landing modal for guests; signed-in visitors use `/conta` for profile, settings and onboarding. Callbacks show only an access-status frame while the session resolves. The streamed price panel reuses `getMarket` and `reading`, including reference dates and expiry behaviour. Download links and the desktop QR code use `appDistribution`; an absent or invalid distribution URL falls back to the web dashboard. Workspace home navigation returns to `/dashboard`, and “Sobre a invest.ao” opens the landing page.
 
-The browser icon, Apple touch icon and brand images use the published iOS artwork for App Store ID `6812907673` (`ao.invest.iosapp`).
+The browser icon, Apple touch icon and brand mark use the native `PalancaMark.imageset/palanca.png` template artwork, copied into `public/palanca.png`. Branding uses a CSS mask to match the current appearance; the browser and Apple icons use a solid light background.
+
+The public cookies/storage policy is at `/cookies`, with links from the landing footer, privacy policy and sign-in modal. Its inventory covers the short-lived Apple deletion cookies, browser authentication, preferences, personalisation and recap archives.
 
 ## Local development
 
@@ -18,7 +20,7 @@ Set `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` in `.env.local`. Only modern p
 
 ## Account configuration
 
-Enable the existing Google/Apple providers and allow the website's exact `/auth/callback` URL in Supabase Auth, including `http://localhost:3100/auth/callback` for local testing. Email access supports a magic link or an OTP when the configured template includes one. Use the same provider as iOS to recover the same account.
+Enable the existing Google/Apple providers and allow the website's exact `/auth/callback` URL in Supabase Auth, including `http://localhost:3100/auth/callback` for local testing. The supported sign-in methods are Google and Apple; email authentication is not offered. Use the same provider as iOS to recover the same account.
 
 The website uses the existing watchlist, notification preferences/rules, transaction ledger and account-notification RPCs. No separate web accounts or parallel portfolio database are created. Appearance and privacy are browser-local preferences, matching the device-local iOS model.
 

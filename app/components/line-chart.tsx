@@ -150,17 +150,6 @@ export default function LineChart({
           {points.find((p) => p.x === maxX)?.label}
         </text>
       </svg>
-      <label className="chart-scrubber">
-        Explorar observações
-        <input
-          aria-label="Seleccionar observação do gráfico"
-          type="range"
-          min="0"
-          max={days.length - 1}
-          value={picked ?? days.length - 1}
-          onChange={(e) => setSelected(Number(e.target.value))}
-        />
-      </label>
       {picked !== null && (
         <p className="fine-print" aria-live="polite">
           {series

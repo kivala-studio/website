@@ -99,7 +99,7 @@ export default async function ArticlePage({ params }: Props) {
             <h2>Instrumentos desta notícia</h2>
             {a.news_article_securities.map(({ securities: s }) => (
               <Link key={s.id} href={`/mercado/${s.id}`}>
-                {s.symbol} →
+                {s.symbol}
               </Link>
             ))}
           </section>

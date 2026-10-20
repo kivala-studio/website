@@ -17,6 +17,10 @@ export function returnPath(value: string | null): string | null {
   return `${url.pathname}${url.search}`;
 }
 
+export function signInPath(next: string) {
+  return `/?entrar=1&next=${encodeURIComponent(returnPath(next) || "/dashboard")}`;
+}
+
 export function needsOnboarding(user: {
   created_at: string;
   user_metadata: Record<string, unknown>;

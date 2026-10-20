@@ -1,10 +1,11 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import AppMark from "./app-mark";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { useAccount } from "./account-provider";
 import Icon from "./invest-icon";
+import { returnPath, signInPath } from "../../lib/navigation";
 
 const links = [
   ["/dashboard", "Início", "home"],
@@ -20,7 +21,57 @@ const links = [
   ["/alertas", "Alertas", "alert"],
   ["/actividade", "Actividade", "notification"],
 ];
-export default function WorkspaceShell({
+export default function WorkspaceShell({ children }: { children: React.ReactNode }) {
+  const path = usePathname();
+  const params = useSearchParams();
+  const query = params.toString();
+  const router = useRouter();
+  const { user, loading } = useAccount();
+  const entry = path === "/auth/callback" || (path === "/conta" && ["verified", "invalid"].includes(params.get("appleDeletion") || ""));
+  const next = path === "/conta"
+    ? returnPath(params.get("next")) || "/dashboard"
+    : returnPath(`${path}${query ? `?${query}` : ""}`) || "/dashboard";
+  const login = signInPath(next);
+
+  useEffect(() => {
+    if (!entry && !loading && !user) router.replace(login);
+  }, [entry, loading, user, login, router]);
+
+  if (entry) {
+    return <AccessShell>{children}</AccessShell>;
+  }
+  // The verified browser session must resolve before any workspace UI mounts.
+  // Personal data still uses authenticated requests and the existing ownership policies.
+  if (!user) {
+    return (
+      <AccessShell>
+        <section className="access-status" role="status">
+          <p className="eyebrow">A TUA INVEST.AO</p>
+          <h1>{loading ? "A recuperar a tua sessão…" : "Entra para continuar."}</h1>
+          <p>{loading ? "A confirmar o acesso à tua conta." : "A abrir o início de sessão…"}</p>
+          {!loading && <Link className="primary-button" href={login}>Entrar ou criar conta</Link>}
+        </section>
+      </AccessShell>
+    );
+  }
+  return <WorkspaceFrame key={user.id}>{children}</WorkspaceFrame>;
+}
+
+function AccessShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="workspace access-shell">
+      <header className="access-header">
+        <Link className="workspace-brand" href="/" aria-label="invest.ao — início">
+          <AppMark size={36} /><span>invest<span>.</span>ao</span>
+        </Link>
+        <Link className="access-back" href="/">Voltar ao site</Link>
+      </header>
+      <main className="access-main" id="conteudo">{children}</main>
+    </div>
+  );
+}
+
+function WorkspaceFrame({
   children,
 }: {
   children: React.ReactNode;
@@ -59,7 +110,7 @@ export default function WorkspaceShell({
           href="/dashboard"
           aria-label="invest.ao — dashboard"
         >
-          <Image src="/investao-app-icon.jpg" width={31} height={31} alt="" />
+          <AppMark size={31} />
           <span>
             invest<span>.</span>ao
           </span>
@@ -92,6 +143,7 @@ export default function WorkspaceShell({
           </Link>
           <Link href="/">Sobre a invest.ao</Link>
           <Link href="/policy">Privacidade</Link>
+          <Link href="/cookies">Cookies</Link>
         </div>
       </aside>
       <nav className="mobile-tabs" aria-label="Navegação rápida">
@@ -150,7 +202,7 @@ export default function WorkspaceShell({
               }
               title="Privacidade"
             >
-              <Icon name="lock" />
+              <Icon name={privateMode ? "lock" : "unlock"} />
             </button>
             <Link href="/actividade" aria-label="Actividade e notificações">
               <Icon name="notification" />

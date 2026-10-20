@@ -820,3 +820,12 @@ footer {
     transition: none !important;
   }
 }
+
+.app-mark {
+  display: inline-block;
+  flex-shrink: 0;
+  vertical-align: middle;
+  background: currentColor;
+  mask: url("/palanca.png") center / contain no-repeat;
+  -webkit-mask: url("/palanca.png") center / contain no-repeat;
+}

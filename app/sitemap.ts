@@ -5,9 +5,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Only published canonical pages; omit invented modification dates.
   return [
     { url: siteUrl },
-    { url: `${siteUrl}/dashboard` },
-    { url: `${siteUrl}/mercado` },
-    { url: `${siteUrl}/noticias` },
     { url: `${siteUrl}/policy` },
+    { url: `${siteUrl}/cookies` },
   ];
 }

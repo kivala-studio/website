@@ -1,10 +1,10 @@
-import Image from "next/image";
+import AppMark from "./components/app-mark";
 import Link from "next/link";
 import WorkspaceShell from "./components/workspace-shell";
 export function Brand() {
   return (
     <span className="brand">
-      <Image src="/investao-app-icon.jpg" width={32} height={32} alt="" />
+      <AppMark size={32} />
       <span>
         invest<span className="brand-dot">.</span>ao
       </span>

@@ -11,12 +11,15 @@ import HomeAccount from "../components/home-account";
 import Icon from "../components/invest-icon";
 import { pageMetadata } from "../../lib/seo";
 
-export const metadata = pageMetadata({
+export const metadata = {
+  ...pageMetadata({
   title: "Dashboard | invest.ao",
   description:
     "Acompanha o mercado angolano, as notícias e os teus investimentos num só lugar.",
   path: "/dashboard",
-});
+  }),
+  robots: { index: false },
+};
 export default async function Dashboard() {
   const [market, news, pulse] = await Promise.all([
     getMarket(),

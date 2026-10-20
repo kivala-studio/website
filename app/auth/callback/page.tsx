@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAccount } from "../../components/account-provider";
-import { returnPath, needsOnboarding } from "../../../lib/navigation";
+import { returnPath, needsOnboarding, signInPath } from "../../../lib/navigation";
 import { PublicShell } from "../../public-shell";
 export default function Callback() {
   const { client, user, loading } = useAccount();
@@ -17,7 +17,8 @@ export default function Callback() {
           ? next
           : `/conta${next ? `?next=${encodeURIComponent(next)}` : ""}`,
       );
-  }, [user, router, next]);
+    else if (!loading) router.replace(signInPath(next || "/dashboard"));
+  }, [user, loading, router, next]);
   const failed = !loading && !user;
   return (
     <PublicShell>
@@ -30,7 +31,7 @@ export default function Callback() {
             ? "A ligação pode ter expirado ou ter sido aberta noutro navegador. Solicita um novo acesso."
             : "A recuperar a tua conta."}
         </p>
-        <Link className="primary-button" href="/conta">
+        <Link className="primary-button" href={signInPath(next || "/dashboard")}>
           Voltar à conta
         </Link>
       </section>

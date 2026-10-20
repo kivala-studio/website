@@ -25,21 +25,16 @@ export default function AccountPanel({
   useEffect(() => {
     if (user && !needsOnboarding(user) && next) router.replace(next);
   }, [user, next, router]);
-  const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
-  const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
   async function run(action: () => Promise<void>) {
     setBusy(true);
     setError("");
-    setMessage("");
     try {
       await action();
     } catch {
       setError(
-        "Não foi possível concluir. Verifica os dados e tenta novamente.",
+        "Não foi possível iniciar sessão. Tenta novamente.",
       );
     } finally {
       setBusy(false);
@@ -49,8 +44,8 @@ export default function AccountPanel({
   if (!client)
     return (
       <div className="empty-state">
-        O acesso à conta está temporariamente indisponível. Podes continuar a
-        explorar o mercado.
+        O acesso à conta está temporariamente indisponível. Tenta novamente
+        dentro de momentos.
       </div>
     );
   if (user)
@@ -66,9 +61,8 @@ export default function AccountPanel({
   return (
     <div className="auth-layout">
       <section className="form-panel">
-        <p className="eyebrow">BEM-VINDO À INVEST.AO</p>
         <h2>Entra no teu mercado.</h2>
-        <p>Usa o mesmo método de acesso da app para recuperar os teus dados.</p>
+        <p>Continua com Google ou Apple. Usa a mesma conta no iPhone e na web.</p>
         <div className="oauth-buttons">
           {(["google", "apple"] as const).map((provider) => (
             <button
@@ -89,81 +83,10 @@ export default function AccountPanel({
             </button>
           ))}
         </div>
-        <div className="form-divider">ou com o teu email</div>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            void run(async () => {
-              if (sent) {
-                const { error } = await client.auth.verifyOtp({
-                  email,
-                  token: code,
-                  type: "email",
-                });
-                if (error) throw error;
-              } else {
-                const { error } = await client.auth.signInWithOtp({
-                  email,
-                  options: {
-                    emailRedirectTo: `${location.origin}${callback}`,
-                  },
-                });
-                if (error) throw error;
-                setSent(true);
-                setMessage(
-                  "Enviámos um email. Abre a ligação neste navegador ou introduz o código, se incluído.",
-                );
-              }
-            });
-          }}
-        >
-          <label>
-            Email
-            <input
-              type="email"
-              required
-              autoComplete="email"
-              value={email}
-              disabled={sent || busy}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </label>
-          {sent && (
-            <label>
-              Código de acesso
-              <input
-                required
-                autoComplete="one-time-code"
-                inputMode="numeric"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-              />
-            </label>
-          )}
-          <button className="primary-button" disabled={busy}>
-            {busy
-              ? "A processar…"
-              : sent
-                ? "Confirmar código"
-                : "Enviar acesso por email"}
-          </button>
-          {sent && (
-            <button
-              type="button"
-              className="text-button"
-              onClick={() => {
-                setSent(false);
-                setCode("");
-              }}
-            >
-              Usar outro email / reenviar
-            </button>
-          )}
-        </form>
-        <Feedback error={error} message={message} />
+        <Feedback error={error} />
         <p className="fine-print">
           Ao continuar, podes criar uma conta ou entrar numa conta existente.
-          Consulta a <a href="/policy">política de privacidade</a>.
+          Consulta a <a href="/policy">política de privacidade</a> e a <a href="/cookies">política de cookies</a>.
         </p>
       </section>
       <aside className="auth-story">
