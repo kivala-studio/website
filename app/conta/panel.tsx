@@ -12,6 +12,7 @@ import { clearAccountLocalData } from "../../lib/clear-account-local-data";
 import { finishDeletedAccount } from "../../lib/account-cleanup";
 import { SettingsPanel } from "./settings";
 import DevelopmentState from "../components/development-state";
+import { authIssueMessage, oauthCallbackURL, rememberAuthDestination } from "../../lib/web-auth";
 
 export default function AccountPanel({
   securities,
@@ -24,7 +25,6 @@ export default function AccountPanel({
   const router = useRouter();
   const params = useSearchParams();
   const next = returnPath(params.get("next"));
-  const callback = `/auth/callback${next ? `?next=${encodeURIComponent(next)}` : ""}`;
   useEffect(() => {
     if (user && !needsOnboarding(user) && next) router.replace(next);
   }, [user, next, router]);
@@ -74,9 +74,10 @@ export default function AccountPanel({
               disabled={busy}
               onClick={() =>
                 run(async () => {
+                  rememberAuthDestination(next);
                   const { error } = await client.auth.signInWithOAuth({
                     provider,
-                    options: { redirectTo: `${location.origin}${callback}` },
+                    options: { redirectTo: oauthCallbackURL(location.origin) },
                   });
                   if (error) throw error;
                 })
@@ -86,7 +87,7 @@ export default function AccountPanel({
             </button>
           ))}
         </div>
-        <Feedback error={error} />
+        <Feedback error={error || authIssueMessage(params.get("auth_error"))} />
         <p className="fine-print">
           Ao continuar, podes criar uma conta ou entrar numa conta existente.
           Consulta a <a href="/policy">política de privacidade</a> e a <a href="/cookies">política de cookies</a>.

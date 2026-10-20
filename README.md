@@ -24,7 +24,11 @@ Set `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` in `.env.local`. Only modern p
 
 ## Account configuration
 
-Enable the existing Google/Apple providers and allow the website's exact `/auth/callback` URL in Supabase Auth, including `http://localhost:3100/auth/callback` for local testing. The supported sign-in methods are Google and Apple; email authentication is not offered. Use the same provider as iOS to recover the same account.
+Enable the existing Google/Apple providers and allow the website's exact `/auth/callback` URL in Supabase Auth, including `http://localhost:3100/auth/callback` for local testing and `https://invest.ao/auth/callback` for production. The provider receives that stable callback URL; the requested workspace route/query is kept in this tab's `investao.auth-return.v1` sessionStorage record, expires after 30 minutes and is consumed once on return. Legacy callback `next` parameters remain supported and validated. The browser SDK detects/exchanges the PKCE code once; the callback reuses its initialization result instead of exchanging it twice. Cancelled or failed callbacks reopen the modal with a fixed, safe explanation and the original internal destination. The supported sign-in methods are Google and Apple; email authentication is not offered. Use the same provider as iOS to recover the same account.
+
+Focused auth checks: `node --experimental-strip-types --test tests/web-auth.test.mjs`. These use the installed browser client and intercepted, fictional token/user responses; they verify PKCE code exchange, session reload, sign-out, exact provider redirect URLs, safe one-time destinations and callback errors. They do not replace real Google/Apple consent and provider-return checks.
+
+See the [web auth verification report](docs/web-auth-verification.md) for confirmed checks and the remaining live provider/allowlist verification.
 
 The website uses the existing watchlist, notification preferences/rules, transaction ledger and account-notification RPCs. No separate web accounts or parallel portfolio database are created. Appearance and privacy are browser-local preferences, matching the device-local iOS model.
 
