@@ -150,7 +150,7 @@ export default function WorkspaceShell({
               }
               title="Privacidade"
             >
-              <Icon name={privateMode ? "eye-off" : "eye"} />
+              <Icon name="lock" />
             </button>
             <Link href="/actividade" aria-label="Actividade e notificações">
               <Icon name="notification" />
