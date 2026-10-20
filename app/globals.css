@@ -24,7 +24,8 @@
   --positive-soft: #e4f1eb;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  :root:not([data-theme="light"]),
+  :root:has(.landing-page) {
     color-scheme: dark;
     --paper: #090b0f;
     --surface: #12151b;
@@ -48,7 +49,8 @@
     --positive-soft: #14352c;
   }
 }
-:root[data-theme="dark"] {
+/* The landing page always follows the system, including its shared dialogs. */
+:root[data-theme="dark"]:not(:has(.landing-page)) {
   color-scheme: dark;
   --paper: #090b0f;
   --surface: #12151b;

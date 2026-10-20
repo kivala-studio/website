@@ -1221,13 +1221,3 @@ html:has(.landing-page) {
 .landing-page .landing-auth .form-panel { gap: 0; }
 .landing-page .landing-auth-header { position: absolute; top: 16px; right: 16px; margin: 0; }
 .landing-page .landing-auth .form-panel h2 { padding-right: 32px; margin-top: 4px; }
-
-@media (min-width: 761px) and (max-width: 1100px) {
-  .landing-page .desktop-nav { gap: 12px; font-size: 11px; }
-  .landing-page .masthead-inner { gap: 12px; }
-  .landing-page .masthead .theme-select > span { display: none; }
-}
-@media (max-width: 760px) {
-  .landing-page .masthead-inner > .theme-select { display: none; }
-  .landing-page .mobile-nav .theme-select { display: flex; padding-block: 12px; }
-}

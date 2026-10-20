@@ -14,7 +14,7 @@ On the first visit, the consent prompt offers equally prominent accept-all and r
 
 ## Appearance
 
-The entire website uses the same light/dark palette and Sistema, Claro and Escuro choices as the apps. The selector is available on the landing header (inside the menu on small screens), access pages, policy pages, workspace sidebar and account settings. The browser-local `investao.appearance` preference applies before the first paint and stays in sync across tabs. Sistema follows live OS changes through CSS and is also the fallback when storage is unavailable or the saved value is invalid. Device screenshots and generated social preview images keep their original artwork.
+The entire website uses the same light/dark palette as the apps. The landing page always follows the system theme and has no theme selector, even when a different appearance is saved for the dashboard. Access pages, policy pages, the workspace sidebar and account settings offer Sistema, Claro and Escuro. The browser-local `investao.appearance` preference applies before the first paint on those pages and stays in sync across tabs. Sistema follows live OS changes through CSS and is also the fallback when storage is unavailable or the saved value is invalid. Device screenshots and generated social preview images keep their original artwork.
 
 ## Local development
 
