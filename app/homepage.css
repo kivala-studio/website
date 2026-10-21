@@ -133,7 +133,7 @@ html:has(.landing-page) { scroll-padding-top: 96px; }
   .landing-page .questions-section { gap: 40px; }
 }
 @media (max-width: 760px) {
-  html:has(.landing-page) { scroll-padding-top: 84px; }
+  html:has(.landing-page) { scroll-padding-top: 144px; }
   .landing-page .container { width: calc(100% - 40px); }
   .landing-page .masthead-inner { height: 68px; gap: 12px; }
   .landing-page .brand { font-size: 23px; gap: 6px; }

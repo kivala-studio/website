@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props) {
   const s = result?.data?.securities.find((s) => s.id === id);
   return pageMetadata({
     title: s
-      ? `${s.symbol} — ${s.name || s.symbol} | invest.ao`
+      ? `${s.issuers?.short_name || s.symbol} — ${s.symbol} | invest.ao`
       : "Instrumento | invest.ao",
     description: s
       ? `Consulta a cotação disponível de ${s.name || s.symbol}, com data e contexto da referência BODIVA.`
@@ -53,8 +53,9 @@ export default async function InstrumentPage({ params }: Props) {
       </Link>
       <header className="page-heading">
         <p className="eyebrow">{type}</p>
-        <h1>{s.symbol}</h1>
+        <h1>{s.issuers?.short_name || s.symbol}</h1>
         <p>{issuer?.data?.name || s.name || s.symbol}</p>
+        <p className="instrument-symbol">{s.symbol}</p>
       </header>
       <section className="instrument-overview">
         <MarketReading large security={s} value={reading(s, result.data)} />

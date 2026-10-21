@@ -1,17 +1,31 @@
-# Página inicial invest.ao
+# Página inicial e consulta pública invest.ao
 
-A página inicial apresenta a invest.ao para web e iPhone, com preços públicos de referência e acesso às funcionalidades através da conta existente.
+A página inicial apresenta a invest.ao para web e iPhone, com consulta pública de mercado e acesso contextual à conta. A referência de hierarquia é a [CoinStats](https://coinstats.app/); marca, paleta, conteúdo e capturas são próprios.
 
-## Direcção visual
+## Acesso público e pessoal
 
-A referência é a hierarquia de produto da [CoinStats](https://coinstats.app/): introdução curta, acções claras e mercado próximo do início. A composição usa a marca da palanca, o azul da invest.ao, conteúdo do mercado angolano e capturas próprias. Não reutiliza imagens, texto, ícones de entidades ou código da referência.
+`lib/public-routes.ts` permite apenas `/`, `/pesquisa`, `/mercado`, `/mercado/[id]`, `/noticias`, `/noticias/[slug]`, `/planos` e as páginas de políticas. `PublicShell` apresenta a navegação pública nestes destinos, antes de resolver uma sessão. Nas restantes rotas continua a usar `WorkspaceShell`, com a guarda de sessão existente. A página 404 é pública e não recebe conteúdos pessoais.
 
-`app/page.tsx` organiza introdução, atalhos, mercado, funcionalidades, continuação no iPhone e perguntas. `app/homepage.css` contém os estilos da página e preserva o diálogo de autenticação existente. As antigas folhas `landing.css` e `product-layout.css` não são importadas pela home. As cores continuam a vir de `globals.css`, seguindo o tema do sistema.
+`SiteHeader` partilha pesquisa por instrumento/emitente/notícia e ligações para mercado, notícias e planos. `WorkspaceLink` deixa a consulta pública navegar directamente; os destinos pessoais continuam a abrir o início de sessão. Guardar um instrumento mantém o seu ID no destino da lista após o login, sem efectuar uma inserção automática. Criar alertas mantém o instrumento no destino de alertas. As contas Google/Apple e o onboarding não foram substituídos.
 
-`LandingMarket` reutiliza a consulta pública existente e `MarketReading`: cinco acções, preços, datas, variações confirmadas e estados de carregamento, falha e ausência de dados. A tabela passa para uma composição de duas colunas em ecrãs pequenos. Não há gráficos ilustrativos nem preços inventados. As iniciais dos símbolos identificam os instrumentos; não são logótipos dos emitentes.
+Pesquisa e catálogo reutilizam dados anónimos, filtros, ordenação, cotações datadas e estados de falha existentes. Os detalhes incluem histórico por período, factos do instrumento, emitente, dividendos/relatórios disponíveis e notícias relacionadas. Notícias continuam limitadas a artigos publicados e datas já decorridas. Não foram alterados grants, RLS, funções SQL ou segredos; não se usam credenciais privilegiadas para a consulta pública.
 
-Os atalhos e convites mantêm `WorkspaceLink`, que abre o diálogo Google/Apple para visitantes e encaminha utilizadores autenticados para o destino. A distribuição iOS e o QR continuam a usar `appDistribution`. As capturas são identificadas como históricas e não representam dados actuais.
+`app/homepage.css` contém a apresentação da home; `app/browse.css` contém o cabeçalho e as páginas públicas. Ambos usam os tokens de aparência de `globals.css`. As antigas folhas `landing.css` e `product-layout.css` não são importadas pela home. As capturas do iPhone estão identificadas como históricas. Sitemap e texto de privacidade reflectem as entradas públicas.
+
+## Planos e limites
+
+`/planos` compara o Gratuito e o Plus sem exigir conta. Os limites vêm do contrato nativo e das funções de subscrição existentes: Gratuito com 3 instrumentos guardados, movimentos automáticos de 1 instrumento e um par de 2 instrumentos por semana; Plus com até 500 guardados e comparações sem limite semanal, até 3 instrumentos no iPhone. A web continua a suportar 2 instrumentos por comparação e identifica a diferença. Alertas com preços definidos pelo utilizador não são apresentados como exclusivos do Plus.
+
+A página identifica as opções mensal/anual e encaminha para a distribuição oficial do iPhone. Não publica preços de demonstração do código iOS, não oferece um teste incondicional e não cria checkout web. O preço localizado, a disponibilidade e a elegibilidade são apresentados na aplicação/App Store antes da confirmação.
+
+A comparação permanece protegida. `get_subscription_access()` lê o estado da conta; `authorize_chart_comparison(security_ids)` decide e aplica o acesso e a quota. A web exige confirmação explícita do par, verifica primeiro dois fechos comuns no período seleccionado e só depois pede autorização. Não monta o gráfico se houver falha, resposta de acesso inválida, mudança de conta ou recusa da quota. Reabrir o par ou mudar o período não contorna a decisão do servidor. A activação global de limites e as excepções de teste continuam controladas pelo backend. Os limites de lista e movimentos mantêm os triggers existentes; erros específicos agora explicam o limite e ligam aos planos.
 
 ## Verificação
 
-Build de produção com TypeScript e ESLint dirigido a `app/page.tsx` e `app/landing-market.tsx`. Inspecção no browser em desktop e em frames de 390px (escuro) e 320px (claro), incluindo preços, navegação, abertura/fecho do diálogo de acesso e perguntas. Não foram adicionados testes para alterações de apresentação. O login completo com fornecedores externos não faz parte desta alteração.
+- Seis testes dirigidos de fronteira de rotas e autorização de comparação: rotas pessoais/disfarçadas, quota recusada, falha de dados, período sem dois fechos comuns, mudança de conta, Plus/rollout e resposta de acesso inválida.
+- Quatro testes existentes do fluxo OAuth/PKCE, restauro de sessão e logout.
+- ESLint nos ficheiros alterados e build de produção com TypeScript.
+- Consulta anónima real: catálogo HTTP 200; lista pessoal, regras de alerta e RPCs de acesso/autorização recusam pedidos anónimos com HTTP 401. Não se alterou qualquer registo ou configuração no backend.
+- Inspecção no browser: pesquisa, catálogo/filtros, detalhe/histórico, notícias/leitura, planos e destinos pessoais protegidos; layouts mobile claros/escuros.
+
+Não foi efectuada uma compra, um login real num fornecedor externo ou uma alteração de subscrição/quotas em contas reais. As respostas Free/Plus e de recusa são verificadas nos testes dirigidos. A alteração não publica em produção.

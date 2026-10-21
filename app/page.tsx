@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Suspense } from "react";
-import AppMark from "./components/app-mark";
+import SiteHeader from "./components/site-header";
+import SiteBrand from "./components/site-brand";
 import Icon from "./components/invest-icon";
 import Link from "./components/workspace-link";
 import LandingAuth from "./components/landing-auth";
@@ -14,10 +15,6 @@ import "./homepage.css";
 
 export const metadata = pageMetadata({ title: siteTitle, description: siteDescription, path: "/" });
 
-function Brand() {
-  return <span className="brand"><AppMark size={32} /><span>invest<span className="brand-dot">.</span>ao</span></span>;
-}
-
 const shortcuts = [
   { icon: "markets", title: "Mercado", description: "Conhece os títulos", href: "/mercado" },
   { icon: "portfolio", title: "Carteira", description: "Reúne os investimentos", href: "/carteira" },
@@ -29,7 +26,7 @@ const questions = [
   ["O que é a invest.ao?", "A invest.ao reúne o mercado de capitais de Angola, a tua carteira, a tua lista e os teus alertas. Podes consultar preços, comparar instrumentos e acompanhar os teus investimentos no navegador ou no iPhone, com a mesma conta."],
   ["Posso comprar e vender títulos?", "Não. A invest.ao é uma ferramenta de informação e acompanhamento, não uma corretora. Não executa ordens de compra ou venda de títulos nem presta aconselhamento financeiro."],
   ["Os preços são em tempo real?", "Cada preço indica o tipo e a data da referência disponível. A actualização depende das fontes de mercado e não é uma garantia de cotação em tempo real. Confirma sempre a data apresentada em cada instrumento."],
-  ["Preciso de instalar a aplicação?", "Não. O mercado, a carteira, a lista, os alertas, as comparações e as notícias também estão disponíveis na web após iniciares sessão. No iPhone, podes continuar com a mesma conta e receber notificações, se as activares."],
+  ["Preciso de instalar a aplicação?", "Não. Pesquisa instrumentos, consulta o mercado, lê notícias e conhece os planos sem iniciar sessão. Para guardar a tua lista, organizar a carteira, criar alertas ou comparar instrumentos, entra na tua conta. No iPhone, podes continuar com a mesma conta."],
 ];
 
 export default function Home() {
@@ -40,36 +37,17 @@ export default function Home() {
       <PageMotion />
       <Suspense fallback={null}><LandingAuth /></Suspense>
       <a className="skip-link" href="#conteudo">Saltar para o conteúdo</a>
-      <header className="masthead">
-        <div className="container masthead-inner">
-          <a href="#conteudo" aria-label="invest.ao — início"><Brand /></a>
-          <nav className="desktop-nav" aria-label="Navegação principal">
-            <a href="#precos">Mercado</a>
-            <a href="#aplicacao">Funcionalidades</a>
-            <a href="#lancamento">App para iPhone</a>
-          </nav>
-          <Link className="header-action" href="/dashboard">Entrar <Icon name="arrow-up-right" size={16} /></Link>
-          <details className="mobile-nav">
-            <summary aria-label="Menu de navegação"><span /><span /></summary>
-            <nav aria-label="Navegação móvel">
-              <a href="#precos">Mercado</a>
-              <a href="#aplicacao">Funcionalidades</a>
-              <a href="#lancamento">App para iPhone</a>
-              <a href="#perguntas">Perguntas frequentes</a>
-            </nav>
-          </details>
-        </div>
-      </header>
+      <SiteHeader />
       <main id="conteudo">
         <section className="opening container" aria-labelledby="hero-title">
           <p className="hero-eyebrow"><span aria-hidden="true" /> O MERCADO ANGOLANO, MAIS PERTO</p>
           <h1 id="hero-title">O teu mercado.<br /><span className="accent-text">Uma nova perspectiva.</span></h1>
           <p className="opening-description">Dos preços à tua carteira, vê o mercado de capitais de Angola<br className="desktop-break" /> com mais clareza. No navegador e no iPhone.</p>
           <div className="opening-actions">
-            <Link className="solid-button" href="/dashboard">Começar agora <Icon name="arrow-right" size={18} /></Link>
-            <a className="outline-button" href="#precos">Explorar o mercado <Icon name="arrow-down" size={17} /></a>
+            <Link className="solid-button" href="/mercado">Explorar o mercado <Icon name="arrow-right" size={18} /></Link>
+            <a className="outline-button" href="#aplicacao">Conhecer a invest.ao <Icon name="arrow-down" size={17} /></a>
           </div>
-          <p className="opening-note">Uma conta. O teu mercado, onde estiveres.</p>
+          <p className="opening-note">Pesquisa e informação de mercado sem iniciar sessão.</p>
           <nav className="product-shortcuts" aria-label="Explorar a invest.ao">
             {shortcuts.map((item) => <Link key={item.href} href={item.href} className="product-shortcut">
               <span className="shortcut-icon"><Icon name={item.icon} size={22} /></span>
@@ -141,8 +119,8 @@ export default function Home() {
         </section>
       </main>
       <footer className="site-footer container">
-        <div className="footer-heading"><a href="#conteudo" aria-label="invest.ao — início"><Brand /></a><p>O mercado de capitais de Angola.<br />Informação para acompanhar.</p><a href="#conteudo" className="quiet-link">Voltar ao início <Icon name="arrow-up" size={16} /></a></div>
-        <div className="footer-information"><span>© {new Date().getFullYear()} invest.ao</span><a href="/policy">Privacidade</a><a href="/cookies">Cookies</a><CookiePreferencesButton /><a href="mailto:info@invest.ao">info@invest.ao</a></div>
+        <div className="footer-heading"><a href="#conteudo" aria-label="invest.ao — início"><SiteBrand /></a><p>O mercado de capitais de Angola.<br />Informação para acompanhar.</p><a href="#conteudo" className="quiet-link">Voltar ao início <Icon name="arrow-up" size={16} /></a></div>
+        <div className="footer-information"><span>© {new Date().getFullYear()} invest.ao</span><a href="/policy">Privacidade</a><a href="/planos">Planos</a><a href="/cookies">Cookies</a><CookiePreferencesButton /><a href="mailto:info@invest.ao">info@invest.ao</a></div>
         <p className="footer-disclaimer">A invest.ao fornece informação para acompanhar o mercado. Não presta aconselhamento financeiro nem executa operações de compra ou venda.</p>
       </footer>
     </div>

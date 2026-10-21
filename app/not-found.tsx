@@ -2,7 +2,7 @@ import Link from "next/link";
 import { PublicShell } from "./public-shell";
 export default function NotFound() {
   return (
-    <PublicShell>
+    <PublicShell publicPage>
       <div className="page-heading">
         <h1>Não disponível.</h1>
         <p>

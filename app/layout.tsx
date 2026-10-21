@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { siteDescription, siteName, siteTitle, siteUrl } from "../lib/seo";
 import "./globals.css";
 import "./workspace.css";
+import "./browse.css";
 import { AccountProvider } from "./components/account-provider";
 import { PersonalisationProvider } from "./components/personalisation-provider";
 import { connection } from "next/server";

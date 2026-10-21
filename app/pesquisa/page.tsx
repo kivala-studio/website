@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { PublicShell } from "../public-shell";
 import { getMarket, read, type Article } from "../../lib/public-data";
 import { reading } from "../../lib/market-presentation";
@@ -10,10 +11,10 @@ export const metadata = {
 export default async function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string | string[] }>;
 }) {
   const { q = "" } = await searchParams;
-  const query = q.trim().slice(0, 100);
+  const query = typeof q === "string" ? q.trim().slice(0, 100) : "";
   const normalize = (s: string) =>
     s
       .normalize("NFD")
@@ -68,10 +69,33 @@ export default async function Page({
           Pesquisar
         </button>
       </form>
+      {!query && (
+        <section className="search-intro">
+          <h2>Um nome, um símbolo ou uma notícia.</h2>
+          <p>
+            Pesquisa instrumentos e emitentes do mercado angolano ou encontra
+            notícias publicadas. A consulta não exige conta.
+          </p>
+          <div className="search-suggestions">
+            {market.data?.securities
+              .filter(
+                (s) =>
+                  s.security_type === "equity" || s.security_type === "stock",
+              )
+              .slice(0, 4)
+              .map((s) => (
+                <Link key={s.id} prefetch={false} href={`/mercado/${s.id}`}>
+                  {s.issuers?.short_name || s.symbol} →
+                </Link>
+              ))}
+            <Link href="/mercado">Todo o mercado →</Link>
+          </div>
+        </section>
+      )}
       {query && (
         <>
           <section className="public-section">
-            <h2>
+            <h2 className="search-result-heading">
               Instrumentos <small>({rows.length})</small>
             </h2>
             {market.error ? (
@@ -81,11 +105,16 @@ export default async function Page({
             )}
           </section>
           <section className="public-section">
-            <h2>Notícias</h2>
+            <h2 className="search-result-heading">Notícias</h2>
             {news === null ? (
               <DataError content="as notícias" />
-            ) : (
+            ) : news.length ? (
               <NewsList articles={news} />
+            ) : (
+              <div className="data-state" role="status">
+                <h3>Nenhuma notícia encontrada.</h3>
+                <p>Tenta outro nome ou termo de pesquisa.</p>
+              </div>
             )}
           </section>
         </>

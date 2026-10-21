@@ -13,12 +13,19 @@ import type { Market } from "../../lib/public-data";
 import { kind, reading } from "../../lib/market-presentation";
 import { usePersonalisation } from "../components/personalisation-provider";
 import MarketReading from "../market-reading";
-export default function Watchlist({ market }: { market: Market | null }) {
+import { subscriptionMessage } from "../../lib/subscriptions";
+export default function Watchlist({
+  market,
+  initialQuery = "",
+}: {
+  market: Market | null;
+  initialQuery?: string;
+}) {
   const { record, refresh } = usePersonalisation();
   const { client, user } = useAccount();
   const load = useCallback(() => watchlist(client!, user!.id), [client, user]);
   const state = useResource(load);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [removed, setRemoved] = useState<Watch | null>(null);
@@ -31,8 +38,8 @@ export default function Watchlist({ market }: { market: Market | null }) {
       await state.reload();
       refresh();
       return true;
-    } catch {
-      setError("Não foi possível actualizar a lista. Tenta novamente.");
+    } catch (cause) {
+      setError(subscriptionMessage(cause));
       return false;
     } finally {
       setBusy(false);
@@ -53,6 +60,11 @@ export default function Watchlist({ market }: { market: Market | null }) {
     <>
       <ResourceState {...state} retry={state.reload} />
       <Feedback error={error} />
+      {error && (
+        <Link className="text-button" href="/planos">
+          Consultar planos e limites →
+        </Link>
+      )}
       {removed && (
         <div className="success-state" role="status">
           Instrumento removido.{" "}

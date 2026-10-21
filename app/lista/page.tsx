@@ -6,8 +6,15 @@ export const metadata = {
   title: "A minha lista | invest.ao",
   robots: { index: false },
 };
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ instrumento?: string }>;
+}) {
   const result = await getMarket();
+  const { instrumento } = await searchParams;
+  const initialSymbol =
+    result.data?.securities.find((s) => s.id === instrumento)?.symbol || "";
   return (
     <PublicShell>
       <header className="page-heading">
@@ -16,7 +23,7 @@ export default async function Page() {
         <p>Os instrumentos que queres acompanhar, sempre à mão.</p>
       </header>
       <AccountGate feature="A tua lista">
-        <Watchlist market={result.data} />
+        <Watchlist market={result.data} initialQuery={initialSymbol} />
       </AccountGate>
     </PublicShell>
   );

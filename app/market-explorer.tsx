@@ -119,12 +119,12 @@ export default function MarketExplorer({
         {!shown.length ? (
           <div className="data-state" role="status">
             <h3>
-              {query
+              {query || searchResults
                 ? "Nenhum instrumento encontrado."
                 : "Não há instrumentos disponíveis."}
             </h3>
             <p>
-              {query
+              {query || searchResults
                 ? "Tenta outro nome ou símbolo."
                 : "Volta a consultar mais tarde."}
             </p>
