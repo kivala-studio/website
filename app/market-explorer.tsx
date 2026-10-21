@@ -92,8 +92,11 @@ export default function MarketExplorer({
       )}
       <div className="market-list">
         <div className="market-labels" aria-hidden="true">
-          <span>Instrumento / tipo</span>
-          <span>Cotação / variação</span>
+          <span>Instrumento</span>
+          <div className="market-reading-labels">
+            <span>Preço / referência</span>
+            <span className="market-change-label">Variação</span>
+          </div>
         </div>
         {shown.map(({ security: s, value }) => (
           <Link
@@ -106,12 +109,19 @@ export default function MarketExplorer({
             className="market-row"
             key={s.id}
           >
-            <div className="instrument-identity">
-              <strong>{s.symbol}</strong>
-              <span>
-                {s.issuers?.name || (s.name !== s.symbol ? s.name : null)}
+            <div className="market-instrument">
+              <span className="market-instrument-mark" aria-hidden="true">
+                {(s.issuers?.short_name || s.symbol).slice(0, 3)}
               </span>
-              <small>{kind(s)}</small>
+              <div className="instrument-identity">
+                <strong>{s.issuers?.short_name || s.symbol}</strong>
+                <span>
+                  {s.issuers?.short_name
+                    ? s.symbol
+                    : s.issuers?.name || (s.name !== s.symbol ? s.name : null)}
+                </span>
+                <small>{kind(s)}</small>
+              </div>
             </div>
             <MarketReading security={s} value={value} />
           </Link>

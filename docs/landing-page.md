@@ -12,6 +12,10 @@ Pesquisa e catálogo reutilizam dados anónimos, filtros, ordenação, cotaçõe
 
 `app/homepage.css` contém a apresentação da home; `app/browse.css` contém o cabeçalho e as páginas públicas. Ambos usam os tokens de aparência de `globals.css`. As antigas folhas `landing.css` e `product-layout.css` não são importadas pela home. As capturas do iPhone estão identificadas como históricas. Sitemap e texto de privacidade reflectem as entradas públicas.
 
+## Apresentação das listas públicas
+
+Catálogo, resultados de pesquisa e painel de acções da home usam linhas abertas, sem divisórias horizontais. O espaçamento, os monogramas circulares e o realce de hover/foco agrupam cada instrumento. No desktop, preço/referência e variação têm colunas alinhadas; no mobile, a variação fica junto ao preço, mantendo as datas e os avisos de referências datadas. A comparação de planos também prescinde de grelha interna, com grupos por funcionalidade no mobile.
+
 ## Planos e limites
 
 `/planos` compara o Gratuito e o Plus sem exigir conta. Os limites vêm do contrato nativo e das funções de subscrição existentes: Gratuito com 3 instrumentos guardados, movimentos automáticos de 1 instrumento e um par de 2 instrumentos por semana; Plus com até 500 guardados e comparações sem limite semanal, até 3 instrumentos no iPhone. A web continua a suportar 2 instrumentos por comparação e identifica a diferença. Alertas com preços definidos pelo utilizador não são apresentados como exclusivos do Plus.

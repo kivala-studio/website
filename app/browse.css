@@ -19,15 +19,26 @@ html:has(.browse-page) { scroll-padding-top: 104px; }
 .browse-main .page-heading h1 { font-size: clamp(32px, 4.5vw, 54px); }
 .browse-main .page-heading > p:last-child { font-size: 15px; }
 .browse-main .page-heading > p.instrument-symbol { font-size: 11px; letter-spacing: .08em; margin-top: 12px; }
-.browse-main .market-list { padding: 0 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
-.browse-main .market-labels { padding-top: 18px; }
-.browse-main .market-row:last-child { border-bottom: 0; }
-.browse-main .market-row { padding-block: 22px; }
+.browse-main .market-list { padding: 12px; border: 1px solid color-mix(in srgb, var(--line) 45%, transparent); border-radius: 24px; background: var(--surface); }
+.browse-main .market-labels, .browse-main .market-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 36px; padding-inline: 20px; align-items: center; }
+.browse-main .market-labels { padding-block: 16px; border: 0; font-size: 11px; }
+.browse-main .market-row { min-height: 88px; padding-block: 16px; border: 0; border-radius: 14px; }
+.browse-main .market-row:hover, .browse-main .market-row:focus-visible { background: color-mix(in srgb, var(--ink) 4%, var(--surface)); color: var(--ink); }
+.browse-main .instrument-identity { gap: 2px; }
+.browse-main .instrument-identity strong { font-size: 16px; }
+.browse-main .instrument-identity span { font-size: 12px; }
+.browse-main .instrument-identity small { font-size: 11px; }
+.browse-main .market-reading-labels, .browse-main .market-row .price-reading { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); column-gap: 32px; }
+.browse-main .market-change-label { display: block; }
+.browse-main .market-row .price-reading strong { grid-column: 1; font-size: 17px; }
+.browse-main .market-row .price-reading > span { grid-column: 1; font-size: 10px; }
+.browse-main .market-row .movement { grid-column: 2; grid-row: 1 / span 3; align-self: center; font-size: 13px; }
 .browse-main .market-meta { margin-bottom: 18px; }
 .browse-main .news-list { display: grid; gap: 16px; }
 .browse-main .news-list article { padding: 26px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; grid-template-columns: 110px 1fr; }
 .browse-main .news-list h3 { font-size: 20px; }
 .browse-main .news-list p { font-size: 13px; }
+.browse-main .instrument-facts > div { border: 0; padding-block: 10px; }
 .browse-main .instrument-overview { border: 1px solid var(--line); border-radius: 18px; padding: 28px; background: var(--surface); gap: 40px; }
 .browse-main .web-invitation { margin-block: 32px 0; }
 .browse-main .form-grid { grid-template-columns: minmax(0, 580px) auto; align-items: end; padding-bottom: 30px; }
@@ -61,9 +72,10 @@ html:has(.browse-page) { scroll-padding-top: 104px; }
 .plan-note { color: var(--muted); font-size: 12px; line-height: 1.9; margin-top: 20px; }
 .plan-comparison { margin-top: 44px; }
 .plan-comparison h2 { margin-bottom: 20px; }
-.plan-comparison table { width: 100%; border-collapse: collapse; text-align: left; background: var(--surface); }
-.plan-comparison th, .plan-comparison td { padding: 18px 20px; border-bottom: 1px solid var(--line); font-size: 13px; line-height: 1.7; }
+.plan-comparison table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; background: var(--surface); border: 1px solid color-mix(in srgb, var(--line) 45%, transparent); border-radius: 22px; overflow: hidden; }
+.plan-comparison th, .plan-comparison td { padding: 22px 24px; border: 0; font-size: 13px; line-height: 1.7; }
 .plan-comparison th { font-weight: 600; }
+.plan-comparison thead { background: color-mix(in srgb, var(--ink) 3%, var(--surface)); }
 .plan-comparison td { color: var(--muted); }
 .plan-comparison tbody th { font-weight: 500; }
 .plan-comparison th:first-child { width: 40%; }
@@ -95,8 +107,20 @@ html:has(.browse-page) { scroll-padding-top: 104px; }
   .browse-mobile-nav nav a:last-child { border-bottom: 0; }
   .browse-main > .page-heading { padding-block: 32px; }
   .browse-main .form-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
-  .browse-main .market-list { padding-inline: 16px; }
-  .browse-main .market-row { padding-block: 18px; }
+  .browse-main .market-list { padding: 8px; border-radius: 18px; }
+  .browse-main .market-labels, .browse-main .market-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; padding-inline: 10px; }
+  .browse-main .market-labels { padding-block: 14px; font-size: 10px; }
+  .browse-main .market-row { padding-block: 18px; min-height: 112px; }
+  .browse-main .market-instrument { gap: 10px; }
+  .browse-main .market-instrument-mark { width: 32px; height: 32px; font-size: 8px; }
+  .browse-main .instrument-identity strong { font-size: 14px; }
+  .browse-main .instrument-identity span, .browse-main .instrument-identity small { font-size: 10px; }
+  .browse-main .market-reading-labels { display: block; }
+  .browse-main .market-change-label { display: none; }
+  .browse-main .market-row .price-reading { display: flex; gap: 4px; }
+  .browse-main .market-row .price-reading strong { font-size: 15px; }
+  .browse-main .market-row .price-reading > span { font-size: 10px; }
+  .browse-main .market-row .movement { font-size: 11px; }
   .browse-main .news-list article { display: block; padding: 22px; }
   .browse-main .news-list h3 { font-size: 18px; margin-block: 12px; }
   .browse-main .instrument-overview { padding: 22px; gap: 28px; }
@@ -114,13 +138,13 @@ html:has(.browse-page) { scroll-padding-top: 104px; }
   .public-header-inner { gap: 8px; }
 }
 @media (max-width: 600px) {
-  .plan-comparison table { background: transparent; }
+  .plan-comparison table { background: transparent; border: 0; border-radius: 0; }
   .plan-comparison thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .plan-comparison tbody { display: grid; gap: 12px; }
-  .plan-comparison tr { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .plan-comparison tr { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); background: var(--surface); border: 0; border-radius: 16px; overflow: hidden; }
   .plan-comparison tbody th { grid-column: 1 / -1; width: auto; font-size: 12px; padding: 14px; }
   .plan-comparison tbody th:first-child { width: 100%; overflow-wrap: normal; }
   .plan-comparison td { border: 0; padding: 14px; font-size: 12px; overflow-wrap: normal; }
-  .plan-comparison td:last-child { border-left: 1px solid var(--line); }
+  .plan-comparison tbody th { padding-bottom: 0; }
   .plan-comparison td::before { content: attr(data-plan); display: block; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
 }

@@ -44,29 +44,27 @@ html:has(.landing-page) { scroll-padding-top: 96px; }
 .landing-page .section-heading .eyebrow { margin-bottom: 12px; }
 .landing-page .section-aside { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 11px; padding-bottom: 5px; }
 .landing-page .market-section { padding-top: 48px; }
-.landing-page .landing-quotes { border: 1px solid var(--line); background: var(--surface); border-radius: 20px; overflow: hidden; }
-.landing-page .landing-quotes-heading { display: flex; align-items: center; justify-content: space-between; padding: 22px 28px; border-bottom: 1px solid var(--line); gap: 20px; }
+.landing-page .landing-quotes { border: 1px solid color-mix(in srgb, var(--line) 45%, transparent); background: var(--surface); border-radius: 20px; overflow: hidden; }
+.landing-page .landing-quotes-heading { display: flex; align-items: center; justify-content: space-between; padding: 24px 32px 16px; gap: 20px; }
 .landing-page .market-tab { display: inline-flex; gap: 9px; align-items: center; color: var(--accent); font-size: 13px; font-weight: 600; }
 .landing-page .market-status { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); text-align: right; }
 .landing-page .market-status > span { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
-.landing-page .landing-quotes-list { padding-inline: 28px; }
+.landing-page .landing-quotes-list { padding-inline: 12px; }
 .landing-page .landing-market-labels, .landing-page .landing-quote { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) 20px; align-items: center; gap: 24px; }
-.landing-page .landing-market-labels { padding-block: 16px; font-size: 10px; color: var(--muted); }
+.landing-page .landing-market-labels { padding: 16px 20px; font-size: 11px; color: var(--muted); }
 .landing-page .landing-market-labels > div { display: grid; grid-template-columns: 1.1fr 1fr; gap: 32px; text-align: right; }
-.landing-page .landing-quote { border-top: 1px solid var(--line); padding-block: 18px; min-height: 102px; }
-.landing-page .landing-quote:hover { color: var(--ink); background: color-mix(in srgb, var(--accent) 4%, transparent); }
+.landing-page .landing-quote { padding: 16px 20px; min-height: 88px; border-radius: 14px; }
+.landing-page .landing-quote:hover, .landing-page .landing-quote:focus-visible { color: var(--ink); background: color-mix(in srgb, var(--ink) 4%, var(--surface)); }
 .landing-page .landing-quote > .invest-icon { color: var(--muted); }
 .landing-page .landing-quote-name { display: flex; align-items: center; gap: 14px; min-width: 0; }
-.landing-page .issuer-mark { width: 40px; height: 40px; flex-shrink: 0; border-radius: 12px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); font-size: 10px; font-weight: 700; letter-spacing: -.03em; }
-.landing-page .landing-quote:nth-child(3n) .issuer-mark { color: var(--positive); background: var(--positive-soft); }
-.landing-page .landing-quote:nth-child(3n + 1) .issuer-mark { color: var(--ink); background: var(--action-surface); }
-.landing-page .landing-quote-name strong { display: block; font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
-.landing-page .landing-quote-name small { display: block; color: var(--muted); font-size: 10px; margin-top: 5px; overflow-wrap: anywhere; }
+.landing-page .issuer-mark { width: 40px; height: 40px; flex-shrink: 0; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); font-size: 10px; font-weight: 700; letter-spacing: -.03em; }
+.landing-page .landing-quote-name strong { display: block; font-size: 16px; font-weight: 600; overflow-wrap: anywhere; }
+.landing-page .landing-quote-name small { display: block; color: var(--muted); font-size: 12px; margin-top: 5px; overflow-wrap: anywhere; }
 .landing-page .landing-quote .price-reading { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 4px 32px; align-items: center; }
 .landing-page .landing-quote .price-reading strong { grid-column: 1; font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.5; }
-.landing-page .landing-quote .price-reading > span { grid-column: 1; font-size: 9px; line-height: 1.6; }
+.landing-page .landing-quote .price-reading > span { grid-column: 1; font-size: 10px; line-height: 1.6; }
 .landing-page .landing-quote .price-reading .movement { grid-column: 2; grid-row: 1 / span 3; font-size: 12px; }
-.landing-page .landing-quotes-footer { padding: 18px 28px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 36px; }
+.landing-page .landing-quotes-footer { padding: 24px 32px; display: flex; align-items: center; justify-content: space-between; gap: 36px; }
 .landing-page .landing-quotes-footer > p { font-size: 10px; color: var(--muted); line-height: 1.7; max-width: 580px; }
 .landing-page .quiet-link { display: inline-flex; align-items: center; gap: 16px; min-height: 44px; font-size: 12px; font-weight: 500; }
 .landing-page .landing-quotes-footer .quiet-link { color: var(--accent); flex-shrink: 0; }
@@ -170,20 +168,20 @@ html:has(.landing-page) { scroll-padding-top: 96px; }
   .landing-page .landing-quotes-heading { padding: 18px 16px; gap: 12px; }
   .landing-page .market-tab { font-size: 11px; }
   .landing-page .market-status { font-size: 9px; }
-  .landing-page .landing-quotes-list { padding-inline: 16px; }
+  .landing-page .landing-quotes-list { padding-inline: 8px; }
   .landing-page .landing-market-labels, .landing-page .landing-quote { grid-template-columns: minmax(0, .8fr) minmax(0, 1fr); gap: 12px; }
   .landing-page .landing-market-labels > span:last-child, .landing-page .landing-quote > .invest-icon { display: none; }
   .landing-page .landing-market-labels > div { display: block; }
   .landing-page .landing-market-labels > div > span:last-child { display: none; }
-  .landing-page .landing-market-labels { font-size: 9px; padding-block: 14px; }
-  .landing-page .landing-quote { min-height: 104px; padding-block: 16px; }
+  .landing-page .landing-market-labels { font-size: 10px; padding: 14px 8px; }
+  .landing-page .landing-quote { min-height: 112px; padding: 18px 8px; }
   .landing-page .landing-quote-name { gap: 8px; }
-  .landing-page .issuer-mark { width: 30px; height: 32px; border-radius: 9px; font-size: 8px; }
+  .landing-page .issuer-mark { width: 30px; height: 30px; border-radius: 50%; font-size: 8px; }
   .landing-page .landing-quote-name strong { font-size: 12px; }
-  .landing-page .landing-quote-name small { font-size: 8px; }
+  .landing-page .landing-quote-name small { font-size: 10px; }
   .landing-page .landing-quote .price-reading { display: flex; gap: 4px; }
   .landing-page .landing-quote .price-reading strong { font-size: 13px; }
-  .landing-page .landing-quote .price-reading > span { font-size: 8px; }
+  .landing-page .landing-quote .price-reading > span { font-size: 10px; }
   .landing-page .landing-quote .price-reading .movement { font-size: 10px; }
   .landing-page .landing-quotes-footer { display: block; padding: 16px; }
   .landing-page .landing-quotes-footer > p { font-size: 9px; }
