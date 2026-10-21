@@ -1,3 +1,4 @@
+import { NewsLoading } from "./components/loading-placeholders";
 import { Suspense } from "react";
 import SiteHeader from "./components/site-header";
 import SiteBrand from "./components/site-brand";
@@ -80,7 +81,7 @@ export default function Home() {
             <div><p className="eyebrow">PARA LÁ DOS PREÇOS</p><h2 id="news-title">O que se passa no mercado.</h2></div>
             <Link className="quiet-link" href="/noticias">Todas as notícias <Icon name="arrow-right" size={16} /></Link>
           </div>
-          <Suspense fallback={<p className="landing-news-state" role="status">A consultar as notícias publicadas…</p>}><RecentNews /></Suspense>
+          <Suspense fallback={<NewsLoading />}><RecentNews /></Suspense>
         </section>
 
         <section className="account-section container" id="aplicacao" aria-labelledby="account-title">

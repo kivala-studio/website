@@ -1,3 +1,4 @@
+import { MarketLoading } from "./components/loading-placeholders";
 import Link from "./components/workspace-link";
 import { getMarket } from "../lib/public-data";
 import { kind, reading } from "../lib/market-presentation";
@@ -5,13 +6,7 @@ import MarketReading from "./market-reading";
 import Icon from "./components/invest-icon";
 
 export function LandingMarketLoading() {
-  return (
-    <div className="landing-quotes-state" role="status">
-      <p className="eyebrow">BODIVA · ACÇÕES</p>
-      <h2>O mercado, à vista.</h2>
-      <p>A consultar os preços de referência…</p>
-    </div>
-  );
+  return <MarketLoading compact />;
 }
 
 export default async function LandingMarket() {

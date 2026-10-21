@@ -51,9 +51,11 @@ export default async function InstrumentPage({ params }: Props) {
       <Link className="back-link" href="/mercado">
         ← Mercado
       </Link>
-      <header className="page-heading">
-        <p className="eyebrow">{type}</p>
-        <h1>{s.issuers?.short_name || s.symbol}</h1>
+      <header className="page-heading asset-heading">
+        <div className="asset-heading-identity">
+          <span className="asset-mark" aria-hidden="true">{s.symbol.slice(0, 3)}</span>
+          <div><p className="eyebrow">{type}</p><h1>{s.issuers?.short_name || s.symbol}</h1></div>
+        </div>
         <p>{issuer?.data?.name || s.name || s.symbol}</p>
         <p className="instrument-symbol">{s.symbol}</p>
       </header>
@@ -91,8 +93,10 @@ export default async function InstrumentPage({ params }: Props) {
           Ausência de cotação não indica vencimento ou reembolso.
         </p>
       ) : null}
-      <ShareButton title="Instrumento · invest.ao" />
-      <InstrumentActions id={s.id} />
+      <div className="asset-toolbar">
+        <InstrumentActions id={s.id} />
+        <ShareButton title="Instrumento · invest.ao" />
+      </div>
       <RecordAssetView securityID={s.id} />
       <HistoryChart security={s} />
       <InstrumentResearch security={s} />

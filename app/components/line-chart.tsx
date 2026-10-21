@@ -1,5 +1,6 @@
 "use client";
-import { useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
+import { priceEndpoints } from "../../lib/chart-presentation";
 import { number } from "../../lib/market-presentation";
 export type Series = {
   label: string;
@@ -10,17 +11,32 @@ export default function LineChart({
   series,
   label,
   unit = "",
+  showTools = true,
+  markEndpoints = false,
 }: {
   series: Series[];
   label: string;
   unit?: string;
+  showTools?: boolean;
+  markEndpoints?: boolean;
 }) {
   const svg = useRef<SVGSVGElement>(null);
+  const [plotWidth, setPlotWidth] = useState(800);
   const [selected, setSelected] = useState<number | null>(null);
   const points = series
     .flatMap((s) => s.points)
     .filter((p) => Number.isFinite(p.x) && Number.isFinite(p.y));
-  if (points.length < 2)
+  const hasData = points.length >= 2;
+  useLayoutEffect(() => {
+    const host = svg.current?.parentElement;
+    if (!markEndpoints || !hasData || !host) return;
+    const measure = () => setPlotWidth(Math.max(240, Math.min(800, Math.round(host.getBoundingClientRect().width))));
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(host);
+    return () => observer.disconnect();
+  }, [markEndpoints, hasData]);
+  if (!hasData)
     return (
       <div className="empty-state">
         Não há observações suficientes para apresentar o gráfico.
@@ -33,8 +49,22 @@ export default function LineChart({
   const padding = (rawMax - rawMin || Math.abs(rawMax) || 1) * 0.15;
   const minY = rawMin - padding,
     maxY = rawMax + padding;
-  const x = (value: number) => 70 + ((value - minX) / (maxX - minX || 1)) * 710;
+  const width = markEndpoints ? plotWidth : 800;
+  const left = markEndpoints ? (width < 480 ? 92 : 112) : 70;
+  const right = width - 20;
+  const x = (value: number) => left + ((value - minX) / (maxX - minX || 1)) * (right - left);
   const y = (value: number) => 210 - ((value - minY) / (maxY - minY)) * 190;
+  const endpoints = markEndpoints && series.length === 1 ? priceEndpoints(series[0].points) : null;
+  const endpointMarks = endpoints ? [
+    { point: endpoints[0], name: endpoints[0].y === endpoints[1].y ? "Preço inicial e final" : "Preço inicial", labelY: y(endpoints[0].y) },
+    ...(endpoints[0].y === endpoints[1].y ? [] : [{ point: endpoints[1], name: "Preço final", labelY: y(endpoints[1].y) }]),
+  ] : [];
+  if (endpointMarks.length === 2 && Math.abs(endpointMarks[0].labelY - endpointMarks[1].labelY) < 20) {
+    const midpoint = (endpointMarks[0].labelY + endpointMarks[1].labelY) / 2;
+    const direction = endpointMarks[0].labelY < endpointMarks[1].labelY ? -1 : 1;
+    endpointMarks[0].labelY = midpoint + direction * 10;
+    endpointMarks[1].labelY = midpoint - direction * 10;
+  }
   const days = [...new Set(points.map((p) => p.x))].sort((a, b) => a - b);
   const picked =
     selected === null ? null : Math.max(0, Math.min(days.length - 1, selected));
@@ -78,15 +108,15 @@ export default function LineChart({
     <div>
       <svg
         ref={svg}
-        viewBox="0 0 800 250"
+        viewBox={`0 0 ${width} 250`}
         role="img"
         aria-label={label}
         onPointerMove={(event) => {
           const bounds = event.currentTarget.getBoundingClientRect();
           const target =
             minX +
-            ((((event.clientX - bounds.left) / bounds.width) * 800 - 70) /
-              710) *
+            ((((event.clientX - bounds.left) / bounds.width) * width - left) /
+              (right - left)) *
               (maxX - minX);
           const nearest = days.reduce(
             (best, day, index) =>
@@ -98,22 +128,23 @@ export default function LineChart({
           setSelected(nearest);
         }}
       >
+        {endpoints && <desc>{`Preço inicial: ${number(endpoints[0].y)}${unit}. Preço final: ${number(endpoints[1].y)}${unit}.`}</desc>}
         {[0, 1, 2, 3].map((i) => {
           const value = minY + ((maxY - minY) * i) / 3;
           return (
             <g key={i}>
               <line
-                x1="70"
-                x2="780"
+                x1={left}
+                x2={right}
                 y1={y(value)}
                 y2={y(value)}
                 stroke="var(--chart-grid)"
                 strokeDasharray="3 5"
               />
-              <text x="0" y={y(value) + 4} fontSize="9" fill="var(--tertiary)">
+              {!endpointMarks.some((mark) => Math.abs(mark.labelY - y(value)) < 16) && <text x={markEndpoints ? left - 12 : 0} textAnchor={markEndpoints ? "end" : undefined} y={y(value) + 4} fontSize="9" fill="var(--tertiary)">
                 {number(value)}
                 {unit}
-              </text>
+              </text>}
             </g>
           );
         })}
@@ -127,6 +158,15 @@ export default function LineChart({
             strokeLinejoin="round"
           />
         ))}
+        {endpointMarks.map((mark) => <g key={mark.name}>
+          <path d={`M ${left - 6} ${mark.labelY} L ${left} ${y(mark.point.y)} H ${right}`} fill="none" stroke={series[0].color} strokeOpacity=".4" strokeDasharray="3 5" />
+          <text x={left - 12} y={mark.labelY + 3} textAnchor="end" fontSize="10" fontWeight="600" fill="var(--ink)" aria-label={`${mark.name}: ${number(mark.point.y)}${unit}`}>
+            {number(mark.point.y)}{unit}
+          </text>
+        </g>)}
+        {endpoints?.map((point, index) => <circle key={index} cx={x(point.x)} cy={y(point.y)} r="3.5" fill={series[0].color} stroke="var(--surface)" strokeWidth="1.5">
+          <title>{`${index === 0 ? "Início" : "Fim"}: ${number(point.y)}${unit}`}</title>
+        </circle>)}
         {picked !== null && (
           <line
             x1={x(days[picked])}
@@ -137,11 +177,11 @@ export default function LineChart({
             strokeDasharray="3 3"
           />
         )}
-        <text x="70" y="238" fontSize="10" fill="var(--tertiary)">
+        <text x={left} y="238" fontSize="10" fill="var(--tertiary)">
           {points.find((p) => p.x === minX)?.label}
         </text>
         <text
-          x="780"
+          x={right}
           y="238"
           textAnchor="end"
           fontSize="10"
@@ -170,41 +210,45 @@ export default function LineChart({
           </span>
         ))}
       </div>
-      <button
-        type="button"
-        className="text-button chart-export"
-        onClick={download}
-      >
-        Guardar gráfico
-      </button>
-      <details className="chart-data">
-        <summary>Consultar dados do gráfico</summary>
-        <div className="table-scroll">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Série</th>
-                <th>Observação</th>
-                <th>Valor</th>
-              </tr>
-            </thead>
-            <tbody>
-              {series.flatMap((s) =>
-                s.points.map((p) => (
-                  <tr key={`${s.label}-${p.x}`}>
-                    <td>{s.label}</td>
-                    <td>{p.label}</td>
-                    <td>
-                      {number(p.y)}
-                      {unit}
-                    </td>
+      {showTools && (
+        <>
+          <button
+            type="button"
+            className="text-button chart-export"
+            onClick={download}
+          >
+            Guardar gráfico
+          </button>
+          <details className="chart-data">
+            <summary>Consultar dados do gráfico</summary>
+            <div className="table-scroll">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Série</th>
+                    <th>Observação</th>
+                    <th>Valor</th>
                   </tr>
-                )),
-              )}
-            </tbody>
-          </table>
-        </div>
-      </details>
+                </thead>
+                <tbody>
+                  {series.flatMap((s) =>
+                    s.points.map((p) => (
+                      <tr key={`${s.label}-${p.x}`}>
+                        <td>{s.label}</td>
+                        <td>{p.label}</td>
+                        <td>
+                          {number(p.y)}
+                          {unit}
+                        </td>
+                      </tr>
+                    )),
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </details>
+        </>
+      )}
     </div>
   );
 }

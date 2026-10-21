@@ -44,23 +44,31 @@ export default function MarketExplorer({
     );
   return (
     <>
-      {search ? (
-        <div className="search-field">
-          <label htmlFor="instrument-search">Procurar instrumento</label>
-          <input
-            id="instrument-search"
-            type="search"
-            placeholder="Nome ou símbolo"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <p role="status">
-            {shown.length} {shown.length === 1 ? "instrumento" : "instrumentos"}
-          </p>
-        </div>
-      ) : null}
       {search && (
-        <>
+        <div className="market-controls">
+          <div className="search-field">
+            <label htmlFor="instrument-search">Procurar instrumento</label>
+            <input
+              id="instrument-search"
+              type="search"
+              placeholder="Nome ou símbolo"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <p role="status">
+              {shown.length} {shown.length === 1 ? "instrumento" : "instrumentos"}
+            </p>
+          </div>
+          <label className="sort-control">
+            Ordenar
+            <select value={sort} onChange={(e) => setSort(e.target.value)}>
+              {ready && (
+                <option value="personal">Relação com a tua conta</option>
+              )}
+              <option value="symbol">Símbolo</option>
+              <option value="change">Variação disponível</option>
+            </select>
+          </label>
           <div className="filter-tabs">
             {[
               "Todos",
@@ -78,17 +86,7 @@ export default function MarketExplorer({
               </button>
             ))}
           </div>
-          <label className="sort-control">
-            Ordenar
-            <select value={sort} onChange={(e) => setSort(e.target.value)}>
-              {ready && (
-                <option value="personal">Relação com a tua conta</option>
-              )}
-              <option value="symbol">Símbolo</option>
-              <option value="change">Variação disponível</option>
-            </select>
-          </label>
-        </>
+        </div>
       )}
       <div className="market-list">
         <div className="market-labels" aria-hidden="true">

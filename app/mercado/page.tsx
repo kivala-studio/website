@@ -14,7 +14,7 @@ export default function MarketPage() {
     <PublicShell>
       <Consultation content="market" />
       <header className="page-heading">
-        <p className="eyebrow">SEM LOGIN · CONSULTA PÚBLICA</p>
+        <p className="eyebrow">EXPLORA O MERCADO</p>
         <h1>Mercado.</h1>
         <p>
           Encontra um instrumento e consulta a última referência disponível.
