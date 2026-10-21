@@ -1,18 +1,54 @@
-import AppMark from "./components/app-mark";
+"use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import SiteBrand from "./components/site-brand";
+import SiteHeader from "./components/site-header";
+import WorkspaceLink from "./components/workspace-link";
+import { CookiePreferencesButton } from "./components/cookie-consent";
+import { isPublicBrowsePath } from "../lib/public-routes";
 import WorkspaceShell from "./components/workspace-shell";
 export function Brand() {
-  return (
-    <span className="brand">
-      <AppMark size={32} />
-      <span>
-        invest<span className="brand-dot">.</span>ao
-      </span>
-    </span>
-  );
+  return <SiteBrand />;
 }
-export function PublicShell({ children }: { children: React.ReactNode }) {
-  return <WorkspaceShell>{children}</WorkspaceShell>;
+export function PublicShell({
+  children,
+  publicPage = false,
+}: {
+  children: React.ReactNode;
+  publicPage?: boolean;
+}) {
+  const path = usePathname();
+  if (!publicPage && !isPublicBrowsePath(path))
+    return <WorkspaceShell>{children}</WorkspaceShell>;
+  return (
+    <div className="browse-page">
+      <a className="skip-link" href="#conteudo">
+        Saltar para o conteúdo
+      </a>
+      <SiteHeader />
+      <main id="conteudo" className="container browse-main">
+        {children}
+      </main>
+      <footer className="container browse-footer">
+        <div className="browse-footer-top">
+          <Link href="/" aria-label="invest.ao — início">
+            <SiteBrand />
+          </Link>
+          <nav aria-label="Informação do site">
+            <Link href="/planos">Planos</Link>
+            <Link href="/policy">Privacidade</Link>
+            <Link href="/cookies">Cookies</Link>
+            <CookiePreferencesButton />
+            <a href="mailto:info@invest.ao">Contacto</a>
+          </nav>
+        </div>
+        <p>
+          © {new Date().getFullYear()} invest.ao · Informação de mercado. Não
+          executamos operações nem prestamos aconselhamento financeiro.
+        </p>
+      </footer>
+    </div>
+  );
 }
 export function FeatureInvitation({
   feature = "discover",
@@ -60,9 +96,9 @@ export function FeatureInvitation({
         <h2>{content[0]}</h2>
         <p>{content[1]}</p>
       </div>
-      <Link className="secondary-button" href={content[3]}>
+      <WorkspaceLink className="secondary-button" href={content[3]}>
         {content[2]}
-      </Link>
+      </WorkspaceLink>
     </aside>
   );
 }

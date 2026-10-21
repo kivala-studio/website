@@ -1,16 +1,12 @@
+import { MarketLoading } from "./components/loading-placeholders";
 import Link from "./components/workspace-link";
 import { getMarket } from "../lib/public-data";
 import { kind, reading } from "../lib/market-presentation";
 import MarketReading from "./market-reading";
+import Icon from "./components/invest-icon";
 
 export function LandingMarketLoading() {
-  return (
-    <div className="landing-quotes-state" role="status">
-      <p className="eyebrow">BODIVA · ACÇÕES</p>
-      <h2>O mercado, à vista.</h2>
-      <p>A consultar os preços de referência…</p>
-    </div>
-  );
+  return <MarketLoading compact />;
 }
 
 export default async function LandingMarket() {
@@ -37,25 +33,31 @@ export default async function LandingMarket() {
   return (
     <>
       <div className="landing-quotes-heading">
-        <p className="eyebrow">BODIVA · ACÇÕES</p>
-        <h2>O mercado, à vista.</h2>
-        <p>{status[market.quotes.overview[0]?.status] || "Estado indisponível"}</p>
+        <span className="market-tab"><Icon name="markets" size={18} /> Acções</span>
+        <p className="market-status"><span aria-hidden="true" />{status[market.quotes.overview[0]?.status] || "Estado indisponível"}</p>
       </div>
       <div className="landing-quotes-list">
+        <div className="landing-market-labels" aria-hidden="true">
+          <span>Instrumento</span>
+          <div><span>Preço / referência</span><span>Variação</span></div>
+          <span />
+        </div>
         {equities.slice(0, 5).map((security) => (
           <Link key={security.id} href={`/mercado/${security.id}`} prefetch={false} className="landing-quote">
             <div className="landing-quote-name">
-              <strong>{security.issuers?.short_name || security.symbol}</strong>
-              <span>{security.symbol}</span>
+              <span className="issuer-mark" aria-hidden="true">{security.symbol.slice(0, 3)}</span>
+              <div><strong>{security.issuers?.short_name || security.symbol}</strong>
+              <small>{security.symbol}</small></div>
             </div>
             <MarketReading security={security} value={reading(security, market)} />
+            <Icon name="arrow-up-right" size={16} />
           </Link>
         ))}
         {!equities.length && <p className="landing-quotes-empty">Sem acções disponíveis nesta consulta.</p>}
       </div>
       <div className="landing-quotes-footer">
         <p>Preços por acção em Kz. Confirma a data de cada referência; os valores podem estar desactualizados.</p>
-        <Link className="quiet-link" href="/mercado">Explorar o mercado</Link>
+        <Link className="quiet-link" href="/mercado">Ver todos os instrumentos <Icon name="arrow-right" size={16} /></Link>
       </div>
     </>
   );

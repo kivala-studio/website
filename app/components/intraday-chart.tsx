@@ -1,4 +1,6 @@
 "use client";
+import { priceTrendColor } from "../../lib/chart-presentation";
+import { ChartLoading } from "./loading-placeholders";
 import { useCallback } from "react";
 import { useAccount } from "./account-provider";
 import AccountGate from "./account-gate";
@@ -44,7 +46,8 @@ function SessionChart({ security }: { security: Security }) {
     }));
   return (
     <>
-      <ResourceState {...state} retry={state.reload} />
+      <ResourceState {...state} loading={false} retry={state.reload} />
+      {state.loading && !state.data && <ChartLoading />}
       {state.data && (
         <>
           <p className="data-note">
@@ -55,6 +58,8 @@ function SessionChart({ security }: { security: Security }) {
               : "Referência da sessão disponível, sem garantia de actualidade."}
           </p>
           <LineChart
+            showTools={false}
+            markEndpoints
             label={`Negócios intradiários de ${security.symbol}`}
             unit={
               kind(security).startsWith("Obrigações")
@@ -62,7 +67,7 @@ function SessionChart({ security }: { security: Security }) {
                 : ` ${security.currency === "AOA" ? "Kz" : security.currency}`
             }
             series={[
-              { label: security.symbol, color: "var(--accent)", points },
+              { label: security.symbol, color: priceTrendColor(points), points },
             ]}
           />
           <button

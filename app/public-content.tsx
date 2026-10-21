@@ -1,3 +1,4 @@
+import { MarketLoading } from "./components/loading-placeholders";
 import Link from "next/link";
 import { date, kind, reading } from "../lib/market-presentation";
 import { getMarket, getNews, type Article } from "../lib/public-data";
@@ -43,11 +44,13 @@ export async function MarketContent({
     <>
       <div className="market-meta">
         <span>
-          Estado na consulta: {status[overview?.status] ?? "indisponível"}
+          <small>Estado do mercado</small>
+          <strong>{status[overview?.status] ?? "Indisponível"}</strong>
         </span>
-        <span>Fonte: {overview?.source || "BODIVA"}</span>
+        <span><small>Fonte</small><strong>{overview?.source || "BODIVA"}</strong></span>
         <span>
-          Última publicação: {date(overview?.last_updated_at, true)} · Luanda
+          <small>Última publicação · Luanda</small>
+          <strong>{date(overview?.last_updated_at, true)}</strong>
         </span>
       </div>
       {overview?.data_status !== "current" &&
@@ -118,9 +121,5 @@ export async function RecentNews() {
   );
 }
 export function LoadingContent() {
-  return (
-    <p className="data-state" role="status">
-      A carregar informação pública…
-    </p>
-  );
+  return <MarketLoading />;
 }

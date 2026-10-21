@@ -3,11 +3,13 @@ import Link from "next/link";
 import type { ComponentProps } from "react";
 import { useAccount } from "./account-provider";
 import { signInPath } from "../../lib/navigation";
+import { isPublicBrowsePath } from "../../lib/public-routes";
 
-/** Guests enter through the landing modal; signed-in visitors go straight to the app. */
+/** Public discovery navigates directly; only personal tools require an account. */
 export default function WorkspaceLink({ href, onClick, ...props }: Omit<ComponentProps<typeof Link>, "href"> & { href: string }) {
   const { user } = useAccount();
-  const destination = user ? href : signInPath(href);
+  const needsAccount = !user && !isPublicBrowsePath(href);
+  const destination = needsAccount ? signInPath(href) : href;
   // Market-backed pages should fetch on navigation, rather than all at once.
   return (
     <Link
@@ -17,7 +19,7 @@ export default function WorkspaceLink({ href, onClick, ...props }: Omit<Componen
       onClick={(event) => {
         onClick?.(event);
         if (
-          !user && !event.defaultPrevented && event.button === 0 &&
+          needsAccount && !event.defaultPrevented && event.button === 0 &&
           !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey &&
           (!event.currentTarget.target || event.currentTarget.target === "_self") &&
           window.location.pathname === "/"

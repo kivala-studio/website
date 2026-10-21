@@ -1,5 +1,7 @@
 "use client";
 import { useCallback, useState } from "react";
+import { priceTrendColor } from "../../lib/chart-presentation";
+import { ChartLoading } from "./loading-placeholders";
 import type { HistoryPoint } from "../../lib/history";
 import { date, kind } from "../../lib/market-presentation";
 import type { Security } from "../../lib/public-data";
@@ -58,11 +60,14 @@ export default function HistoryChart({ security }: { security: Security }) {
         <IntradayChart security={security} />
       ) : (
         <>
-          <ResourceState {...state} retry={state.reload} />
+          <ResourceState {...state} loading={false} retry={state.reload} />
+          {state.loading && !state.data && <ChartLoading />}
           {state.data && (
             <LineChart
+              showTools={false}
+              markEndpoints
               series={[
-                { label: security.symbol, color: "var(--accent)", points },
+                { label: security.symbol, color: priceTrendColor(points), points },
               ]}
               label={`Histórico de fechos de ${security.symbol}`}
               unit={
@@ -74,10 +79,6 @@ export default function HistoryChart({ security }: { security: Security }) {
           )}
         </>
       )}
-      <p className="fine-print">
-        Cada observação corresponde a um fecho disponível. As linhas ligam
-        observações; não representam preços nos dias sem dados.
-      </p>
     </section>
   );
 }

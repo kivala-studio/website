@@ -1,8 +1,9 @@
 "use client";
-import Link from "next/link";
+import Link from "./workspace-link";
 import { useCallback, useState } from "react";
 import { useAccount } from "./account-provider";
 import { useResource, Feedback } from "./async-state";
+import { subscriptionMessage } from "../../lib/subscriptions";
 export default function InstrumentActions({ id }: { id: string }) {
   const { user } = useAccount();
   return (
@@ -10,8 +11,8 @@ export default function InstrumentActions({ id }: { id: string }) {
       {user ? (
         <WatchButton key={`${user.id}-${id}`} id={id} />
       ) : (
-        <Link className="primary-button" href="/conta">
-          Guardar na minha lista
+        <Link className="primary-button" href={`/lista?instrumento=${id}`}>
+          Entrar para guardar na minha lista
         </Link>
       )}
       <Link className="secondary-button" href={`/alertas?instrumento=${id}`}>
@@ -73,8 +74,8 @@ function WatchButton({ id }: { id: string }) {
               if (result.error) throw result.error;
             }
             await state.reload();
-          } catch {
-            setError("Não foi possível actualizar a lista.");
+          } catch (cause) {
+            setError(subscriptionMessage(cause));
           } finally {
             setBusy(false);
           }
@@ -87,6 +88,11 @@ function WatchButton({ id }: { id: string }) {
             : "+ Guardar na minha lista"}
       </button>
       <Feedback error={error || state.error} />
+      {error && (
+        <Link className="text-button" href="/planos">
+          Consultar planos
+        </Link>
+      )}
       {state.error && <button onClick={state.reload}>Tentar novamente</button>}
     </div>
   );

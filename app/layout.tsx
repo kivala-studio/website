@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import { siteDescription, siteName, siteTitle, siteUrl } from "../lib/seo";
 import "./globals.css";
 import "./workspace.css";
+import "./browse.css";
 import { AccountProvider } from "./components/account-provider";
 import { PersonalisationProvider } from "./components/personalisation-provider";
 import { connection } from "next/server";
+import { AppDownloadProvider } from "./components/app-download";
+import { appDistribution } from "../lib/app-distribution";
 import { CookieConsentProvider } from "./components/cookie-consent";
 
 export const metadata: Metadata = {
@@ -45,7 +48,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <CookieConsentProvider>
           <AccountProvider config={config}>
-            <PersonalisationProvider>{children}</PersonalisationProvider>
+            <PersonalisationProvider>
+              <AppDownloadProvider distribution={appDistribution()}>
+                {children}
+              </AppDownloadProvider>
+            </PersonalisationProvider>
           </AccountProvider>
         </CookieConsentProvider>
       </body>
