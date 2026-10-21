@@ -1,6 +1,6 @@
 # Página inicial e consulta pública invest.ao
 
-A página inicial apresenta a invest.ao para web e iPhone, com consulta pública de mercado e acesso contextual à conta. A referência de hierarquia é a [CoinStats](https://coinstats.app/); marca, paleta, conteúdo e capturas são próprios.
+A página inicial apresenta a invest.ao como plataforma web: pesquisa funcional no hero, entradas directas para o produto, preços de referência e notícias publicadas, seguidos das ferramentas da conta e dos planos. A aplicação para iPhone fica como ligação secundária no rodapé, sem capturas de telefone, QR code ou secção promocional de instalação. A referência de hierarquia é a [CoinStats](https://coinstats.app/); marca, paleta e conteúdos são próprios.
 
 ## Acesso público e pessoal
 
@@ -10,7 +10,7 @@ A página inicial apresenta a invest.ao para web e iPhone, com consulta pública
 
 Pesquisa e catálogo reutilizam dados anónimos, filtros, ordenação, cotações datadas e estados de falha existentes. Os detalhes incluem histórico por período, factos do instrumento, emitente, dividendos/relatórios disponíveis e notícias relacionadas. Notícias continuam limitadas a artigos publicados e datas já decorridas. Não foram alterados grants, RLS, funções SQL ou segredos; não se usam credenciais privilegiadas para a consulta pública.
 
-`app/homepage.css` contém a apresentação da home; `app/browse.css` contém o cabeçalho e as páginas públicas. Ambos usam os tokens de aparência de `globals.css`. As antigas folhas `landing.css` e `product-layout.css` não são importadas pela home. As capturas do iPhone estão identificadas como históricas. Sitemap e texto de privacidade reflectem as entradas públicas.
+`app/homepage.css` contém a apresentação da home; `app/browse.css` contém o cabeçalho e as páginas públicas. Ambos usam os tokens de aparência de `globals.css`. As antigas folhas `landing.css` e `product-layout.css` não são importadas pela home. A home usa conteúdos reais de mercado e notícias, com estados de carregamento, falha e ausência de dados; não usa capturas promocionais nem dados de carteira de demonstração. O resumo dos planos reutiliza os limites partilhados de `lib/subscriptions.ts`. Sitemap e texto de privacidade reflectem as entradas públicas.
 
 ## Apresentação das listas públicas
 

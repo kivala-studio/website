@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Suspense } from "react";
 import SiteHeader from "./components/site-header";
 import SiteBrand from "./components/site-brand";
@@ -7,6 +6,8 @@ import Link from "./components/workspace-link";
 import LandingAuth from "./components/landing-auth";
 import { CookiePreferencesButton } from "./components/cookie-consent";
 import LandingMarket, { LandingMarketLoading } from "./landing-market";
+import { RecentNews } from "./public-content";
+import { planLimits } from "../lib/subscriptions";
 import { appDistribution } from "../lib/app-distribution";
 import PageMotion from "./page-motion";
 import { SiteSchema } from "./site-schema";
@@ -16,17 +17,24 @@ import "./homepage.css";
 export const metadata = pageMetadata({ title: siteTitle, description: siteDescription, path: "/" });
 
 const shortcuts = [
-  { icon: "markets", title: "Mercado", description: "Conhece os títulos", href: "/mercado" },
-  { icon: "portfolio", title: "Carteira", description: "Reúne os investimentos", href: "/carteira" },
-  { icon: "watchlist", title: "A tua lista", description: "Segue o que importa", href: "/lista" },
-  { icon: "alert", title: "Alertas", description: "Define os teus preços", href: "/alertas" },
+  { icon: "markets", title: "Mercado", description: "Instrumentos e preços", href: "/mercado" },
+  { icon: "news", title: "Notícias", description: "O contexto do mercado", href: "/noticias" },
+  { icon: "portfolio", title: "Carteira", description: "Os teus investimentos", href: "/carteira" },
+  { icon: "watchlist", title: "A tua lista", description: "Os títulos que segues", href: "/lista" },
+];
+
+const accountTools = [
+  { icon: "portfolio", title: "Organiza a carteira", description: "Regista posições e acompanha a composição dos teus investimentos.", href: "/carteira" },
+  { icon: "watchlist", title: "Guarda a tua lista", description: "Reúne os instrumentos que queres acompanhar mais de perto.", href: "/lista" },
+  { icon: "alert", title: "Define os teus alertas", description: "Escolhe os preços e as variações que merecem a tua atenção.", href: "/alertas" },
+  { icon: "exchange", title: "Compara instrumentos", description: "Consulta a evolução de dois títulos no mesmo período, lado a lado.", href: "/comparar" },
 ];
 
 const questions = [
-  ["O que é a invest.ao?", "A invest.ao reúne o mercado de capitais de Angola, a tua carteira, a tua lista e os teus alertas. Podes consultar preços, comparar instrumentos e acompanhar os teus investimentos no navegador ou no iPhone, com a mesma conta."],
+  ["O que é a invest.ao?", "A invest.ao é uma plataforma para conhecer o mercado de capitais de Angola e acompanhar investimentos. Pesquisa instrumentos, consulta referências de preços e lê notícias no navegador. Com uma conta, organiza a carteira, guarda uma lista e cria alertas."],
   ["Posso comprar e vender títulos?", "Não. A invest.ao é uma ferramenta de informação e acompanhamento, não uma corretora. Não executa ordens de compra ou venda de títulos nem presta aconselhamento financeiro."],
   ["Os preços são em tempo real?", "Cada preço indica o tipo e a data da referência disponível. A actualização depende das fontes de mercado e não é uma garantia de cotação em tempo real. Confirma sempre a data apresentada em cada instrumento."],
-  ["Preciso de instalar a aplicação?", "Não. Pesquisa instrumentos, consulta o mercado, lê notícias e conhece os planos sem iniciar sessão. Para guardar a tua lista, organizar a carteira, criar alertas ou comparar instrumentos, entra na tua conta. No iPhone, podes continuar com a mesma conta."],
+  ["O que posso consultar sem conta?", "Podes pesquisar instrumentos e emitentes, consultar preços e históricos, ler notícias publicadas e comparar os planos. A carteira, a lista, os alertas e a comparação de instrumentos exigem conta e estão sujeitos aos limites do plano."],
 ];
 
 export default function Home() {
@@ -40,14 +48,16 @@ export default function Home() {
       <SiteHeader />
       <main id="conteudo">
         <section className="opening container" aria-labelledby="hero-title">
-          <p className="hero-eyebrow"><span aria-hidden="true" /> O MERCADO ANGOLANO, MAIS PERTO</p>
-          <h1 id="hero-title">O teu mercado.<br /><span className="accent-text">Uma nova perspectiva.</span></h1>
-          <p className="opening-description">Dos preços à tua carteira, vê o mercado de capitais de Angola<br className="desktop-break" /> com mais clareza. No navegador e no iPhone.</p>
-          <div className="opening-actions">
-            <Link className="solid-button" href="/mercado">Explorar o mercado <Icon name="arrow-right" size={18} /></Link>
-            <a className="outline-button" href="#aplicacao">Conhecer a invest.ao <Icon name="arrow-down" size={17} /></a>
-          </div>
-          <p className="opening-note">Pesquisa e informação de mercado sem iniciar sessão.</p>
+          <p className="hero-eyebrow"><span aria-hidden="true" /> MERCADO DE CAPITAIS DE ANGOLA</p>
+          <h1 id="hero-title">Conhece o mercado.<br /><span className="accent-text">Acompanha o que importa.</span></h1>
+          <p className="opening-description">Preços, instrumentos e notícias. A tua carteira, lista e alertas.<br className="desktop-break" /> Um lugar para acompanhar os teus investimentos.</p>
+          <form className="landing-search" action="/pesquisa" role="search" aria-label="Pesquisar no mercado">
+            <label className="landing-search-label" htmlFor="landing-query">Nome, símbolo ou notícia</label>
+            <Icon name="search" size={21} />
+            <input id="landing-query" name="q" type="search" maxLength={100} placeholder="Nome, símbolo ou notícia" />
+            <button type="submit">Pesquisar <Icon name="arrow-right" size={17} /></button>
+          </form>
+          <p className="opening-note">Explora o mercado sem iniciar sessão. <Link href="/mercado">Ver todos os instrumentos <Icon name="arrow-up-right" size={13} /></Link></p>
           <nav className="product-shortcuts" aria-label="Explorar a invest.ao">
             {shortcuts.map((item) => <Link key={item.href} href={item.href} className="product-shortcut">
               <span className="shortcut-icon"><Icon name={item.icon} size={22} /></span>
@@ -68,48 +78,43 @@ export default function Home() {
           <p className="market-caption"><Icon name="info" size={14} /> Informação para acompanhar. A invest.ao não executa operações de compra ou venda.</p>
         </section>
 
-        <section className="features-section container" id="aplicacao" aria-labelledby="features-title">
+        <section className="landing-news container" id="noticias" aria-labelledby="news-title">
           <div className="section-heading" data-reveal>
-            <div><p className="eyebrow">UM LUGAR PARA VER MAIS LONGE</p><h2 id="features-title">Mais contexto.<br /><span className="muted-text">As tuas próprias decisões.</span></h2></div>
-            <p className="section-description">Conhece o mercado, organiza os teus investimentos e acompanha o que te interessa.</p>
+            <div><p className="eyebrow">PARA LÁ DOS PREÇOS</p><h2 id="news-title">O que se passa no mercado.</h2></div>
+            <Link className="quiet-link" href="/noticias">Todas as notícias <Icon name="arrow-right" size={16} /></Link>
           </div>
-          <div className="feature-grid">
-            <article className="feature-card feature-market" id="visao-do-mercado" data-reveal>
-              <span className="feature-icon"><Icon name="chart" size={24} /></span>
-              <p className="eyebrow">01 / VISÃO DO MERCADO</p>
-              <h3>O contexto faz<br />a diferença.</h3>
-              <p>Indicador invest.ao, volume da sessão e negócios. Percebe o mercado para lá de um preço isolado.</p>
-              <Link className="quiet-link" href="/mercado">Explorar o mercado <Icon name="arrow-up-right" size={16} /></Link>
-              <figure className="feature-capture"><Image src="/screenshots/2026-10-20/market-overview.png" width={1320} height={2868} sizes="(max-width: 760px) 240px, 280px" alt="Captura do iPhone com o Indicador invest.ao, o volume e os negócios da sessão de 19 de Outubro de 2026." /><figcaption>Captura do iPhone · dados de 19 out. 2026</figcaption></figure>
-            </article>
-            <article className="feature-card feature-compare" id="comparar-titulos" data-reveal>
-              <span className="feature-icon"><Icon name="exchange" size={24} /></span>
-              <p className="eyebrow">02 / COMPARAÇÃO</p>
-              <h3>Dois títulos.<br />Uma visão mais clara.</h3>
-              <p>Compara a evolução de instrumentos no mesmo período e consulta a variação de preço lado a lado.</p>
-              <Link className="quiet-link" href="/comparar">Comparar instrumentos <Icon name="arrow-up-right" size={16} /></Link>
-              <figure className="feature-capture"><Image src="/screenshots/2026-10-20/asset-comparison.png" width={1320} height={2868} sizes="(max-width: 760px) 240px, 280px" alt="Captura do iPhone a comparar a evolução de BODIVA e BAI em seis meses, no momento da captura." /><figcaption>Captura do iPhone · valores do momento da captura</figcaption></figure>
-            </article>
-            <article className="feature-card feature-small" data-reveal>
-              <span className="feature-icon"><Icon name="portfolio" size={24} /></span>
-              <div><p className="eyebrow">03 / CARTEIRA</p><h3>Os teus investimentos,<br />num só lugar.</h3><p>Regista as tuas posições e acompanha a composição da carteira.</p><Link className="quiet-link" href="/carteira">Organizar carteira <Icon name="arrow-up-right" size={16} /></Link></div>
-            </article>
-            <article className="feature-card feature-small" data-reveal>
-              <span className="feature-icon"><Icon name="alert" size={24} /></span>
-              <div><p className="eyebrow">04 / LISTA E ALERTAS</p><h3>Menos procura.<br />Mais acompanhamento.</h3><p>Guarda os teus favoritos e define os preços que merecem a tua atenção.</p><Link className="quiet-link" href="/alertas">Definir alertas <Icon name="arrow-up-right" size={16} /></Link></div>
-            </article>
-          </div>
-          <div className="web-continuation" id="experimentar" data-reveal><span><Icon name="globe" size={20} /> Tudo isto, no teu navegador. A mesma conta no iPhone.</span><Link href="/dashboard" className="quiet-link">Abrir dashboard <Icon name="arrow-right" size={18} /></Link></div>
+          <Suspense fallback={<p className="landing-news-state" role="status">A consultar as notícias publicadas…</p>}><RecentNews /></Suspense>
         </section>
 
-        <section className="companion-section container" id="lancamento" aria-labelledby="companion-title">
-          <div className="companion-panel" data-reveal>
-            <div className="companion-copy"><p className="eyebrow">INVEST.AO PARA IPHONE</p><h2 id="companion-title">O mercado não fica<br /><span className="accent-text">na secretária.</span></h2><p>A tua lista à mão. Os teus alertas contigo. Continua a acompanhar os teus investimentos com a mesma conta no iPhone.</p>
-              {distribution.url ? <a className="solid-button" href={distribution.url} target="_blank" rel="noopener noreferrer">{distribution.beta ? "Experimentar no TestFlight" : "Descarregar na App Store"}<Icon name="arrow-up-right" size={18} /></a> : <Link href="/dashboard" className="solid-button">Abrir dashboard <Icon name="arrow-right" size={18} /></Link>}
-              <p className="companion-note">Também disponível na web. A instalação é opcional.</p>
-              {distribution.url && distribution.qr && <div className="download-qr"><Image src={distribution.qr} width={72} height={72} alt="QR code para a página oficial da invest.ao para iPhone" unoptimized /><span>Aponta a câmara.<br />Leva a invest.ao contigo.</span></div>}
+        <section className="account-section container" id="aplicacao" aria-labelledby="account-title">
+          <div className="account-panel" data-reveal>
+            <div className="account-copy">
+              <p className="eyebrow">O TEU ESPAÇO NA INVEST.AO</p>
+              <h2 id="account-title">Do mercado<br /><span className="accent-text">à tua carteira.</span></h2>
+              <p>Passa da consulta ao acompanhamento. Entra na tua conta para organizar os teus investimentos e voltar ao que te interessa.</p>
+              <Link className="solid-button" href="/dashboard">Abrir a minha área <Icon name="arrow-right" size={18} /></Link>
+              <span className="account-note"><Icon name="lock" size={14} /> Área pessoal · requer início de sessão</span>
             </div>
-            <figure className="companion-phone"><Image src="/screenshots/2026-10-20/asset-detail.png" width={1320} height={2868} sizes="(max-width: 760px) 220px, 270px" alt="Captura do detalhe de um título na invest.ao para iPhone, com preço, histórico e acesso a comparação e alertas." /><figcaption>Captura do iPhone. Valores e datas do momento da captura.</figcaption></figure>
+            <nav className="account-tools" aria-label="Ferramentas da tua conta">
+              {accountTools.map((tool) => <Link key={tool.href} href={tool.href} className="account-tool">
+                <span className="account-tool-icon"><Icon name={tool.icon} size={23} /></span>
+                <span><strong>{tool.title}</strong><small>{tool.description}</small></span>
+                <Icon name="arrow-up-right" size={17} />
+              </Link>)}
+            </nav>
+          </div>
+        </section>
+
+        <section className="landing-plans container" id="planos" aria-labelledby="plans-title">
+          <div className="plans-copy" data-reveal>
+            <p className="eyebrow">GRATUITO E PLUS</p>
+            <h2 id="plans-title">Começa a explorar.<br />Escolhe como acompanhar.</h2>
+            <p>A pesquisa, o mercado e as notícias são públicos. Para as ferramentas pessoais, conhece os limites de cada plano e escolhe o que precisas.</p>
+            <Link className="quiet-link" href="/planos">Ver planos e limites <Icon name="arrow-right" size={16} /></Link>
+          </div>
+          <div className="landing-plan-options" data-reveal>
+            <article><span className="eyebrow">GRATUITO</span><h3>O teu ponto de partida.</h3><p>Consulta pública e ferramentas pessoais para começar a acompanhar.</p><span className="plan-preview-limit">Até <strong>{planLimits.freeWatchlist}</strong> instrumentos na lista</span></article>
+            <article className="landing-plus"><span className="eyebrow">INVEST.AO PLUS</span><h3>Mais espaço para seguir.</h3><p>Limites alargados na lista e nas comparações para acompanhar mais instrumentos.</p><span className="plan-preview-limit">Até <strong>{planLimits.plusWatchlist}</strong> instrumentos na lista</span></article>
           </div>
         </section>
 
@@ -120,7 +125,7 @@ export default function Home() {
       </main>
       <footer className="site-footer container">
         <div className="footer-heading"><a href="#conteudo" aria-label="invest.ao — início"><SiteBrand /></a><p>O mercado de capitais de Angola.<br />Informação para acompanhar.</p><a href="#conteudo" className="quiet-link">Voltar ao início <Icon name="arrow-up" size={16} /></a></div>
-        <div className="footer-information"><span>© {new Date().getFullYear()} invest.ao</span><a href="/policy">Privacidade</a><a href="/planos">Planos</a><a href="/cookies">Cookies</a><CookiePreferencesButton /><a href="mailto:info@invest.ao">info@invest.ao</a></div>
+        <div className="footer-information"><span>© {new Date().getFullYear()} invest.ao</span><a href="/policy">Privacidade</a><a href="/planos">Planos</a>{distribution.url && <a href={distribution.url} target="_blank" rel="noopener noreferrer">{distribution.beta ? "iPhone · TestFlight" : "Aplicação para iPhone"}<Icon name="arrow-up-right" size={12} /></a>}<a href="/cookies">Cookies</a><CookiePreferencesButton /><a href="mailto:info@invest.ao">info@invest.ao</a></div>
         <p className="footer-disclaimer">A invest.ao fornece informação para acompanhar o mercado. Não presta aconselhamento financeiro nem executa operações de compra ou venda.</p>
       </footer>
     </div>
