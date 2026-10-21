@@ -57,7 +57,6 @@ export default function Home() {
             <input id="landing-query" name="q" type="search" maxLength={100} placeholder="Nome, símbolo ou notícia" />
             <button type="submit">Pesquisar <Icon name="arrow-right" size={17} /></button>
           </form>
-          <p className="opening-note">Explora o mercado sem iniciar sessão. <Link href="/mercado">Ver todos os instrumentos <Icon name="arrow-up-right" size={13} /></Link></p>
           <nav className="product-shortcuts" aria-label="Explorar a invest.ao">
             {shortcuts.map((item) => <Link key={item.href} href={item.href} className="product-shortcut">
               <span className="shortcut-icon"><Icon name={item.icon} size={22} /></span>
@@ -70,12 +69,10 @@ export default function Home() {
         <section className="market-section container" id="precos" aria-labelledby="market-title">
           <div className="section-heading">
             <div><p className="eyebrow">COMEÇA PELO MERCADO</p><h2 id="market-title">Angola, em perspectiva.</h2></div>
-            <span className="section-aside"><Icon name="markets" size={16} /> Preços de referência · BODIVA</span>
           </div>
           <div className="landing-quotes">
             <Suspense fallback={<LandingMarketLoading />}><LandingMarket /></Suspense>
           </div>
-          <p className="market-caption"><Icon name="info" size={14} /> Informação para acompanhar. A invest.ao não executa operações de compra ou venda.</p>
         </section>
 
         <section className="landing-news container" id="noticias" aria-labelledby="news-title">
@@ -93,7 +90,6 @@ export default function Home() {
               <h2 id="account-title">Do mercado<br /><span className="accent-text">à tua carteira.</span></h2>
               <p>Passa da consulta ao acompanhamento. Entra na tua conta para organizar os teus investimentos e voltar ao que te interessa.</p>
               <Link className="solid-button" href="/dashboard">Abrir a minha área <Icon name="arrow-right" size={18} /></Link>
-              <span className="account-note"><Icon name="lock" size={14} /> Área pessoal · requer início de sessão</span>
             </div>
             <nav className="account-tools" aria-label="Ferramentas da tua conta">
               {accountTools.map((tool) => <Link key={tool.href} href={tool.href} className="account-tool">

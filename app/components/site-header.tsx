@@ -6,6 +6,7 @@ import { useAccount } from "./account-provider";
 import WorkspaceLink from "./workspace-link";
 import Icon from "./invest-icon";
 import SiteBrand from "./site-brand";
+import AppDownload from "./app-download";
 
 const destinations = [
   ["/mercado", "Mercado"],
@@ -47,20 +48,23 @@ export default function SiteHeader() {
         <nav className="browse-nav" aria-label="Navegação principal">
           {links}
         </nav>
-        <form action="/pesquisa" role="search" className="browse-search">
-          <Icon name="search" size={18} />
-          <input
-            name="q"
-            type="search"
-            aria-label="Pesquisar instrumentos, emitentes e notícias"
-            placeholder="Instrumento, emitente ou notícia"
-            maxLength={100}
-            required
-          />
-          <button type="submit" aria-label="Pesquisar">
-            <Icon name="arrow-right" size={17} />
-          </button>
-        </form>
+        <div className="browse-utilities">
+          <form action="/pesquisa" role="search" className="browse-search">
+            <Icon name="search" size={18} />
+            <input
+              name="q"
+              type="search"
+              aria-label="Pesquisar instrumentos, emitentes e notícias"
+              placeholder="Instrumento, emitente ou notícia"
+              maxLength={100}
+              required
+            />
+            <button type="submit" aria-label="Pesquisar">
+              <Icon name="arrow-right" size={17} />
+            </button>
+          </form>
+          <AppDownload />
+        </div>
         <WorkspaceLink className="browse-account" href="/dashboard">
           {user ? "Dashboard" : "Entrar"}
           <Icon name="arrow-up-right" size={16} />

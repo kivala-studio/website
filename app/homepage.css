@@ -21,8 +21,6 @@ html:has(.landing-page) { scroll-padding-top: 104px; }
 .landing-page .landing-search input::placeholder { color: var(--muted); opacity: 1; }
 .landing-page .landing-search button { display: inline-flex; align-items: center; justify-content: center; gap: 18px; min-height: 48px; padding: 12px 20px; background: var(--accent); color: var(--on-accent); border: 0; border-radius: 11px; font-size: 13px; font-weight: 600; cursor: pointer; }
 .landing-page .landing-search button:hover { background: color-mix(in srgb, var(--accent) 85%, var(--ink)); }
-.landing-page .opening-note { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 6px 14px; color: var(--muted); font-size: 11px; line-height: 1.8; margin-top: 12px; }
-.landing-page .opening-note a { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; color: var(--accent); }
 .landing-page .product-shortcuts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; max-width: 900px; margin: 28px auto 0; }
 .landing-page .product-shortcut { position: relative; display: flex; flex-direction: column; align-items: start; gap: 14px; padding: 20px; text-align: left; border: 1px solid color-mix(in srgb, var(--line) 45%, transparent); border-radius: 18px; background: var(--surface); }
 .landing-page .product-shortcut:hover { color: var(--ink); border-color: var(--accent); background: color-mix(in srgb, var(--accent) 4%, var(--surface)); }
@@ -32,7 +30,6 @@ html:has(.landing-page) { scroll-padding-top: 104px; }
 .landing-page .product-shortcut > .invest-icon { position: absolute; top: 32px; right: 20px; color: var(--muted); }
 .landing-page .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 28px; }
 .landing-page .section-heading .eyebrow { margin-bottom: 14px; color: var(--muted); }
-.landing-page .section-aside { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 11px; padding-bottom: 5px; }
 .landing-page .solid-button { display: inline-flex; align-items: center; justify-content: center; gap: 26px; padding: 14px 23px; min-height: 50px; font-size: 13px; font-weight: 600; border: 1px solid var(--accent); border-radius: 999px; background: var(--accent); color: var(--on-accent); }
 .landing-page .solid-button:hover { background: color-mix(in srgb, var(--accent) 85%, var(--ink)); }
 .landing-page .market-section { padding-top: 48px; }
@@ -63,8 +60,6 @@ html:has(.landing-page) { scroll-padding-top: 104px; }
 .landing-page .landing-quotes-state { min-height: 410px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; text-align: center; padding: 32px; }
 .landing-page .landing-quotes-state > p:not(.eyebrow) { color: var(--muted); font-size: 13px; line-height: 1.8; }
 .landing-page .landing-quotes-empty { padding: 30px 0; font-size: 13px; color: var(--muted); }
-.landing-page .market-caption { display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 10px; line-height: 1.7; color: var(--muted); margin-top: 18px; }
-.landing-page .market-caption .invest-icon { flex-shrink: 0; }
 .landing-page .landing-news { padding-top: 80px; }
 .landing-page .landing-news .section-heading > .quiet-link { flex-shrink: 0; color: var(--accent); }
 .landing-page .news-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
@@ -78,7 +73,6 @@ html:has(.landing-page) { scroll-padding-top: 104px; }
 .landing-page .account-copy h2 { margin-block: 20px; }
 .landing-page .account-copy > p:not(.eyebrow) { font-size: 14px; line-height: 1.9; color: var(--muted); max-width: 350px; }
 .landing-page .account-copy .solid-button { margin-top: 26px; }
-.landing-page .account-note { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 10px; margin-top: 18px; }
 .landing-page .account-tools { display: grid; gap: 8px; }
 .landing-page .account-tool { display: grid; grid-template-columns: 44px minmax(0, 1fr) 18px; align-items: center; gap: 18px; padding: 18px; border-radius: 16px; }
 .landing-page .account-tool:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 4%, var(--surface)); }
@@ -134,7 +128,6 @@ html:has(.landing-page) { scroll-padding-top: 104px; }
   .landing-page .landing-search { gap: 10px; margin-top: 24px; padding-left: 14px; border-radius: 14px; flex-wrap: wrap; }
   .landing-page .landing-search input { font-size: 13px; }
   .landing-page .landing-search button { width: 100%; margin-left: -8px; flex-basis: calc(100% + 8px); }
-  .landing-page .opening-note { font-size: 10px; margin-top: 16px; }
   .landing-page .product-shortcuts { grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 24px; }
   .landing-page .product-shortcut { padding: 16px; gap: 12px; border-radius: 16px; }
   .landing-page .product-shortcut > .invest-icon { top: 28px; right: 14px; }
@@ -142,7 +135,6 @@ html:has(.landing-page) { scroll-padding-top: 104px; }
   .landing-page .product-shortcut small { font-size: 10px; }
   .landing-page .section-heading { display: block; margin-bottom: 20px; }
   .landing-page .section-heading .eyebrow { font-size: 9px; margin-bottom: 10px; }
-  .landing-page .section-aside { margin-top: 16px; font-size: 10px; }
   .landing-page .market-section { padding-top: 48px; }
   .landing-page .landing-quotes { border-radius: 16px; }
   .landing-page .landing-quotes-heading { padding: 18px 16px; gap: 12px; }
@@ -166,8 +158,6 @@ html:has(.landing-page) { scroll-padding-top: 104px; }
   .landing-page .landing-quotes-footer { display: block; padding: 16px; }
   .landing-page .landing-quotes-footer > p { font-size: 10px; }
   .landing-page .landing-quotes-footer .quiet-link { margin-top: 12px; }
-  .landing-page .market-caption { align-items: start; text-align: left; font-size: 10px; }
-  .landing-page .market-caption .invest-icon { margin-top: 2px; }
   .landing-page .landing-news, .landing-page .account-section { padding-top: 56px; }
   .landing-page .news-list { grid-template-columns: 1fr; gap: 14px; }
   .landing-page .news-list article { padding: 24px; }
