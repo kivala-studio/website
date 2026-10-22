@@ -1,3 +1,8 @@
+## Important Rules
+
+1. Cut taglines, helper text and secondary labels. If a screen needs them to make sense, fix the layout.
+2. Always make the best decision that elevates user experience (UX), developer experience (DX), and agent experience (AX) together, without breaking anything.
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 ## This is NOT the Next.js you know
