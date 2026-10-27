@@ -12,9 +12,15 @@ html:has(.landing-page) { scroll-padding-top: 104px; }
 .landing-page .browse-nav a { padding-inline: 14px; border-radius: 999px; color: var(--muted); font-weight: 500; }
 .landing-page .browse-nav a:hover { color: var(--ink); background: var(--action-surface); }
 .landing-page .browse-search { max-width: 280px; border-radius: 999px; background: var(--action-surface); border-color: transparent; }
-.landing-page .app-download summary { border-radius: 999px; }
-.landing-page .browse-account { border-radius: 999px; background: var(--ink); color: var(--paper); border-color: var(--ink); }
-.landing-page .browse-account:hover { color: var(--paper); opacity: .9; }
+/* Header buttons share the page's pill buttons: download is primary, account is secondary. */
+.landing-page .app-download summary, .landing-page .app-download-mobile, .landing-page .browse-account { min-height: 44px; padding: 0 18px; border: 0; border-radius: 999px; font-size: 13px; font-weight: 600; transition: background 160ms; }
+.landing-page .app-download summary, .landing-page .app-download-mobile { gap: 8px; background: var(--accent); color: var(--on-accent); }
+.landing-page .app-download summary:hover, .landing-page .app-download-mobile:hover { color: var(--on-accent); background: color-mix(in srgb, var(--accent) 88%, var(--ink)); }
+.landing-page .browse-account { gap: 10px; background: var(--action-surface); color: var(--ink); }
+.landing-page .browse-account:hover { color: var(--ink); background: var(--selected); }
+.landing-page .browse-mobile-nav summary { border: 0; background: var(--action-surface); color: var(--ink); }
+.landing-page .app-download-panel { border-radius: 24px; }
+.landing-page .app-download-panel a { min-height: 48px; border-radius: 999px; font-size: 13px; }
 
 /* Buttons */
 .landing-page .button-primary, .landing-page .button-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 54px; padding: 0 26px; border-radius: 999px; font-size: 15px; font-weight: 600; transition: transform 160ms, background 160ms; }
@@ -168,6 +174,7 @@ html:has(.landing-page) { scroll-padding-top: 104px; }
   .landing-page .bento { grid-template-columns: 1fr 1fr; grid-template-rows: none; grid-auto-rows: 280px; }
   .landing-page .tile-detail { grid-row: span 2; }
   .landing-page .browse-search { display: none; }
+  .landing-page .app-download summary { width: 44px; padding: 0; }
 }
 @media (max-width: 760px) {
   html:has(.landing-page) { scroll-padding-top: 150px; }
