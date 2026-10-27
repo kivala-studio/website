@@ -1,13 +1,16 @@
-import { NewsLoading } from "./components/loading-placeholders";
 import { Suspense } from "react";
+import Image from "next/image";
 import SiteHeader from "./components/site-header";
 import SiteBrand from "./components/site-brand";
 import Icon from "./components/invest-icon";
 import Link from "./components/workspace-link";
 import LandingAuth from "./components/landing-auth";
+import AppMark from "./components/app-mark";
+import DeviceFrame from "./device-frame";
 import { CookiePreferencesButton } from "./components/cookie-consent";
-import LandingMarket, { LandingMarketLoading } from "./landing-market";
-import { RecentNews } from "./public-content";
+import { MarketMovers, MarketMoversLoading, MarketTicker, PulseCard } from "./landing-market";
+import { getNews } from "../lib/public-data";
+import { date } from "../lib/market-presentation";
 import { planLimits } from "../lib/subscriptions";
 import { appDistribution } from "../lib/app-distribution";
 import PageMotion from "./page-motion";
@@ -17,18 +20,17 @@ import "./homepage.css";
 
 export const metadata = pageMetadata({ title: siteTitle, description: siteDescription, path: "/" });
 
-const shortcuts = [
-  { icon: "markets", title: "Mercado", description: "Instrumentos e preços", href: "/mercado" },
-  { icon: "news", title: "Notícias", description: "O contexto do mercado", href: "/noticias" },
-  { icon: "portfolio", title: "Carteira", description: "Os teus investimentos", href: "/carteira" },
-  { icon: "watchlist", title: "A tua lista", description: "Os títulos que segues", href: "/lista" },
-];
+const screenshots = "/screenshots/2026-10-20";
 
-const accountTools = [
-  { icon: "portfolio", title: "Organiza a carteira", description: "Regista posições e acompanha a composição dos teus investimentos.", href: "/carteira" },
-  { icon: "watchlist", title: "Guarda a tua lista", description: "Reúne os instrumentos que queres acompanhar mais de perto.", href: "/lista" },
-  { icon: "alert", title: "Define os teus alertas", description: "Escolhe os preços e as variações que merecem a tua atenção.", href: "/alertas" },
-  { icon: "exchange", title: "Compara instrumentos", description: "Consulta a evolução de dois títulos no mesmo período, lado a lado.", href: "/comparar" },
+const plans = [
+  {
+    name: "Gratuito",
+    items: [`${planLimits.freeWatchlist} instrumentos guardados`, `Movimentos automáticos para ${planLimits.freeMovement}`, `1 comparação de ${planLimits.freeComparison} por semana`],
+  },
+  {
+    name: "invest.ao Plus",
+    items: [`Até ${planLimits.plusWatchlist} instrumentos guardados`, "Movimentos automáticos em todos", `Compara até ${planLimits.plusComparison}, sem limite semanal`],
+  },
 ];
 
 const questions = [
@@ -38,8 +40,34 @@ const questions = [
   ["O que posso consultar sem conta?", "Podes pesquisar instrumentos e emitentes, consultar preços e históricos, ler notícias publicadas e comparar os planos. A carteira, a lista, os alertas e a comparação de instrumentos exigem conta e estão sujeitos aos limites do plano."],
 ];
 
+async function LatestNews() {
+  const result = await getNews();
+  if (result.error || !result.data.length) return <p className="market-state">Sem notícias publicadas neste momento.</p>;
+  const [lead, ...rest] = result.data;
+  return (
+    <div className="news-layout">
+      <Link href={`/noticias/${encodeURIComponent(lead.slug)}`} prefetch={false} className="news-lead">
+        <time dateTime={lead.published_at}>{date(lead.published_at)}</time>
+        <h3>{lead.title}</h3>
+        <p>{lead.summary}</p>
+      </Link>
+      <ul className="news-rest">
+        {rest.slice(0, 4).map((article) => (
+          <li key={article.id}>
+            <Link href={`/noticias/${encodeURIComponent(article.slug)}`} prefetch={false}>
+              <time dateTime={article.published_at}>{date(article.published_at)}</time>
+              <strong>{article.title}</strong>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export default function Home() {
   const distribution = appDistribution();
+  const storeLabel = distribution.beta ? "Abrir no TestFlight" : "Descarregar na App Store";
   return (
     <div className="landing-page">
       <SiteSchema />
@@ -48,82 +76,119 @@ export default function Home() {
       <a className="skip-link" href="#conteudo">Saltar para o conteúdo</a>
       <SiteHeader />
       <main id="conteudo">
-        <section className="opening container" aria-labelledby="hero-title">
-          <p className="hero-eyebrow"><span aria-hidden="true" /> MERCADO DE CAPITAIS DE ANGOLA</p>
-          <h1 id="hero-title">Conhece o mercado.<br /><span className="accent-text">Acompanha o que importa.</span></h1>
-          <p className="opening-description">Preços, instrumentos e notícias. A tua carteira, lista e alertas.<br className="desktop-break" /> Um lugar para acompanhar os teus investimentos.</p>
-          <form className="landing-search" action="/pesquisa" role="search" aria-label="Pesquisar no mercado">
-            <label className="landing-search-label" htmlFor="landing-query">Nome, símbolo ou notícia</label>
-            <Icon name="search" size={21} />
-            <input id="landing-query" name="q" type="search" maxLength={100} placeholder="Nome, símbolo ou notícia" />
-            <button type="submit">Pesquisar <Icon name="arrow-right" size={17} /></button>
-          </form>
-          <nav className="product-shortcuts" aria-label="Explorar a invest.ao">
-            {shortcuts.map((item) => <Link key={item.href} href={item.href} className="product-shortcut">
-              <span className="shortcut-icon"><Icon name={item.icon} size={22} /></span>
-              <span><strong>{item.title}</strong><small>{item.description}</small></span>
-              <Icon name="chevron-right" size={16} />
-            </Link>)}
-          </nav>
-        </section>
-
-        <section className="market-section container" id="precos" aria-labelledby="market-title">
-          <div className="section-heading">
-            <div><p className="eyebrow">COMEÇA PELO MERCADO</p><h2 id="market-title">Angola, em perspectiva.</h2></div>
-          </div>
-          <div className="landing-quotes">
-            <Suspense fallback={<LandingMarketLoading />}><LandingMarket /></Suspense>
-          </div>
-        </section>
-
-        <section className="landing-news container" id="noticias" aria-labelledby="news-title">
-          <div className="section-heading" data-reveal>
-            <div><p className="eyebrow">PARA LÁ DOS PREÇOS</p><h2 id="news-title">O que se passa no mercado.</h2></div>
-            <Link className="quiet-link" href="/noticias">Todas as notícias <Icon name="arrow-right" size={16} /></Link>
-          </div>
-          <Suspense fallback={<NewsLoading />}><RecentNews /></Suspense>
-        </section>
-
-        <section className="account-section container" id="aplicacao" aria-labelledby="account-title">
-          <div className="account-panel" data-reveal>
-            <div className="account-copy">
-              <p className="eyebrow">O TEU ESPAÇO NA INVEST.AO</p>
-              <h2 id="account-title">Do mercado<br /><span className="accent-text">à tua carteira.</span></h2>
-              <p>Passa da consulta ao acompanhamento. Entra na tua conta para organizar os teus investimentos e voltar ao que te interessa.</p>
-              <Link className="solid-button" href="/dashboard">Abrir a minha área <Icon name="arrow-right" size={18} /></Link>
+        <section className="hero container" aria-labelledby="hero-title">
+          <div className="hero-copy">
+            <h1 id="hero-title">A bolsa de Angola, <span>fácil de acompanhar.</span></h1>
+            <p>Cotações, históricos, alertas e a tua carteira. No iPhone e no navegador.</p>
+            <div className="hero-actions">
+              {distribution.url && <a className="button-primary" href={distribution.url} target="_blank" rel="noopener noreferrer"><Icon name="download" size={18} />{storeLabel}</a>}
+              <Link className="button-secondary" href="/mercado">Ver o mercado <Icon name="arrow-right" size={17} /></Link>
             </div>
-            <nav className="account-tools" aria-label="Ferramentas da tua conta">
-              {accountTools.map((tool) => <Link key={tool.href} href={tool.href} className="account-tool">
-                <span className="account-tool-icon"><Icon name={tool.icon} size={23} /></span>
-                <span><strong>{tool.title}</strong><small>{tool.description}</small></span>
-                <Icon name="arrow-up-right" size={17} />
-              </Link>)}
-            </nav>
+          </div>
+          <div className="hero-visual">
+            <div className="hero-glow" aria-hidden="true" />
+            <DeviceFrame src={`${screenshots}/market-overview.png`} alt="Mercado na invest.ao para iPhone" hero />
+            <Suspense fallback={null}><PulseCard /></Suspense>
           </div>
         </section>
 
-        <section className="landing-plans container" id="planos" aria-labelledby="plans-title">
-          <div className="plans-copy" data-reveal>
-            <p className="eyebrow">GRATUITO E PLUS</p>
-            <h2 id="plans-title">Começa a explorar.<br />Escolhe como acompanhar.</h2>
-            <p>A pesquisa, o mercado e as notícias são públicos. Para as ferramentas pessoais, conhece os limites de cada plano e escolhe o que precisas.</p>
-            <Link className="quiet-link" href="/planos">Ver planos e limites <Icon name="arrow-right" size={16} /></Link>
-          </div>
-          <div className="landing-plan-options" data-reveal>
-            <article><span className="eyebrow">GRATUITO</span><h3>O teu ponto de partida.</h3><p>Consulta pública e ferramentas pessoais para começar a acompanhar.</p><span className="plan-preview-limit">Até <strong>{planLimits.freeWatchlist}</strong> instrumentos na lista</span></article>
-            <article className="landing-plus"><span className="eyebrow">INVEST.AO PLUS</span><h3>Mais espaço para seguir.</h3><p>Limites alargados na lista e nas comparações para acompanhar mais instrumentos.</p><span className="plan-preview-limit">Até <strong>{planLimits.plusWatchlist}</strong> instrumentos na lista</span></article>
+        <Suspense fallback={<div className="ticker ticker-loading" />}><MarketTicker /></Suspense>
+
+        <section className="section container" id="precos" aria-labelledby="market-title">
+          <header className="section-head">
+            <h2 id="market-title">Hoje na BODIVA</h2>
+            <Link className="text-link" href="/mercado">Ver todos <Icon name="arrow-right" size={16} /></Link>
+          </header>
+          <Suspense fallback={<MarketMoversLoading />}><MarketMovers /></Suspense>
+          <p className="section-note">Preços em Kz, com a data de cada referência. Independente da BODIVA. Não é aconselhamento financeiro.</p>
+        </section>
+
+        <section className="section container" aria-labelledby="features-title">
+          <header className="section-head">
+            <h2 id="features-title">Tudo o que segues, num só lugar.</h2>
+          </header>
+          <div className="bento">
+            <Link href="/mercado" className="tile tile-detail" data-reveal>
+              <div className="tile-copy"><Icon name="chart" size={22} /><h3>Histórico de cada título</h3><p>Gráficos por período, sessão do dia e desempenho.</p></div>
+              <div className="tile-phone"><DeviceFrame src={`${screenshots}/asset-detail.png`} alt="Detalhe de uma acção na invest.ao" /></div>
+            </Link>
+            <Link href="/comparar" className="tile tile-compare" data-reveal>
+              <div className="tile-copy"><Icon name="exchange" size={22} /><h3>Compara no mesmo gráfico</h3></div>
+              <div className="compare-lines" aria-hidden="true">
+                <svg viewBox="0 0 240 90" preserveAspectRatio="none">
+                  <path className="line-1" d="M0 70 L30 62 L60 66 L90 48 L120 52 L150 34 L180 40 L210 22 L240 18" />
+                  <path className="line-2" d="M0 60 L30 64 L60 56 L90 60 L120 50 L150 54 L180 46 L210 50 L240 44" />
+                  <path className="line-3" d="M0 40 L30 46 L60 52 L90 50 L120 60 L150 58 L180 66 L210 62 L240 70" />
+                </svg>
+              </div>
+            </Link>
+            <Link href="/alertas" className="tile tile-alert" data-reveal>
+              <div className="tile-copy"><Icon name="alert" size={22} /><h3>Alertas de preço e variação</h3></div>
+              <div className="notification" aria-hidden="true">
+                <AppMark size={28} />
+                <span><strong>invest.ao</strong><small>O preço que definiste foi atingido.</small></span>
+              </div>
+            </Link>
+            <Link href="/carteira" className="tile tile-portfolio" data-reveal>
+              <div className="tile-copy"><Icon name="portfolio" size={22} /><h3>A tua carteira</h3><p>Regista compras e vê o ganho ou a perda.</p></div>
+              <div className="privacy-value" aria-hidden="true"><span>••••••• Kz</span><Icon name="eye-off" size={20} /></div>
+            </Link>
+            <Link href="/resumos" className="tile tile-recap" data-reveal>
+              <div className="tile-copy"><Icon name="history" size={22} /><h3>Resumo semanal</h3><p>A semana do mercado em histórias.</p></div>
+              <div className="story-bars" aria-hidden="true"><span /><span /><span /><span /></div>
+            </Link>
           </div>
         </section>
 
-        <section className="questions-section container" id="perguntas" aria-labelledby="questions-title">
-          <div data-reveal><p className="eyebrow">ANTES DE COMEÇAR</p><h2 id="questions-title">Algumas respostas.<br /><span className="muted-text">Sem complicar.</span></h2><a href="mailto:info@invest.ao" className="quiet-link">Fala connosco <Icon name="arrow-up-right" size={16} /></a></div>
-          <div className="question-list" data-reveal>{questions.map(([question, answer]) => <details key={question}><summary>{question}<span className="faq-toggle" aria-hidden="true">+</span></summary><p>{answer}</p></details>)}</div>
+        <section className="section container" id="noticias" aria-labelledby="news-title">
+          <header className="section-head">
+            <h2 id="news-title">Notícias</h2>
+            <Link className="text-link" href="/noticias">Todas <Icon name="arrow-right" size={16} /></Link>
+          </header>
+          <Suspense fallback={<div className="news-layout skeleton-card" aria-busy="true" />}><LatestNews /></Suspense>
         </section>
+
+        <section className="section container" id="planos" aria-labelledby="plans-title">
+          <header className="section-head">
+            <h2 id="plans-title">Grátis para começar.</h2>
+            <Link className="text-link" href="/planos">Ver planos <Icon name="arrow-right" size={16} /></Link>
+          </header>
+          <div className="plans">
+            {plans.map((plan, index) => (
+              <article key={plan.name} className={index ? "plan plan-plus" : "plan"} data-reveal>
+                <h3>{plan.name}</h3>
+                <ul>{plan.items.map((item) => <li key={item}><Icon name="check" size={18} />{item}</li>)}</ul>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="section container faq" id="perguntas" aria-labelledby="questions-title">
+          <h2 id="questions-title">Perguntas frequentes</h2>
+          <div className="question-list">
+            {questions.map(([question, answer]) => <details key={question}><summary>{question}<Icon name="chevron-down" size={18} /></summary><p>{answer}</p></details>)}
+          </div>
+        </section>
+
+        {distribution.url && <section className="container download" aria-labelledby="download-title">
+          <div className="download-panel" data-reveal>
+            <div className="download-copy">
+              <AppMark size={64} />
+              <h2 id="download-title">invest.ao para iPhone</h2>
+              <a className="button-primary" href={distribution.url} target="_blank" rel="noopener noreferrer"><Icon name="download" size={18} />{storeLabel}</a>
+            </div>
+            {distribution.qr && <Image className="download-qr" src={distribution.qr} width={168} height={168} alt="Código QR para descarregar a invest.ao" unoptimized />}
+          </div>
+        </section>}
       </main>
       <footer className="site-footer container">
-        <div className="footer-heading"><a href="#conteudo" aria-label="invest.ao — início"><SiteBrand /></a><p>O mercado de capitais de Angola.<br />Informação para acompanhar.</p><a href="#conteudo" className="quiet-link">Voltar ao início <Icon name="arrow-up" size={16} /></a></div>
-        <div className="footer-information"><span>© {new Date().getFullYear()} invest.ao</span><a href="/policy">Privacidade</a><a href="/planos">Planos</a>{distribution.url && <a href={distribution.url} target="_blank" rel="noopener noreferrer">{distribution.beta ? "iPhone · TestFlight" : "Aplicação para iPhone"}<Icon name="arrow-up-right" size={12} /></a>}<a href="/cookies">Cookies</a><CookiePreferencesButton /><a href="mailto:info@invest.ao">info@invest.ao</a></div>
-        <p className="footer-disclaimer">A invest.ao fornece informação para acompanhar o mercado. Não presta aconselhamento financeiro nem executa operações de compra ou venda.</p>
+        <div className="footer-top">
+          <a href="#conteudo" aria-label="invest.ao — início"><SiteBrand /></a>
+          <nav aria-label="Rodapé">
+            <Link href="/mercado">Mercado</Link><Link href="/noticias">Notícias</Link><Link href="/planos">Planos</Link><a href="/policy">Privacidade</a><a href="/cookies">Cookies</a><CookiePreferencesButton /><a href="mailto:info@invest.ao">info@invest.ao</a>
+          </nav>
+        </div>
+        <p className="footer-disclaimer">© {new Date().getFullYear()} invest.ao · Informação para acompanhar o mercado. Não presta aconselhamento financeiro nem executa operações de compra ou venda. Independente e não afiliada à BODIVA.</p>
       </footer>
     </div>
   );
