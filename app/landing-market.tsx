@@ -55,10 +55,7 @@ export default async function LandingMarket() {
         ))}
         {!equities.length && <p className="landing-quotes-empty">Sem acções disponíveis nesta consulta.</p>}
       </div>
-      <div className="landing-quotes-footer">
-        <p>Preços por acção em Kz. Confirma a data de cada referência; os valores podem estar desactualizados.</p>
-        <Link className="quiet-link" href="/mercado">Ver todos os instrumentos <Icon name="arrow-right" size={16} /></Link>
-      </div>
+      <p className="landing-quotes-footer">Preços por acção em Kz. Confirma a data de cada referência.</p>
     </>
   );
 }
