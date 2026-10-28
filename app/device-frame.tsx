@@ -20,7 +20,6 @@ export default function DeviceFrame({ src, lightSrc, alt, hero = false }: { src:
       <div className="device-screen">
         <picture>
           {light && <source media="(prefers-color-scheme: light)" srcSet={light} />}
-          {/* eslint-disable-next-line @next/next/no-img-element -- getImageProps supplies the optimised sources */}
           <img {...image} srcSet={dark} alt={alt} />
         </picture>
       </div>
