@@ -87,7 +87,7 @@ export default function Home() {
           </div>
           <div className="hero-visual">
             <div className="hero-glow" aria-hidden="true" />
-            <DeviceFrame src={`${screenshots}/market-overview.png`} alt="Mercado na invest.ao para iPhone" hero />
+            <DeviceFrame src={`${screenshots}/market-overview.png`} lightSrc={`${screenshots}/market-overview-light.png`} alt="Mercado na invest.ao para iPhone" hero />
             <Suspense fallback={null}><PulseCard /></Suspense>
           </div>
         </section>
@@ -110,7 +110,7 @@ export default function Home() {
           <div className="bento">
             <Link href="/mercado" className="tile tile-detail" data-reveal>
               <div className="tile-copy"><Icon name="chart" size={22} /><h3>Histórico de cada título</h3><p>Gráficos por período, sessão do dia e desempenho.</p></div>
-              <div className="tile-phone"><DeviceFrame src={`${screenshots}/asset-detail.png`} alt="Detalhe de uma acção na invest.ao" /></div>
+              <div className="tile-phone"><DeviceFrame src={`${screenshots}/asset-detail.png`} lightSrc={`${screenshots}/asset-detail-light.png`} alt="Detalhe de uma acção na invest.ao" /></div>
             </Link>
             <Link href="/comparar" className="tile tile-compare" data-reveal>
               <div className="tile-copy"><Icon name="exchange" size={22} /><h3>Compara no mesmo gráfico</h3></div>
