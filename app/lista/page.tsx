@@ -18,9 +18,7 @@ export default async function Page({
   return (
     <PublicShell>
       <header className="page-heading">
-        <p className="eyebrow">OS TEUS INTERESSES</p>
         <h1>A minha lista.</h1>
-        <p>Os instrumentos que queres acompanhar, sempre à mão.</p>
       </header>
       <AccountGate feature="A tua lista">
         <Watchlist market={result.data} initialQuery={initialSymbol} />

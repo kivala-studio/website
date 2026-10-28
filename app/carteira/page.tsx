@@ -11,12 +11,7 @@ export default async function Page() {
   return (
     <PublicShell>
       <header className="page-heading">
-        <p className="eyebrow">OS TEUS INVESTIMENTOS</p>
         <h1>A tua carteira.</h1>
-        <p>
-          Regista compras e vendas. Acompanha posições, custo médio e
-          distribuição.
-        </p>
       </header>
       <AccountGate feature="A tua carteira">
         <Portfolio market={market.data} />

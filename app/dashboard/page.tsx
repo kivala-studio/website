@@ -46,16 +46,11 @@ export default async function Dashboard() {
     <PublicShell>
       <header className="page-heading heading-line">
         <div>
-          <p className="eyebrow">INVESTIR COMEÇA POR ENTENDER.</p>
           <h1>
             O teu lugar no
             <br />
             <span>mercado angolano.</span>
           </h1>
-          <p>
-            Os números, as notícias e os teus investimentos. Tudo na tua
-            invest.ao.
-          </p>
         </div>
         <span className="date-chip">
           {date(new Date().toISOString())} · Luanda
@@ -86,10 +81,9 @@ export default async function Dashboard() {
       <section className="home-market-section">
         <div className="section-title">
           <div>
-            <p className="eyebrow">EXPLORAR</p>
             <h2>Conhece as empresas.</h2>
           </div>
-          <Link href="/mercado">Ver todos os instrumentos</Link>
+          <Link className="text-link" href="/mercado">Ver todos <Icon name="arrow-right" size={16} /></Link>
         </div>
         {market.error ? (
           <DataError content="o mercado" />
@@ -104,26 +98,22 @@ export default async function Dashboard() {
         <Link href="/resumos">
           <Icon name="history" size={28} />
           <div>
-            <span>A SEMANA EM PERSPECTIVA</span>
             <h2>O que mudou no mercado?</h2>
-            <p>Revisita os movimentos e os fechos verificados.</p>
           </div>
           <Icon name="chevron-right" />
         </Link>
         <Link href="/simular">
           <Icon name="calculator" size={28} />
           <div>
-            <span>EXPLORA UMA HIPÓTESE</span>
             <h2>E se começasses hoje?</h2>
-            <p>Simula o efeito do tempo e dos teus reforços.</p>
           </div>
           <Icon name="chevron-right" />
         </Link>
       </div>
       <section className="public-section">
         <div className="section-title">
-          <h2>Para ler com contexto</h2>
-          <Link href="/noticias">Todas as notícias</Link>
+          <h2>Notícias</h2>
+          <Link className="text-link" href="/noticias">Todas <Icon name="arrow-right" size={16} /></Link>
         </div>
         {news.error ? (
           <DataError content="as notícias" />

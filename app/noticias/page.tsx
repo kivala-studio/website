@@ -23,15 +23,13 @@ export default async function NewsPage({
     <PublicShell>
       <Consultation content="news" />
       <header className="page-heading">
-        <p className="eyebrow">EDITORIAL INVEST.AO</p>
         <h1>Notícias.</h1>
-        <p>O contexto por trás do mercado.</p>
       </header>
       {result.error ? (
         <DataError content="as notícias" />
       ) : (
         <>
-          <NewsList articles={result.data.slice(0, 12)} />
+          <NewsList articles={result.data.slice(0, 12)} featured />
           <nav className="pagination" aria-label="Páginas de notícias">
             {page > 1 ? (
               <Link href={`/noticias?pagina=${page - 1}`}>← Anteriores</Link>

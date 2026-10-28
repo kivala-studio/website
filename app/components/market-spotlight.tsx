@@ -26,7 +26,6 @@ export default function MarketSpotlight({ market }: { market: Market }) {
       </div>
       <div className="spotlight-header">
         <div>
-          <p className="eyebrow">ACÇÕES · BODIVA</p>
           <h2>
             {security.issuers?.short_name ||
               security.issuers?.name ||

@@ -16,12 +16,7 @@ export default async function Page({
   return (
     <PublicShell>
       <header className="page-heading">
-        <p className="eyebrow">ACOMPANHAR COM INTENÇÃO</p>
         <h1>Os teus alertas.</h1>
-        <p>
-          Define um preço ou movimento. Consulta os acontecimentos na
-          Actividade.
-        </p>
       </header>
       <DevelopmentState feature="webPush" compact />
       <AccountGate feature="Os teus alertas">

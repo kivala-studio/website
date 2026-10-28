@@ -53,27 +53,16 @@ export default function PlansPage() {
   return (
     <PublicShell>
       <header className="page-heading plans-intro">
-        <p className="eyebrow">ESCOLHE COMO ACOMPANHAR</p>
         <h1>
           O mercado é o começo.
           <br />
           <span className="accent-text">O plano é teu.</span>
         </h1>
-        <p>
-          Pesquisa instrumentos, consulta preços e lê notícias sem iniciar
-          sessão. Para acompanhar os teus investimentos, começa com uma conta
-          gratuita ou conhece o Plus.
-        </p>
       </header>
       <div className="plans-grid">
         <section className="plan-card" aria-labelledby="free-plan">
-          <p className="eyebrow">PARA COMEÇAR A ACOMPANHAR</p>
           <h2 id="free-plan">Gratuito</h2>
-          <p className="plan-price">
-            Sem custo
-            <small>Conta gratuita para as funcionalidades pessoais.</small>
-          </p>
-          <p>A consulta pública continua disponível sem criar conta.</p>
+          <p className="plan-price">Sem custo</p>
           <ul>
             {[
               `Até ${planLimits.freeWatchlist} instrumentos na tua lista`,
@@ -92,15 +81,8 @@ export default function PlansPage() {
           </WorkspaceLink>
         </section>
         <section className="plan-card plus" aria-labelledby="plus-plan">
-          <p className="eyebrow">MAIS MERCADO. MENOS LIMITES.</p>
           <h2 id="plus-plan">invest.ao Plus</h2>
-          <p className="plan-price">
-            Mensal ou anual
-            <small>
-              Consulta o preço e a disponibilidade na aplicação para iPhone.
-            </small>
-          </p>
-          <p>O mesmo nível de acesso nos dois períodos de subscrição.</p>
+          <p className="plan-price">Mensal ou anual</p>
           <ul>
             {[
               `Até ${planLimits.plusWatchlist} instrumentos na tua lista`,
@@ -159,10 +141,10 @@ export default function PlansPage() {
           </tbody>
         </table>
       </section>
-      <section className="plan-faq" aria-labelledby="plan-questions">
+      <section className="plan-faq question-list" aria-labelledby="plan-questions">
         <h2 id="plan-questions">Antes de escolher.</h2>
         <details>
-          <summary>O que posso consultar sem conta?</summary>
+          <summary>O que posso consultar sem conta?<Icon name="chevron-down" size={18} /></summary>
           <p>
             A pesquisa, o catálogo de mercado, os detalhes dos instrumentos, os
             históricos disponíveis, as notícias publicadas e esta comparação de
@@ -171,7 +153,7 @@ export default function PlansPage() {
           </p>
         </details>
         <details>
-          <summary>Como funciona o par semanal gratuito?</summary>
+          <summary>Como funciona o par semanal gratuito?<Icon name="chevron-down" size={18} /></summary>
           <p>
             Escolhes um par de dois instrumentos ao confirmar uma comparação com
             dados suficientes. Podes voltar ao mesmo par, mesmo com a ordem
@@ -181,7 +163,7 @@ export default function PlansPage() {
           </p>
         </details>
         <details>
-          <summary>O Plus dá acesso a tudo no navegador?</summary>
+          <summary>O Plus dá acesso a tudo no navegador?<Icon name="chevron-down" size={18} /></summary>
           <p>
             O acesso é confirmado pela mesma conta. Algumas opções continuam
             específicas do iPhone: a comparação de três instrumentos e as
@@ -191,7 +173,7 @@ export default function PlansPage() {
           </p>
         </details>
         <details>
-          <summary>Como consulto o preço e giro a subscrição?</summary>
+          <summary>Como consulto o preço e giro a subscrição?<Icon name="chevron-down" size={18} /></summary>
           <p>
             Na aplicação para iPhone, consulta as opções disponíveis e o preço
             total do período escolhido antes de confirmar. A subscrição renova

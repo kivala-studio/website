@@ -25,7 +25,6 @@ export default function AccountGate({
         <span className="gate-symbol">
           <Icon name="portfolio" size={42} />
         </span>
-        <p className="eyebrow">A TUA CONTA INVEST.AO</p>
         <h2>{feature}, em qualquer ecrã.</h2>
         <p>
           Entra com a mesma conta que usas no iPhone. A tua lista, carteira e

@@ -79,7 +79,6 @@ export default async function Page() {
   return (
     <PublicShell>
       <header className="page-heading">
-        <p className="eyebrow">OS PRÓXIMOS 14 DIAS</p>
         <h1>O que vem a seguir.</h1>
         <p>
           Datas anunciadas pelos emitentes e calendário de sessões da BODIVA.
