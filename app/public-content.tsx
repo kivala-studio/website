@@ -85,16 +85,22 @@ export async function MarketContent({
     </>
   );
 }
-export function NewsList({ articles }: { articles: Article[] }) {
+export function NewsList({
+  articles,
+  featured = false,
+}: {
+  articles: Article[];
+  featured?: boolean;
+}) {
   if (!articles.length)
     return (
       <div className="data-state">
         <h3>Ainda sem notícias publicadas.</h3>
-        <p>Volta a consultar mais tarde.</p>
       </div>
     );
+  // The featured list opens with the latest story as a lead card, as on the homepage.
   return (
-    <div className="news-list">
+    <div className={featured ? "news-list featured" : "news-list"}>
       {articles.map((a) => (
         <article key={a.id}>
           <time dateTime={a.published_at}>{date(a.published_at)}</time>

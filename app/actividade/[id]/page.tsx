@@ -20,9 +20,7 @@ export default async function Page({
         Voltar à actividade
       </Link>
       <header className="page-heading">
-        <p className="eyebrow">A TUA CARTEIRA</p>
         <h1>O movimento da sessão.</h1>
-        <p>Os valores guardados no momento desta actualização.</p>
       </header>
       <AccountGate feature="O movimento da tua carteira">
         <PortfolioNotification id={id} />

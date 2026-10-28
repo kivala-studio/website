@@ -23,7 +23,6 @@ export default async function Page({
         Voltar à carteira
       </Link>
       <header className="page-heading">
-        <p className="eyebrow">A TUA POSIÇÃO</p>
         <h1>{security?.symbol || "Registos da posição"}</h1>
         <p>{security?.name}</p>
         {security && (

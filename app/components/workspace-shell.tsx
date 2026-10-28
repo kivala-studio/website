@@ -47,7 +47,6 @@ export default function WorkspaceShell({ children }: { children: React.ReactNode
     return (
       <AccessShell>
         <section className="access-status" role="status">
-          <p className="eyebrow">A TUA INVEST.AO</p>
           <h1>{loading ? "A recuperar a tua sessão…" : "Entra para continuar."}</h1>
           <p>{loading ? "A confirmar o acesso à tua conta." : "A abrir o início de sessão…"}</p>
           {!loading && <Link className="primary-button" href={login}>Entrar ou criar conta</Link>}

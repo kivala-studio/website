@@ -7,11 +7,7 @@ export default async function Page() {
   return (
     <PublicShell>
       <header className="page-heading">
-        <p className="eyebrow">O TEMPO TAMBÉM CONTA</p>
         <h1>Explora possibilidades.</h1>
-        <p>
-          Uma hipótese tua. Uma projecção transparente. Sem mexer na carteira.
-        </p>
       </header>
       <Simulator market={market.data} />
     </PublicShell>

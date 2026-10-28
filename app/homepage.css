@@ -5,31 +5,12 @@ html:has(.landing-page) { scroll-padding-top: 104px; }
 .landing-page h1, .landing-page h2, .landing-page h3 { font-weight: 650; letter-spacing: -.04em; }
 .landing-page .invest-icon { flex-shrink: 0; }
 
-/* Header: a floating bar over the canvas. */
-.landing-page .public-header { top: 12px; margin: 12px auto 0; width: min(1200px, calc(100% - 32px)); border: 1px solid var(--line); border-radius: 22px; background: color-mix(in srgb, var(--surface) 82%, transparent); box-shadow: 0 10px 30px #0000001a; }
-.landing-page .public-header-inner { width: 100%; min-height: 64px; padding-inline: 16px 10px; }
-.landing-page .browse-nav { margin-left: 20px; gap: 4px; }
-.landing-page .browse-nav a { padding-inline: 14px; border-radius: 999px; color: var(--muted); font-weight: 500; }
-.landing-page .browse-nav a:hover { color: var(--ink); background: var(--action-surface); }
-.landing-page .browse-search { max-width: 280px; border-radius: 999px; background: var(--action-surface); border-color: transparent; }
-/* Header buttons share the page's pill buttons: download is primary, account is secondary. */
-.landing-page .app-download summary, .landing-page .app-download-mobile, .landing-page .browse-account { min-height: 44px; padding: 0 18px; border: 0; border-radius: 999px; font-size: 13px; font-weight: 600; transition: background 160ms; }
-.landing-page .app-download summary, .landing-page .app-download-mobile { gap: 8px; background: var(--accent); color: var(--on-accent); }
-.landing-page .app-download summary:hover, .landing-page .app-download-mobile:hover { color: var(--on-accent); background: color-mix(in srgb, var(--accent) 88%, var(--ink)); }
-.landing-page .browse-account { gap: 10px; background: var(--action-surface); color: var(--ink); }
-.landing-page .browse-account:hover { color: var(--ink); background: var(--selected); }
-.landing-page .browse-mobile-nav summary { border: 0; background: var(--action-surface); color: var(--ink); }
-.landing-page .app-download-panel { border-radius: 24px; }
-.landing-page .app-download-panel a { min-height: 48px; border-radius: 999px; font-size: 13px; }
-
 /* Buttons */
 .landing-page .button-primary, .landing-page .button-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 54px; padding: 0 26px; border-radius: 999px; font-size: 15px; font-weight: 600; transition: transform 160ms, background 160ms; }
 .landing-page .button-primary { background: var(--accent); color: var(--on-accent); }
 .landing-page .button-primary:hover { color: var(--on-accent); transform: translateY(-1px); background: color-mix(in srgb, var(--accent) 88%, var(--ink)); }
 .landing-page .button-secondary { background: var(--action-surface); color: var(--ink); }
 .landing-page .button-secondary:hover { color: var(--ink); background: var(--selected); }
-.landing-page .text-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--accent); font-size: 14px; font-weight: 600; }
-.landing-page .text-link:hover { color: var(--accent); gap: 12px; }
 
 /* Hero */
 .landing-page .hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); align-items: center; gap: 48px; min-height: min(760px, calc(100svh - 90px)); padding-block: 48px 32px; }
@@ -137,13 +118,6 @@ html:has(.landing-page) { scroll-padding-top: 104px; }
 /* FAQ */
 .landing-page .faq { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 48px; }
 .landing-page .faq h2 { font-size: clamp(32px, 4vw, 52px); line-height: 1.05; }
-.landing-page .question-list details { border-bottom: 1px solid var(--line); }
-.landing-page .question-list details:first-child { border-top: 1px solid var(--line); }
-.landing-page .question-list summary { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 72px; font-size: 17px; font-weight: 600; cursor: pointer; list-style: none; }
-.landing-page .question-list summary::-webkit-details-marker { display: none; }
-.landing-page .question-list summary .invest-icon { color: var(--muted); transition: transform 160ms; }
-.landing-page .question-list details[open] summary .invest-icon { transform: rotate(180deg); }
-.landing-page .question-list details p { padding-bottom: 24px; font-size: 15px; line-height: 1.7; color: var(--muted); max-width: 620px; }
 
 /* Download */
 .landing-page .download { padding-block: 112px 48px; }
@@ -173,15 +147,10 @@ html:has(.landing-page) { scroll-padding-top: 104px; }
   .landing-page .pulse-card { left: -12px; width: 210px; }
   .landing-page .bento { grid-template-columns: 1fr 1fr; grid-template-rows: none; grid-auto-rows: 280px; }
   .landing-page .tile-detail { grid-row: span 2; }
-  .landing-page .browse-search { display: none; }
-  .landing-page .app-download summary { width: 44px; padding: 0; }
 }
 @media (max-width: 760px) {
   html:has(.landing-page) { scroll-padding-top: 150px; }
   .landing-page .container { width: calc(100% - 32px); }
-  .landing-page .public-header { top: 8px; margin-top: 8px; width: calc(100% - 16px); border-radius: 20px; }
-  .landing-page .public-header-inner { padding: 8px 10px 10px 14px; }
-  .landing-page .browse-search { display: flex; }
   .landing-page .hero { grid-template-columns: 1fr; min-height: 0; padding-top: 40px; gap: 40px; }
   .landing-page .hero h1 { font-size: clamp(42px, 12vw, 56px); }
   .landing-page .hero-copy > p { font-size: 17px; margin-top: 20px; }
@@ -221,35 +190,35 @@ html:has(.landing-page) { scroll-padding-top: 104px; }
 .landing-page .landing-auth {
   width: min(440px, calc(100% - 32px));
   max-height: calc(100svh - 32px);
-  padding: 28px;
+  padding: 36px;
   margin: auto;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--line) 50%, transparent);
+  border-radius: 28px;
+  background: var(--card);
   color: var(--ink);
   box-shadow: 0 30px 100px #0008;
   overflow-y: auto;
 }
 .landing-page .landing-auth::backdrop { background: #0009; backdrop-filter: blur(6px); }
 .landing-page .landing-auth-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 32px; }
-.landing-page .landing-auth-header button { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 50%; background: transparent; color: var(--muted); }
+.landing-page .landing-auth-header button { display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 50%; background: var(--action-surface); color: var(--ink); }
 .landing-page .landing-auth .auth-layout { display: block; }
 .landing-page .landing-auth .auth-story { display: none; }
 .landing-page .landing-auth .form-panel { padding: 0; margin: 0; border: 0; background: transparent; border-radius: 0; box-shadow: none; }
-.landing-page .landing-auth .form-panel h2 { font-size: 30px; margin-block: 16px; }
+.landing-page .landing-auth .form-panel h2 { font-size: 32px; line-height: 1.1; margin-block: 20px 0; }
 .landing-page .landing-auth .form-panel > p:not(.eyebrow) { color: var(--muted); font-size: 13px; line-height: 1.8; }
 .landing-page .landing-auth .form-panel > p.error-state { padding: 16px; background: color-mix(in srgb, var(--negative) 10%, var(--card)); color: var(--negative); }
-.landing-page .landing-auth .oauth-buttons { margin-block: 24px; }
-.landing-page .landing-auth .oauth-buttons button { min-height: 48px; background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; font-size: 13px; }
-.landing-page .landing-auth .oauth-buttons button:hover { border-color: var(--accent); }
-.landing-page .landing-auth .form-panel > .fine-print { font-size: 10px !important; }
+.landing-page .landing-auth .oauth-buttons { margin-block: 28px 20px; }
+.landing-page .landing-auth .oauth-buttons button { min-height: 52px; background: var(--action-surface); color: var(--ink); border: 0; border-radius: 999px; font-size: 14px; }
+.landing-page .landing-auth .oauth-buttons button:hover:not(:disabled) { background: var(--selected); }
+.landing-page .landing-auth .form-panel > .fine-print { font-size: 12px !important; line-height: 1.6; color: var(--tertiary); }
 @media (max-width: 420px) {
-  .landing-page .landing-auth { padding: 24px; }
-  .landing-page .landing-auth .form-panel h2 { font-size: 27px; }
+  .landing-page .landing-auth { padding: 28px 24px; }
+  .landing-page .landing-auth .form-panel h2 { font-size: 28px; }
 }
 .landing-page .landing-auth .form-panel { gap: 0; }
 .landing-page .landing-auth-header { position: absolute; top: 16px; right: 16px; margin: 0; }
-.landing-page .landing-auth .form-panel h2 { padding-right: 32px; margin-top: 4px; }
+.landing-page .landing-auth .form-panel h2 { padding-right: 32px; }
 
 .landing-page .landing-quotes-footer { padding: 20px 32px 24px; font-size: 11px; color: var(--muted); line-height: 1.7; }
 .landing-page .section-heading { align-items: center; }

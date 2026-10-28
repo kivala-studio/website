@@ -11,17 +11,11 @@ export default function HomeAccount() {
   return (
     <section className="home-account">
       <Icon name="portfolio" size={30} />
-      <p className="eyebrow">A TUA INVEST.AO</p>
       <h2>
         {user
           ? `O teu mercado, ${String(user.user_metadata.investao_display_name || user.user_metadata.full_name || "aqui").split(" ")[0]}.`
           : "Os teus investimentos.\nO teu espaço."}
       </h2>
-      <p>
-        {user
-          ? "A tua lista, carteira e alertas estão aqui, ligados à mesma conta que usas na app."
-          : "Entra na tua conta e continua de onde ficaste. Na app, no computador, onde estiveres."}
-      </p>
       <Link href={user ? "/carteira" : "/conta"} className="primary-button">
         {user ? "Ver a minha carteira" : "Entrar na minha conta"}
       </Link>

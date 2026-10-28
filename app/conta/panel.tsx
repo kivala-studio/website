@@ -7,6 +7,7 @@ import { returnPath, needsOnboarding } from "../../lib/navigation";
 import Onboarding from "./onboarding";
 import type { Security } from "../../lib/public-data";
 import Icon from "../components/invest-icon";
+import AppMark from "../components/app-mark";
 import PersonalisationSettings from "./personalisation-settings";
 import { clearAccountLocalData } from "../../lib/clear-account-local-data";
 import { finishDeletedAccount } from "../../lib/account-cleanup";
@@ -64,8 +65,8 @@ export default function AccountPanel({
   return (
     <div className="auth-layout">
       <section className="form-panel">
+        <AppMark size={48} />
         <h2>Entra no teu mercado.</h2>
-        <p>Continua com Google ou Apple. Usa a mesma conta no iPhone e na web.</p>
         <div className="oauth-buttons">
           {(["google", "apple"] as const).map((provider) => (
             <button
@@ -107,7 +108,6 @@ export default function AccountPanel({
           <br />
           Alertas para o que importa.
         </p>
-        <small>SEM INSTALAR. SEM PERDER O CONTEXTO.</small>
       </aside>
     </div>
   );

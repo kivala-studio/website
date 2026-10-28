@@ -181,7 +181,6 @@ function Session({ surface }: { surface: InsightSurface }) {
     <section className="insight-section" aria-label="Observações verificadas">
       <div className="section-title">
         <div>
-          <p className="eyebrow">O TEU MERCADO, COM CONTEXTO</p>
           <h2>
             {surface === "portfolio"
               ? "Sobre a tua carteira."

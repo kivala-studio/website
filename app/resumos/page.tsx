@@ -17,12 +17,7 @@ export default async function Page() {
   return (
     <PublicShell>
       <header className="page-heading">
-        <p className="eyebrow">O MERCADO, COM CONTEXTO</p>
         <h1>Faz o balanço.</h1>
-        <p>
-          Revisita os períodos concluídos a partir de fechos e fontes
-          verificadas.
-        </p>
       </header>
       <DevelopmentState feature="richerSummaries" compact />
       {windows === null && <DataError content="os períodos disponíveis" />}

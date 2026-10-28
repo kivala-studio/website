@@ -48,7 +48,6 @@ export default async function Page({
   return (
     <PublicShell>
       <header className="page-heading">
-        <p className="eyebrow">ENCONTRA O QUE IMPORTA</p>
         <h1>Pesquisa.</h1>
       </header>
       <form action="/pesquisa" className="form-grid">

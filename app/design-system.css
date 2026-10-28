@@ -1,0 +1,125 @@
+/* One visual language for every page, set by the homepage: display type, pill buttons,
+   24px cards on the paper canvas and a floating header. Loaded after the page stylesheets. */
+:is(.landing-page, .browse-page, .workspace) { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Inter, "Segoe UI", sans-serif; }
+:is(.browse-page, .workspace) :is(h1, h2, h3) { font-weight: 650; letter-spacing: -.04em; }
+:is(.browse-page, .workspace) .page-heading h1 { line-height: 1.02; letter-spacing: -.05em; }
+:is(.browse-page, .workspace) .page-heading h1 > span { color: var(--accent); }
+:is(.browse-page, .workspace) .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0; color: var(--accent); }
+.browse-page .container { width: min(1200px, calc(100% - 64px)); }
+
+/* Header: a floating bar over the canvas. */
+:is(.landing-page, .browse-page) .public-header { top: 12px; margin: 12px auto 0; width: min(1200px, calc(100% - 32px)); border: 1px solid var(--line); border-radius: 22px; background: color-mix(in srgb, var(--surface) 82%, transparent); box-shadow: 0 10px 30px #0000001a; }
+:is(.landing-page, .browse-page) .public-header-inner { width: 100%; min-height: 64px; padding-inline: 16px 10px; }
+:is(.landing-page, .browse-page) .browse-nav { margin-left: 20px; gap: 4px; }
+:is(.landing-page, .browse-page) .browse-nav a { padding-inline: 14px; border-radius: 999px; color: var(--muted); font-weight: 500; }
+:is(.landing-page, .browse-page) .browse-nav a:hover { color: var(--ink); background: var(--action-surface); }
+:is(.landing-page, .browse-page) .browse-nav a[aria-current="page"] { color: var(--ink); background: var(--selected); }
+:is(.landing-page, .browse-page) .browse-search { max-width: 280px; border-radius: 999px; background: var(--action-surface); border-color: transparent; }
+:is(.landing-page, .browse-page) .browse-search button { border-radius: 999px; }
+/* Header buttons share the page's pill buttons: download is primary, account is secondary. */
+:is(.landing-page, .browse-page) :is(.app-download summary, .app-download-mobile, .browse-account) { min-height: 44px; padding: 0 18px; border: 0; border-radius: 999px; font-size: 13px; font-weight: 600; transition: background 160ms; }
+:is(.landing-page, .browse-page) :is(.app-download summary, .app-download-mobile) { gap: 8px; background: var(--accent); color: var(--on-accent); }
+:is(.landing-page, .browse-page) :is(.app-download summary, .app-download-mobile):hover { color: var(--on-accent); background: color-mix(in srgb, var(--accent) 88%, var(--ink)); }
+:is(.landing-page, .browse-page) .browse-account { gap: 10px; background: var(--action-surface); color: var(--ink); }
+:is(.landing-page, .browse-page) .browse-account:hover { color: var(--ink); background: var(--selected); }
+:is(.landing-page, .browse-page) .browse-mobile-nav summary { border: 0; background: var(--action-surface); color: var(--ink); }
+:is(.landing-page, .browse-page) .app-download-panel { border-radius: 24px; }
+:is(.landing-page, .browse-page) .app-download-panel a { min-height: 48px; border-radius: 999px; font-size: 13px; }
+
+/* Buttons */
+:is(.browse-page, .workspace, .landing-auth) :is(.primary-button, .secondary-button, .quiet-button, .danger-button) { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 0 22px; border: 0; border-radius: 999px; font-size: 14px; font-weight: 600; transition: transform 160ms, background 160ms; }
+:is(.browse-page, .workspace, .landing-auth) .primary-button { background: var(--accent); color: var(--on-accent); }
+:is(.browse-page, .workspace, .landing-auth) .primary-button:hover:not(:disabled) { color: var(--on-accent); filter: none; transform: translateY(-1px); background: color-mix(in srgb, var(--accent) 88%, var(--ink)); }
+:is(.browse-page, .workspace, .landing-auth) :is(.secondary-button, .quiet-button) { background: var(--action-surface); color: var(--ink); }
+:is(.browse-page, .workspace, .landing-auth) :is(.secondary-button, .quiet-button):hover:not(:disabled) { color: var(--ink); background: var(--selected); }
+:is(.browse-page, .workspace) .danger-button { background: color-mix(in srgb, var(--negative) 14%, transparent); color: var(--negative); }
+:is(.landing-page, .browse-page, .workspace) .text-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--accent); font-size: 14px; font-weight: 600; transition: gap 160ms; }
+:is(.landing-page, .browse-page, .workspace) .text-link:hover { color: var(--accent); gap: 12px; }
+:is(.browse-page, .workspace) :is(.filter-tabs, .period-tabs, .spotlight-tabs) button { border-radius: 999px; }
+:is(.browse-page, .workspace) .pagination a { border: 0; border-radius: 999px; background: var(--action-surface); font-weight: 600; }
+:is(.browse-page, .workspace) .pagination a:hover { background: var(--selected); }
+
+/* Cards: the homepage's tiles. */
+:is(.browse-page, .workspace) :is(.dashboard-panel, .chart-box, .form-panel, .account-gate, .market-spotlight, .home-account, .data-state, .web-invitation, .plan-card, .plan-comparison table, .news-list article, .home-discovery > a) { border-radius: 24px; background: var(--card); border: 1px solid color-mix(in srgb, var(--line) 50%, transparent); }
+:is(.browse-page, .workspace) .web-invitation { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 30%, transparent); }
+:is(.browse-page, .workspace) .home-account { padding: 28px; }
+:is(.browse-page, .workspace) .home-discovery > a { padding: 24px 28px; transition: border-color 160ms, transform 160ms; }
+:is(.browse-page, .workspace) .home-discovery > a:hover { color: var(--ink); border-color: var(--accent); transform: translateY(-2px); }
+:is(.browse-page, .workspace) .home-discovery > a > .invest-icon:first-child { color: var(--accent); }
+:is(.browse-page, .workspace) .section-title { align-items: center; }
+:is(.browse-page, .workspace) input:not([type="checkbox"], [type="radio"], [type="range"]), :is(.browse-page, .workspace) select { border-radius: 14px; }
+
+/* News: whole cards open the story; the featured list leads with the latest story. */
+:is(.browse-page, .workspace) .news-list article { position: relative; padding: 28px; transition: border-color 160ms, transform 160ms; }
+:is(.browse-page, .workspace) .news-list article:hover { border-color: var(--accent); transform: translateY(-2px); }
+:is(.browse-page, .workspace) .news-list h3 a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+:is(.browse-page, .workspace) .news-list time { font-size: 12px; color: var(--tertiary); font-variant-numeric: tabular-nums; }
+:is(.browse-page, .workspace) .news-list h3 { margin: 14px 0 12px; font-size: 20px; line-height: 1.25; letter-spacing: -.03em; }
+:is(.browse-page, .workspace) .news-list article p { color: var(--muted); font-size: 14px; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.news-list.featured article:first-child { grid-column: 1 / -1; justify-content: end; min-height: 340px; padding: 40px; background: var(--accent-soft); border-color: transparent; }
+.news-list.featured article:first-child time { color: var(--accent); font-weight: 600; }
+.news-list.featured article:first-child h3 { max-width: 820px; font-size: clamp(28px, 3.2vw, 42px); line-height: 1.1; }
+.news-list.featured article:first-child p { max-width: 680px; font-size: 16px; }
+
+/* Plans: the homepage's plan cards and question list. */
+.browse-main .plans-intro h1 { font-size: clamp(44px, 6vw, 80px); }
+.plans-grid { gap: 16px; }
+.plan-card { padding: 36px; }
+.plan-card.plus { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.plan-card h2 { margin-top: 0; font-size: 26px; }
+.plan-price { margin-block: 12px 4px; font-size: 40px; font-weight: 650; }
+.plan-card ul { margin-top: 28px; }
+.plan-card li { align-items: center; gap: 12px; font-size: 16px; line-height: 1.45; }
+.plan-card li .invest-icon { margin-top: 0; }
+.plan-comparison { margin-top: 112px; }
+.plan-comparison h2, .plan-faq h2 { font-size: clamp(32px, 4vw, 52px); line-height: 1.05; }
+.plan-comparison h2 { margin-bottom: 32px; }
+.plan-comparison thead { background: var(--action-surface); }
+.plan-comparison th, .plan-comparison td { font-size: 14px; }
+.question-list.plan-faq { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 0 48px; margin-top: 112px; padding: 0; border: 0; border-radius: 0; background: transparent; }
+.question-list.plan-faq h2 { grid-row: span 99; }
+.question-list details, .question-list details:last-child { padding: 0; border-bottom: 1px solid var(--line); }
+.question-list details:first-of-type { border-top: 1px solid var(--line); }
+.question-list summary { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 72px; font-size: 17px; font-weight: 600; cursor: pointer; list-style: none; }
+.question-list summary::-webkit-details-marker { display: none; }
+.question-list summary::after { content: none; }
+.question-list summary .invest-icon { color: var(--muted); transition: transform 160ms; }
+.question-list details[open] summary .invest-icon { transform: rotate(180deg); }
+.question-list details p { padding: 0 0 24px; font-size: 15px; line-height: 1.7; color: var(--muted); max-width: 620px; }
+
+/* Sign-in: the same card, pills and mark wherever it opens. */
+.oauth-buttons { display: grid; gap: 10px; }
+.oauth-buttons button { width: 100%; min-height: 52px; }
+.form-panel > .app-mark { color: var(--ink); }
+
+/* Workspace: floating top bar and pill navigation, like the homepage header. */
+.workspace-sidebar nav a { border-radius: 999px; padding-inline: 14px; }
+.workspace-sidebar nav a:hover { background: var(--action-surface); }
+.workspace .nav-label { display: none; }
+.workspace-topbar { position: sticky; top: 12px; z-index: 40; height: 64px; margin: 12px 24px 0; padding: 0 10px 0 16px; border: 1px solid var(--line); border-radius: 22px; background: color-mix(in srgb, var(--surface) 82%, transparent); backdrop-filter: blur(18px); box-shadow: 0 10px 30px #0000001a; }
+.global-search { min-height: 44px; padding: 0 14px; border-radius: 999px; background: var(--action-surface); }
+.global-search kbd { border: 0; background: var(--card); border-radius: 6px; }
+.workspace .topbar-actions button { width: 40px; height: 40px; border-radius: 50%; }
+.workspace .topbar-actions button:hover { background: var(--action-surface); color: var(--ink); }
+
+@media (max-width: 1000px) {
+  :is(.landing-page, .browse-page) .browse-search { display: none; }
+  :is(.landing-page, .browse-page) .app-download summary { width: 44px; padding: 0; }
+}
+@media (max-width: 900px) {
+  .workspace-topbar { top: 8px; margin: 8px 8px 0; padding-inline: 8px; border-radius: 20px; }
+}
+@media (max-width: 760px) {
+  .browse-page .container { width: calc(100% - 32px); }
+  :is(.landing-page, .browse-page) .public-header { top: 8px; margin-top: 8px; width: calc(100% - 16px); border-radius: 20px; }
+  :is(.landing-page, .browse-page) .public-header-inner { padding: 8px 10px 10px 14px; }
+  :is(.landing-page, .browse-page) .browse-search { display: flex; max-width: none; }
+  .news-list.featured article:first-child { min-height: 280px; padding: 28px; }
+  .plan-card { padding: 28px; }
+  .plan-comparison, .question-list.plan-faq { margin-top: 80px; }
+  .question-list.plan-faq { grid-template-columns: 1fr; }
+  .question-list.plan-faq h2 { grid-row: auto; margin-bottom: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.browse-page, .workspace) *, :is(.browse-page, .workspace) *::before { transition: none !important; }
+}

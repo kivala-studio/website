@@ -24,9 +24,7 @@ export default async function Page({ searchParams }: PageProps<"/conta">) {
   return (
     <PublicShell>
       <header className="page-heading">
-        <p className="eyebrow">O TEU ESPAÇO</p>
         <h1>A minha conta.</h1>
-        <p>Uma conta. O mesmo mercado, no iPhone e na web.</p>
       </header>
       <AppleDeletionResult />
       <AccountPanel securities={market.data?.securities || []} appleDeletionAvailable={appleWebDeletionAvailable()} />

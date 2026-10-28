@@ -34,7 +34,6 @@ export default function MarketPulse({ rows }: { rows: PulseRow[] | null }) {
     <section className="dashboard-panel public-section">
       <div className="section-title">
         <div>
-          <p className="eyebrow">O MERCADO EM CONJUNTO</p>
           <h2>Indicador invest.ao</h2>
         </div>
         {last && (

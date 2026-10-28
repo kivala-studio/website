@@ -9,12 +9,7 @@ export default async function Page() {
   return (
     <PublicShell>
       <header className="page-heading">
-        <p className="eyebrow">PERSPECTIVA, LADO A LADO</p>
         <h1>Compara o percurso.</h1>
-        <p>
-          Observa dois instrumentos no mesmo período, a partir de uma base
-          comum.
-        </p>
       </header>
       <DevelopmentState feature="multiComparison" compact />
       {market.data ? (
