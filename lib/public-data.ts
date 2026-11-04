@@ -130,42 +130,118 @@ async function all<T>(
   }
 }
 
+type IssuerName = {
+  id: string;
+  name: string;
+  short_name?: string | null;
+  sector?: string | null;
+};
+type SnapshotBundle = {
+  contract_version: number;
+  generated_at: string;
+  securities: Security[];
+  quotes: Quotes;
+  closes: Close[] | null;
+};
+
+// The shared snapshot is built once per market change and served to every client;
+// issuer names are the only field it lacks for this site.
+async function readSnapshot(): Promise<SnapshotBundle> {
+  const base = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_PUBLISHABLE_KEY;
+  if (!base || !key?.startsWith("sb_publishable_"))
+    throw new Error("Public data configuration unavailable");
+  const url = new URL("/functions/v1/market-snapshot", base);
+  if (
+    url.protocol !== "https:" &&
+    !["localhost", "127.0.0.1"].includes(url.hostname)
+  )
+    throw new Error("Invalid data origin");
+  const response = await fetch(url, {
+    headers: { apikey: key },
+    cache: "no-store",
+    signal: AbortSignal.timeout(10000),
+  });
+  if (!response.ok) throw new Error("Snapshot unavailable");
+  const bundle = (await response.json()) as SnapshotBundle;
+  if (
+    bundle.contract_version !== 1 ||
+    !Array.isArray(bundle.securities) ||
+    !Array.isArray(bundle.quotes?.prices) ||
+    !Array.isArray(bundle.quotes?.overview)
+  )
+    throw new Error("Unsupported snapshot contract");
+  return bundle;
+}
+
+async function readMarketFromSnapshot(): Promise<Market> {
+  const [bundle, issuers] = await Promise.all([
+    readSnapshot(),
+    all<IssuerName>("issuers", {
+      select: "id,name,short_name,sector",
+      order: "id",
+    }).catch(() => [] as IssuerName[]),
+  ]);
+  const names = new Map(issuers.map(({ id, ...issuer }) => [id, issuer]));
+  const active = bundle.quotes.active_security_ids
+    ? new Set(bundle.quotes.active_security_ids)
+    : null;
+  return {
+    securities: bundle.securities
+      .filter((s) => (active ? active.has(s.id) : s.is_active))
+      .map((s) => ({
+        ...s,
+        issuers: (s.issuer_id && names.get(s.issuer_id)) || null,
+      })),
+    quotes: bundle.quotes,
+    closes: bundle.closes ?? [],
+    closesUnavailable: bundle.closes === null,
+    fetchedAt: new Date().toISOString(),
+  };
+}
+
+// Direct reads recompute the market on the database; kept as the fallback only.
+async function readMarketDirectly(): Promise<Market> {
+  const [securities, quotes, closeResult] = await Promise.all([
+    all<Security>("securities", {
+      select:
+        "id,symbol,isin,name,currency,security_type,issuer_id,is_active,issuers(name,short_name)",
+      order: "symbol,id",
+    }),
+    read<Quotes>("rpc/get_current_market_quotes"),
+    all<Close>("latest_verified_market_closes", {
+      select:
+        "security_id,price,trading_date,confirmed_at,verified_change_percent",
+      order: "security_id",
+    })
+      .then((data) => ({ data, error: false }))
+      .catch(() => ({ data: [] as Close[], error: true })),
+  ]);
+  if (!Array.isArray(quotes.prices) || !Array.isArray(quotes.overview))
+    throw new Error("Unsupported contract");
+  const active = quotes.active_security_ids
+    ? new Set(quotes.active_security_ids)
+    : null;
+  return {
+    securities: securities.filter((s) =>
+      active ? active.has(s.id) : s.is_active,
+    ),
+    quotes,
+    closes: closeResult.data,
+    closesUnavailable: closeResult.error,
+    fetchedAt: new Date().toISOString(),
+  };
+}
+
 export const getMarket = cache(async (): Promise<Result<Market>> => {
   try {
-    const [securities, quotes, closeResult] = await Promise.all([
-      all<Security>("securities", {
-        select:
-          "id,symbol,isin,name,currency,security_type,issuer_id,is_active,issuers(name,short_name)",
-        order: "symbol,id",
-      }),
-      read<Quotes>("rpc/get_current_market_quotes"),
-      all<Close>("latest_verified_market_closes", {
-        select:
-          "security_id,price,trading_date,confirmed_at,verified_change_percent",
-        order: "security_id",
-      })
-        .then((data) => ({ data, error: false }))
-        .catch(() => ({ data: [] as Close[], error: true })),
-    ]);
-    if (!Array.isArray(quotes.prices) || !Array.isArray(quotes.overview))
-      throw new Error("Unsupported contract");
-    const active = quotes.active_security_ids
-      ? new Set(quotes.active_security_ids)
-      : null;
-    return {
-      data: {
-        securities: securities.filter((s) =>
-          active ? active.has(s.id) : s.is_active,
-        ),
-        quotes,
-        closes: closeResult.data,
-        closesUnavailable: closeResult.error,
-        fetchedAt: new Date().toISOString(),
-      },
-      error: false,
-    };
+    return { data: await readMarketFromSnapshot(), error: false };
   } catch {
-    return { data: null, error: true };
+    try {
+      return { data: await readMarketDirectly(), error: false };
+    } catch {
+      return { data: null, error: true };
+    }
   }
 });
 
