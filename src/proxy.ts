@@ -28,13 +28,6 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    {
-      source: "/((?!api|_next|_vercel|.*\\..*).*)",
-      missing: [
-        { type: "header", key: "next-router-prefetch" },
-        { type: "header", key: "purpose", value: "prefetch" },
-      ],
-    },
-  ],
+  // Prefetches go through the proxy too: without the locale rewrite, a prefetch of "/" has no route and 404s.
+  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
 };
