@@ -1,0 +1,918 @@
+[
+  {
+    "context": {
+      "eventFamily": "movement",
+      "surface": "push",
+      "sourceKey": "fixture-0",
+      "sourceRevision": 1,
+      "significance": "notable",
+      "direction": "up",
+      "mood": "curious",
+      "privacyClass": "public_market",
+      "capabilities": [
+        "movement"
+      ],
+      "verifiedFacts": {
+        "issuer": "BAI",
+        "symbol": "BAI",
+        "signedPercentage": "+4,2",
+        "comparisonLabel": "face ao último fecho",
+        "observationTime": "10:35",
+        "referencePeriod": "21–25 set. 2026",
+        "rising": "2",
+        "falling": "1",
+        "unchanged": "0",
+        "sessions": "3",
+        "directionLabel": "descida",
+        "extremeLabel": "máximo",
+        "publicationTitle": "Informação publicada pela BODIVA"
+      }
+    },
+    "history": [],
+    "identity": "fixture-account",
+    "now": "2026-09-30T10:00:00Z",
+    "expected": {
+      "catalogueVersion": "1.0.0",
+      "strategyId": "movement",
+      "hookId": "move-neutral",
+      "hookFamily": "move-neutral",
+      "factClauseId": "movement-fact",
+      "closerId": null,
+      "title": "BAI está a mexer",
+      "body": "BAI: +4,2% face ao último fecho.",
+      "accessibilityText": "BAI está a mexer. BAI: +4,2% face ao último fecho.",
+      "privacyClass": "public_market",
+      "playful": false
+    }
+  },
+  {
+    "context": {
+      "eventFamily": "movement",
+      "surface": "push",
+      "sourceKey": "fixture-1",
+      "sourceRevision": 1,
+      "significance": "significant",
+      "direction": "down",
+      "mood": "cautious",
+      "privacyClass": "public_market",
+      "capabilities": [
+        "movement",
+        "intraday"
+      ],
+      "verifiedFacts": {
+        "issuer": "BAI",
+        "symbol": "BAI",
+        "signedPercentage": "−5,1",
+        "comparisonLabel": "face ao último fecho",
+        "observationTime": "10:35",
+        "referencePeriod": "21–25 set. 2026",
+        "rising": "2",
+        "falling": "1",
+        "unchanged": "0",
+        "sessions": "3",
+        "directionLabel": "descida",
+        "extremeLabel": "máximo",
+        "publicationTitle": "Informação publicada pela BODIVA"
+      }
+    },
+    "history": [],
+    "identity": "fixture-account",
+    "now": "2026-09-30T10:00:00Z",
+    "expected": {
+      "catalogueVersion": "1.0.0",
+      "strategyId": "movement",
+      "hookId": "move-neutral",
+      "hookFamily": "move-neutral",
+      "factClauseId": "intraday-fact",
+      "closerId": null,
+      "title": "BAI está a mexer",
+      "body": "BAI: −5,1% entre negociações em até 5 min, às 10:35.",
+      "accessibilityText": "BAI está a mexer. BAI: −5,1% entre negociações em até 5 min, às 10:35.",
+      "privacyClass": "public_market",
+      "playful": false
+    }
+  },
+  {
+    "context": {
+      "eventFamily": "movement",
+      "surface": "activity",
+      "sourceKey": "fixture-2",
+      "sourceRevision": 1,
+      "significance": "significant",
+      "direction": "up",
+      "mood": "energetic",
+      "privacyClass": "personal_context",
+      "capabilities": [
+        "movement",
+        "watched",
+        "early_session",
+        "current_session"
+      ],
+      "verifiedFacts": {
+        "issuer": "BAI",
+        "symbol": "BAI",
+        "signedPercentage": "+4,2",
+        "comparisonLabel": "face ao último fecho",
+        "observationTime": "10:35",
+        "referencePeriod": "21–25 set. 2026",
+        "rising": "2",
+        "falling": "1",
+        "unchanged": "0",
+        "sessions": "3",
+        "directionLabel": "descida",
+        "extremeLabel": "máximo",
+        "publicationTitle": "Informação publicada pela BODIVA"
+      }
+    },
+    "history": [],
+    "identity": "fixture-account",
+    "now": "2026-09-30T10:00:00Z",
+    "expected": {
+      "catalogueVersion": "1.0.0",
+      "strategyId": "movement",
+      "hookId": "move-attention",
+      "hookFamily": "move-attention",
+      "factClauseId": "movement-fact",
+      "closerId": null,
+      "title": "Isto já merece atenção 👀",
+      "body": "BAI: +4,2% face ao último fecho.",
+      "accessibilityText": "Isto já merece atenção 👀. BAI: +4,2% face ao último fecho.",
+      "privacyClass": "personal_context",
+      "playful": false
+    }
+  },
+  {
+    "context": {
+      "eventFamily": "movement",
+      "surface": "home",
+      "sourceKey": "fixture-3",
+      "sourceRevision": 1,
+      "significance": "routine",
+      "direction": "up",
+      "mood": "calm",
+      "privacyClass": "public_market",
+      "capabilities": [
+        "movement"
+      ],
+      "verifiedFacts": {
+        "issuer": "BAI",
+        "symbol": "BAI",
+        "signedPercentage": "+4,2",
+        "comparisonLabel": "face ao último fecho",
+        "observationTime": "10:35",
+        "referencePeriod": "21–25 set. 2026",
+        "rising": "2",
+        "falling": "1",
+        "unchanged": "0",
+        "sessions": "3",
+        "directionLabel": "descida",
+        "extremeLabel": "máximo",
+        "publicationTitle": "Informação publicada pela BODIVA"
+      }
+    },
+    "history": [],
+    "identity": "fixture-account",
+    "now": "2026-09-30T10:00:00Z",
+    "expected": {
+      "catalogueVersion": "1.0.0",
+      "strategyId": "movement",
+      "hookId": "move-curious",
+      "hookFamily": "move-curious",
+      "factClauseId": "movement-fact",
+      "closerId": null,
+      "title": "Tem movimento em BAI 👀",
+      "body": "BAI: +4,2% face ao último fecho.",
+      "accessibilityText": "Tem movimento em BAI 👀. BAI: +4,2% face ao último fecho.",
+      "privacyClass": "public_market",
+      "playful": false
+    }
+  },
+  {
+    "context": {
+      "eventFamily": "watchlist_rank",
+      "surface": "watchlist",
+      "sourceKey": "fixture-4",
+      "sourceRevision": 1,
+      "significance": "notable",
+      "direction": "up",
+      "mood": "curious",
+      "privacyClass": "personal_context",
+      "capabilities": [
+        "complete_watchlist"
+      ],
+      "verifiedFacts": {
+        "issuer": "BAI",
+        "symbol": "BAI",
+        "signedPercentage": "+4,2",
+        "comparisonLabel": "face ao último fecho",
+        "observationTime": "10:35",
+        "referencePeriod": "21–25 set. 2026",
+        "rising": "2",
+        "falling": "1",
+        "unchanged": "0",
+        "sessions": "3",
+        "directionLabel": "descida",
+        "extremeLabel": "máximo",
+        "publicationTitle": "Informação publicada pela BODIVA"
+      }
+    },
+    "history": [],
+    "identity": "fixture-account",
+    "now": "2026-09-30T10:00:00Z",
+    "expected": {
+      "catalogueVersion": "1.0.0",
+      "strategyId": "watchlist_rank",
+      "hookId": "watched-rank",
+      "hookFamily": "watched-rank",
+      "factClauseId": "rank-fact",
+      "closerId": null,
+      "title": "Quem se destacou na tua lista",
+      "body": "BAI: +4,2% — maior variação absoluta na tua lista, 21–25 set. 2026.",
+      "accessibilityText": "Quem se destacou na tua lista. BAI: +4,2% — maior variação absoluta na tua lista, 21–25 set. 2026.",
+      "privacyClass": "personal_context",
+      "playful": false
+    }
+  },
+  {
+    "context": {
+      "eventFamily": "watchlist_breadth",
+      "surface": "watchlist",
+      "sourceKey": "fixture-5",
+      "sourceRevision": 1,
+      "significance": "significant",
+      "direction": "neutral",
+      "mood": "curious",
+      "privacyClass": "personal_context",
+      "capabilities": [
+        "complete_watchlist"
+      ],
+      "verifiedFacts": {
+        "issuer": "BAI",
+        "symbol": "BAI",
+        "signedPercentage": "+4,2",
+        "comparisonLabel": "face ao último fecho",
+        "observationTime": "10:35",
+        "referencePeriod": "21–25 set. 2026",
+        "rising": "2",
+        "falling": "1",
+        "unchanged": "0",
+        "sessions": "3",
+        "directionLabel": "descida",
+        "extremeLabel": "máximo",
+        "publicationTitle": "Informação publicada pela BODIVA"
+      }
+    },
+    "history": [],
+    "identity": "fixture-account",
+    "now": "2026-09-30T10:00:00Z",
+    "expected": {
+      "catalogueVersion": "1.0.0",
+      "strategyId": "watchlist_breadth",
+      "hookId": "watched-curious",
+      "hookFamily": "watched-curious",
+      "factClauseId": "breadth-fact",
+      "closerId": null,
+      "title": "A tua lista quer atenção 👀",
+      "body": "2 em subida · 1 em descida · 0 sem alteração, 21–25 set. 2026.",
+      "accessibilityText": "A tua lista quer atenção 👀. 2 em subida · 1 em descida · 0 sem alteração, 21–25 set. 2026.",
+      "privacyClass": "personal_context",
+      "playful": false
+    }
+  },
+  {
+    "context": {
+      "eventFamily": "watchlist_run",
+      "surface": "watchlist",
+      "sourceKey": "fixture-6",
+      "sourceRevision": 1,
+      "significance": "notable",
+      "direction": "down",
+      "mood": "cautious",
+      "privacyClass": "personal_context",
+      "capabilities": [
+        "verified_run"
+      ],
+      "verifiedFacts": {
+        "issuer": "BAI",
+        "symbol": "BAI",
+        "signedPercentage": "−5,1",
+        "comparisonLabel": "face ao último fecho",
+        "observationTime": "10:35",
+        "referencePeriod": "21–25 set. 2026",
+        "rising": "2",
+        "falling": "1",
+        "unchanged": "0",
+        "sessions": "3",
+        "directionLabel": "descida",
+        "extremeLabel": "máximo",
+        "publicationTitle": "Informação publicada pela BODIVA"
+      }
+    },
+    "history": [],
+    "identity": "fixture-account",
+    "now": "2026-09-30T10:00:00Z",
+    "expected": {
+      "catalogueVersion": "1.0.0",
+      "strategyId": "watchlist_run",
+      "hookId": "watched-run",
+      "hookFamily": "watched-run",
+      "factClauseId": "run-fact",
+      "closerId": null,
+      "title": "BAI mantém o passo",
+      "body": "BAI: 3 sessões de descida, 21–25 set. 2026.",
+      "accessibilityText": "BAI mantém o passo. BAI: 3 sessões de descida, 21–25 set. 2026.",
+      "privacyClass": "personal_context",
+      "playful": false
+    }
+  },
+  {
+    "context": {
+      "eventFamily": "watchlist_extreme",
+      "surface": "watchlist",
+      "sourceKey": "fixture-7",
+      "sourceRevision": 1,
+      "significance": "notable",
+      "direction": "up",
+      "mood": "curious",
+      "privacyClass": "personal_context",
+      "capabilities": [
+        "period_extreme"
+      ],
+      "verifiedFacts": {
+        "issuer": "BAI",
+        "symbol": "BAI",
+        "signedPercentage": "+4,2",
+        "comparisonLabel": "face ao último fecho",
+        "observationTime": "10:35",
+        "referencePeriod": "21–25 set. 2026",
+        "rising": "2",
+        "falling": "1",
+        "unchanged": "0",
+        "sessions": "3",
+        "directionLabel": "descida",
+        "extremeLabel": "máximo",
+        "publicationTitle": "Informação publicada pela BODIVA"
+      }
+    },
+    "history": [],
+    "identity": "fixture-account",
+    "now": "2026-09-30T10:00:00Z",
+    "expected": {
+      "catalogueVersion": "1.0.0",
+      "strategyId": "watchlist_extreme",
+      "hookId": "watched-extreme",
+      "hookFamily": "watched-extreme",
+      "factClauseId": "extreme-fact",
+      "closerId": null,
+      "title": "BAI fechou em destaque",
+      "body": "BAI: máximo de fecho do período, 21–25 set. 2026.",
+      "accessibilityText": "BAI fechou em destaque. BAI: máximo de fecho do período, 21–25 set. 2026.",
+      "privacyClass": "personal_context",
+      "playful": false
+    }
+  },
+  {
+    "context": {
+      "eventFamily": "publication",
+      "surface": "home",
+      "sourceKey": "fixture-8",
+      "sourceRevision": 1,
+      "significance": "notable",
+      "direction": "neutral",
+      "mood": "curious",
+      "privacyClass": "public_market",
+      "capabilities": [
+        "verified_publication"
+      ],
+      "verifiedFacts": {
+        "issuer": "BAI",
+        "symbol": "BAI",
+        "signedPercentage": "+4,2",
+        "comparisonLabel": "face ao último fecho",
+        "observationTime": "10:35",
+        "referencePeriod": "21–25 set. 2026",
+        "rising": "2",
+        "falling": "1",
+        "unchanged": "0",
+        "sessions": "3",
+        "directionLabel": "descida",
+        "extremeLabel": "máximo",
+        "publicationTitle": "Informação publicada pela BODIVA"
+      }
+    },
+    "history": [],
+    "identity": "fixture-account",
+    "now": "2026-09-30T10:00:00Z",
+    "expected": {
+      "catalogueVersion": "1.0.0",
+      "strategyId": "publication",
+      "hookId": "watched-news",
+      "hookFamily": "watched-news",
+      "factClauseId": "publication-fact",
+      "closerId": null,
+      "title": "Há novidades sobre BAI",
+      "body": "Informação publicada pela BODIVA",
+      "accessibilityText": "Há novidades sobre BAI. Informação publicada pela BODIVA",
+      "privacyClass": "public_market",
+      "playful": false
+    }
+  },
+  {
+    "context": {
+      "eventFamily": "listing",
+      "surface": "push",
+      "sourceKey": "fixture-9",
+      "sourceRevision": 1,
+      "significance": "notable",
+      "direction": "neutral",
+      "mood": "celebratory",
+      "privacyClass": "public_market",
+      "capabilities": [
+        "confirmed_listing"
+      ],
+      "verifiedFacts": {
+        "issuer": "BAI",
+        "symbol": "BAI",
+        "signedPercentage": "+4,2",
+        "comparisonLabel": "face ao último fecho",
+        "observationTime": "10:35",
+        "referencePeriod": "21–25 set. 2026",
+        "rising": "2",
+        "falling": "1",
+        "unchanged": "0",
+        "sessions": "3",
+        "directionLabel": "descida",
+        "extremeLabel": "máximo",
+        "publicationTitle": "Informação publicada pela BODIVA"
+      }
+    },
+    "history": [],
+    "identity": "fixture-account",
+    "now": "2026-09-30T10:00:00Z",
+    "expected": {
+      "catalogueVersion": "1.0.0",
+      "strategyId": "listing",
+      "hookId": "listing-welcome",
+      "hookFamily": "listing-welcome",
+      "factClauseId": "listing-fact",
+      "closerId": null,
+      "title": "Newcomer in the building! 👋",
+      "body": "BAI já está oficialmente em negociação na BODIVA.",
+      "accessibilityText": "Newcomer in the building! 👋. BAI já está oficialmente em negociação na BODIVA.",
+      "privacyClass": "public_market",
+      "playful": true
+    }
+  },
+  {
+    "context": {
+      "eventFamily": "portfolio_daily",
+      "surface": "activity",
+      "sourceKey": "fixture-10",
+      "sourceRevision": 1,
+      "significance": "significant",
+      "direction": "up",
+      "mood": "energetic",
+      "privacyClass": "private_financial",
+      "capabilities": [
+        "complete_portfolio"
+      ],
+      "verifiedFacts": {
+        "issuer": "BAI",
+        "symbol": "BAI",
+        "signedPercentage": "+4,2",
+        "comparisonLabel": "face ao último fecho",
+        "observationTime": "10:35",
+        "referencePeriod": "21–25 set. 2026",
+        "rising": "2",
+        "falling": "1",
+        "unchanged": "0",
+        "sessions": "3",
+        "directionLabel": "descida",
+        "extremeLabel": "máximo",
+        "publicationTitle": "Informação publicada pela BODIVA"
+      }
+    },
+    "history": [],
+    "identity": "fixture-account",
+    "now": "2026-09-30T10:00:00Z",
+    "expected": {
+      "catalogueVersion": "1.0.0",
+      "strategyId": "portfolio_daily",
+      "hookId": "portfolio-neutral",
+      "hookFamily": "portfolio-neutral",
+      "factClauseId": "portfolio-fact",
+      "closerId": null,
+      "title": "A tua carteira em movimento",
+      "body": "+4,2% por variação das cotações entre fechos verificados.",
+      "accessibilityText": "A tua carteira em movimento. +4,2% por variação das cotações entre fechos verificados.",
+      "privacyClass": "private_financial",
+      "playful": false
+    }
+  },
+  {
+    "context": {
+      "eventFamily": "portfolio_daily",
+      "surface": "push",
+      "sourceKey": "fixture-11",
+      "sourceRevision": 1,
+      "significance": "significant",
+      "direction": "down",
+      "mood": "cautious",
+      "privacyClass": "public_market",
+      "capabilities": [
+        "complete_portfolio"
+      ],
+      "verifiedFacts": {
+        "issuer": "BAI",
+        "symbol": "BAI",
+        "signedPercentage": "−5,1",
+        "comparisonLabel": "face ao último fecho",
+        "observationTime": "10:35",
+        "referencePeriod": "21–25 set. 2026",
+        "rising": "2",
+        "falling": "1",
+        "unchanged": "0",
+        "sessions": "3",
+        "directionLabel": "descida",
+        "extremeLabel": "máximo",
+        "publicationTitle": "Informação publicada pela BODIVA"
+      }
+    },
+    "history": [],
+    "identity": "fixture-account",
+    "now": "2026-09-30T10:00:00Z",
+    "expected": {
+      "catalogueVersion": "1.0.0",
+      "strategyId": "fallback",
+      "hookId": "safe-generic",
+      "hookFamily": "safe-generic",
+      "factClauseId": "safe-generic",
+      "closerId": null,
+      "title": "Nova informação em invest.ao",
+      "body": "Abra a aplicação para consultar a atualização.",
+      "accessibilityText": "Nova informação em invest.ao. Abra a aplicação para consultar a atualização.",
+      "privacyClass": "public_market",
+      "playful": false
+    }
+  },
+  {
+    "context": {
+      "eventFamily": "quiet_market",
+      "surface": "home",
+      "sourceKey": "fixture-12",
+      "sourceRevision": 1,
+      "significance": "routine",
+      "direction": "neutral",
+      "mood": "calm",
+      "privacyClass": "public_market",
+      "capabilities": [
+        "verified_quiet"
+      ],
+      "verifiedFacts": {
+        "issuer": "BAI",
+        "symbol": "BAI",
+        "signedPercentage": "+4,2",
+        "comparisonLabel": "face ao último fecho",
+        "observationTime": "10:35",
+        "referencePeriod": "21–25 set. 2026",
+        "rising": "2",
+        "falling": "1",
+        "unchanged": "0",
+        "sessions": "3",
+        "directionLabel": "descida",
+        "extremeLabel": "máximo",
+        "publicationTitle": "Informação publicada pela BODIVA"
+      }
+    },
+    "history": [],
+    "identity": "fixture-account",
+    "now": "2026-09-30T10:00:00Z",
+    "expected": {
+      "catalogueVersion": "1.0.0",
+      "strategyId": "quiet_market",
+      "hookId": "quiet-neutral",
+      "hookFamily": "quiet-neutral",
+      "factClauseId": "quiet-fact",
+      "closerId": null,
+      "title": "Mercado em modo tranquilo",
+      "body": "Sem grandes movimentos no período observado.",
+      "accessibilityText": "Mercado em modo tranquilo. Sem grandes movimentos no período observado.",
+      "privacyClass": "public_market",
+      "playful": false
+    }
+  },
+  {
+    "context": {
+      "eventFamily": "quiet_market",
+      "surface": "home",
+      "sourceKey": "fixture-13",
+      "sourceRevision": 1,
+      "significance": "routine",
+      "direction": "neutral",
+      "mood": "calm",
+      "privacyClass": "public_market",
+      "capabilities": [],
+      "verifiedFacts": {
+        "issuer": "BAI",
+        "symbol": "BAI",
+        "signedPercentage": "+4,2",
+        "comparisonLabel": "face ao último fecho",
+        "observationTime": "10:35",
+        "referencePeriod": "21–25 set. 2026",
+        "rising": "2",
+        "falling": "1",
+        "unchanged": "0",
+        "sessions": "3",
+        "directionLabel": "descida",
+        "extremeLabel": "máximo",
+        "publicationTitle": "Informação publicada pela BODIVA"
+      }
+    },
+    "history": [],
+    "identity": "fixture-account",
+    "now": "2026-09-30T10:00:00Z",
+    "expected": {
+      "catalogueVersion": "1.0.0",
+      "strategyId": "fallback",
+      "hookId": "safe-generic",
+      "hookFamily": "safe-generic",
+      "factClauseId": "safe-generic",
+      "closerId": null,
+      "title": "Nova informação em invest.ao",
+      "body": "Abra a aplicação para consultar a atualização.",
+      "accessibilityText": "Nova informação em invest.ao. Abra a aplicação para consultar a atualização.",
+      "privacyClass": "public_market",
+      "playful": false
+    }
+  },
+  {
+    "context": {
+      "eventFamily": "empty_watchlist",
+      "surface": "empty",
+      "sourceKey": "fixture-14",
+      "sourceRevision": 1,
+      "significance": "routine",
+      "direction": "neutral",
+      "mood": "calm",
+      "privacyClass": "personal_context",
+      "capabilities": [
+        "empty_watchlist"
+      ],
+      "verifiedFacts": {
+        "issuer": "BAI",
+        "symbol": "BAI",
+        "signedPercentage": "+4,2",
+        "comparisonLabel": "face ao último fecho",
+        "observationTime": "10:35",
+        "referencePeriod": "21–25 set. 2026",
+        "rising": "2",
+        "falling": "1",
+        "unchanged": "0",
+        "sessions": "3",
+        "directionLabel": "descida",
+        "extremeLabel": "máximo",
+        "publicationTitle": "Informação publicada pela BODIVA"
+      }
+    },
+    "history": [],
+    "identity": "fixture-account",
+    "now": "2026-09-30T10:00:00Z",
+    "expected": {
+      "catalogueVersion": "1.0.0",
+      "strategyId": "empty_watchlist",
+      "hookId": "empty-welcome",
+      "hookFamily": "empty-welcome",
+      "factClauseId": "empty-fact",
+      "closerId": null,
+      "title": "Quem vais acompanhar?",
+      "body": "Adiciona os instrumentos que queres acompanhar.",
+      "accessibilityText": "Quem vais acompanhar?. Adiciona os instrumentos que queres acompanhar.",
+      "privacyClass": "personal_context",
+      "playful": false
+    }
+  },
+  {
+    "context": {
+      "eventFamily": "record",
+      "surface": "push",
+      "sourceKey": "fixture-15",
+      "sourceRevision": 1,
+      "significance": "exceptional",
+      "direction": "up",
+      "mood": "energetic",
+      "privacyClass": "public_market",
+      "capabilities": [],
+      "verifiedFacts": {
+        "issuer": "BAI",
+        "symbol": "BAI",
+        "signedPercentage": "+4,2",
+        "comparisonLabel": "face ao último fecho",
+        "observationTime": "10:35",
+        "referencePeriod": "21–25 set. 2026",
+        "rising": "2",
+        "falling": "1",
+        "unchanged": "0",
+        "sessions": "3",
+        "directionLabel": "descida",
+        "extremeLabel": "máximo",
+        "publicationTitle": "Informação publicada pela BODIVA"
+      }
+    },
+    "history": [],
+    "identity": "fixture-account",
+    "now": "2026-09-30T10:00:00Z",
+    "expected": {
+      "catalogueVersion": "1.0.0",
+      "strategyId": "fallback",
+      "hookId": "safe-generic",
+      "hookFamily": "safe-generic",
+      "factClauseId": "safe-generic",
+      "closerId": null,
+      "title": "Nova informação em invest.ao",
+      "body": "Abra a aplicação para consultar a atualização.",
+      "accessibilityText": "Nova informação em invest.ao. Abra a aplicação para consultar a atualização.",
+      "privacyClass": "public_market",
+      "playful": false
+    }
+  },
+  {
+    "context": {
+      "eventFamily": "capitalization",
+      "surface": "push",
+      "sourceKey": "fixture-16",
+      "sourceRevision": 1,
+      "significance": "exceptional",
+      "direction": "up",
+      "mood": "energetic",
+      "privacyClass": "public_market",
+      "capabilities": [],
+      "verifiedFacts": {
+        "issuer": "BAI",
+        "symbol": "BAI",
+        "signedPercentage": "+4,2",
+        "comparisonLabel": "face ao último fecho",
+        "observationTime": "10:35",
+        "referencePeriod": "21–25 set. 2026",
+        "rising": "2",
+        "falling": "1",
+        "unchanged": "0",
+        "sessions": "3",
+        "directionLabel": "descida",
+        "extremeLabel": "máximo",
+        "publicationTitle": "Informação publicada pela BODIVA"
+      }
+    },
+    "history": [],
+    "identity": "fixture-account",
+    "now": "2026-09-30T10:00:00Z",
+    "expected": {
+      "catalogueVersion": "1.0.0",
+      "strategyId": "fallback",
+      "hookId": "safe-generic",
+      "hookFamily": "safe-generic",
+      "factClauseId": "safe-generic",
+      "closerId": null,
+      "title": "Nova informação em invest.ao",
+      "body": "Abra a aplicação para consultar a atualização.",
+      "accessibilityText": "Nova informação em invest.ao. Abra a aplicação para consultar a atualização.",
+      "privacyClass": "public_market",
+      "playful": false
+    }
+  },
+  {
+    "context": {
+      "eventFamily": "listing_price_break",
+      "surface": "push",
+      "sourceKey": "fixture-17",
+      "sourceRevision": 1,
+      "significance": "exceptional",
+      "direction": "up",
+      "mood": "energetic",
+      "privacyClass": "public_market",
+      "capabilities": [],
+      "verifiedFacts": {
+        "issuer": "BAI",
+        "symbol": "BAI",
+        "signedPercentage": "+4,2",
+        "comparisonLabel": "face ao último fecho",
+        "observationTime": "10:35",
+        "referencePeriod": "21–25 set. 2026",
+        "rising": "2",
+        "falling": "1",
+        "unchanged": "0",
+        "sessions": "3",
+        "directionLabel": "descida",
+        "extremeLabel": "máximo",
+        "publicationTitle": "Informação publicada pela BODIVA"
+      }
+    },
+    "history": [],
+    "identity": "fixture-account",
+    "now": "2026-09-30T10:00:00Z",
+    "expected": {
+      "catalogueVersion": "1.0.0",
+      "strategyId": "fallback",
+      "hookId": "safe-generic",
+      "hookFamily": "safe-generic",
+      "factClauseId": "safe-generic",
+      "closerId": null,
+      "title": "Nova informação em invest.ao",
+      "body": "Abra a aplicação para consultar a atualização.",
+      "accessibilityText": "Nova informação em invest.ao. Abra a aplicação para consultar a atualização.",
+      "privacyClass": "public_market",
+      "playful": false
+    }
+  },
+  {
+    "context": {
+      "eventFamily": "wrap",
+      "surface": "wrap",
+      "sourceKey": "fixture-18",
+      "sourceRevision": 1,
+      "significance": "routine",
+      "direction": "neutral",
+      "mood": "calm",
+      "privacyClass": "personal_context",
+      "capabilities": [
+        "verified_period"
+      ],
+      "verifiedFacts": {
+        "issuer": "BAI",
+        "symbol": "BAI",
+        "signedPercentage": "+4,2",
+        "comparisonLabel": "face ao último fecho",
+        "observationTime": "10:35",
+        "referencePeriod": "21–25 set. 2026",
+        "rising": "2",
+        "falling": "1",
+        "unchanged": "0",
+        "sessions": "3",
+        "directionLabel": "descida",
+        "extremeLabel": "máximo",
+        "publicationTitle": "Informação publicada pela BODIVA"
+      }
+    },
+    "history": [],
+    "identity": "fixture-account",
+    "now": "2026-09-30T10:00:00Z",
+    "expected": {
+      "catalogueVersion": "1.0.0",
+      "strategyId": "wrap",
+      "hookId": "wrap-curious",
+      "hookFamily": "wrap-curious",
+      "factClauseId": "wrap-fact",
+      "closerId": null,
+      "title": "Vamos ver o que mexeu 👀",
+      "body": "O que marcou 21–25 set. 2026, com dados verificados.",
+      "accessibilityText": "Vamos ver o que mexeu 👀. O que marcou 21–25 set. 2026, com dados verificados.",
+      "privacyClass": "personal_context",
+      "playful": false
+    }
+  },
+  {
+    "context": {
+      "eventFamily": "unavailable",
+      "surface": "home",
+      "sourceKey": "fixture-19",
+      "sourceRevision": 1,
+      "significance": "routine",
+      "direction": "neutral",
+      "mood": "calm",
+      "privacyClass": "public_market",
+      "capabilities": [
+        "unavailable"
+      ],
+      "verifiedFacts": {
+        "issuer": "BAI",
+        "symbol": "BAI",
+        "signedPercentage": "+4,2",
+        "comparisonLabel": "face ao último fecho",
+        "observationTime": "10:35",
+        "referencePeriod": "21–25 set. 2026",
+        "rising": "2",
+        "falling": "1",
+        "unchanged": "0",
+        "sessions": "3",
+        "directionLabel": "descida",
+        "extremeLabel": "máximo",
+        "publicationTitle": "Informação publicada pela BODIVA"
+      }
+    },
+    "history": [],
+    "identity": "fixture-account",
+    "now": "2026-09-30T10:00:00Z",
+    "expected": {
+      "catalogueVersion": "1.0.0",
+      "strategyId": "unavailable",
+      "hookId": "unavailable",
+      "hookFamily": "unavailable",
+      "factClauseId": "unavailable-fact",
+      "closerId": null,
+      "title": "Ainda faltam dados",
+      "body": "Ainda não há dados verificados suficientes para esta leitura.",
+      "accessibilityText": "Ainda faltam dados. Ainda não há dados verificados suficientes para esta leitura.",
+      "privacyClass": "public_market",
+      "playful": false
+    }
+  }
+]

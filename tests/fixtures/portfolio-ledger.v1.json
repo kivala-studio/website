@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "description": "Golden cases for portfolio ledger calculations. Decimals are strings. See docs/portfolio-ledger-contract.md.",
+  "cases": [
+    {
+      "name": "weighted_average_purchases",
+      "instruments": { "BAI": "stock" },
+      "transactions": [
+        { "id": "a1", "security": "BAI", "kind": "buy", "quantity": "50", "unit_price": "45000", "fees": "0", "traded_on": "2026-01-05", "created_at": "2026-01-05T10:00:00Z" },
+        { "id": "a2", "security": "BAI", "kind": "buy", "quantity": "30", "unit_price": "55000", "fees": "0", "traded_on": "2026-01-06", "created_at": "2026-01-06T10:00:00Z" },
+        { "id": "a3", "security": "BAI", "kind": "buy", "quantity": "20", "unit_price": "61000", "fees": "0", "traded_on": "2026-01-07", "created_at": "2026-01-07T10:00:00Z" }
+      ],
+      "prices": { "BAI": "60000" },
+      "expected": {
+        "valid": true,
+        "positions": [
+          { "security": "BAI", "quantity": "100", "invested": "5120000", "average_price": "51200", "realized": "0", "net_income": "0", "current_value": "6000000" }
+        ],
+        "years": []
+      }
+    },
+    {
+      "name": "fees_raise_cost_and_reduce_proceeds",
+      "instruments": { "BAI": "stock" },
+      "transactions": [
+        { "id": "b1", "security": "BAI", "kind": "buy", "quantity": "10", "unit_price": "50", "fees": "20", "traded_on": "2026-01-05", "created_at": "2026-01-05T10:00:00Z" },
+        { "id": "b2", "security": "BAI", "kind": "sell", "quantity": "4", "unit_price": "60", "fees": "8", "traded_on": "2026-02-02", "created_at": "2026-02-02T10:00:00Z" }
+      ],
+      "prices": { "BAI": "60" },
+      "expected": {
+        "valid": true,
+        "positions": [
+          { "security": "BAI", "quantity": "6", "invested": "312", "average_price": "52", "realized": "24", "net_income": "0", "current_value": "360" }
+        ],
+        "years": [{ "year": 2026, "realized": "24", "net_income": "0", "fees": "28" }]
+      }
+    },
+    {
+      "name": "income_is_net_of_withheld_tax",
+      "instruments": { "BAI": "stock" },
+      "transactions": [
+        { "id": "c1", "security": "BAI", "kind": "buy", "quantity": "10", "unit_price": "50", "fees": "0", "traded_on": "2025-01-06", "created_at": "2025-01-06T10:00:00Z" },
+        { "id": "c2", "security": "BAI", "kind": "income", "quantity": "1", "unit_price": "1000", "fees": "100", "traded_on": "2025-06-02", "created_at": "2025-06-02T10:00:00Z" },
+        { "id": "c3", "security": "BAI", "kind": "income", "quantity": "1", "unit_price": "500", "fees": "50", "traded_on": "2026-06-01", "created_at": "2026-06-01T10:00:00Z" }
+      ],
+      "prices": {},
+      "expected": {
+        "valid": true,
+        "positions": [
+          { "security": "BAI", "quantity": "10", "invested": "500", "average_price": "50", "realized": "0", "net_income": "1350", "current_value": null }
+        ],
+        "years": [
+          { "year": 2026, "realized": "0", "net_income": "450", "fees": "50" },
+          { "year": 2025, "realized": "0", "net_income": "900", "fees": "100" }
+        ]
+      }
+    },
+    {
+      "name": "closed_position_keeps_realized_result",
+      "instruments": { "BAI": "stock" },
+      "transactions": [
+        { "id": "d1", "security": "BAI", "kind": "buy", "quantity": "10", "unit_price": "50", "fees": "0", "traded_on": "2026-01-05", "created_at": "2026-01-05T10:00:00Z" },
+        { "id": "d2", "security": "BAI", "kind": "sell", "quantity": "10", "unit_price": "40", "fees": "0", "traded_on": "2026-03-02", "created_at": "2026-03-02T10:00:00Z" }
+      ],
+      "prices": { "BAI": "45" },
+      "expected": {
+        "valid": true,
+        "positions": [],
+        "years": [{ "year": 2026, "realized": "-100", "net_income": "0", "fees": "0" }]
+      }
+    },
+    {
+      "name": "bond_nominal_at_percent_of_par",
+      "instruments": { "OT": "treasury_bond" },
+      "transactions": [
+        { "id": "e1", "security": "OT", "kind": "buy", "quantity": "1000000", "unit_price": "98", "fees": "500", "traded_on": "2026-01-05", "created_at": "2026-01-05T10:00:00Z" },
+        { "id": "e2", "security": "OT", "kind": "income", "quantity": "1", "unit_price": "75000", "fees": "7500", "traded_on": "2026-07-01", "created_at": "2026-07-01T10:00:00Z" }
+      ],
+      "prices": { "OT": "101" },
+      "expected": {
+        "valid": true,
+        "positions": [
+          { "security": "OT", "quantity": "1000000", "invested": "980500", "average_price": "98.05", "realized": "0", "net_income": "67500", "current_value": "1010000" }
+        ],
+        "years": [{ "year": 2026, "realized": "0", "net_income": "67500", "fees": "8000" }]
+      }
+    },
+    {
+      "name": "same_day_order_uses_created_at",
+      "instruments": { "BAI": "stock" },
+      "transactions": [
+        { "id": "f2", "security": "BAI", "kind": "sell", "quantity": "5", "unit_price": "70", "fees": "0", "traded_on": "2026-01-05", "created_at": "2026-01-05T11:00:00Z" },
+        { "id": "f1", "security": "BAI", "kind": "buy", "quantity": "5", "unit_price": "50", "fees": "0", "traded_on": "2026-01-05", "created_at": "2026-01-05T10:00:00Z" }
+      ],
+      "prices": {},
+      "expected": {
+        "valid": true,
+        "positions": [],
+        "years": [{ "year": 2026, "realized": "100", "net_income": "0", "fees": "0" }]
+      }
+    },
+    {
+      "name": "oversell_invalidates_ledger",
+      "instruments": { "BAI": "stock" },
+      "transactions": [
+        { "id": "g1", "security": "BAI", "kind": "buy", "quantity": "5", "unit_price": "50", "fees": "0", "traded_on": "2026-01-05", "created_at": "2026-01-05T10:00:00Z" },
+        { "id": "g2", "security": "BAI", "kind": "sell", "quantity": "6", "unit_price": "50", "fees": "0", "traded_on": "2026-01-06", "created_at": "2026-01-06T10:00:00Z" }
+      ],
+      "prices": {},
+      "expected": { "valid": false, "positions": [], "years": [] }
+    },
+    {
+      "name": "income_never_adds_quantity",
+      "instruments": { "BAI": "stock" },
+      "transactions": [
+        { "id": "h1", "security": "BAI", "kind": "buy", "quantity": "4", "unit_price": "50", "fees": "0", "traded_on": "2026-01-05", "created_at": "2026-01-05T10:00:00Z" },
+        { "id": "h2", "security": "BAI", "kind": "income", "quantity": "1", "unit_price": "100", "fees": "0", "traded_on": "2026-01-06", "created_at": "2026-01-06T10:00:00Z" },
+        { "id": "h3", "security": "BAI", "kind": "sell", "quantity": "5", "unit_price": "50", "fees": "0", "traded_on": "2026-01-07", "created_at": "2026-01-07T10:00:00Z" }
+      ],
+      "prices": {},
+      "expected": { "valid": false, "positions": [], "years": [] }
+    }
+  ]
+}
