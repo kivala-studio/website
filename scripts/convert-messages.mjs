@@ -109,9 +109,15 @@ for (const [webKey, iosKey] of entries) {
   }
 }
 
+// `site` holds web-only strings (marketing, legal, SEO) that have no iOS counterpart; it is kept as is.
+const WEB_ONLY = "site";
 const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
 for (const language of LANGUAGES) {
-  await writeFile(path.join(ROOT, "messages", `${language}.json`), json(messages[language]));
+  const file = path.join(ROOT, "messages", `${language}.json`);
+  const existing = JSON.parse(await readFile(file, "utf8").catch(() => "{}"));
+  if (WEB_ONLY in messages[language]) throw new Error(`The iOS catalogue uses the reserved web namespace "${WEB_ONLY}"`);
+  if (existing[WEB_ONLY]) messages[language][WEB_ONLY] = existing[WEB_ONLY];
+  await writeFile(file, json(messages[language]));
 }
 await writeFile(path.join(ROOT, "messages", "key-map.json"), json(keyMap));
 console.log(

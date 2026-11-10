@@ -3,15 +3,29 @@
     "collect": {
       "startServerCommand": "npm run start -- --port 3200",
       "startServerReadyPattern": "Ready",
-      "url": ["http://localhost:3200/"],
-      "numberOfRuns": 3
+      "url": ["http://localhost:3200/", "http://localhost:3200/policy"],
+      "numberOfRuns": 3,
+      "settings": { "extraHeaders": { "Accept-Language": "pt-AO" } }
     },
     "assert": {
-      "assertions": {
-        "largest-contentful-paint": ["error", { "maxNumericValue": 2500, "aggregationMethod": "median-run" }],
-        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1, "aggregationMethod": "median-run" }],
-        "total-blocking-time": ["error", { "maxNumericValue": 200, "aggregationMethod": "median-run" }]
-      }
+      "assertMatrix": [
+        {
+          "matchingUrlPattern": ".*",
+          "assertions": {
+            "largest-contentful-paint": ["error", { "maxNumericValue": 2500, "aggregationMethod": "median-run" }],
+            "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1, "aggregationMethod": "median-run" }],
+            "total-blocking-time": ["error", { "maxNumericValue": 200, "aggregationMethod": "median-run" }],
+            "categories:accessibility": ["error", { "minScore": 0.95, "aggregationMethod": "median-run" }]
+          }
+        },
+        {
+          "matchingUrlPattern": "^http://localhost:3200/$",
+          "assertions": {
+            "categories:performance": ["error", { "minScore": 0.9, "aggregationMethod": "median-run" }],
+            "categories:seo": ["error", { "minScore": 0.95, "aggregationMethod": "median-run" }]
+          }
+        }
+      ]
     },
     "upload": { "target": "temporary-public-storage" }
   }

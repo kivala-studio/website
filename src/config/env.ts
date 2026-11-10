@@ -2,7 +2,12 @@ export const DATA_MODES = ["demo", "local", "production"] as const;
 export type DataMode = (typeof DATA_MODES)[number];
 
 /** Server-only names. They must never reach a client bundle (checked by scripts/scan-client-bundle.mjs). */
-export const SERVER_ONLY_ENV_NAMES = ["APPLE_WEBSITE_RECEIPT_SECRET", "SITE_URL"] as const;
+export const SERVER_ONLY_ENV_NAMES = [
+  "APPLE_WEBSITE_RECEIPT_SECRET",
+  "SITE_URL",
+  "ANDROID_APP_PACKAGE",
+  "ANDROID_APP_SHA256_FINGERPRINTS",
+] as const;
 
 export type PublicEnv = {
   dataMode: DataMode;
@@ -16,6 +21,8 @@ export type PublicEnv = {
 export type ServerEnv = PublicEnv & {
   siteUrl: string;
   appleWebsiteReceiptSecret: string | null;
+  /** Android App Links (`/.well-known/assetlinks.json`); empty until the Android app exists. */
+  androidApp: { packageName: string; sha256Fingerprints: string[] } | null;
 };
 
 type Source = Readonly<Record<string, string | undefined>>;
@@ -88,9 +95,29 @@ export function parsePublicEnv(source: Source): PublicEnv {
   return env;
 }
 
+const ANDROID_PACKAGE = /^[a-zA-Z][\w]*(\.[a-zA-Z][\w]*)+$/;
+const SHA256_FINGERPRINT = /^([0-9A-F]{2}:){31}[0-9A-F]{2}$/;
+
+function collectAndroidApp(source: Source, problems: string[]): ServerEnv["androidApp"] {
+  const packageName = read(source, "ANDROID_APP_PACKAGE");
+  const fingerprints = (read(source, "ANDROID_APP_SHA256_FINGERPRINTS") ?? "")
+    .split(",")
+    .map((value) => value.trim().toUpperCase())
+    .filter(Boolean);
+  if (packageName !== null && !ANDROID_PACKAGE.test(packageName)) {
+    problems.push("ANDROID_APP_PACKAGE must be an application id such as ao.invest.android");
+  }
+  if (fingerprints.some((value) => !SHA256_FINGERPRINT.test(value))) {
+    problems.push("ANDROID_APP_SHA256_FINGERPRINTS must be comma-separated SHA-256 fingerprints (AB:CD:…)");
+  }
+  if (packageName === null || fingerprints.length === 0) return null;
+  return { packageName, sha256Fingerprints: fingerprints };
+}
+
 export function parseServerEnv(source: Source): ServerEnv {
   const problems: string[] = [];
   const env = collectPublic(source, problems);
+  const androidApp = collectAndroidApp(source, problems);
   const siteUrl = read(source, "SITE_URL");
   if (siteUrl === null) problems.push("SITE_URL is missing");
   checkUrl("SITE_URL", siteUrl, problems);
@@ -99,5 +126,6 @@ export function parseServerEnv(source: Source): ServerEnv {
     ...env,
     siteUrl: siteUrl!.replace(/\/+$/, ""),
     appleWebsiteReceiptSecret: read(source, "APPLE_WEBSITE_RECEIPT_SECRET"),
+    androidApp,
   };
 }

@@ -2815,5 +2815,52 @@
       "description": "Cotações dos instrumentos da tua lista de acompanhamento.",
       "openAppHint": "Abre o invest.ao para carregar a tua lista."
     }
+  },
+  "site": {
+    "meta": {
+      "homeTitle": "invest.ao: Bolsa de Angola",
+      "homeDescription": "Acompanha a bolsa de Angola num só sítio: cotações, gráficos, comparações e alertas. Regista a tua carteira e vê o valor estimado, sem ligação ao banco.",
+      "policyDescription": "Política de privacidade da invest.ao e contacto de suporte.",
+      "termsDescription": "Termos de utilização da invest.ao.",
+      "supportDescription": "Ajuda e contacto de suporte da invest.ao.",
+      "deletionDescription": "Como eliminar a tua conta invest.ao na app ou no site.",
+      "inviteDescription": "Usa este código no invest.ao e ganha 1 mês de Plus."
+    },
+    "header": {
+      "homeLabel": "invest.ao, início",
+      "languageCode": "EN",
+      "languageName": "English"
+    },
+    "footer": {
+      "label": "invest.ao",
+      "independence": "O invest.ao é independente e não é afiliado à BODIVA. Não permite comprar ou vender títulos nem presta aconselhamento financeiro."
+    },
+    "store": {
+      "download": "Descarregar na App Store"
+    },
+    "home": {
+      "instrumentAlt": "Ecrã de um instrumento na app: preço, variação e gráfico de um mês.",
+      "comparisonAlt": "Comparação de dois instrumentos no mesmo gráfico de desempenho.",
+      "alertsAlt": "Alertas de um instrumento: preço acima de um valor e movimentos automáticos.",
+      "portfolioAlt": "Carteira de exemplo com valor, registo manual e evolução."
+    },
+    "legal": {
+      "draft": "Rascunho. O texto final está a ser preparado.",
+      "contact": "Contacto",
+      "termsTitle": "Termos de utilização",
+      "supportTitle": "Suporte"
+    },
+    "deletion": {
+      "inApp": "Na app para iPhone",
+      "onWeb": "No site",
+      "webMessage": "Inicia sessão com a mesma conta e elimina-a nas definições.",
+      "path": "Caminho na app"
+    },
+    "invite": {
+      "offer": "Usa este código no invest.ao e ganha 1 mês de Plus."
+    },
+    "notFound": {
+      "title": "Página não encontrada"
+    }
   }
 }

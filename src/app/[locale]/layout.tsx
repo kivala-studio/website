@@ -1,18 +1,22 @@
 import type { Metadata, Viewport } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import type { ReactNode } from "react";
 
+import { serverEnv } from "@/config/server-env";
+import { pickClientMessages } from "@/i18n/client-messages";
 import { routing } from "@/i18n/routing";
 import { parseTheme, THEME_COOKIE } from "@/ui/theme/theme";
 
 import "../globals.css";
 
+// Pages are indexable unless they opt out (the /dev gallery, invite links and 404s do).
 export const metadata: Metadata = {
-  title: "invest.ao",
-  robots: { index: false, follow: false },
+  metadataBase: new URL(serverEnv.siteUrl),
+  title: { default: "invest.ao", template: "%s · invest.ao" },
 };
 
 export const viewport: Viewport = {
@@ -36,7 +40,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale === "pt" ? "pt-AO" : "en-AO"} data-theme={theme} className="h-full antialiased">
       <body className="flex min-h-full flex-col">
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider messages={pickClientMessages(await getMessages())}>{children}</NextIntlClientProvider>
       </body>
     </html>
   );

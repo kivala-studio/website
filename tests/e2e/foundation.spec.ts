@@ -1,6 +1,9 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
+// Portuguese is the default locale; without this, locale detection sends the browser to /en.
+test.use({ locale: "pt-AO" });
+
 test("home sends the security headers with a fresh CSP nonce", async ({ request }) => {
   const first = await request.get("/");
   const second = await request.get("/");
@@ -35,7 +38,7 @@ test("home renders with the app icon, no CSP violations and no serious axe issue
   });
 
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("invest.ao");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("O teu mercado, de perto.");
   await expect(page.locator('link[rel="icon"][type="image/svg+xml"]')).toHaveCount(1);
   expect(violations).toEqual([]);
 

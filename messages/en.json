@@ -2815,5 +2815,52 @@
       "description": "Quotes for the instruments in your watchlist.",
       "openAppHint": "Open invest.ao to load your watchlist."
     }
+  },
+  "site": {
+    "meta": {
+      "homeTitle": "invest.ao: Angola stock exchange",
+      "homeDescription": "Follow Angola''s stock market in one place: quotes, charts, comparisons and alerts. Record your portfolio and see its estimated value, with no bank connection.",
+      "policyDescription": "invest.ao privacy policy and support contact.",
+      "termsDescription": "invest.ao terms of use.",
+      "supportDescription": "invest.ao help and support contact.",
+      "deletionDescription": "How to delete your invest.ao account in the app or on the web.",
+      "inviteDescription": "Use this code on invest.ao to get 1 month of Plus."
+    },
+    "header": {
+      "homeLabel": "invest.ao, home",
+      "languageCode": "PT",
+      "languageName": "Português"
+    },
+    "footer": {
+      "label": "invest.ao",
+      "independence": "invest.ao is independent and not affiliated with BODIVA. It does not let you buy or sell securities and does not give financial advice."
+    },
+    "store": {
+      "download": "Download on the App Store"
+    },
+    "home": {
+      "instrumentAlt": "An instrument screen in the app: price, change and a one-month chart.",
+      "comparisonAlt": "Two instruments compared on the same performance chart.",
+      "alertsAlt": "Alerts for an instrument: price above a value and automatic movements.",
+      "portfolioAlt": "Example portfolio with its value, manual record and trend."
+    },
+    "legal": {
+      "draft": "Draft. The final text is being prepared.",
+      "contact": "Contact",
+      "termsTitle": "Terms of use",
+      "supportTitle": "Support"
+    },
+    "deletion": {
+      "inApp": "In the iPhone app",
+      "onWeb": "On the web",
+      "webMessage": "Sign in with the same account and delete it in settings.",
+      "path": "Path in the app"
+    },
+    "invite": {
+      "offer": "Use this code on invest.ao to get 1 month of Plus."
+    },
+    "notFound": {
+      "title": "Page not found"
+    }
   }
 }
