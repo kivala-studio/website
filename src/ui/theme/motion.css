@@ -1,0 +1,66 @@
+/* Motion from ios-product §3.6. Every pattern has a reduced-motion fallback. */
+
+@keyframes presence-in {
+  from { opacity: 0; transform: translateY(0.5rem); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-100%); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes value-roll {
+  from { opacity: 0; transform: translateY(0.35em); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes skeleton-pulse {
+  from { opacity: 0.9; }
+  to { opacity: 0.5; }
+}
+@keyframes shimmer {
+  from { background-position: 150% 0; }
+  to { background-position: -50% 0; }
+}
+
+@utility motion-presence {
+  animation: presence-in 0.24s ease-out both;
+}
+@utility motion-value {
+  animation: value-roll 0.25s ease-out both;
+}
+@utility motion-toast {
+  /* Spring response 0.42 / damping 0.86 approximated with an overshoot-free curve. */
+  animation: toast-in 0.42s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+}
+@utility motion-press {
+  transition: opacity 0.16s ease-out, transform 0.16s ease-out;
+  &:active:not(:disabled) {
+    opacity: 0.76;
+    transform: scale(0.98);
+  }
+}
+@utility motion-pulse {
+  animation: skeleton-pulse 0.9s ease-in-out infinite alternate;
+}
+@utility motion-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--primary-text) 16%, transparent) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-presence { animation: fade-in 0.15s ease-out both; }
+  .motion-value { animation: none; }
+  .motion-toast { animation: fade-in 0.2s ease-out both; }
+  .motion-press { transition: opacity 0.16s ease-out; }
+  .motion-press:active:not(:disabled) { transform: none; }
+  .motion-pulse, .motion-shimmer { animation: none; }
+}
