@@ -1,0 +1,229 @@
+{
+  "schema_version": 1,
+  "version": 1,
+  "minimum_app_build": 0,
+  "effective_at": "2026-09-28T12:00:00Z",
+  "expires_at": "2026-10-05T12:00:00Z",
+  "features": {
+    "insight_engine": {
+      "enabled": true,
+      "kill_switch": false,
+      "rollout_percentage": 100,
+      "rollout_salt": "v1",
+      "audiences": [
+        "production",
+        "beta",
+        "internal"
+      ]
+    },
+    "snapshot_capture": {
+      "enabled": true,
+      "kill_switch": false,
+      "rollout_percentage": 100,
+      "rollout_salt": "v1",
+      "audiences": [
+        "production",
+        "beta",
+        "internal"
+      ]
+    },
+    "market_events": {
+      "enabled": true,
+      "kill_switch": false,
+      "rollout_percentage": 100,
+      "rollout_salt": "v1",
+      "audiences": [
+        "production",
+        "beta",
+        "internal"
+      ]
+    },
+    "weekly_wrap": {
+      "enabled": false,
+      "kill_switch": false,
+      "rollout_percentage": 100,
+      "rollout_salt": "v1",
+      "audiences": [
+        "production",
+        "beta",
+        "internal"
+      ]
+    },
+    "saturday_discover": {
+      "enabled": false,
+      "kill_switch": false,
+      "rollout_percentage": 100,
+      "rollout_salt": "v1",
+      "audiences": [
+        "production",
+        "beta",
+        "internal"
+      ]
+    },
+    "week_ahead": {
+      "enabled": false,
+      "kill_switch": false,
+      "rollout_percentage": 100,
+      "rollout_salt": "v1",
+      "audiences": [
+        "production",
+        "beta",
+        "internal"
+      ]
+    },
+    "personalized_home": {
+      "enabled": true,
+      "kill_switch": false,
+      "rollout_percentage": 100,
+      "rollout_salt": "v1",
+      "audiences": [
+        "production",
+        "beta",
+        "internal"
+      ]
+    },
+    "activity_center": {
+      "enabled": true,
+      "kill_switch": false,
+      "rollout_percentage": 100,
+      "rollout_salt": "v1",
+      "audiences": [
+        "production",
+        "beta",
+        "internal"
+      ]
+    },
+    "intelligence_notifications": {
+      "enabled": false,
+      "kill_switch": false,
+      "rollout_percentage": 100,
+      "rollout_salt": "v1",
+      "audiences": [
+        "production",
+        "beta",
+        "internal"
+      ]
+    },
+    "personalization_engine": {
+      "enabled": true,
+      "kill_switch": false,
+      "rollout_percentage": 100,
+      "rollout_salt": "v1",
+      "audiences": [
+        "production",
+        "beta",
+        "internal"
+      ]
+    },
+    "personalization_v2": {
+      "enabled": false,
+      "kill_switch": false,
+      "rollout_percentage": 0,
+      "rollout_salt": "v1",
+      "audiences": [
+        "production",
+        "beta",
+        "internal"
+      ]
+    },
+    "price_changes": {
+      "enabled": true,
+      "kill_switch": false,
+      "rollout_percentage": 100,
+      "rollout_salt": "v1",
+      "audiences": [
+        "production",
+        "beta",
+        "internal"
+      ]
+    },
+    "watchlist_breadth": {
+      "enabled": true,
+      "kill_switch": false,
+      "rollout_percentage": 100,
+      "rollout_salt": "v1",
+      "audiences": [
+        "production",
+        "beta",
+        "internal"
+      ]
+    },
+    "portfolio_performance": {
+      "enabled": true,
+      "kill_switch": false,
+      "rollout_percentage": 100,
+      "rollout_salt": "v1",
+      "audiences": [
+        "production",
+        "beta",
+        "internal"
+      ]
+    },
+    "portfolio_allocation": {
+      "enabled": true,
+      "kill_switch": false,
+      "rollout_percentage": 100,
+      "rollout_salt": "v1",
+      "audiences": [
+        "production",
+        "beta",
+        "internal"
+      ]
+    },
+    "watchlist_patterns": {
+      "enabled": true,
+      "kill_switch": false,
+      "rollout_percentage": 100,
+      "rollout_salt": "v1",
+      "audiences": [
+        "production",
+        "beta",
+        "internal"
+      ]
+    },
+    "publications": {
+      "enabled": true,
+      "kill_switch": false,
+      "rollout_percentage": 100,
+      "rollout_salt": "v1",
+      "audiences": [
+        "production",
+        "beta",
+        "internal"
+      ]
+    },
+    "notification_watchlist": {
+      "enabled": true,
+      "kill_switch": false,
+      "rollout_percentage": 100,
+      "rollout_salt": "v1",
+      "audiences": [
+        "production",
+        "beta",
+        "internal"
+      ]
+    },
+    "notification_movement": {
+      "enabled": true,
+      "kill_switch": false,
+      "rollout_percentage": 100,
+      "rollout_salt": "v1",
+      "audiences": [
+        "production",
+        "beta",
+        "internal"
+      ]
+    },
+    "notification_market_recap": {
+      "enabled": true,
+      "kill_switch": false,
+      "rollout_percentage": 100,
+      "rollout_salt": "v1",
+      "audiences": [
+        "production",
+        "beta",
+        "internal"
+      ]
+    }
+  }
+}
