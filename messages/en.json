@@ -1,0 +1,2819 @@
+{
+  "legacy": {
+    "emAte5MinPara": "{arg1} {arg2} {arg3}% in up to 5 min, to {arg4} {arg5}.",
+    "faceAoUltimoFechoPara": "{arg1} {arg2} {arg3}% versus the previous close, to {arg4} {arg5}.",
+    "emCustos": "{arg1} in fees",
+    "100FechoFinalFechoDeReferencia": "100 × (final close − reference close) ÷ reference close. Shown only for absolute changes of at least 1%.",
+    "100UltimoFechoExtremoAnteriorExtremo": "100 × (latest close − previous extreme) ÷ previous extreme. Requires at least five closes and an absolute distance of at least 1% from the previous extreme.",
+    "aAcompanharEscuro": "Watchlist dark",
+    "aAcompanharVazio": "Empty watchlist",
+    "aCapitalizacaoVerificadaUltrapassouReferencepriceKz": "Verified market capitalization exceeded {referencePrice} Kz.",
+    "aGuardar": "Saving",
+    "aTuaCarteira": "Your portfolio",
+    "aTuaCarteiraEmMovimento": "Your portfolio on the move",
+    "aTuaCarteiraGanhouTerreno": "Your portfolio gained ground",
+    "aTuaCarteiraPelosNumeros": "Your portfolio in numbers",
+    "aTuaLista": "Your watchlist",
+    "aTuaListaQuerAtencao": "Your watchlist wants attention 👀",
+    "aTuaListaAoFecho": "Your watchlist at the close",
+    "aVerificarAAutorizacaoDoIos": "Checking iOS permission.",
+    "abraAAplicacaoParaConsultarA": "Open the app to view the update.",
+    "abreAAplicacaoParaLerA": "Open the app to read the publication.",
+    "acompanharDesactualizado": "Watchlist · outdated",
+    "acompanharGrandeDemonstracao": "Watchlist · large · demo",
+    "acompanharMedioDemonstracao": "Watchlist · medium · demo",
+    "acompanharPequenoDemonstracao": "Watchlist · small · demo",
+    "acompanharVazio": "Watchlist · empty",
+    "activoDeDemonstracao": "Demo asset",
+    "activoMedioDemonstracao": "Asset · medium · demo",
+    "activoPequenoDemonstracao": "Asset · small · demo",
+    "activoSemSeleccao": "Asset · no selection",
+    "adicionaOsInstrumentosQueQueresAcompanhar": "Add the instruments you want to follow.",
+    "admissaoConfirmada": "Admission · confirmed",
+    "admissaoEmBreve": "Admission · soon",
+    "admissaoEstatica": "Admission · static",
+    "admissaoHojePrevista": "Admission · expected today",
+    "admissaoJaVista": "Admission · already viewed",
+    "admissaoMovimentoReduzido": "Admission · reduced motion",
+    "admissaoNomeLongo": "Admission · long name",
+    "admissaoRecente": "Admission · recent",
+    "admissaoSemLogotipo": "Admission · no logo",
+    "admissaoTextoGrande": "Admission · large text",
+    "aindaFaltamDados": "More data needed",
+    "aindaNaoHaDadosVerificadosSuficientes": "There is not enough verified data for this insight yet.",
+    "anteriores": "Earlier",
+    "anual": "Annual",
+    "aoCriarUmAlertaPediremosAutorizacao": "When you create an alert, we will ask for permission to send notifications. Saving a rule does not guarantee notification delivery.",
+    "asNotificacoesEstaoBloqueadasNoIos": "Notifications are blocked in iOS. You can save rules, but must allow notifications in Settings to receive alerts.",
+    "atividade": "Activity",
+    "autenticacao": "Authentication",
+    "avisarSobreMovimentosRelevantes": "Notify me of significant movements",
+    "acoesEUnidadesDeParticipacaoCom": "Stocks and fund units with monetary quotes.",
+    "acoesEUnidadesDeParticipacaoEm": "Stocks and fund units in AOA with available quotes. Future price change is an assumption you enter.",
+    "bai": "BAI",
+    "carteira": "Portfolio",
+    "carteiraVazia": "Empty portfolio",
+    "carteiraGrandeDemonstracao": "Portfolio · large · demo",
+    "carteiraMedioDemonstracao": "Portfolio · medium · demo",
+    "carteiraPequenoDemonstracao": "Portfolio · small · demo",
+    "carteiraPrivada": "Portfolio · private",
+    "carteiraUmaPosicao": "Portfolio · one position",
+    "carteiraValorParcial": "Portfolio · partial value",
+    "carteiraVazia2": "Portfolio · empty",
+    "componentesEscuro": "Components · Dark",
+    "cotacaoConsultadaNoServidorPodeReflectir": "Quote retrieved from the server; it may reflect an earlier trade. Not a guaranteed execution price.",
+    "criaUmAlertaParaAcompanharO": "Create an alert to track this instrument''s price or change.",
+    "custoRegistado": "Recorded cost",
+    "emitente": "Issuer",
+    "entre0E": "Between 0% and +{arg1}%",
+    "entreE0": "Between −{arg1}% and 0%",
+    "entregaDeNotificacoes": "Notification delivery",
+    "escolheUmInstrumentoParaVeresA": "Choose an instrument to view the projection.",
+    "escolherInvestimento": "Choose investment",
+    "estados": "States",
+    "graficoDePreco": "Price chart",
+    "guardarAlteracoes": "Save changes",
+    "hojeABodivaDecidiuDescansar": "BODIVA is taking a break today ☕️",
+    "hojeACarteiraRecuou": "Your portfolio declined today",
+    "haNovidadesSobreIssuer": "News about {issuer}",
+    "haUmMovimentoDeMercadoVerificado": "A verified market movement is available. Open the app to view it.",
+    "isin": "ISIN",
+    "instrumentosDisponiveis": "Available instruments",
+    "introduzUmValorInicialParaVeres": "Enter an initial amount to view the projection.",
+    "introduzaUmaTaxaSuperiorA100": "Enter a rate greater than −100% and up to 100%.",
+    "inicio": "Home",
+    "inicioDeSessaoClaro": "Sign in · Light",
+    "inicioDeSessaoEscuro": "Sign in · Dark",
+    "inicioDeSessaoTextoGrande": "Sign in · Large text",
+    "istoJaMereceAtencao": "This deserves a closer look 👀",
+    "limitesValoresAte1BiliaoKz": "Limits: up to 1 trillion Kz per field, 1 to 600 months, and an annual rate greater than −100% and up to 100%.",
+    "limparFiltros": "Clear filters",
+    "linhaContinuaProjeccao": "Solid line: projection",
+    "linhaDeMercado": "Market line",
+    "linhaTracejadaTotalDisponibilizado": "Dashed line: total made available",
+    "maisNegociados": "Most traded",
+    "mercadoEmModoTranquilo": "A quiet market",
+    "mercadoDesactualizado": "Market · outdated",
+    "mercadoGrandeDemonstracao": "Market · large · demo",
+    "mercadoMedioDemonstracao": "Market · medium · demo",
+    "mercadoPequenoDemonstracao": "Market · small · demo",
+    "mercadoQueda": "Market · decline",
+    "mercados": "Markets",
+    "meses": "Months",
+    "modoEscuro": "Dark mode",
+    "newcomerInTheBuilding": "Newcomer in the building! 👋",
+    "novaInformacao": "New information",
+    "novaInformacaoDeMercado": "New market information",
+    "novaInformacaoEmInvestAo": "New information in invest.ao",
+    "novaInformacaoEmInvestAoAbra": "New information in invest.ao. Open the app to view the update.",
+    "novaNoticiaNaInvestAo": "New article in invest.ao",
+    "novoNaBodiva": "New on BODIVA",
+    "novoResumoDeMercado": "New market recap",
+    "oIosPermiteNotificacoesAEntrega": "iOS allows notifications. Delivery depends on your connection, device settings and market data availability.",
+    "oMercadoPelosNumeros": "The market in numbers",
+    "oMovimentoNaTuaLista": "Movement on your watchlist",
+    "oQueMarcouReferenceperiodComDados": "What shaped {referencePeriod}, with verified data.",
+    "oTeuWeeklyWrapEstaPronto": "Your Weekly Wrap is ready",
+    "oTeuRadarAindaEstaVazio": "Your radar is still empty",
+    "onboardingClaro": "Onboarding · Light",
+    "onboardingEscuro": "Onboarding · Dark",
+    "opcoesDoAlerta": "Alert options: {arg1}",
+    "osAvisosUsamASensibilidadeDefinida": "Alerts use the sensitivity set in Profile and are independent of custom alerts.",
+    "osResultadosRefletemOsRegistosManuais": "Results reflect manual records and available quotes. They exclude dividends, fees and taxes.",
+    "osReferencepriceNaoDuraramMuito": "{referencePrice} did not last long 👀",
+    "pesquisaACarregar": "Search loading",
+    "pesquisaEscura": "Search dark",
+    "pesquisaInicial": "Initial search",
+    "pesquisarInstrumentos": "Search instruments",
+    "posicaoSimulada": "Simulated position · {arg1}",
+    "precoFinalHipotetico": "Hypothetical final price: {arg1}",
+    "projeccao": "Projection",
+    "projeccaoIlustrativaRentabilidadeNaoGarantidaSem": "Illustrative projection. Returns are not guaranteed. Excludes dividends, taxes, fees and inflation.",
+    "quemSeDestacouNaTuaLista": "Watchlist standouts",
+    "quemVaisAcompanhar": "Who will you follow?",
+    "registaUmaCompraQueJaFizeste": "Record a purchase you already made. This does not send an order to your broker. The cost excludes fees and taxes.",
+    "registaUmaVendaQueJaFizeste": "Record a sale you already made. This does not send an order to your broker. The value excludes fees and taxes.",
+    "resumo": "Summary",
+    "reveASemanaNoMercadoAbre": "Review the week in the market. Open your Wrap to see the highlights.",
+    "saldoNaoAplicado": "Uninvested cash: {arg1}",
+    "seEuInvestir": "If I invest",
+    "selecionaOInstrumentoParaASimulacao": "Select the instrument for the simulation",
+    "semGrandesMovimentosNoPeriodoObservado": "No major movements in the observed period.",
+    "semLigacaoAInternet": "No internet connection",
+    "semResultados": "No results",
+    "subidaVariacao0DescidaVariacao0": "Gain: change > 0; decline: change < 0; unchanged: = 0. Requires at least two securities and an absolute movement of at least 1%.",
+    "temMovimentoEmIssuer": "Movement in {issuer} 👀",
+    "temosNovoMaximo": "A new high 👀",
+    "tentarNovamente": "Try again",
+    "tocaNosValoresSublinhadosParaMudar": "Tap the underlined values to change the scenario.",
+    "umDosTeusFavoritosEstaA": "One of your favorites is moving",
+    "umaNovaAdmissaoABodivaFoi": "A new BODIVA admission has been confirmed.",
+    "umaNovaMarcaNoMercado": "A new market milestone 👀",
+    "unidadesIniciais": "Initial units: {arg1}",
+    "unidadesNoFinal": "Final units: {arg1}",
+    "usarValoresIlustrativos": "Use illustrative values",
+    "valorDaVenda": "Sale value",
+    "valoresFinanceiros": "Financial values",
+    "vamosVerOQueMexeu": "Let''s see what moved 👀",
+    "variacaoAnualHipoteticaDoPreco": "Hypothetical annual price change",
+    "verTodos": "View all",
+    "verificaALigacaoETentaNovamente": "Check your connection and try again.",
+    "verificaALigacaoAInternetE": "Check your internet connection and try again.",
+    "ano": "year",
+    "aoAno": "per year,",
+    "acoes": "stocks",
+    "comUmaVariacaoDe": "with a change of",
+    "descida": "declines",
+    "eReforcar": "and contribute",
+    "entreNegociacoesEmAte5Min": "between trades in up to 5 min",
+    "entreOsFechosVerificadosDe": "between verified closes on {arg1}",
+    "escolherInstrumento": "choose instrument",
+    "eventoAnunciado": "announced event",
+    "eventoRelacionado": "related event",
+    "eventosAnunciados": "announced events",
+    "eventosRelacionados": "related events",
+    "faceAoUltimoFecho": "versus the previous close",
+    "maximo": "high",
+    "mes": "month",
+    "minimo": "low",
+    "notificationUnusualSessionDormancyBreak": "First trade in {arg1} sessions.",
+    "notificationUnusualSessionPriceMoveDown": "Closed down {arg1}%, {arg2}× its typical move.",
+    "notificationUnusualSessionPriceMoveUp": "Closed up {arg1}%, {arg2}× its typical move.",
+    "notificationUnusualSessionSpreadWider": "Bid-ask spread {arg1}× wider than usual.",
+    "notificationUnusualSessionTradeCountSpike": "{arg1} trades, {arg2}× the usual.",
+    "notificationUnusualSessionVolumeSpike": "Traded {arg1}× its usual volume.",
+    "notificationUnusualTradeFundUnit": "Someone just bought {arg1} fund units of {arg2} at {arg3} per unit.",
+    "niveis": "levels",
+    "nivel": "level",
+    "ordem": "order",
+    "ordens": "orders",
+    "poderiaTer": "I could have:",
+    "porMesDurante": "per month for",
+    "subida": "gains",
+    "titulo": "security",
+    "titulos": "securities",
+    "umInstrumento": "an instrument",
+    "unidades": "units",
+    "unusualactivityRuleDormancyBreak": "Trading after a pause",
+    "unusualactivityRuleLargeOrder": "Large orders",
+    "unusualactivityRuleLargeTrade": "Large trades",
+    "unusualactivityRulePriceMove": "Price moves",
+    "unusualactivityRuleSpreadChange": "Spread",
+    "unusualactivityRuleTradeCountSpike": "Number of trades",
+    "unusualactivityRuleVolumeSpike": "Volume",
+    "issuerAcordouComVontade": "{issuer} started strong 📈",
+    "issuerChegouABodiva": "{issuer} arrived on BODIVA 👀",
+    "issuerEstaAMexer": "{issuer} is moving",
+    "issuerFechouEmDestaque": "{issuer} stood out at the close",
+    "issuerHojeNaoVeioBrincar": "{issuer} means business today 📈",
+    "issuerJaEstaOficialmenteEmNegociacao": "{issuer} is now officially trading on BODIVA.",
+    "issuerLevouUmAbanao": "{issuer} took a hit 👀",
+    "issuerMantemOPasso": "{issuer} keeps its pace",
+    "risingEmSubidaFallingEmDescida": "{rising} rising · {falling} falling · {unchanged} unchanged, {referencePeriod}.",
+    "signedpercentagePorVariacaoDasCotacoesEntre": "{signedPercentage}% from price changes between verified closes.",
+    "symbolAtingiuUmNovoMaximoEm": "{symbol} reached a new high in {referencePeriod}.",
+    "symbolUltrapassouAReferenciaVerificadaDe": "{symbol} exceeded the verified reference of {referencePrice} Kz.",
+    "symbolExtremelabelDeFechoDoPeriodo": "{symbol}: period closing {extremeLabel}, {referencePeriod}.",
+    "symbolSessionsSessoesDeDirectionlabelReferenceperiod": "{symbol}: {sessions} sessions of {directionLabel}, {referencePeriod}.",
+    "symbolSignedpercentageEntreNegociacoesEmAte": "{symbol}: {signedPercentage}% between trades in up to 5 min, at {observationTime}.",
+    "symbolSignedpercentageComparisonlabel": "{symbol}: {signedPercentage}% {comparisonLabel}.",
+    "symbolSignedpercentageMaiorVariacaoAbsolutaNa": "{symbol}: {signedPercentage}% — largest absolute change on your watchlist, {referencePeriod}.",
+    "ultimaCotacao": "Last quote: {arg1}"
+  },
+  "alerts": {
+    "accessibility": {
+      "editAlert": "Edit alert: {arg1}, {arg2}",
+      "enableAlert": "Enable alert: {arg1}"
+    },
+    "confirmation": {
+      "created": "Alert created",
+      "updated": "Alert updated"
+    },
+    "error": {
+      "automaticLoadFailed": "Could not load automatic alerts.",
+      "freePlanLimit": "The free plan allows automatic movements for 1 instrument. Choose it in plan settings or use Plus.",
+      "saveOptionFailed": "Could not save this option. Try again."
+    },
+    "form": {
+      "aboveCurrentPrice": "{arg1} above current price",
+      "alertType": "Alert type",
+      "belowCurrentPrice": "{arg1} below current price",
+      "editTitle": "Edit alert",
+      "sameAsCurrentPrice": "Same as current price",
+      "saveChanges": "Save changes"
+    },
+    "list": {
+      "emptyTitle": "No alerts yet",
+      "loading": "Loading alerts",
+      "title": "Your alerts"
+    },
+    "row": {
+      "above": "Above",
+      "below": "Below",
+      "edit": "Edit"
+    },
+    "threshold": {
+      "days": "{arg1} days"
+    },
+    "unit": {
+      "days": "days"
+    }
+  },
+  "app": {
+    "accountDeleted": {
+      "message": "Your invest.ao account has been deleted, including your profile, portfolio, watchlist, alerts and notification history.",
+      "title": "Account deleted"
+    },
+    "gift": {
+      "founder": "the founder of invest.ao"
+    }
+  },
+  "appAvailability": {
+    "forceUpdate": {
+      "checkAgain": "Check again",
+      "checkFailed": "Unable to check for an update.",
+      "message": "This version is no longer supported. Update the app to keep following the market.",
+      "openStoreFailed": "Unable to open the App Store.",
+      "title": "Update to continue",
+      "updateButton": "Update on the App Store"
+    },
+    "maintenance": {
+      "checkFailed": "Unable to check the service status.",
+      "message": "We’re carrying out maintenance on the service. Please try again later.",
+      "stillInProgress": "Maintenance is still in progress.",
+      "title": "App under maintenance"
+    }
+  },
+  "assetDetails": {
+    "about": {
+      "bondCompany": "{arg1} is a bond issued by {arg2} and traded in the Angolan market.",
+      "bondSovereign": "{arg1} is a bond issued by the Republic of Angola and traded in the Angolan market.",
+      "fundUnit": "{arg1} is a fund unit traded in the Angolan market.",
+      "instrument": "{arg1} is a financial instrument traded in the Angolan market.",
+      "stock": "{arg1} is a stock issued by {arg2} and admitted to trading in the Angolan market."
+    },
+    "accessibility": {
+      "addInstrument": "Add {arg1} to comparison",
+      "addToComparison": "Add security to comparison",
+      "alertHintCreate": "Set a price or change alert",
+      "alertHintManage": "Open this instrument''s alerts to edit, pause or delete",
+      "bodivaChange": "Change published by BODIVA",
+      "candleSummary": "At {arg1}, open {arg2}, high {arg3}, low {arg4}, close {arg5}, volume {arg6}, {arg7} trades",
+      "change": "Change {arg1}",
+      "comparisonChart": "Price change comparison chart",
+      "level": "{arg1}, level {arg2}, price {arg3}, quantity {arg4}",
+      "loadingDetails": "Loading security details",
+      "newcomer": "Newcomer: admitted less than five days ago",
+      "noLevel": "{arg1}: no level available",
+      "openReport": "Open {arg1}",
+      "openWebsite": "Open {arg1} website",
+      "priceHistory": "Price history",
+      "removeInstrument": "Remove {arg1}",
+      "retrySession": "Try loading the session again",
+      "shareInstrument": "Share instrument",
+      "viewOfficialInfo": "View official information: {arg1}",
+      "watchlistOff": "Not on watchlist",
+      "watchlistOn": "On watchlist"
+    },
+    "alerts": {
+      "manyPaused": "{arg1} paused alerts",
+      "oneActive": "1 active alert",
+      "onePaused": "1 paused alert"
+    },
+    "bondFacts": {
+      "coupon": "Coupon",
+      "header": "Fixed income",
+      "isin": "ISIN",
+      "maturity": "Maturity",
+      "maturityFromCode": "Maturity indicated in code",
+      "maturityNote": "Date inferred from the instrument code. Confirm terms and current status in the issuer''s documentation.",
+      "notCalculated": "Not calculated",
+      "quoteDisclaimer": "The percentage quote is neither the coupon nor the investment return. Confirm the quotation basis and contractual terms with the source. An instrument without a quote should not be interpreted as matured or redeemed.",
+      "unconfirmed": "Unconfirmed",
+      "yieldToMaturity": "Yield to maturity"
+    },
+    "chart": {
+      "lastTradeNote": "The last trade may differ from the published quote.",
+      "loadingSession": "Loading session…",
+      "noTrades": "No trades this session",
+      "noTradesSentence": "No trades this session.",
+      "notEnoughData": "Not enough data to show price performance.",
+      "oneTrade": "One trade available",
+      "outdatedData": "Outdated data",
+      "selectedPrice": "Selected price",
+      "sessionUnavailable": "Data for this session is unavailable."
+    },
+    "comparison": {
+      "axisTitle": "Price change (%)",
+      "basisIntraday": "Common 5-minute intervals",
+      "basisSessions": "Shared sessions",
+      "caption": "{arg1}: {arg2} — {arg3}. Price change, excluding dividends, fees and taxes.",
+      "chartTitle": "Price change in the shared period",
+      "confirmError": "Could not confirm the comparison. Try again with the same pair; this will not use a second comparison.",
+      "noCommonError": "There are no two shared observations in this period. Choose another period or instrument. Your free comparison was not used.",
+      "noCommonRequested": "There are no two shared observations in the requested period. Change the period or instruments.",
+      "notEnoughData": "Not enough data in the same period to compare price changes.",
+      "oneDay": "1 day",
+      "preparing": "Preparing comparison",
+      "selectInstrument": "Select at least one instrument to view the chart.",
+      "shareChart": "Share chart",
+      "threeMonths": "3 months",
+      "title": "Compare · {arg1}"
+    },
+    "dataSheet": {
+      "changeVsBaseline": "Change versus baseline",
+      "firstObservation": "First available observation",
+      "lastObservation": "Last available observation",
+      "noObservations": "No observations in the requested period.",
+      "requestedPeriod": "Requested period: {arg1}",
+      "sourceNote": "Quotes available in invest.ao. Lines connect observations; they do not represent trades between those points. Luanda time.",
+      "title": "Chart data"
+    },
+    "export": {
+      "baselineNote": "Same starting point · 0% · Quotes at period end",
+      "methodNote": "Price change in the shared period, excluding dividends, fees and taxes."
+    },
+    "exportHistory": "Export history",
+    "history": {
+      "header": "History",
+      "lastUpdate": "The last update was {arg1}.",
+      "unavailableTitle": "History unavailable"
+    },
+    "issuer": {
+      "dividendFrequency": "Frequency",
+      "dividendPayment": "Payment",
+      "dividendPerShare": "Per share",
+      "fundManager": "Fund manager",
+      "headquarters": "Headquarters",
+      "noDividends": "No dividend data has been published for this security yet.",
+      "noReports": "The latest financial reports are not available yet.",
+      "viewReports": "View reports",
+      "website": "Website"
+    },
+    "listing": {
+      "aboutHeader": "About the company",
+      "admissionConfirmed": "Admission confirmed",
+      "admissionExpected": "Admission expected",
+      "confirmedMessage": "Admission has been confirmed. Quotes depend on available trading data.",
+      "newAdmission": "New BODIVA admission",
+      "officialHeader": "Official information",
+      "pendingMessage": "The date has been announced. Trading will be shown once admission is confirmed.",
+      "quotesMessage": "The price and history appear when trading data is available.",
+      "quotesTitle": "Quotes after debut",
+      "statusConfirmed": "Already part of the market",
+      "statusPending": "Awaiting confirmation",
+      "watchlistHint": "When stocks become available, you can add them to your watchlist."
+    },
+    "marketInfo": {
+      "symbol": "Symbol",
+      "tradingStatus": "Trading status",
+      "type": "Type"
+    },
+    "orderBook": {
+      "barsNote": "The bars compare quantities at each level on the same scale for buy and sell orders.",
+      "countsNote": "Order counts are not available for all levels.",
+      "quantity": "Qty. {arg1}",
+      "subtitle": "Best prices first · All levels"
+    },
+    "orders": {
+      "emptyMessage": "No verified orders available."
+    },
+    "picker": {
+      "emptyMessage": "No other instruments in this category have available prices.",
+      "emptyTitle": "No instruments to compare",
+      "title": "Compare with"
+    },
+    "priceHeader": {
+      "newcomer": "Newcomer"
+    },
+    "share": {
+      "subject": "{arg1} in invest.ao",
+      "textWithChange": "{arg1} — {arg2}{arg3}{arg4} in invest.ao",
+      "textWithPrice": "{arg1} — {arg2} in invest.ao"
+    },
+    "statistics": {
+      "header": "Statistics",
+      "low": "Low",
+      "marketCap": "Market cap",
+      "open": "Open",
+      "tradeCount": "Number of trades",
+      "verificationUnavailable": "Verification date unavailable"
+    },
+    "tab": {
+      "orders": "Orders",
+      "overview": "Overview"
+    }
+  },
+  "authentication": {
+    "accessibility": {
+      "appleHint": "Sign in securely with your Apple account",
+      "googleHint": "Open secure Google sign-in"
+    },
+    "error": {
+      "accountChanged": "The signed-in account has changed. Confirm the account you want to delete again.",
+      "deletionCheckConnection": "Could not confirm account deletion. Check your internet connection and try again.",
+      "deletionRetry": "Could not confirm account deletion. Try again in a moment.",
+      "deletionSignInAgain": "Could not confirm deletion. Sign in again before retrying.",
+      "signInRequired": "Sign in to access account data."
+    },
+    "header": {
+      "message": "Sign in to save your watchlist and portfolio records. This does not connect your bank or brokerage account.",
+      "title": "The Angolan market in one place"
+    },
+    "profile": {
+      "defaultName": "invest.ao profile"
+    },
+    "signIn": {
+      "apple": "Continue with Apple",
+      "google": "Continue with Google",
+      "progress": "Signing in…"
+    }
+  },
+  "benchmark": {
+    "difference": "Difference",
+    "inflation": "Inflation",
+    "luibor": "LUIBOR",
+    "policyRate": "BNA rate",
+    "title": "Compare with",
+    "treasuryBill": "364-day bill",
+    "unlock": "Compare with inflation and rates"
+  },
+  "bondYield": {
+    "accrued": "Accrued interest per 100",
+    "calculate": "Calculate",
+    "coupon": "Annual coupon (%)",
+    "currentYield": "Current yield",
+    "dirtyPrice": "Dirty price",
+    "frequency": {
+      "label": "Payments",
+      "annual": "Annual",
+      "quarterly": "Quarterly",
+      "semiannual": "Semiannual"
+    },
+    "incomplete": "Enter the price and coupon",
+    "nextCoupon": "Next coupon",
+    "price": "Price (% of nominal)",
+    "remainingCoupons": "Coupons remaining",
+    "saveTerms": "Save coupon"
+  },
+  "cash": {
+    "add": "Record cash",
+    "amount": "Amount",
+    "balance": "Cash balance",
+    "deposited": "Deposited",
+    "kind": {
+      "deposit": "Deposit",
+      "fee": "Fee",
+      "withdrawal": "Withdrawal"
+    },
+    "movements": "Movements",
+    "result": "Net result",
+    "save": "Save",
+    "title": "Cash",
+    "total": "Total value"
+  },
+  "common": {
+    "about": "About",
+    "aboutItem": "About {arg1}",
+    "account": "Account",
+    "actionUnavailable": "Action unavailable",
+    "activeAlertsCount": "{arg1} active alerts",
+    "activity": "Activity",
+    "addInstruments": "Add instruments",
+    "addToWatchlist": "Add to watchlist",
+    "alerts": "Alerts",
+    "all": "All",
+    "allItems": "All",
+    "allocation": "Allocation",
+    "alreadyListedOnBodiva": "Already part of the BODIVA market.",
+    "alreadyOnWatchlist": "Already on your watchlist",
+    "amountRangeError": "Enter an amount between 0 and 1,000,000,000,000 Kz.",
+    "angolanMarket": "Angolan market",
+    "annual": "Annual",
+    "appIndicator": "invest.ao indicator",
+    "appIndicatorDisclaimer": "invest.ao indicator; not an official BODIVA index.",
+    "appName": "invest.ao",
+    "appNameSpoken": "invest dot ao",
+    "automaticMovements": "Automatic movements",
+    "base": "Base",
+    "bidAskSpread": "Bid/ask spread",
+    "bonds": "Bonds",
+    "buy": "Buy",
+    "cancel": "Cancel",
+    "change": "Change",
+    "changeUnavailable": "Change unavailable",
+    "checkConnectionMessage": "Check your connection and try again.",
+    "chooseInstrument": "Choose instrument",
+    "close": "Close",
+    "closesOnDates": "Closes on {arg1} and {arg2}",
+    "comingSoon": "Coming soon",
+    "company": "Company",
+    "compare": "Compare",
+    "comparison": "Comparison",
+    "comparisonBaseline": "Comparison baseline",
+    "contentHiddenPrivacyMode": "Content hidden in Privacy Mode.",
+    "continue": "Continue",
+    "correctedDataEdition": "Corrected data · edition {arg1}",
+    "createAlert": "Create alert",
+    "currency": "Currency",
+    "currentValue": "Current value",
+    "dataAndMethod": "Data and method",
+    "date": "Date",
+    "day": "Day",
+    "delete": "Delete",
+    "deleteAccount": "Delete account",
+    "deleteRecord": "Delete record",
+    "dividends": "Dividends",
+    "done": "Done",
+    "edition": "Edition {arg1}",
+    "enableNotifications": "Enable notifications",
+    "explore": "Explore",
+    "exportStory": "Export story",
+    "faceValue": "Face value",
+    "finalValue": "Final value",
+    "financialReports": "Financial reports",
+    "follow": "Follow",
+    "fromYourPortfolio": "FROM YOUR PORTFOLIO",
+    "funds": "Funds",
+    "hiddenValue": "Hidden value",
+    "hiddenValues": "Hidden values",
+    "high": "High",
+    "home": "Home",
+    "idVersion": "{arg1} · v{arg2}",
+    "includedPositions": "Included positions",
+    "informationUnavailable": "Information unavailable",
+    "initialAmount": "Initial amount",
+    "instrument": "Instrument",
+    "instrumentUnavailable": "Instrument unavailable",
+    "instruments": "Instruments",
+    "instrumentsCount": "{arg1} instruments",
+    "investedAmount": "Invested amount",
+    "issuer": "Issuer",
+    "lastAvailableSession": "Last available session",
+    "lastBodivaClose": "Last BODIVA close",
+    "lastVerificationDate": "Last verification date",
+    "loadMore": "Load more",
+    "loading": "Loading",
+    "loadingInstruments": "Loading instruments",
+    "loadingMarket": "Loading market",
+    "manageAccount": "Manage account",
+    "manageSubscription": "Manage subscription",
+    "markAsRead": "Mark as read",
+    "market": "Market",
+    "marketClose": "Close",
+    "marketInformation": "Market information",
+    "marketStatus": "Market {arg1}",
+    "month": "Month",
+    "monthly": "Monthly",
+    "name": "Name",
+    "netIncome": "Net income",
+    "newAlert": "New alert",
+    "newInformationNotification": "New information in invest.ao",
+    "news": "News",
+    "noData": "No data",
+    "noInstruments": "No instruments",
+    "noInternet": "No internet connection",
+    "noQuote": "No quote",
+    "noResults": "No results",
+    "notAvailable": "Unavailable",
+    "notifications": "Notifications",
+    "ofTotalValue": "Of total value",
+    "ok": "OK",
+    "onTheMove": "On the move",
+    "oneMonth": "1 month",
+    "onePosition": "1 position",
+    "oneWeek": "1 week",
+    "oneYear": "1 year",
+    "openInstrument": "Open instrument",
+    "openSecurityDetailsHint": "Open security details",
+    "orderBook": "Order book",
+    "other": "Other",
+    "partialValue": "Partial value",
+    "paused": "Paused",
+    "performance": "Performance",
+    "portfolio": "Portfolio",
+    "portfolioValue": "Portfolio value",
+    "price": "Price",
+    "priceChange": "Price change",
+    "priceUnconfirmed": "Price unconfirmed",
+    "privacyPolicy": "Privacy policy",
+    "quantity": "Quantity",
+    "quote": "Quote",
+    "quoteContext": "Quote · {arg1}",
+    "quoteUnavailable": "Quote unavailable",
+    "read": "Read",
+    "realizedGain": "Realized gain",
+    "recordIncome": "Record income",
+    "recordPurchase": "Record purchase",
+    "recordSale": "Record sale",
+    "records": "Records",
+    "refresh": "Refresh",
+    "refreshFailed": "Could not refresh the data",
+    "relatedSecurities": "Related securities",
+    "removeFromWatchlist": "Remove from watchlist",
+    "savePreferenceFailed": "Could not save the preference. Try again.",
+    "search": "Search",
+    "searchInstruments": "Search instruments",
+    "searchSymbolNameOrIssuer": "Search symbol, name or issuer",
+    "security": "Security",
+    "selectedDate": "Selected date",
+    "sell": "Sell",
+    "sensitivity": "Sensitivity",
+    "series": "Series",
+    "sessionRecoveryFailed": "Could not recover the session",
+    "signOut": "Sign out",
+    "significantMovement": "Significant movement",
+    "simulateInvestment": "Simulate investment",
+    "sixMonths": "6 months",
+    "sourceLabel": "Source: {arg1}",
+    "sourcePublishedOn": "Source published on {arg1}",
+    "startedEndedSummary": "Started at {arg1} and ended at {arg2}",
+    "stock": "Stock",
+    "stocks": "Stocks",
+    "symbolNameOrIssuer": "Symbol, name or issuer",
+    "targetPrice": "Target price",
+    "terms": "Terms",
+    "theme": "Theme",
+    "today": "Today",
+    "trades": "Trades",
+    "tryAgain": "Try again",
+    "unavailable": "Unavailable",
+    "unchanged": "Unchanged",
+    "unread": "Unread",
+    "value": "Value",
+    "valueUnavailable": "Value unavailable",
+    "verifiedOn": "Verified on {arg1}.",
+    "viewAll": "View all",
+    "viewMyWrap": "View my Wrap",
+    "waitingForData": "Waiting for data",
+    "watchedAssets": "Watched assets",
+    "watchedInstrument": "Watched instrument",
+    "watchedInstrumentsCount": "{arg1} watched instruments",
+    "watchedSecurity": "Watched security",
+    "watchlist": "Watchlist",
+    "watchlistConfirmedOn": "Watchlist confirmed on {arg1}",
+    "watchlistFollowing": "Watchlist",
+    "watchlistMovements": "Your watchlist movements",
+    "watchlistTab": "Watchlist",
+    "weeklyReview": "Weekly review",
+    "yesterday": "Yesterday",
+    "yourMarketUpClose": "Your market, up close.",
+    "yourWatchlist": "Your watchlist",
+    "yourWatchlistCaps": "YOUR WATCHLIST"
+  },
+  "components": {
+    "button": {
+      "processing": "Processing"
+    },
+    "chart": {
+      "endLabel": "End",
+      "loadingHistory": "Loading history",
+      "loadingPriceHistory": "Loading price history",
+      "priceAccessibility": "Price performance"
+    },
+    "emptyState": {
+      "dataUnavailable": "Data unavailable",
+      "noFavoritesMessage": "Add instruments to follow them here.",
+      "noFavoritesTitle": "No favorites"
+    },
+    "financial": {
+      "fellAccessibility": "Fell {arg1}",
+      "roseAccessibility": "Rose {arg1}",
+      "todaySession": "Today''s session",
+      "valueAccessibility": "Financial value"
+    },
+    "indexInfo": {
+      "calculatedBy": "Calculated by invest.ao",
+      "dataSource": "Data source",
+      "howCalculated": "How it is calculated",
+      "legalNotice": "Legal notice",
+      "whatItIs": "What it is"
+    },
+    "offlineBanner": {
+      "outdated": "Data may be outdated."
+    },
+    "placeholder": {
+      "loadFailed": "Could not load this data."
+    },
+    "privacy": {
+      "disabledAnnouncement": "Privacy Mode disabled",
+      "enabledAnnouncement": "Privacy Mode enabled",
+      "explanationDetail": "public quotes and editing fields remain visible. Does not change system notifications.",
+      "explanationIntro": "Hides portfolio and alert values in this app. Instruments, chart trends, ",
+      "gotIt": "Got it",
+      "hideValues": "Hide values",
+      "protectedContent": "invest.ao. Protected content.",
+      "showValues": "Show values"
+    },
+    "range": {
+      "allAccessibility": "All history",
+      "oneDayAccessibility": "One day",
+      "oneMonthAccessibility": "One month",
+      "oneWeekAccessibility": "One week",
+      "oneYearAccessibility": "One year",
+      "sixMonthsAccessibility": "Six months",
+      "threeMonthsAccessibility": "Three months"
+    },
+    "toast": {
+      "dismiss": "Dismiss notice",
+      "retrying": "Retrying"
+    }
+  },
+  "designSystem": {
+    "appearance": {
+      "dark": "Dark",
+      "light": "Light",
+      "system": "System"
+    },
+    "gallery": {
+      "componentsTitle": "Components",
+      "controlsHeader": "Controls",
+      "flowExplore": "Explore → details → follow",
+      "flowPortfolio": "Portfolio → record purchase",
+      "flowWelcome": "Welcome → sign in",
+      "flowsHeader": "Cash flows",
+      "openActivity": "Open activity",
+      "positive": "Positive",
+      "previewBadge": "PREVIEW · ILLUSTRATIVE DATA",
+      "sampleInsightMessage": "View the documents published for this security.",
+      "sampleInsightTitle": "BAI published market information",
+      "surface": "Surface",
+      "testNotificationMessage": "Navigation preview from Notifications.",
+      "testNotificationTitle": "[TEST] Stock market close",
+      "title": "Design system",
+      "valuesHeader": "Values and change",
+      "viewPortfolio": "View portfolio",
+      "wrapSaveFailed": "Could not save the preview Wrap",
+      "wrapSaving": "Saving the preview Wrap"
+    },
+    "layout": {
+      "comparisonModeAccessibility": "Comparison mode"
+    },
+    "search": {
+      "clearAccessibility": "Clear search",
+      "prompt": "Search securities or issuers"
+    }
+  },
+  "errors": {
+    "account": {
+      "deleteFailed": "Could not delete the account",
+      "signInFailed": "Could not sign in",
+      "signOutFailed": "Could not sign out"
+    },
+    "alert": {
+      "updateFailed": "Could not update the alert"
+    },
+    "chart": {
+      "shareFailed": "Could not prepare the chart for sharing"
+    },
+    "data": {
+      "chooseAnotherInstrument": "Return to the list and choose another instrument.",
+      "unreadableMessage": "The received data is unavailable to view. Try again later.",
+      "unreadableTitle": "Could not display the data"
+    },
+    "generic": {
+      "loadFailed": "Could not load data",
+      "message": "Close and reopen the app.",
+      "saveFailed": "Could not save the change",
+      "title": "Could not continue"
+    },
+    "market": {
+      "loadFailed": "Could not load the market",
+      "priceHistoryFailed": "Could not load price history",
+      "refreshFailed": "Could not refresh the market"
+    },
+    "network": {
+      "checkConnection": "Check your internet connection and try again.",
+      "timeoutTitle": "The service took too long to respond"
+    },
+    "notification": {
+      "loadAlertsFailed": "Could not load alerts and notifications",
+      "markReadFailed": "Could not mark the notification as read"
+    },
+    "permission": {
+      "deniedMessage": "Your account does not have permission for this action.",
+      "deniedTitle": "Access denied"
+    },
+    "portfolio": {
+      "deletePurchaseFailed": "Could not delete the purchase",
+      "loadFailed": "Could not load your portfolio",
+      "savePurchaseFailed": "Could not save the purchase"
+    },
+    "rateLimit": {
+      "message": "Try again in a moment.",
+      "title": "Wait a moment"
+    },
+    "service": {
+      "unavailable": "Service unavailable. Try again in a moment."
+    },
+    "session": {
+      "expiredMessage": "Your session has expired. Sign in to continue.",
+      "signInAgainTitle": "Sign in again",
+      "signInMessage": "Sign in to continue.",
+      "signInTitle": "Sign in",
+      "signOutOthersFailed": "Could not sign out on other devices.",
+      "signedOutHereTitle": "Signed out on this device"
+    },
+    "validation": {
+      "message": "Review the data and try again.",
+      "title": "Check the data",
+      "unavailableForInstrument": "This action is unavailable for this instrument."
+    },
+    "watchlist": {
+      "updateFailed": "Could not update your watchlist"
+    }
+  },
+  "formatting": {
+    "change": {
+      "betweenNegativeAndZero": "Between −{arg1} and 0 p.p.",
+      "betweenZeroAndPositive": "Between 0 and +{arg1} p.p."
+    },
+    "listing": {
+      "almostHere": "Almost here",
+      "awaitingDebut": "Awaiting debut",
+      "expectedToday": "Today is the expected date",
+      "newToMarket": "New to the market",
+      "newcomer": "Newcomer in the building! 👋"
+    },
+    "listingDetail": {
+      "admissionExpectedDate": "Admission expected on {arg1}. Awaiting confirmation.",
+      "admissionExpectedOn": "Admission to trading expected on {arg1}.",
+      "admissionExpectedToday": "Admission expected today. Awaiting confirmation."
+    },
+    "notification": {
+      "bodivaUpdate": "BODIVA update",
+      "changeAbove": "Change above",
+      "dropped": "fell",
+      "fell": "fell",
+      "high52Week": "52-week high",
+      "high52WeekReached": "{arg1} hit a 52-week high.",
+      "intradayMovement": "Intraday movement",
+      "lessThan": "less than {arg1}",
+      "low52Week": "52-week low",
+      "low52WeekReached": "{arg1} hit a 52-week low.",
+      "marketClose": "Stock market close",
+      "movementSummary": "{arg1} {arg2} {arg3}, from {arg4} to {arg5} {arg6}.",
+      "newInformation": "New information",
+      "noTrades": "Days without trades",
+      "noTradesReached": "{arg1} has gone {arg2} days without trades.",
+      "notifyChangeExceeds": "Notify me when the change exceeds",
+      "notifyFalls": "Notify me when the price falls to",
+      "notifyHigh52Week": "Notify on a new 52-week high",
+      "notifyLow52Week": "Notify on a new 52-week low",
+      "notifyNoTrades": "Notify after no trades for",
+      "notifyReaches": "Notify me when the price reaches",
+      "notifyVolumeAbove": "Notify when the day''s volume beats the average by",
+      "priceAbove": "Price above",
+      "priceBelow": "Price below",
+      "priceUpdate": "There is a price update for {arg1}.",
+      "rose": "rose",
+      "targetReached": "Target price reached",
+      "thresholdReached": "{arg1} reached the threshold of {arg2}.",
+      "volumeAbove": "Volume above average",
+      "volumeReached": "{arg1} traded {arg2}× or more its average volume."
+    },
+    "price": {
+      "historyNotCollected": "Official history has not been collected for this instrument yet.",
+      "invalidResponse": "The source response did not confirm a valid price.",
+      "noNewPrices": "The last check returned no new official prices.",
+      "noTrades": "No trades in the available official history.",
+      "provenanceUnconfirmed": "The price source has not been confirmed yet.",
+      "rateLimited": "The source has limited requests. We will retry after the specified wait.",
+      "referenceUpdate": "Reference update: ",
+      "sinceYesterday": "since yesterday",
+      "sourceNoResponse": "The source did not respond to the last check.",
+      "unconfirmed": "An official price could not be confirmed yet."
+    },
+    "time": {
+      "luanda": "{arg1} · Luanda"
+    },
+    "weekAhead": {
+      "cancelled": "Cancelled",
+      "dateAnnounced": "Announced date",
+      "dateProvisional": "Provisional date · To be confirmed",
+      "exclusiveEnd": "{arg1} – {arg2} (exclusive end)",
+      "luandaSuffix": " · Luanda",
+      "nextWeekCount": "{arg1} {arg2} next week",
+      "portfolioCount": "{arg1} {arg2} for stocks in your portfolio",
+      "relatedPortfolio": "Related to stocks in your portfolio",
+      "relatedWatchlist": "Related to your watchlist",
+      "sourceDateMissing": "Source publication date not provided",
+      "timeNotAnnounced": "{arg1} · Time not announced",
+      "timesNotAnnounced": "{arg1} – {arg2} · Times not announced",
+      "watchlistCount": "{arg1} {arg2} on your watchlist"
+    },
+    "weeklyWrap": {
+      "closesChange": "Change between observed closes",
+      "onMyWatchlist": "On my watchlist",
+      "priceChangeDetail": "Price change between verified closes"
+    }
+  },
+  "home": {
+    "accessibility": {
+      "activityNew": "New activity",
+      "activityNone": "No new activity",
+      "contextCardHint": "Open the summary with data and comparison period",
+      "dailyChange": "Daily change",
+      "eventHint": "Open admission and company details",
+      "loadingMarket": "Loading market data",
+      "loadingMovements": "Loading market movements",
+      "marketDetailsHint": "Open the chart, periods and data source",
+      "moversHint": "Open all market instruments",
+      "profile": "{arg1}''s profile",
+      "saturdayHint": "View information and sources",
+      "viewWatchlist": "View watchlist",
+      "watchlistHint": "Open the full list of watched instruments"
+    },
+    "alert": {
+      "wrapUnavailableMessage": "This period has ended or its availability could not be confirmed. Try again later.",
+      "wrapUnavailableTitle": "Wrap unavailable"
+    },
+    "chart": {
+      "indexSeries": "Index"
+    },
+    "contextCard": {
+      "availableSummaries": "Available summaries"
+    },
+    "event": {
+      "meetCompany": "Meet the company",
+      "newAdmission": "New admission",
+      "statusOnBodiva": "Already on BODIVA",
+      "statusPending": "To be confirmed"
+    },
+    "explore": {
+      "header": "Explore the market"
+    },
+    "greeting": {
+      "afternoon": "Good afternoon",
+      "bodivaStatus": "BODIVA {arg1}",
+      "evening": "Good evening",
+      "investor": "Investor",
+      "morning": "Good morning",
+      "updateUnavailable": "Update date unavailable",
+      "updated": "Updated {arg1}"
+    },
+    "header": {
+      "marketSession": "Market session"
+    },
+    "hero": {
+      "awaitingUpdate": "Waiting for the session update",
+      "changeAvailable": "Instruments with available changes in this update",
+      "declines": "{arg1} declines",
+      "gains": "{arg1} gains",
+      "latestData": "Latest data published by BODIVA",
+      "title": "Market summary",
+      "tradedSecurities": "Traded securities · {arg1} trades"
+    },
+    "listing": {
+      "admissionTitle": "BODIVA admission",
+      "confirmAdmission": "Confirm admission",
+      "replayAnimation": "Replay animation",
+      "sampleDescription": "Commercial bank operating in Angola."
+    },
+    "loading": {
+      "fullMarket": "Loading the full market…"
+    },
+    "metrics": {
+      "available": "Available",
+      "securitiesCount": "{arg1} securities",
+      "tradingVolume": "Trading volume"
+    },
+    "movers": {
+      "declinesTab": "Declines",
+      "emptyCategory": "No movements available in this category.",
+      "gainsTab": "Gains",
+      "header": "Market movements",
+      "noDeclines": "No declines available",
+      "noGains": "No gains available",
+      "quotesUnavailable": "Current quotes unavailable. We will retry automatically.",
+      "topGainers": "Top gainers",
+      "topLosers": "Top losers"
+    },
+    "overview": {
+      "availableInstruments": "Available instruments",
+      "header": "Market overview",
+      "noVerifiedData": "The indicator and session totals do not have verified data yet.",
+      "noVerifiedTotals": "Session totals do not have verified data yet.",
+      "sessionVolume": "Session volume",
+      "tradedSecurities": "traded securities",
+      "verifiedCloses": "Instruments with verified closes",
+      "viewDetails": "View market details"
+    },
+    "saturday": {
+      "fromWatchlist": "FROM YOUR WATCHLIST",
+      "header": "Explore this Saturday",
+      "message": "A selection of events in the market and the securities you follow.",
+      "publication": "PUBLICATION · {arg1}",
+      "relatedPortfolio": "Related to your portfolio",
+      "relatedWatchlist": "Related to your watchlist"
+    },
+    "savedCalendar": {
+      "open": "Open saved calendar"
+    },
+    "savedWrap": {
+      "open": "Open saved Wrap",
+      "preparedOn": "Prepared on {arg1}"
+    },
+    "summary": {
+      "staleData": "Some data is waiting for an update."
+    },
+    "watchlist": {
+      "emptyMessage": "Choose instruments to see their quotes here.",
+      "emptyTitle": "Start with your favorites",
+      "noInstruments": "No watched instruments"
+    }
+  },
+  "income": {
+    "action": {
+      "record": "Record"
+    },
+    "empty": {
+      "upcoming": "No announced payments"
+    },
+    "kind": {
+      "coupon": "Coupon",
+      "dividend": "Dividend",
+      "maturity": "Redemption"
+    },
+    "plus": {
+      "locked": "Totals and reminders"
+    },
+    "reminder": {
+      "coupon": "{arg1} coupon today",
+      "dividend": "{arg1} dividend today",
+      "maturity": "{arg1} redemption today"
+    },
+    "reminders": "Remind me on payment day",
+    "section": {
+      "past": "Last 12 months",
+      "upcoming": "Upcoming"
+    },
+    "status": {
+      "recorded": "Recorded"
+    },
+    "title": "Income",
+    "total": {
+      "last12": "Last 12 months",
+      "next12": "Next 12 months"
+    }
+  },
+  "intelligence": {
+    "activity": {
+      "unavailableMessage": "Could not view this update."
+    },
+    "cachedInsight": {
+      "savedNotice": "Saved insight · data from {arg1} · not updated live."
+    },
+    "discover": {
+      "action": "Discover",
+      "eyebrow": "DISCOVER"
+    },
+    "home": {
+      "viewWatchlist": "View my watchlist"
+    },
+    "nextWeek": {
+      "action": "Prepare the week",
+      "eyebrow": "NEXT WEEK"
+    },
+    "priceAlert": {
+      "openMessage": "Open the security to view the alert.",
+      "triggeredTitle": "Your price alert was triggered"
+    },
+    "watchlistMover": {
+      "detail": "Largest price change on your watchlist between verified closes.",
+      "eyebrow": "ON YOUR WATCHLIST · {arg1}",
+      "headline": "{arg1} changed by {arg2} this week"
+    },
+    "weekAhead": {
+      "datesAnnounced": "{arg1} · Dates announced by sources."
+    },
+    "weekSummary": {
+      "detail": "Price change of initial positions between verified closes.",
+      "eyebrow": "YOUR WEEK · {arg1}",
+      "headline": "Your positions changed by {arg1} this week"
+    },
+    "weeklyClose": {
+      "action": "View Wrap",
+      "detail": "Sample with verified closes; not a BODIVA index.",
+      "eyebrow": "WEEKLY CLOSE · {arg1}",
+      "headline": "{arg1} of {arg2} observed securities rose"
+    }
+  },
+  "intents": {
+    "portfolio": {
+      "title": "Open portfolio"
+    },
+    "quote": {
+      "title": "Instrument quote",
+      "unavailable": "No quote available for {arg1}."
+    },
+    "watchlist": {
+      "title": "Open watchlist"
+    }
+  },
+  "invest": {
+    "ao": "invest.ao"
+  },
+  "learn": {
+    "bodiva": {
+      "1": {
+        "body": "BODIVA (Bolsa de Dívida e Valores de Angola) is the regulated market where shares, Treasury bonds and corporate bonds are traded.",
+        "heading": "The market"
+      },
+      "2": {
+        "body": "The Capital Markets Commission (CMC) regulates and supervises the market, listed companies and intermediaries.",
+        "heading": "Who supervises it"
+      },
+      "3": {
+        "body": "You don''t buy directly on the exchange. Orders go through an intermediary registered with the CMC, such as a bank or a brokerage firm, where you open a securities account.",
+        "heading": "How to take part"
+      },
+      "title": "What BODIVA is"
+    },
+    "bonds": {
+      "1": {
+        "body": "Buying a bond lends money to the State or a company. In return you receive interest, the coupons, and the face value at maturity.",
+        "heading": "A loan"
+      },
+      "2": {
+        "body": "A bond''s price is quoted as a percentage of its face value. Below 100% you buy at a discount; above it, at a premium.",
+        "heading": "Price and face value"
+      },
+      "3": {
+        "body": "Yield to maturity combines the coupons with the gap between the price paid and the amount repaid. On each bond''s page you can work it out for any price.",
+        "heading": "Yield"
+      },
+      "title": "Bonds"
+    },
+    "disclaimer": "Educational content. Not investment advice.",
+    "income": {
+      "1": {
+        "body": "To receive a dividend you must own the shares before the ex-dividend date. Anyone who buys on or after that date doesn''t get that payment.",
+        "heading": "The ex-dividend date"
+      },
+      "2": {
+        "body": "Dividends and interest may be subject to Angola''s investment income tax (Imposto sobre a Aplicação de Capitais, IAC), usually withheld at source. The rate depends on the security.",
+        "heading": "Taxes"
+      },
+      "3": {
+        "body": "Income, in your portfolio, shows the expected payments from what you hold.",
+        "heading": "In your portfolio"
+      },
+      "title": "Dividends and coupons"
+    },
+    "orders": {
+      "1": {
+        "body": "A limit order sets the most you''ll pay or the least you''ll accept. It only executes at that price or better, and may not execute at all.",
+        "heading": "Limit orders"
+      },
+      "2": {
+        "body": "Each trade has costs: the intermediary''s commission, exchange fees and often custody. On small amounts, costs weigh more on the result.",
+        "heading": "Costs"
+      },
+      "3": {
+        "body": "Recording purchases, sales and fees in your portfolio shows each position''s actual result.",
+        "heading": "Track it in your portfolio"
+      },
+      "title": "Buying and selling"
+    },
+    "quote": {
+      "1": {
+        "body": "The price shown is the last trade. The change compares it with the previous session''s close.",
+        "heading": "Price and change"
+      },
+      "2": {
+        "body": "Volume is the number of securities traded, and trades are the number of transactions. With few trades, a single one can move the price a lot.",
+        "heading": "Volume and trades"
+      },
+      "3": {
+        "body": "A thinly traded security can take time to find a buyer or seller. The Liquidity section on each page shows how often it trades.",
+        "heading": "Liquidity"
+      },
+      "title": "Reading a quote"
+    },
+    "read": "Read",
+    "risk": {
+      "1": {
+        "body": "Shares and bonds can fall in value, and you may get back less than you invested.",
+        "heading": "Prices move"
+      },
+      "2": {
+        "body": "With few holdings, results depend on a few companies. Spreading across issuers and security types reduces the weight of each one.",
+        "heading": "Concentration"
+      },
+      "3": {
+        "body": "If you''ll need the money soon, you may have to sell at a bad time or without a buyer. Consider your time frame before investing.",
+        "heading": "Time frame"
+      },
+      "title": "Risk and diversification"
+    },
+    "shares": {
+      "1": {
+        "body": "A share is a fraction of a company''s capital. Shareholders share in the business''s results and risks.",
+        "heading": "A piece of a company"
+      },
+      "2": {
+        "body": "The price comes from trades between buyers and sellers. It rises when demand outweighs supply at the current price and falls otherwise.",
+        "heading": "How the price is set"
+      },
+      "3": {
+        "body": "Returns come from price changes and from any dividends the company decides to pay. Neither is guaranteed.",
+        "heading": "Where returns come from"
+      },
+      "title": "Shares"
+    },
+    "title": "Learn"
+  },
+  "liquidity": {
+    "averageValue": "Average value per session",
+    "exit": "Sessions to sell your position",
+    "exitValue": "≈ {arg1}",
+    "sessions": "Sessions with trades",
+    "sessionsValue": "{arg1} of {arg2}",
+    "title": "Liquidity",
+    "unlock": "See liquidity"
+  },
+  "market": {
+    "event": {
+      "dividendPayment": "Dividend payment",
+      "dividendRecordDate": "Dividend record date",
+      "exDividendDate": "Ex-dividend date"
+    },
+    "index": {
+      "baseDescription": "The continuous series of verified sessions starts at 100 points.",
+      "baseTitle": "Starting base of 100",
+      "changeDescription": "Verified closes from the current session and the previous trading session are compared for at least two instruments.",
+      "changeTitle": "Change for each instrument",
+      "closesOn": "Closes on {arg1}",
+      "cumulativeDescription": "Each session''s average change is applied to the previous indicator value.",
+      "cumulativeTitle": "Cumulative change",
+      "dataSource": "Closing quotes from the official BODIVA market",
+      "dataSourceDisclosure": "Closing quotes, volumes and session dates come exclusively from public data for official BODIVA sessions (Angola Debt and Stock Exchange).",
+      "legalNotice": "The invest.ao Indicator is calculated by invest.ao. It is not an official BODIVA index and is not calculated, sponsored or approved by BODIVA. It is for information only and is not financial advice or a recommendation to buy or sell.",
+      "methodology": "The verified series starts at 100 points. Each session averages the changes of at least two instruments with verified closes in that session and the previous trading session. All carry equal weight. This average is applied to the previous indicator value. Eligible instruments may vary between sessions. A data gap starts a new series without linking unverified periods.",
+      "onboardingSubtitle": "Based on BODIVA quotes",
+      "subtitle": "Based on BODIVA market quotes",
+      "summary": "The invest.ao Indicator summarizes price changes for instruments with valid data. It is calculated by invest.ao and is not an official BODIVA index.",
+      "unavailableMessage": "This composite indicator is calculated by invest.ao, not BODIVA. It is unavailable until the historical baseline and instruments used in the calculation are verified. Verified closes for each instrument remain available in the market.",
+      "unavailableTitle": "Indicator unavailable",
+      "weightDescription": "Each instrument with valid data has equal weight in the average, regardless of issuer size.",
+      "weightTitle": "Equal weight"
+    },
+    "kind": {
+      "corporateBond": "Corporate bond",
+      "fundUnit": "Fund unit",
+      "otherInstrument": "Another instrument",
+      "treasuryBond": "Treasury bond"
+    },
+    "listing": {
+      "admissionConfirmation": "Admission confirmation"
+    },
+    "price": {
+      "bodivaQuote": "BODIVA quote",
+      "bodivaReference": "BODIVA reference",
+      "lastBodivaQuote": "Last BODIVA quote",
+      "lastVerifiedClose": "Last verified close · {arg1}"
+    },
+    "range": {
+      "oneDay": "1D",
+      "oneMonth": "1M",
+      "oneWeek": "1W",
+      "oneYear": "1Y",
+      "sixMonths": "6M",
+      "threeMonths": "3M"
+    },
+    "snapshot": {
+      "announcements": "Announcements",
+      "issuers": "Issuers",
+      "verifiedCloses": "Verified closes"
+    },
+    "source": {
+      "bodivaOfficialData": "Official market data published by BODIVA."
+    },
+    "status": {
+      "closed": "Closed",
+      "open": "Open"
+    },
+    "watchlist": {
+      "freePlanLimit": "The free plan saves 3 instruments. Remove an instrument or use Plus."
+    }
+  },
+  "markets": {
+    "accessibility": {
+      "loading": "Loading market instruments",
+      "order": "Order {arg1}",
+      "orderHint": "Switch between ascending and descending order",
+      "sortBy": "Sort by {arg1}"
+    },
+    "category": {
+      "treasury": "Treasury"
+    },
+    "details": {
+      "sessionData": "Session data"
+    },
+    "emptyState": {
+      "clearFilters": "Clear filters",
+      "noData": "Available instruments will appear here when market data is available.",
+      "noMatches": "Change your search or select another category.",
+      "selectTitle": "Select an instrument"
+    },
+    "header": {
+      "published": "Published {arg1}",
+      "publishedUnavailable": "Publication date unavailable"
+    },
+    "picker": {
+      "sortBy": "Sort by"
+    },
+    "sort": {
+      "ascending": "Ascending",
+      "descending": "Descending",
+      "volume": "Volume"
+    },
+    "summary": {
+      "tradedSecurities": "Traded securities",
+      "transactions": "Transactions",
+      "verifiedTraded": "Verified traded securities"
+    }
+  },
+  "news": {
+    "accessibility": {
+      "storyPreview": "Story preview. {arg1}. {arg2}"
+    },
+    "article": {
+      "loadFailed": "Could not load the article. Check your connection and try again.",
+      "navigationTitle": "Article",
+      "noLongerPublished": "This article is no longer published.",
+      "optionsLabel": "Article options",
+      "primarySource": "Primary source",
+      "sources": "Sources",
+      "unavailableTitle": "Article unavailable"
+    },
+    "export": {
+      "failedTitle": "Could not generate the image. Try again.",
+      "noTitle": "This article has no title.",
+      "preparing": "Preparing image…",
+      "shareImage": "Share image",
+      "tooLong": "The content is too long to fit in an image without cutting text. The article is still available to read.",
+      "unavailableTitle": "Cannot export"
+    },
+    "feed": {
+      "emptyTitle": "No news yet",
+      "loading": "Loading news",
+      "searchFailed": "Could not search news.",
+      "searchPrompt": "Search by title",
+      "unavailableTitle": "News unavailable"
+    },
+    "information": {
+      "categoryLabel": "Category",
+      "emptyMessage": "New market updates will appear here.",
+      "emptyTitle": "No information",
+      "openHint": "Open market information",
+      "rowOpenHint": "Open market information",
+      "sectionSubtitle": "Updates from BODIVA, issuers and watched securities.",
+      "subtitle": "Relevant information about BODIVA, issuers and watched securities."
+    },
+    "kind": {
+      "annualRecap": "Annual recap",
+      "article": "Article",
+      "dailyRecap": "Daily recap",
+      "monthlyRecap": "Monthly recap",
+      "weeklyRecap": "Weekly recap"
+    },
+    "publications": {
+      "emptyMessage": "New articles and recaps will appear here.",
+      "emptyTitle": "No publications yet",
+      "loadingLabel": "Loading articles and recaps",
+      "refreshFailed": "Could not refresh publications.",
+      "unavailableTitle": "Publications unavailable"
+    },
+    "row": {
+      "articleHint": "Open the full article",
+      "readArticle": "Read article",
+      "readRecap": "Read recap",
+      "recapHint": "Open the full recap"
+    },
+    "store": {
+      "loadMoreFailed": "Could not load more publications.",
+      "refreshFailed": "Could not refresh articles and recaps."
+    },
+    "theme": {
+      "blueAurora": "Blue aurora",
+      "dawn": "Dawn",
+      "indigo": "Indigo",
+      "investBlue": "invest.ao blue",
+      "softBlue": "Soft blue",
+      "teal": "Teal"
+    }
+  },
+  "notification": {
+    "close": {
+      "body": "{arg1} up and {arg2} down. Biggest move: {arg3} {arg4}%.",
+      "flat": "No share changed price.",
+      "title": "BODIVA close",
+      "watchlist": "On your watchlist: {arg1} up and {arg2} down."
+    },
+    "generic": {
+      "body": "Open the app to view the update.",
+      "title": "New information in invest.ao"
+    },
+    "listing": {
+      "body": "A new BODIVA admission has been confirmed.",
+      "title": "New BODIVA admission"
+    },
+    "movement": {
+      "body": "A verified market movement is available. Open the app to view it.",
+      "title": "Significant movement"
+    },
+    "news": {
+      "title": "New article in invest.ao"
+    },
+    "publication": {
+      "body": "{arg1}. Open the app to read the publication."
+    },
+    "recap": {
+      "title": "New market recap"
+    },
+    "unusual": {
+      "digest": {
+        "more": "{arg1}, {arg2} and {arg3} more you follow had unusual activity today.",
+        "one": "{arg1} had unusual activity today.",
+        "title": "Unusual activity",
+        "two": "{arg1} and {arg2} had unusual activity today."
+      },
+      "order": {
+        "buy": {
+          "body": "Someone placed a buy order of {arg1} at {arg2}.",
+          "title": "Buy order on {arg1}"
+        },
+        "sell": {
+          "body": "Someone placed a sell order of {arg1} at {arg2}.",
+          "title": "Sell order on {arg1}"
+        }
+      },
+      "session": {
+        "title": "Unusual activity in {arg1}"
+      },
+      "trade": {
+        "bond": "Someone just bought {arg1} bonds of {arg2} at {arg3} per bond.",
+        "share": "Someone just bought {arg1} shares of {arg2} at {arg3} per share.",
+        "title": "Trade in {arg1}",
+        "unit": "Someone just bought {arg1} units of {arg2} at {arg3} per unit."
+      }
+    },
+    "voice": {
+      "capitalization": {
+        "title": "A new market milestone 👀"
+      },
+      "empty-neutral": {
+        "title": "Your radar is still empty"
+      },
+      "empty-welcome": {
+        "title": "Who will you follow?"
+      },
+      "intraday-fact": {
+        "body": "{arg1}: {arg2}% between trades in up to 5 min, at {arg3}."
+      },
+      "listing-conversation": {
+        "title": "{arg1} arrived on BODIVA 👀"
+      },
+      "listing-fact": {
+        "body": "{arg1} is now officially trading on BODIVA."
+      },
+      "listing-neutral": {
+        "title": "New on BODIVA"
+      },
+      "listing-welcome": {
+        "title": "Newcomer in the building! 👋"
+      },
+      "move-attention": {
+        "title": "This deserves a closer look 👀"
+      },
+      "move-curious": {
+        "title": "Movement in {arg1} 👀"
+      },
+      "move-down": {
+        "title": "{arg1} took a hit 👀"
+      },
+      "move-early": {
+        "title": "{arg1} started strong 📈"
+      },
+      "move-neutral": {
+        "title": "{arg1} is moving"
+      },
+      "move-playful": {
+        "title": "{arg1} means business today 📈"
+      },
+      "movement-fact": {
+        "close": "{arg1}: {arg2}% versus the previous close.",
+        "intraday": "{arg1}: {arg2}% between trades in up to 5 min."
+      },
+      "portfolio-down": {
+        "title": "Your portfolio declined today"
+      },
+      "portfolio-neutral": {
+        "title": "Your portfolio on the move"
+      },
+      "portfolio-up": {
+        "title": "Your portfolio gained ground"
+      },
+      "quiet-neutral": {
+        "title": "A quiet market"
+      },
+      "quiet-playful": {
+        "title": "BODIVA is taking a break today ☕️"
+      },
+      "record": {
+        "title": "A new high 👀"
+      },
+      "unavailable": {
+        "title": "More data needed"
+      },
+      "watched-breadth": {
+        "title": "Movement on your watchlist"
+      },
+      "watched-curious": {
+        "title": "Your watchlist wants attention 👀"
+      },
+      "watched-extreme": {
+        "title": "{arg1} stood out at the close"
+      },
+      "watched-neutral": {
+        "title": "One of your favorites is moving"
+      },
+      "watched-news": {
+        "title": "News about {arg1}"
+      },
+      "watched-rank": {
+        "title": "Watchlist standouts"
+      },
+      "watched-run": {
+        "title": "{arg1} keeps its pace"
+      },
+      "wrap-curious": {
+        "title": "Let''s see what moved 👀"
+      },
+      "wrap-neutral": {
+        "title": "The market in numbers"
+      },
+      "wrap-portfolio": {
+        "title": "Your portfolio in numbers"
+      },
+      "wrap-watchlist": {
+        "title": "Your watchlist at the close"
+      }
+    },
+    "wrap": {
+      "body": "Review the week in the market. Open your Wrap to see the highlights.",
+      "title": "Your Weekly Wrap is ready"
+    }
+  },
+  "notifications": {
+    "activity": {
+      "correctedData": "Corrected data",
+      "destinationUnavailable": "The destination is no longer available in the current catalogue.",
+      "loading": "Loading activity",
+      "noMovementsMessage": "Movements in your securities and portfolio will appear here.",
+      "noMovementsTitle": "No movements",
+      "noNewsMessage": "Publications and market summaries will appear here.",
+      "noNewsTitle": "No news",
+      "openHint": "Open the related information.",
+      "saveFailed": "Could not save history. Try again.",
+      "savedHistory": "Saved history · last updated on {arg1}.",
+      "unavailableMessage": "Could not recover saved history.",
+      "unavailableTitle": "Activity unavailable",
+      "upToDateMessage": "Relevant updates will appear here.",
+      "upToDateTitle": "All up to date",
+      "updatesPending": "Some updates are pending. Try again."
+    },
+    "button": {
+      "markAllRead": "Mark all as read",
+      "markMovementsRead": "Mark movements as read",
+      "markNewsRead": "Mark news as read",
+      "viewSources": "View sources and calculation"
+    },
+    "category": {
+      "movements": "Significant movements",
+      "portfolio": "Portfolio movements"
+    },
+    "date": {
+      "today": "Today · {arg1}",
+      "yesterday": "Yesterday · {arg1}"
+    },
+    "filter": {
+      "accessibility": "Filter activity",
+      "movements": "Movements"
+    },
+    "listing": {
+      "admissionConfirmedMessage": "The admission of {arg1} to trading has been confirmed.",
+      "newOnBodivaTitle": "New on BODIVA"
+    },
+    "marketUpdate": {
+      "openMessage": "Open to view the information.",
+      "title": "Market update"
+    },
+    "movementAlert": {
+      "high": "High",
+      "low": "Low"
+    },
+    "portfolio": {
+      "priceMovement": "Price movement · {arg1}",
+      "title": "Your portfolio",
+      "titleWithSubject": "Your portfolio: {arg1}"
+    },
+    "privacy": {
+      "hiddenContent": "Personal content hidden in Privacy Mode."
+    },
+    "publication": {
+      "newInsight": "New market insight",
+      "newPublication": "New market publication"
+    },
+    "weeklyWrap": {
+      "availableTitle": "The Weekly Wrap is available",
+      "readyContext": "{arg1} · What shaped your week",
+      "readyTitle": "Your Weekly Wrap is ready",
+      "reviewAvailableTitle": "Your weekly review is available"
+    }
+  },
+  "onboarding": {
+    "accessibility": {
+      "backHint": "Return to previous step",
+      "backToName": "Back to name",
+      "notSelected": "Not selected",
+      "selected": "Selected",
+      "skipHint": "Continue to sign-in",
+      "stepName": "Step 1 of 2, name",
+      "stepProgress": "Step {arg1} of {arg2}",
+      "stepWatchlist": "Step 2 of 2, watchlist"
+    },
+    "button": {
+      "addAndContinue": "Add and continue",
+      "continueWithoutRest": "Continue without adding the rest",
+      "doLater": "Do this later",
+      "notNow": "Not now",
+      "saving": "Saving"
+    },
+    "caption": {
+      "simulationDisclaimer": "Simulations are illustrative. invest.ao does not execute orders or hold your investments."
+    },
+    "emptyState": {
+      "noInstrumentsMessage": "You can create your watchlist later.",
+      "noInstrumentsTitle": "No instruments available",
+      "noResultsMessage": "Search by symbol, name or issuer, or choose another market."
+    },
+    "error": {
+      "loadInstruments": "Could not load instruments. Check your connection and try again.",
+      "partialSave": "Some instruments were saved. Try adding the rest or continue with those already on your watchlist.",
+      "saveGeneric": "Could not save. Try again.",
+      "saveInstruments": "Could not save instruments. Try again or continue without adding them."
+    },
+    "form": {
+      "nameField": "Your name"
+    },
+    "goal": {
+      "alerts": "Receive alerts",
+      "companies": "Follow companies",
+      "comparison": "Compare instruments",
+      "learning": "Learn",
+      "news": "Read news",
+      "prices": "Track prices"
+    },
+    "navigation": {
+      "back": "Back",
+      "signIn": "Sign in",
+      "skip": "Skip"
+    },
+    "page": {
+      "marketMessage": "Discover stocks, bonds and funds on BODIVA. View prices, charts and details.",
+      "marketTitle": "The market, closer.",
+      "portfolioMessage": "Record your purchases, track performance and explore scenarios in the simulator.",
+      "portfolioTitle": "Your portfolio, clearly.",
+      "watchlistMessage": "Save your favorites and receive price and movement alerts.",
+      "watchlistTitle": "Follow what interests you."
+    },
+    "preview": {
+      "alertSet": "BAI · set price",
+      "examplePrice": "Example price",
+      "followFavorites": "Follow your favorites.",
+      "illustrativeExample": "ILLUSTRATIVE EXAMPLE",
+      "manualRecord": "Manual record",
+      "portfolioValue": "1 250 000 Kz",
+      "price": "65 000 Kz",
+      "priceAlerts": "Price alerts",
+      "savedInstruments": "Saved instruments",
+      "symbol": "BAI",
+      "treasuryBonds": "Treasury bonds"
+    },
+    "profile": {
+      "following": "I just want to follow",
+      "investor": "I already invest on BODIVA",
+      "learning": "I want to learn about the market",
+      "starting": "I''m starting to invest"
+    },
+    "selection": {
+      "many": "{arg1} instruments selected",
+      "one": "1 instrument selected"
+    },
+    "signOut": {
+      "message": "You can continue setup when you sign in again.",
+      "title": "Sign out?"
+    },
+    "step": {
+      "accountEyebrow": "YOUR ACCOUNT",
+      "nameMessage": "Tell us what you prefer to be called.",
+      "nameTitle": "What''s your name?",
+      "progressFirst": "1 of 2",
+      "progressSecond": "2 of 2",
+      "watchlistMessage": "Add instruments to your watchlist.",
+      "watchlistTitle": "What would you like to follow closely?"
+    }
+  },
+  "orderBook": {
+    "unlockDepth": "See all {arg1} levels"
+  },
+  "portfolio": {
+    "accessibility": {
+      "positionDetailsHint": "Open position details",
+      "positionRecordsHint": "Open position records"
+    },
+    "allocation": {
+      "oneInstrument": "1 instrument"
+    },
+    "allocationRow": {
+      "portfolioWeight": "Portfolio weight"
+    },
+    "csvTransfer": {
+      "alreadyRecorded": "Already recorded.",
+      "chooseFile": "Choose a CSV file up to 2 MB.",
+      "emptyFile": "Empty file",
+      "export": "Export CSV",
+      "exportOrImport": "Export or import",
+      "import": "Import CSV",
+      "importCount": "Import {arg1} records",
+      "importIncomplete": "Import incomplete",
+      "importRecords": "Import records",
+      "importedCount": "Imported {arg1} of {arg2} records.",
+      "income": "Income",
+      "instrumentNotFound": "Instrument not found.",
+      "instrumentUnsupported": "Instrument not supported in the portfolio.",
+      "invalidDate": "Invalid date.",
+      "invalidNumber": "Invalid number.",
+      "invalidPortfolio": "These records would leave the portfolio invalid. Check the sales.",
+      "invalidType": "Invalid type. Use buy, sell or income.",
+      "invalidValues": "Invalid values for this instrument.",
+      "lineLabel": "line {arg1}",
+      "lineTitle": "Line {arg1}",
+      "missingColumns": "Missing columns: date, symbol, type and price.",
+      "readFailed": "Couldn''t read the file",
+      "title": "Portfolio (CSV)"
+    },
+    "dashboard": {
+      "allocationUnavailable": "Not enough quotes to calculate allocation.",
+      "partialValuesNotice": "Partial values: allocation and gain/loss use only instruments with quotes.",
+      "positionsTab": "Positions",
+      "summaryTab": "Summary"
+    },
+    "discardConfirmation": {
+      "continueEditing": "Continue editing",
+      "discard": "Discard",
+      "message": "The entered data has not been saved yet.",
+      "title": "Discard changes?"
+    },
+    "editor": {
+      "editBuyTitle": "Edit purchase",
+      "editIncomeTitle": "Edit income",
+      "editSellTitle": "Edit sale",
+      "saveBuy": "Save purchase",
+      "saveIncome": "Save income",
+      "saveSell": "Save sale"
+    },
+    "emptyState": {
+      "manualEntryNotice": "Investments are added manually. invest.ao cannot access your bank or brokerage account.",
+      "message": "Record your purchases to track portfolio value and performance.",
+      "title": "No positions yet"
+    },
+    "error": {
+      "saveFailed": "Could not save the record",
+      "saveRetryMessage": "Check the data and try again."
+    },
+    "form": {
+      "changeInstrument": "Change",
+      "fees": "Fees",
+      "grossReceived": "Gross amount received",
+      "lastQuote": "Last quote",
+      "netReceived": "Net amount received",
+      "netSaleProceeds": "Net sale proceeds",
+      "nominalBought": "Nominal amount bought",
+      "nominalSold": "Nominal amount sold",
+      "paymentDate": "Payment date",
+      "pricePercentOfPar": "Price as percent of par",
+      "purchaseDate": "Purchase date",
+      "saleDate": "Sale date",
+      "taxWithheld": "Tax withheld",
+      "totalCost": "Total cost",
+      "unitPrice": "Unit price",
+      "unitsBoughtPrompt": "How many units did you buy?",
+      "unitsSoldPrompt": "How many units did you sell?"
+    },
+    "header": {
+      "loading": "Loading portfolio",
+      "refresh": "Refresh portfolio"
+    },
+    "holdingRow": {
+      "stocksUnit": "stocks"
+    },
+    "insight": {
+      "checkingWeek": "Checking the week",
+      "detailsHint": "Open recorded position details and sources for this insight.",
+      "privateValuesHidden": "Values hidden in private mode.",
+      "refreshWeekly": "Refresh weekly review"
+    },
+    "insightDetails": {
+      "allocationAtClose": "Allocation at close",
+      "allocationCaption": "Total included value · quantities recorded through the end of that week.",
+      "approximateMessage": "Based on your manual records and closing prices. We cannot access your actual brokerage positions, so values may not match your real portfolio.",
+      "approximateTitle": "Approximate values",
+      "byIssuer": "By issuer",
+      "byIssuerSector": "By issuer sector",
+      "closeOn": "Close on {arg1}",
+      "closingPrice": "Closing price",
+      "constantQuantity": "Constant quantity",
+      "firstClose": "First close",
+      "includedValue": "Included value",
+      "lastClose": "Last close",
+      "monetaryContribution": "Monetary contribution",
+      "notLive": "This insight is not a live update.",
+      "observedOn": "Data observed on {arg1}.",
+      "priceBasedChange": "Price-based change",
+      "privacyHidden": "Positions and calculations hidden in Privacy Mode.",
+      "recordedQuantity": "Recorded quantity",
+      "shareOfTotalChange": "Of total change",
+      "sourcesCatalogue": "Issuer and sector catalogue accessed on {arg1}. The classification reflects the catalogue available on that date.",
+      "sourcesExclusions": "Excludes cash balances, dividends, coupons, fees and taxes. Reflects recorded quantities; does not verify brokerage positions or adjust unrecorded corporate actions.",
+      "sourcesRecords": "Manual portfolio records and BODIVA closing prices verified for all sessions in the period. A missing quote prevents the calculation.",
+      "sourcesTitle": "Sources and limits",
+      "title": "Portfolio details"
+    },
+    "insightPresentation": {
+      "allocationAtClose": "Allocation across recorded positions at close.",
+      "issuerSector": "Issuer sector · {arg1}",
+      "largestContribution": "Largest contribution · {arg1}",
+      "largestContributionDetail": "Contribution to price change, {arg1}.",
+      "largestIssuerWeight": "Largest issuer weight · {arg1}",
+      "largestPosition": "Largest position · {arg1}",
+      "largestPositionDetail": "Of the recorded value at the close on {arg1}.",
+      "lowestContribution": "Lowest contribution · {arg1}",
+      "lowestContributionDetail": "Across all verified positions in the same period.",
+      "positionMovements": "Position movements",
+      "risersFallers": "{arg1} rose · {arg2} fell",
+      "sectorsIdentified": "All positions have a sector identified in the current catalogue.",
+      "unchangedCount": "{arg1} unchanged, among {arg2} verified positions.",
+      "weeklyPriceChange": "Weekly price change",
+      "weeklyPriceChangeDetail": "{arg1}. Constant quantities; excludes income and costs."
+    },
+    "metrics": {
+      "changeVsCost": "Change versus cost",
+      "partialChangeVsCost": "Partial change versus cost",
+      "partialGainLoss": "Partial gain/loss",
+      "unrealizedGainLoss": "Unrealized gain/loss"
+    },
+    "performance": {
+      "chartUnavailable": "The chart appears when enough historical quotes are available.",
+      "title": "Portfolio performance"
+    },
+    "picker": {
+      "searchInstruments": "Search instruments",
+      "selectInstrument": "Select the instrument to record a purchase"
+    },
+    "positionContent": {
+      "averagePurchasePrice": "Average purchase price",
+      "currentPrice": "Current price",
+      "gainLoss": "Gain/loss"
+    },
+    "positionDetail": {
+      "record": "Record",
+      "title": "Position",
+      "unavailableMessage": "This position is no longer in your portfolio.",
+      "unavailableTitle": "Position unavailable"
+    },
+    "privateTrend": {
+      "trend": "Trend",
+      "valuesHiddenLabel": "Portfolio performance. Values hidden."
+    },
+    "purchaseRow": {
+      "deleteMessage": "This record will be deleted if the remaining records stay valid. This does not change transactions at your broker.",
+      "deleteTitle": "Delete this record?",
+      "editRecord": "Edit record",
+      "options": "Options"
+    },
+    "results": {
+      "byYear": "Results by year"
+    },
+    "summary": {
+      "insufficientHistory": "Insufficient history",
+      "manualRecords": "Manual records",
+      "missingQuoteOne": "1 instrument without a current quote",
+      "missingQuotesCount": "{arg1} instruments without current quotes",
+      "noQuotes": "No current quotes are available for the recorded instruments yet.",
+      "partialValue": "Partial portfolio value",
+      "valueUnavailable": "Portfolio value unavailable"
+    },
+    "validation": {
+      "amountNonNegative": "Enter an amount of zero or more.",
+      "amountPositive": "Enter an amount greater than zero.",
+      "costExceedsLimit": "The cost exceeds the supported amount. Check the quantity and price.",
+      "dateInFuture": "The record date cannot be in the future.",
+      "quantityPositive": "Enter a quantity greater than zero.",
+      "quantityWholeNumber": "The quantity for this instrument must be a whole number.",
+      "taxExceedsGross": "Withheld tax can''t exceed the gross amount.",
+      "unitPricePositive": "Enter a unit price greater than zero."
+    }
+  },
+  "portfolioBooks": {
+    "combined": "All portfolios",
+    "create": "Create",
+    "deleteConfirm": "Delete portfolio and records",
+    "deleteMessage": "This portfolio''s records are deleted too.",
+    "deleteTitle": "Delete {arg1}?",
+    "duplicate": "You already have a portfolio with that name",
+    "main": "Main",
+    "manage": "Manage portfolios",
+    "name": "Name",
+    "new": "New portfolio",
+    "rename": "Rename",
+    "renameConfirm": "Save",
+    "title": "Portfolios"
+  },
+  "portfolioShare": {
+    "create": "Create",
+    "empty": "No links",
+    "failed": "Couldn''t update the links.",
+    "label": "Who is it for?",
+    "limit": "You''ve reached the limit of 20 links.",
+    "menu": "Share read-only",
+    "new": "New link",
+    "revoke": "Revoke",
+    "send": "Send link",
+    "title": "Share {arg1}"
+  },
+  "privacy": {
+    "notification": {
+      "message": "Open the app to view the update."
+    }
+  },
+  "profile": {
+    "navigation": {
+      "title": "Profile"
+    }
+  },
+  "referral": {
+    "creditUntil": "Free Plus until {arg1}",
+    "error": {
+      "failed": "Couldn''t redeem the code. Try again.",
+      "invalid": "This code doesn''t exist.",
+      "notEligible": "Codes are for accounts created in the last 30 days.",
+      "own": "You can''t use your own code.",
+      "unavailable": "Invites aren''t available right now.",
+      "used": "You''ve already used an invite code."
+    },
+    "redeem": {
+      "label": "I have a code",
+      "action": "Redeem",
+      "placeholder": "Code",
+      "title": "Invite code"
+    },
+    "reward": "Each friend you invite gets 1 month of Plus. You get 1 month when they subscribe.",
+    "share": "Share",
+    "shareMessage": "Use my code {arg1} on invest.ao to get 1 month of Plus. {arg2}",
+    "title": "Invite friends"
+  },
+  "report": {
+    "commissions": "Commissions",
+    "export": "PDF report",
+    "generated": "Generated {arg1}",
+    "instrument": "Instrument",
+    "method": "Weighted average cost. AOA amounts from the portfolio records.",
+    "title": "Gains and income {arg1}",
+    "total": "Total",
+    "withheldTax": "Tax withheld"
+  },
+  "search": {
+    "accessibility": {
+      "addToWatchlist": "Add {arg1} to watchlist",
+      "loading": "Loading security search",
+      "removeFromWatchlist": "Remove {arg1} from watchlist"
+    },
+    "emptyState": {
+      "noRecents": "No recent searches yet.",
+      "noResults": "No securities found for “{arg1}”."
+    },
+    "field": {
+      "prompt": "What are you looking for?"
+    },
+    "filter": {
+      "stock": " Stock"
+    },
+    "header": {
+      "clear": "Clear",
+      "highestVolume": "Highest volume",
+      "recents": "Recent",
+      "subtitle": "Symbols, issuers and instruments",
+      "title": "Find",
+      "volumeNote": "Sorted by each instrument''s available volume."
+    },
+    "list": {
+      "popular": "Popular",
+      "recentSearches": "Recent searches"
+    },
+    "results": {
+      "count": "{arg1} results",
+      "title": "Results"
+    },
+    "row": {
+      "treasury": "Treasury"
+    },
+    "sample": {
+      "bank": "Bank",
+      "nonexistent": "Nonexistent XYZ"
+    }
+  },
+  "settings": {
+    "about": {
+      "description": "invest.ao brings together quotes, news and alerts from the Angolan market. Track instruments and record a portfolio manually.",
+      "disclaimer": "The app provides information for personal tracking. Each user is responsible for their investment decisions.",
+      "title": "About invest.ao"
+    },
+    "accessibility": {
+      "notificationsHint": "Open notification permissions and preferences"
+    },
+    "account": {
+      "accessTitle": "Access",
+      "signInMethods": "Sign-in methods",
+      "signInProviders": "Google or Apple"
+    },
+    "app": {
+      "title": "App",
+      "version": "Version {arg1}"
+    },
+    "appearance": {
+      "language": "Language",
+      "title": "Appearance"
+    },
+    "categories": {
+      "dailyClose": "Daily BODIVA close",
+      "footer": "Up to five optional notifications a day. From 8 pm to 8 am, the radar stays silent. Portfolio values and your relationship with a security stay inside the app.",
+      "holdingMovements": "Your position movements",
+      "newListings": "New confirmed admissions",
+      "portfolioDaily": "Daily portfolio change",
+      "publicFacts": "Show public facts in notifications",
+      "saveError": "Could not save preferences. Try again."
+    },
+    "dataSources": {
+      "description": "The main source shown is BODIVA. Additional data may come from issuers, official announcements and public sources identified in the app.",
+      "title": "Data sources"
+    },
+    "deleteAccount": {
+      "accountRemains": "Your Google or Apple account will remain. Portfolio records are manual: deleting the account does not sell instruments or close bank or brokerage accounts.",
+      "confirmButton": "Delete permanently",
+      "confirmationMessage": "The account {arg1}, profile, portfolio, watchlist, alerts and notifications will be deleted. This action cannot be undone. Your Google or Apple account will remain.",
+      "confirmationTitle": "Delete your invest.ao account?",
+      "irreversible": "This action cannot be undone",
+      "manageSubscription": "Manage subscription in the App Store",
+      "noRecovery": "This data cannot be recovered after deletion.",
+      "progress": "Deleting account…",
+      "subscriptionNote": "Deleting your account does not cancel a Plus subscription in the App Store.",
+      "warning": "Deleting your invest.ao account removes your profile, recorded portfolio, watchlist, alerts and notification history."
+    },
+    "lockScreen": {
+      "marketSession": "BODIVA session",
+      "title": "Lock Screen"
+    },
+    "marketData": {
+      "dateUnavailable": "Date unavailable",
+      "disclaimer": "Quotes may be delayed, corrected or unavailable. This information is not an investment recommendation.",
+      "lastUpdate": "Last update",
+      "mainSource": "Main source",
+      "status": "Market status",
+      "title": "Market data"
+    },
+    "marketRecap": {
+      "deliveryNote": "On-screen alerts also depend on iOS notification permission. Received summaries appear in Notifications.",
+      "description": "An editorial summary after the session close, with verified values and a link to the article. Turn it off without changing price or movement alerts.",
+      "loadError": "Could not load the summary preference.",
+      "toggle": "Receive the stock market close"
+    },
+    "notifications": {
+      "articlesDescription": "You receive notifications when articles and recaps are published. Delivery depends on iOS notification permission.",
+      "articlesTitle": "Articles and closing recaps",
+      "devicePermission": "Device permission",
+      "iosLabel": "iOS notifications",
+      "iosStatus": "iOS: {arg1}",
+      "loadError": "Could not load the notification preference.",
+      "manageInIOS": "Manage in iOS",
+      "movementAlertsDescription": "Receive automatic alerts about significant movements in securities on your watchlist. Turn off alerts for each security in Alerts.",
+      "openSettings": "Open notification settings",
+      "optionalTitle": "Optional notifications",
+      "permissionAuthorized": "iOS allows notifications. You can change delivery in device settings.",
+      "permissionChecking": "Checking the device notification permission.",
+      "permissionDenied": "iOS has blocked notifications. You can allow them again in device settings.",
+      "permissionNotDetermined": "Enable notifications to receive price and movement alerts for the securities you follow.",
+      "permissionProvisional": "iOS delivers notifications quietly. You can enable visible alerts in device settings.",
+      "statusChecking": "Checking",
+      "statusDisabled": "Disabled",
+      "statusEnabled": "Enabled",
+      "statusNotEnabled": "Not enabled",
+      "statusQuiet": "Quiet delivery"
+    },
+    "personalization": {
+      "description": "Your portfolio, watchlist and alerts help prioritize relevant information. Browsing interests carry less weight over time.",
+      "interestsResetMessage": "Interests reset. New actions count from tomorrow. Your portfolio, watchlist and alerts remain.",
+      "resetInterests": "Reset interests on this device",
+      "resetInterestsFooter": "Reset the use of browsing history to prioritize information on this device. Does not delete synced account counters.",
+      "resetUsefulness": "Reset usefulness preferences",
+      "title": "Personalization",
+      "usefulnessFooter": "Usefulness preferences stay on this device and expire after 56 days. Highly relevant events remain eligible.",
+      "usefulnessResetMessage": "Usefulness preferences reset."
+    },
+    "sensitivity": {
+      "description": "Choose the sensitivity of automatic alerts for the securities you follow.",
+      "title": "Movement sensitivity"
+    },
+    "subscription": {
+      "title": "Subscription"
+    },
+    "theme": {
+      "systemDescription": "System follows the appearance set on your iPhone.",
+      "title": "App theme"
+    },
+    "widgetPrivacy": {
+      "footer": "Values are hidden by default. Enabling this allows them to appear in widgets on this device. Privacy Mode will still hide them.",
+      "showValues": "Show portfolio values in widgets",
+      "title": "Widget privacy"
+    }
+  },
+  "simulation": {
+    "access": {
+      "signInPrompt": "Sign in to simulate investments."
+    },
+    "chart": {
+      "accessibilitySummary": "After {arg1} months, the total made available is {arg2} and the projected value, including uninvested cash, is {arg3}.",
+      "invested": "Invested",
+      "projectedValue": "Projected value",
+      "title": "Estimated performance"
+    },
+    "controls": {
+      "annualPriceChange": "Annual price change",
+      "duration": "Duration",
+      "initialInvestment": "Initial investment",
+      "monthlyContribution": "Monthly contribution",
+      "monthsUnit": "months"
+    },
+    "duration": {
+      "months": "{arg1} months",
+      "years": "{arg1} years"
+    },
+    "entry": {
+      "prompt": "Set a scenario and explore how your investment could grow."
+    },
+    "error": {
+      "loadFailed": "Could not fetch the latest data.",
+      "retryAutomatically": " We will retry automatically."
+    },
+    "loading": {
+      "fetchingQuotes": "Fetching quotes",
+      "message": "Checking the latest quote for your scenario.",
+      "serverNotice": "The simulation uses the quote available on the server. This may take a moment.",
+      "title": "Prepare simulation"
+    },
+    "market": {
+      "noQuotesMessage": "There are currently no stocks or fund units in AOA with a valid quote. We will retry automatically.",
+      "noQuotesTitle": "No current quotes for simulation",
+      "partialQuotesNotice": "Some instruments have no current quote and are temporarily unavailable for simulation.",
+      "quotesUnavailableTitle": "Quotes unavailable"
+    },
+    "methodology": {
+      "contributions": "Contributions arrive at the end of each month and buy units at that month''s projected price. Stocks use whole units; funds allow fractional units. Uninvested cash stays available for the next contribution.",
+      "finalValue": "The final value includes projected units and uninvested cash. We exclude dividends, taxes, fees and inflation. Bonds are unavailable because percentage quotes require additional data to calculate their monetary value.",
+      "quoteAndPrice": "The quote retrieved from the server determines how many units you can buy. The annual price change you enter is an assumption, converted to an equivalent monthly rate and held constant throughout the period. It is not inferred from past performance.",
+      "title": "How we calculate"
+    },
+    "quote": {
+      "changeInstrument": "Change instrument, {arg1}",
+      "checkTimeUnavailable": "Verification time unavailable",
+      "disclaimer": "Quote retrieved from the server. Not a guaranteed execution price.",
+      "lastAvailable": "Last available quote",
+      "lastChecked": "Last verification: {arg1}",
+      "lastTrade": "Last trade: {arg1}",
+      "lastTradeDateUnavailable": "Last trade date unavailable",
+      "refresh": "Refresh quotes"
+    },
+    "result": {
+      "atDate": "On {arg1}",
+      "estimatedFinalValue": "Estimated final value",
+      "estimatedGain": "Estimated gain",
+      "estimatedLoss": "Estimated loss",
+      "estimatedValue": "Estimated value",
+      "finalUnits": "Final units",
+      "finalValueUnavailable": "Estimated final value unavailable",
+      "hypotheticalFinalPrice": "Hypothetical final price · {arg1}",
+      "initialUnits": "Initial units",
+      "ofInvested": "of {arg1} invested",
+      "totalContributed": "Total made available",
+      "uninvestedBalance": "Uninvested balance",
+      "valuePlaceholder": "— Kz"
+    },
+    "validation": {
+      "calculationFailed": "Could not calculate the projection with these values.",
+      "durationRange": "Enter a duration between 1 and 600 months.",
+      "fieldRequired": "Fill in this field.",
+      "invalidNumber": "Enter a valid number. Use a comma for decimals.",
+      "noValidQuote": "This asset has no valid quote for simulation.",
+      "precisionExceeded": "The projection exceeds the available precision. Adjust the rate or duration.",
+      "selectAsset": "Select an asset with an available quote.",
+      "unsupportedCurrency": "Simulation is only available for assets quoted in AOA.",
+      "wholeMonths": "Enter a duration in whole months."
+    }
+  },
+  "statement": {
+    "nothingFound": "No transactions found",
+    "nothingFoundMessage": "Use a statement with a date, BODIVA code, quantity and price on each line.",
+    "read": "Read statement",
+    "source": {
+      "pdf": "PDF or image file",
+      "photo": "Photo"
+    }
+  },
+  "subscriptions": {
+    "access": {
+      "comparisonSizeLimit": "The free plan compares 2 instruments. Plus allows up to 3.",
+      "insufficientData": "There is not enough verified data for this comparison yet. Your free comparison was not used.",
+      "signInRequired": "Sign in to use the weekly comparison.",
+      "weeklyPairLimit": "You have already chosen this week''s pair. Compare it again, use Plus, or choose another pair on Monday at 00:00 Luanda time."
+    },
+    "button": {
+      "continueFree": "Continue with Free",
+      "continuePlus": "Continue with Plus",
+      "continuePro": "Continue with Pro",
+      "refreshStatus": "Refresh status",
+      "startTrial": "Try 7 days free"
+    },
+    "comparison": {
+      "alertRules": "Custom alerts",
+      "benchmarkPlus": "Inflation and rates",
+      "cashPlus": "Balance and total result",
+      "clientViews": "Read-only links",
+      "csvOnly": "CSV",
+      "familyPlus": "Up to 6 people",
+      "familySharing": "Family Sharing",
+      "featureHeader": "FEATURE",
+      "freeHeader": "FREE",
+      "history": "Price history",
+      "incomeFree": "Calendar",
+      "incomePlus": "Totals and reminders",
+      "levels": "{arg1} levels",
+      "liquidityPlus": "Frequency, value and exit",
+      "movementsFree": "1 asset",
+      "movementsPlus": "All saved",
+      "pairsFree": "1 pair/week",
+      "pairsPlus": "Up to 3 assets · no weekly limit",
+      "photoAndPDF": "CSV, photo and PDF",
+      "plusHeader": "PLUS",
+      "proHeader": "PRO",
+      "reportPlus": "Annual, by instrument",
+      "unlimited": "Unlimited",
+      "watchlistFree": "3 assets",
+      "watchlistPlus": "Up to 500"
+    },
+    "error": {
+      "accessUpdateFailed": "Could not update subscription access. Try again.",
+      "noActiveSubscription": "No active Plus subscription was found for this account.",
+      "purchaseFailed": "Could not complete the purchase. If it is awaiting approval, access will update after confirmation.",
+      "restoreFailed": "Could not restore purchases. Try again.",
+      "syncing": "Subscription status is syncing. Try refreshing again.",
+      "verifyFailed": "Could not verify the subscription. Try again."
+    },
+    "freePlan": {
+      "chooseInstruments": "Choose free instruments",
+      "comparisonLimitNote": "You can reopen the same pair and change the period. The limit resets on Monday at 00:00 Luanda time.",
+      "prompt": "Prefer to stay on Free?",
+      "summary": "3 saved instruments · automatic movements for 1 instrument · 1 pair of 2 instruments per week."
+    },
+    "freeSelection": {
+      "active": "Active",
+      "activeHeader": "Active instruments · {arg1}/3",
+      "instructions": "Choose up to 3 active instruments and 1 for automatic movements. The rest stay saved and paused; they are not deleted.",
+      "loadError": "Could not load the plan. Reopen this page to try again.",
+      "noneOption": "None",
+      "paused": "Paused",
+      "plusNote": "You have Plus: all instruments stay active. This selection sets your preferences for the free plan.",
+      "saveButton": "Save selection",
+      "saveError": "Could not save. Refresh the list and try again.",
+      "saved": "Selection saved.",
+      "title": "Free plan"
+    },
+    "gift": {
+      "benefitComparisons": "Comparisons without a weekly limit",
+      "benefitMovements": "Automatic movements for saved instruments",
+      "benefitWatchlist": "More instruments on your watchlist",
+      "closing": "No payments. No renewal.\nOur way of thanking you for being part of this journey.",
+      "existingSubscriptionNote": "If you already have an App Store subscription, this offer does not cancel it automatically. You can manage it in your Apple Account.",
+      "eyebrow": "A GIFT FOR YOU",
+      "manageButton": "Manage an existing subscription",
+      "message": "{arg1} gave you lifetime access to Invest.AO Plus.",
+      "startButton": "Start exploring",
+      "title": "Plus is yours.\nForever."
+    },
+    "legal": {
+      "privacy": "Privacy",
+      "trialTerms": "The free trial is available only to eligible accounts, once per subscription group. After the trial, the App Store charges for the chosen plan. The subscription renews automatically unless cancelled at least 24 hours before the period ends. Deleting your invest.ao account does not cancel the subscription."
+    },
+    "management": {
+      "confirmingAccess": "We are confirming your access. Refresh the status before continuing.",
+      "plusTitle": "invest.ao Plus",
+      "proTitle": "invest.ao Pro",
+      "restoreButton": "Restore",
+      "signInRequired": "Sign in to subscribe or restore purchases."
+    },
+    "paywall": {
+      "alertsReason": "Create more than 2 alerts with Plus.",
+      "benchmarkReason": "Comparing your portfolio with inflation and rates is part of Plus.",
+      "cashReason": "Track deposits, withdrawals and fees with Plus.",
+      "comparisonReason": "The free plan allows one pair of 2 instruments per week.",
+      "historyReason": "See the full price history with Plus.",
+      "incomeReason": "Income totals and reminders are part of Plus.",
+      "liquidityReason": "See each instrument''s liquidity with Plus.",
+      "movementReason": "The free plan tracks automatic movements for 1 instrument.",
+      "onboardingReason": "Track more opportunities and compare with more freedom.",
+      "portfoliosReason": "Separate portfolios are part of Plus.",
+      "priceExportReason": "Export price history as CSV with Plus.",
+      "reportReason": "The annual PDF report is part of Plus.",
+      "statementReason": "Reading statement photos and PDFs is part of Plus.",
+      "watchlistGroupsReason": "Organise your watchlist into groups with Plus.",
+      "watchlistReason": "The free plan includes 3 saved instruments."
+    },
+    "plan": {
+      "chooseTitle": "Choose your plan",
+      "demoPrices": "Preview · demo prices",
+      "loadError": "Could not load plans.",
+      "loadErrorRetry": "Try again to view App Store prices.",
+      "monthlyPrice": "US$7.99/month",
+      "pricesDisclosure": "Prices and terms shown before confirmation.",
+      "renewal": "{arg1}. Renews automatically.",
+      "renewalCancelHint": "{arg1}, renewing automatically. Cancel in your Apple Account.",
+      "savings": "Save {arg1}%",
+      "trialRenewal": "7 days free, then {arg1}. Renews automatically.",
+      "trialRenewalCancelHint": "7 days free, then {arg1}. Renews automatically. Cancel before the trial ends to avoid being charged.",
+      "yearlyPrice": "US$79.99/year"
+    },
+    "status": {
+      "activeTitle": "Your Plus is active",
+      "existingSubscriptionNote": "If you already have an App Store subscription, this offer does not cancel it automatically.",
+      "giftFrom": "A gift from {arg1}. No charge or renewal.",
+      "lifetimeTitle": "Lifetime Plus",
+      "proActiveTitle": "Your Pro is active",
+      "thanks": "Thank you for following the market with us."
+    }
+  },
+  "unusualActivity": {
+    "bookImbalance": {
+      "buy": "{arg1} of the order book value is on the buy side.",
+      "sell": "{arg1} of the order book value is on the sell side."
+    },
+    "disclaimer": "Market information only. Not investment advice.",
+    "dormancyBreak": "First trade in {arg1} sessions.",
+    "empty": "No unusual activity",
+    "priceMove": "Moved {arg1} today, {arg2} standard deviations from usual.",
+    "settings": {
+      "notifications": "Securities I follow"
+    },
+    "signal": {
+      "bookImbalance": {
+        "buy": "of the book on the buy side",
+        "sell": "of the book on the sell side"
+      },
+      "dormancy": {
+        "label": "in {arg1} sessions",
+        "value": "First trade"
+      },
+      "largeOrder": {
+        "buy": "buy order at {arg1}",
+        "sell": "sell order at {arg1}"
+      },
+      "largeTrade": "in one trade at {arg1}",
+      "priceMove": "{arg1} typical move",
+      "spread": "bid-ask spread, {arg1} usual",
+      "trades": {
+        "label": "{arg1} usual",
+        "value": "{arg1} trades"
+      },
+      "volume": "usual volume"
+    },
+    "spreadNarrower": "Spread of {arg1}, {arg2} tighter than the median.",
+    "spreadWider": "Spread of {arg1}, {arg2} the median.",
+    "title": "Unusual activity",
+    "tradeCountSpike": "{arg1} trades today, {arg2} the {arg3}-session median.",
+    "volumeSpike": "Today''s volume is {arg1} the {arg2}-session median.",
+    "withdrawn": "No longer in the order book"
+  },
+  "watchlist": {
+    "accessibility": {
+      "addSecurity": "Add {arg1}, {arg2}",
+      "createAlert": "Create alert for {arg1}",
+      "insightOptions": "Options: {arg1}",
+      "insightSourcesHint": "Open the sources and period for this observation.",
+      "loading": "Loading watched securities",
+      "manageAlerts": "Manage {arg1} alerts for {arg2}"
+    },
+    "addSheet": {
+      "allAddedMessage": "All available securities are already on your watchlist.",
+      "allAddedTitle": "All added",
+      "searchMessage": "Search by symbol, name or issuer."
+    },
+    "alertForm": {
+      "aboveTarget": "Above target",
+      "belowTarget": "Below target",
+      "informationSection": "Information",
+      "minimumChange": "Minimum change",
+      "movementSection": "Movement",
+      "newMarketInfo": "New market information",
+      "percentageChange": "Percentage change",
+      "save": "Save"
+    },
+    "breadth": {
+      "context": "{arg1} unchanged · {arg2} current securities\n{arg3}",
+      "description": "Each security counts once, without weighting by value or volume. All have complete data.{arg1}",
+      "headline": "{arg1} rising · {arg2} falling",
+      "title": "Your watchlist in the last completed week"
+    },
+    "closeMovement": {
+      "description": "Price change between verified closes for all sessions in the period. Does not represent income, interest or dividends.",
+      "formula": "100 × (final close − reference close) ÷ reference close.",
+      "title": "Movement between closes"
+    },
+    "emptyState": {
+      "message": "Add the instruments you want to follow to see their quotes in one place.",
+      "title": "Your radar is still empty."
+    },
+    "featuredClose": {
+      "description": "The latest close strictly exceeded all previous closes in this period. It is not an intraday, annual or all-time high or low.",
+      "headline": "{arg1} · {arg2} at period close",
+      "title": "Featured close"
+    },
+    "freePlan": {
+      "summary": "Free · {arg1}/3 assets · {arg2} paused. Choose"
+    },
+    "groups": {
+      "all": "All",
+      "new": "New group",
+      "rename": "Rename",
+      "save": "Save",
+      "title": "Groups"
+    },
+    "insight": {
+      "largestMovement": "Largest movement",
+      "sourcesUnavailable": "Some sources are temporarily unavailable.",
+      "watchedSecurities": "Watched securities"
+    },
+    "insightDetail": {
+      "applyError": "Could not apply the preference. Try again.",
+      "dataAsOf": "Data from {arg1}. Not a live update.",
+      "notUseful": "Not useful",
+      "preferenceApplied": "Preference applied on this device. Relevant events remain eligible.",
+      "preferenceReset": "Preference reset.",
+      "preferences": "Preferences for this observation",
+      "privacyHidden": "Personal observation hidden in Privacy Mode.",
+      "readPublication": "Read publication",
+      "resetPreference": "Reset preference",
+      "showFewer": "Show fewer of this type on the watchlist",
+      "staleMessage": "This observation is no longer current.",
+      "title": "Observation"
+    },
+    "largestMovement": {
+      "description": "Largest absolute percentage change among the {arg1} securities you currently follow, all with verified closes. Does not represent income, interest or dividends.",
+      "title": "Largest movement in the last completed week"
+    },
+    "menu": {
+      "dismissInsight": "Dismiss observation",
+      "viewSources": "View sources"
+    },
+    "publication": {
+      "description": "Publication with an identified primary source. Selection checks the twenty latest public publications and shows only information from the last seven days. Security relationships come from explicit editorial links. Does not imply a price impact.",
+      "formula": "Editorial link to the security + publication in the last seven days + valid HTTPS primary source.",
+      "title": "Published information"
+    },
+    "row": {
+      "alertAction": "Alert",
+      "manageAlerts": "Manage alerts",
+      "removeAction": "Remove"
+    },
+    "sources": {
+      "closesDescription": "BODIVA closing prices. Excludes income, corporate action adjustments, purchases and sales. A missing close prevents comparison for that security.",
+      "collectedOn": "Collected on {arg1}",
+      "record": "Record: {arg1}",
+      "recordDetails": "Record details",
+      "verifiedCloses": "Verified closes ({arg1})"
+    },
+    "streak": {
+      "context": "{arg1} in the streak · {arg2}",
+      "description": "The streak ends at the last verified close and includes only open market sessions. An unchanged session breaks the streak. It does not predict the next session.",
+      "formula": "Each close is strictly higher or lower than the previous one. Requires three consecutive changes in the same direction and an absolute cumulative change of at least 1%.",
+      "headline": "{arg1} · {arg2} sessions on {arg3}",
+      "title": "Consecutive sessions"
+    },
+    "undo": {
+      "button": "Undo",
+      "removed": "{arg1} removed."
+    }
+  },
+  "weekAhead": {
+    "about": {
+      "announcedDates": "Dates announced by identified sources. They may change or be cancelled; they do not imply the market is open that day.",
+      "coverage": "Current coverage includes explicitly announced dividend dates. The absence of other event types does not mean none are planned.",
+      "portfolioLink": "A connection to stocks in your portfolio does not confirm dividend entitlement or receipt. Check the announcement terms.",
+      "title": "About this calendar"
+    },
+    "banner": {
+      "cachedUpdated": "Saved calendar · updated on {arg1}. Changes unconfirmed."
+    },
+    "emptyState": {
+      "message": "The absence of events in this calendar does not confirm that there are no other announcements.",
+      "title": "No verified events for this period"
+    },
+    "header": {
+      "navigationTitle": "Week ahead"
+    },
+    "list": {
+      "noSession": "No session in the verified calendar. Announced dates remain."
+    },
+    "row": {
+      "dateUpdated": "Date updated at source",
+      "financialYear": "Financial year {arg1}",
+      "recordUpdated": "Record updated on {arg1}."
+    },
+    "state": {
+      "checking": "Checking the calendar…",
+      "unavailableMessage": "Could not confirm current data for this period.",
+      "unavailableTitle": "Calendar unavailable"
+    },
+    "summary": {
+      "title": "Your week ahead",
+      "watchlistCount": "{arg1} {arg2} on your watchlist."
+    }
+  },
+  "weeklyWrap": {
+    "accessibility": {
+      "mute": "Mute",
+      "nextPage": "Next page",
+      "pageOfTotal": "Page {arg1} of {arg2}",
+      "pause": "Pause playback",
+      "previousPage": "Previous page",
+      "progressPercent": "{arg1} percent",
+      "resume": "Resume playback",
+      "unmute": "Unmute"
+    },
+    "breadth": {
+      "caption": "Change between observed closes.",
+      "comparableSample": "{arg1} stocks with at least two comparable closes",
+      "fell": "Fell",
+      "rose": "Rose",
+      "summary": "{arg1} rose · {arg2} fell · {arg3} unchanged",
+      "verifiedSample": "{arg1} stocks with all closes verified. This sample does not represent the whole market."
+    },
+    "closing": {
+      "nextStoryMonthly": "Next month\nbrings a new story.",
+      "nextStoryWeekly": "Next week\nbrings a new story.",
+      "nextStoryYearly": "Next year\nbrings a new story."
+    },
+    "details": {
+      "comparesTitle": "What this week compares",
+      "correctedData": "Corrected data: {arg1}",
+      "edition": "Edition {arg1} · {arg2}",
+      "generatedOn": "Generated on {arg1}. This version is saved for the period.",
+      "omitMarketCoverage": "The stock sample does not cover the entire market.",
+      "omitPortfolioData": "The portfolio does not have complete, comparable closing prices for all positions.",
+      "omitPortfolioTransactions": "The portfolio had purchases or sales; cash flows were not attributed to performance.",
+      "omitWatchlistData": "Some watchlist assets lack complete closing prices; the total summary was omitted.",
+      "omittedTitle": "Omitted data",
+      "originalWeekNote": "Closing prices belong to the original week. The watchlist reflects the recreation date; other chapters were preserved.",
+      "personalizationRecreated": "Personalization recreated with the watchlist confirmed on {arg1}.",
+      "portfolioExplanation": "The portfolio uses quantities held at the start of the week. Purchases and sales during the week prevent a portfolio comparison; invested money is not a gain. Income, fees and taxes are excluded from this metric.",
+      "positionInsight": "Insight {arg1} · transactions {arg2}",
+      "positionUnits": "{arg1} · {arg2} units",
+      "positionsHidden": "Positions hidden in Privacy Mode.",
+      "positionsTitle": "Positions used",
+      "preservedVersion": "Preserved version from the previous archive. Composition context was not recorded in that version.",
+      "priceChangeExplanation": "Price change compares the last close before the week with the last close of this week, usually Friday. Each intermediate session needs a verified final observation. Assets without trading or a reliable close are excluded.",
+      "recreateButton": "Recreate with current watchlist",
+      "recreateExplanation": "Create a new edition using your current watchlist and verified closes from the original week. The original edition stays available. Portfolio and market chapters are preserved.",
+      "recreateProgress": "Checking your watchlist and the week''s closing prices…",
+      "recreateTitle": "Recreate personalization",
+      "replaces": "Replaces {arg1}",
+      "sourceRow": "{arg1} · collected {arg2} · {arg3} · parser {arg4} · row {arg5} · batch {arg6} · SHA-256 {arg7}",
+      "sourcesTitle": "Verified sources",
+      "viewCurrent": "View current edition",
+      "viewOriginal": "View original edition"
+    },
+    "error": {
+      "catalogueRefresh": "Could not update the market catalogue. Try again when a connection is available.",
+      "ended": "This Wrap has ended. The next one will be available after the weekly close.",
+      "fetchFailed": "Could not fetch verified data. Try again when a connection is available.",
+      "missingNames": "Verified names are missing for assets on your current watchlist.",
+      "noPreviousClose": "There is no verified previous close to compare this period yet.",
+      "noSavedVersion": "There is no saved version of this period. An old Wrap is not rebuilt with today''s portfolio or watchlist.",
+      "notEnoughCloses": "There are not enough verified closes to cover this period yet.",
+      "notEnoughData": "There are not enough verified closes or activity yet. Missing data is not estimated.",
+      "portfolioUpdating": "Your portfolio is still updating. Try again in a moment.",
+      "signInRequired": "Sign in to view your Wrap.",
+      "unavailableReason": "This Wrap is unavailable: {arg1}",
+      "unavailableTitle": "Wrap not available yet",
+      "watchlistUnconfirmed": "The watchlist is not confirmed yet. Try again; no partial Wrap was saved."
+    },
+    "highlights": {
+      "declineTitle": "A decline\nin focus",
+      "gainTitle": "A gain\nin focus",
+      "watchlistTitle": "The largest movement\non your watchlist"
+    },
+    "market": {
+      "tagline": "The movements. The highlights.\nYour perspective.",
+      "title": "Your\nmarket."
+    },
+    "player": {
+      "close": "Close Wrap",
+      "share": "Share",
+      "shareVideo": "Share Wrap video"
+    },
+    "portfolio": {
+      "contributionCaption": "Estimated contribution to portfolio change",
+      "contributionHidden": "Hidden contribution",
+      "contributorsTitle": "Top\ncontributors",
+      "lowestHidden": "Lowest contribution hidden",
+      "lowestSymbol": "Lowest contribution: {arg1}",
+      "priceChangeNote": "Price change of held positions. Excludes income, fees and cash inflows."
+    },
+    "radar": {
+      "assetFollowedPlural": "assets you follow",
+      "assetFollowedSingular": "asset you follow",
+      "assetsCaption": "different assets appeared on your radar",
+      "interestTitle": "Your interest\nin focus",
+      "interestViews": "You opened this asset {arg1} times on at least two days during this period.",
+      "lensTitle": "The market,\nthrough your lens.",
+      "title": "Your market\nradar"
+    },
+    "repair": {
+      "missingContext": "This version lacks the context to recreate personalization. The saved edition was preserved.",
+      "newEditionSaved": "New edition saved. The original edition remains available.",
+      "newerEdition": "A newer edition is available. Open the current edition and try again.",
+      "openFailed": "Could not open that saved edition.",
+      "sameEdition": "This edition already uses the same watchlist and verified closes.",
+      "verificationFailed": "Could not verify all closing prices and the original week''s calendar. Try again when that data is available. The saved edition was preserved.",
+      "watchlistUnconfirmed": "Could not confirm your current watchlist. Try again; the saved edition was preserved."
+    },
+    "share": {
+      "addingMusic": "Adding music…",
+      "assetsFollowed": "ASSETS I FOLLOW",
+      "badgeMonthly": "MONTHLY WRAP",
+      "badgeWeekly": "WEEKLY WRAP",
+      "badgeYearly": "YEARLY WRAP",
+      "errorTitle": "Could not prepare the video",
+      "estimatedChange": "Estimated change between closes",
+      "portfolioTitle": "My portfolio",
+      "preparingVideo": "Preparing video…",
+      "recreatedEdition": "Personalization recreated · edition {arg1}",
+      "sampleObserved": "Sample observed this week",
+      "titleMonthly": "My month\nin the market 🇦🇴",
+      "titleWeekly": "My week\nin the market 🇦🇴",
+      "titleYearly": "My year\nin the market 🇦🇴",
+      "verifiedStocks": "STOCKS WITH VERIFIED CLOSES"
+    },
+    "stage": {
+      "eyebrowMonthly": "THE MONTH IN MOTION",
+      "eyebrowWeekly": "THE WEEK IN MOTION",
+      "eyebrowYearly": "THE YEAR IN MOTION",
+      "introMonthly": "Your\nmonth.",
+      "introWeekly": "Your\nweek.",
+      "introYearly": "Your\nyear.",
+      "marketMonthly": "This month\nin the market",
+      "marketWeekly": "This week\nin the market",
+      "marketYearly": "This year\nin the market",
+      "portfolioMonthly": "Your portfolio.\nThis month.",
+      "portfolioWeekly": "Your portfolio.\nThis week.",
+      "portfolioYearly": "Your portfolio.\nThis year.",
+      "preparingMonthly": "Preparing your month…",
+      "preparingWeekly": "Preparing your week…",
+      "preparingYearly": "Preparing your year…",
+      "reviewMonthly": "Review your month",
+      "reviewWeekly": "Review your week",
+      "reviewYearly": "Review your year",
+      "sectionHighlights": "THE HIGHLIGHTS",
+      "sectionMarket": "THE MARKET",
+      "sectionPortfolio": "YOUR PORTFOLIO",
+      "sectionRadar": "YOUR RADAR",
+      "stocksMonthly": "Stocks\nof the month",
+      "stocksWeekly": "Stocks\nof the week",
+      "stocksYearly": "Stocks\nof the year",
+      "titleMonthly": "Your month in the market",
+      "titleWeekly": "Your week in the market",
+      "titleYearly": "Your year in the market",
+      "yoursMonthly": "THE MONTH IS YOURS",
+      "yoursWeekly": "THE WEEK IS YOURS",
+      "yoursYearly": "THE YEAR IS YOURS"
+    }
+  },
+  "widgets": {
+    "common": {
+      "openApp": "Open invest.ao →"
+    },
+    "configuration": {
+      "featuredDescription": "In the small widget, highlight this instrument or the first on your watchlist.",
+      "featuredTitle": "Featured instrument",
+      "intentDescription": "Choose an instrument loaded in invest.ao. Open the app to refresh the list."
+    },
+    "liveActivity": {
+      "closed": "Closed",
+      "opens": "Opens {arg1}"
+    },
+    "market": {
+      "calculatedNotOfficial": "Calculated by invest.ao · not an official BODIVA index",
+      "decline": "Decline",
+      "description": "Proprietary indicator and instrument movements based on BODIVA quotes.",
+      "displayName": "invest.ao market",
+      "gain": "Gain",
+      "incompleteChanges": "Incomplete changes",
+      "indicatorNotOfficial": "invest.ao indicator · not an official BODIVA index",
+      "largestDecline": "Largest decline",
+      "largestGain": "Largest gain",
+      "noMovement": "No movement",
+      "openAppHint": "Open invest.ao to load market data.",
+      "unofficialIndex": "Unofficial index"
+    },
+    "movement": {
+      "fell": "Fell",
+      "rose": "Rose"
+    },
+    "portfolio": {
+      "addPositionsHint": "Record your positions in invest.ao.",
+      "description": "Value and performance of positions recorded in invest.ao.",
+      "largestPositions": "Largest positions",
+      "openAppHint": "Open invest.ao to load your portfolio.",
+      "partialResult": "Partial gain/loss",
+      "unrealizedResult": "Unrealized gain/loss"
+    },
+    "security": {
+      "chooseInstrumentHint": "Edit the widget to choose an instrument.",
+      "closingHistory": "Closing history",
+      "description": "Choose an instrument to track its quote and change.",
+      "noHistory": "No history",
+      "openAppHint": "Open invest.ao to update this instrument."
+    },
+    "status": {
+      "marketClosed": "Market closed",
+      "marketOpen": "Market open",
+      "marketUnavailable": "Market unavailable",
+      "openingSoon": "Opening soon"
+    },
+    "watchlist": {
+      "addInstrumentsHint": "Add instruments to your watchlist in invest.ao.",
+      "description": "Quotes for the instruments in your watchlist.",
+      "openAppHint": "Open invest.ao to load your watchlist."
+    }
+  }
+}

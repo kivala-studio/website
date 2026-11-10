@@ -1,0 +1,338 @@
+[
+  {
+    "name": "home",
+    "label": "Início",
+    "body": "<path d=\"M3.5 10.2Q3.5 8.8 4.7 7.9L10.2 3.8Q12 2.4 13.8 3.8L19.3 7.9Q20.5 8.8 20.5 10.2V18Q20.5 21 17.5 21H6.5Q3.5 21 3.5 18Z\"/>",
+    "category": "Navegação"
+  },
+  {
+    "name": "markets",
+    "label": "Mercados",
+    "body": "<path d=\"M3.5 8.5 10.7 4Q12 3.2 13.3 4L20.5 8.5M4.5 9H19.5M6 12.5V17M12 12.5V17M18 12.5V17M3.5 20H20.5\"/>",
+    "category": "Navegação"
+  },
+  {
+    "name": "portfolio",
+    "label": "Carteira",
+    "body": "<rect x=\"3\" y=\"7.5\" width=\"18\" height=\"13\" rx=\"3\"/><path d=\"M8 7.5V5.5Q8 3.5 10 3.5H14Q16 3.5 16 5.5V7.5M3 12.5Q12 17 21 12.5M12 13V16\"/>",
+    "category": "Navegação"
+  },
+  {
+    "name": "watchlist",
+    "label": "Favoritos",
+    "body": "<path d=\"M11 3.7Q12 1.7 13 3.7L15.3 8.2 20.2 9Q22.4 9.3 20.8 10.9L17.3 14.4 18.1 19.3Q18.5 21.6 16.5 20.5L12 18.2 7.5 20.5Q5.5 21.6 5.9 19.3L6.7 14.4 3.2 10.9Q1.6 9.3 3.8 9L8.7 8.2Z\"/>",
+    "category": "Navegação"
+  },
+  {
+    "name": "search",
+    "label": "Pesquisa",
+    "body": "<circle cx=\"10.5\" cy=\"10.5\" r=\"7\"/><path d=\"M16 16 21 21\"/>",
+    "category": "Navegação"
+  },
+  {
+    "name": "news",
+    "label": "Notícias",
+    "body": "<path d=\"M17.5 7H20.5V18Q20.5 20.5 18 20.5H6Q3.5 20.5 3.5 18V5Q3.5 3.5 5 3.5H16Q17.5 3.5 17.5 5V18Q17.5 20.5 20 20M7 8H13.5M7 12H13.5M7 16H10.5\"/>",
+    "category": "Navegação"
+  },
+  {
+    "name": "chart",
+    "label": "Gráfico",
+    "body": "<path d=\"M3.5 4V17.5Q3.5 20.5 6.5 20.5H21M7 14.5 11 10.5 15 13 20.5 6.5\"/>",
+    "category": "Navegação"
+  },
+  {
+    "name": "wallet",
+    "label": "Saldo",
+    "body": "<path d=\"M18.5 7V4H7Q3.5 4 3.5 7.5V17Q3.5 20.5 7 20.5H18Q21 20.5 21 17.5V10Q21 7 18 7H7Q3.5 7 3.5 10\"/><circle cx=\"17\" cy=\"13.5\" r=\"1\" fill=\"currentColor\" stroke=\"none\"/>",
+    "category": "Navegação"
+  },
+  {
+    "name": "trend-up",
+    "label": "Valorização",
+    "body": "<path d=\"M3.5 18 9 12.5 13 15.5 20.5 6M14.5 6H20.5V12\"/>",
+    "category": "Investimento"
+  },
+  {
+    "name": "trend-down",
+    "label": "Desvalorização",
+    "body": "<path d=\"M3.5 6 9 11.5 13 8.5 20.5 18M14.5 18H20.5V12\"/>",
+    "category": "Investimento"
+  },
+  {
+    "name": "exchange",
+    "label": "Câmbio",
+    "body": "<path d=\"M4 7.5H20M16 3.5 20 7.5 16 11.5M20 16.5H4M8 12.5 4 16.5 8 20.5\"/>",
+    "category": "Investimento"
+  },
+  {
+    "name": "calculator",
+    "label": "Calculadora",
+    "body": "<rect x=\"5\" y=\"2.5\" width=\"14\" height=\"19\" rx=\"3\"/><path d=\"M8.5 7H15.5M14.5 13V17\"/><circle cx=\"9\" cy=\"12.5\" r=\"1\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"9\" cy=\"17\" r=\"1\" fill=\"currentColor\" stroke=\"none\"/>",
+    "category": "Investimento"
+  },
+  {
+    "name": "bond",
+    "label": "Obrigações",
+    "body": "<path d=\"M10 21H6.5Q3.5 21 3.5 18V6Q3.5 3 6.5 3H15Q18 3 18 6V8M7.5 7H13M7.5 11H10M14.5 18V21L17 19.5 19.5 21V18\"/><circle cx=\"17\" cy=\"14.5\" r=\"4\"/>",
+    "category": "Investimento"
+  },
+  {
+    "name": "dividend",
+    "label": "Dividendos",
+    "body": "<circle cx=\"9\" cy=\"8\" r=\"5\"/><path d=\"M14 6.5Q20.5 7 20.5 13Q20.5 19 14.5 19M9 14V21M5.5 17.5 9 21 12.5 17.5\"/>",
+    "category": "Investimento"
+  },
+  {
+    "name": "calendar",
+    "label": "Calendário",
+    "body": "<rect x=\"3.5\" y=\"5\" width=\"17\" height=\"16\" rx=\"3\"/><path d=\"M7.5 2.5V7M16.5 2.5V7M3.5 10H20.5\"/><circle cx=\"8\" cy=\"14.5\" r=\"1\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"12\" cy=\"14.5\" r=\"1\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"16\" cy=\"14.5\" r=\"1\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"8\" cy=\"18\" r=\"1\" fill=\"currentColor\" stroke=\"none\"/>",
+    "category": "Investimento"
+  },
+  {
+    "name": "history",
+    "label": "Histórico",
+    "body": "<path d=\"M3.5 10A8.5 8.5 0 1 1 4.5 17.5M3.5 4.5V10H9M12 7.5V12L15.5 14\"/>",
+    "category": "Investimento"
+  },
+  {
+    "name": "alert",
+    "label": "Alerta",
+    "body": "<path d=\"M18 9Q18 3.5 12 3.5Q6 3.5 6 9V12.5Q6 14.5 4 17H20Q18 14.5 18 12.5ZM9.5 20Q12 22 14.5 20\"/>",
+    "category": "Conta e privacidade"
+  },
+  {
+    "name": "notification",
+    "label": "Notificação",
+    "body": "<path d=\"M11 3.5Q6 4 6 9V12.5Q6 14.5 4 17H20Q18 14.5 18 12.5V11M9.5 20Q12 22 14.5 20\"/><circle cx=\"18\" cy=\"5.5\" r=\"3\"/>",
+    "category": "Conta e privacidade"
+  },
+  {
+    "name": "profile",
+    "label": "Perfil",
+    "body": "<circle cx=\"12\" cy=\"7\" r=\"4\"/><path d=\"M4.5 21V19.5Q4.5 14 10 14H14Q19.5 14 19.5 19.5V21\"/>",
+    "category": "Conta e privacidade"
+  },
+  {
+    "name": "settings",
+    "label": "Definições",
+    "body": "<path d=\"M10 3Q12 .8 14 3L15.5 4.6 17.8 5Q20.8 5.3 20.2 8.5L19.5 11 20.2 13.5Q21.2 16.5 18.3 17.5L16 18.2 14 20.5Q12 22.8 10 20.5L8 18.2 5.7 17.5Q2.8 16.5 3.8 13.5L4.5 11 3.8 8.5Q3.2 5.3 6.2 5L8.5 4.6Z\"/><circle cx=\"12\" cy=\"11.5\" r=\"3.5\"/>",
+    "category": "Conta e privacidade"
+  },
+  {
+    "name": "shield-check",
+    "label": "Segurança",
+    "body": "<path d=\"M12 2.5 20 5.5V11Q20 17.5 12 21.5Q4 17.5 4 11V5.5ZM8.5 11.5 11 14 15.5 9.5\"/>",
+    "category": "Conta e privacidade"
+  },
+  {
+    "name": "lock",
+    "label": "Bloquear",
+    "body": "<rect x=\"4\" y=\"10\" width=\"16\" height=\"11\" rx=\"3\"/><path d=\"M8 10V6.5Q8 2.5 12 2.5Q16 2.5 16 6.5V10M12 14.5V17\"/>",
+    "category": "Conta e privacidade"
+  },
+  {
+    "name": "eye",
+    "label": "Mostrar saldo",
+    "body": "<path d=\"M2.5 12Q12 0 21.5 12Q12 24 2.5 12Z\"/><circle cx=\"12\" cy=\"12\" r=\"2.5\"/>",
+    "category": "Conta e privacidade"
+  },
+  {
+    "name": "eye-off",
+    "label": "Ocultar saldo",
+    "body": "<path d=\"M3 3 21 21M8.5 5.7Q15.5 3.5 21.5 12Q20.2 13.7 18.5 15M14.8 18.1Q8.8 20 2.5 12Q4.1 9.9 5.8 8.5M9.6 11.2Q9 14.8 12.8 14.4\"/>",
+    "category": "Conta e privacidade"
+  },
+  {
+    "name": "add",
+    "label": "Adicionar",
+    "body": "<path d=\"M12 3.5V20.5M3.5 12H20.5\"/>",
+    "category": "Ações e estados"
+  },
+  {
+    "name": "remove",
+    "label": "Remover",
+    "body": "<path d=\"M4 12H20\"/>",
+    "category": "Ações e estados"
+  },
+  {
+    "name": "close",
+    "label": "Fechar",
+    "body": "<path d=\"M5 5 19 19M19 5 5 19\"/>",
+    "category": "Ações e estados"
+  },
+  {
+    "name": "check",
+    "label": "Confirmar",
+    "body": "<path d=\"M4.5 12.5 9.5 17.5 19.5 6.5\"/>",
+    "category": "Ações e estados"
+  },
+  {
+    "name": "check-circle",
+    "label": "Concluído",
+    "body": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M7.5 12 10.5 15 16.5 8.5\"/>",
+    "category": "Ações e estados"
+  },
+  {
+    "name": "info",
+    "label": "Informação",
+    "body": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 11V16\"/><circle cx=\"12\" cy=\"7.5\" r=\"1\" fill=\"currentColor\" stroke=\"none\"/>",
+    "category": "Ações e estados"
+  },
+  {
+    "name": "warning",
+    "label": "Atenção",
+    "body": "<path d=\"M9.8 4.4Q12 .8 14.2 4.4L21 16.5Q23 20.5 18.5 20.5H5.5Q1 20.5 3 16.5ZM12 8V12.5\"/><circle cx=\"12\" cy=\"16.5\" r=\"1\" fill=\"currentColor\" stroke=\"none\"/>",
+    "category": "Ações e estados"
+  },
+  {
+    "name": "help",
+    "label": "Ajuda",
+    "body": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M9 8.5Q9.5 6 12 6.5Q16.5 7.5 13.5 11Q12 12 12 13.5\"/><circle cx=\"12\" cy=\"17\" r=\"1\" fill=\"currentColor\" stroke=\"none\"/>",
+    "category": "Ações e estados"
+  },
+  {
+    "name": "arrow-up-right",
+    "label": "Subir à direita",
+    "body": "<path d=\"M5 19 19 5M7 5H19V17\"/>",
+    "category": "Direções"
+  },
+  {
+    "name": "arrow-down-right",
+    "label": "Descer à direita",
+    "body": "<path d=\"M5 5 19 19M7 19H19V7\"/>",
+    "category": "Direções"
+  },
+  {
+    "name": "arrow-up",
+    "label": "Subir",
+    "body": "<path d=\"M12 21V3M5 10 12 3 19 10\"/>",
+    "category": "Direções"
+  },
+  {
+    "name": "arrow-down",
+    "label": "Descer",
+    "body": "<path d=\"M12 3V21M5 14 12 21 19 14\"/>",
+    "category": "Direções"
+  },
+  {
+    "name": "arrow-left",
+    "label": "Voltar",
+    "body": "<path d=\"M21 12H3M10 5 3 12 10 19\"/>",
+    "category": "Direções"
+  },
+  {
+    "name": "arrow-right",
+    "label": "Avançar",
+    "body": "<path d=\"M3 12H21M14 5 21 12 14 19\"/>",
+    "category": "Direções"
+  },
+  {
+    "name": "chevron-left",
+    "label": "Anterior",
+    "body": "<path d=\"M15 4.5 7.5 12 15 19.5\"/>",
+    "category": "Direções"
+  },
+  {
+    "name": "chevron-right",
+    "label": "Seguinte",
+    "body": "<path d=\"M9 4.5 16.5 12 9 19.5\"/>",
+    "category": "Direções"
+  },
+  {
+    "name": "chevron-up",
+    "label": "Recolher",
+    "body": "<path d=\"M4.5 15 12 7.5 19.5 15\"/>",
+    "category": "Vista e partilha"
+  },
+  {
+    "name": "chevron-down",
+    "label": "Abrir",
+    "body": "<path d=\"M4.5 9 12 16.5 19.5 9\"/>",
+    "category": "Vista e partilha"
+  },
+  {
+    "name": "expand",
+    "label": "Expandir",
+    "body": "<path d=\"M14.5 3.5H20.5V9.5M20.5 3.5 14 10M9.5 20.5H3.5V14.5M3.5 20.5 10 14\"/>",
+    "category": "Vista e partilha"
+  },
+  {
+    "name": "collapse",
+    "label": "Reduzir",
+    "body": "<path d=\"M21 3 14 10M14 4V10H20M3 21 10 14M4 14H10V20\"/>",
+    "category": "Vista e partilha"
+  },
+  {
+    "name": "refresh",
+    "label": "Atualizar",
+    "body": "<path d=\"M20.5 10A8.5 8.5 0 1 0 19.5 17M20.5 4.5V10H15\"/>",
+    "category": "Vista e partilha"
+  },
+  {
+    "name": "share",
+    "label": "Partilhar",
+    "body": "<path d=\"M12 15V2.5M6.5 8 12 2.5 17.5 8M6 11H5.5Q3 11 3 14V18Q3 21 6 21H18Q21 21 21 18V14Q21 11 18.5 11H18\"/>",
+    "category": "Vista e partilha"
+  },
+  {
+    "name": "download",
+    "label": "Descarregar",
+    "body": "<path d=\"M12 3V15M7 10 12 15 17 10M3.5 15.5V18Q3.5 21 6.5 21H17.5Q20.5 21 20.5 18V15.5\"/>",
+    "category": "Vista e partilha"
+  },
+  {
+    "name": "upload",
+    "label": "Carregar",
+    "body": "<path d=\"M12 15V3M7 8 12 3 17 8M3.5 15.5V18Q3.5 21 6.5 21H17.5Q20.5 21 20.5 18V15.5\"/>",
+    "category": "Vista e partilha"
+  },
+  {
+    "name": "edit",
+    "label": "Editar",
+    "body": "<path d=\"M3.5 20.5 4.5 15 15.8 3.7Q18 .9 20.3 3.7Q22.5 6 20.3 8.2L9 19.5ZM13.8 5.7 18.3 10.2\"/>",
+    "category": "Ferramentas"
+  },
+  {
+    "name": "trash",
+    "label": "Eliminar",
+    "body": "<path d=\"M3.5 6.5H20.5M8 6.5V5Q8 3 10 3H14Q16 3 16 5V6.5M5.5 6.5 6.3 18Q6.5 21 9 21H15Q17.5 21 17.7 18L18.5 6.5M10 10.5V17M14 10.5V17\"/>",
+    "category": "Ferramentas"
+  },
+  {
+    "name": "filter",
+    "label": "Filtrar",
+    "body": "<path d=\"M3 5.5H21M6 12H18M9 18.5H15\"/>",
+    "category": "Ferramentas"
+  },
+  {
+    "name": "sort",
+    "label": "Ordenar",
+    "body": "<path d=\"M3.5 5H13.5M3.5 11H10.5M3.5 17H7.5M18 4V20M14 16 18 20 22 16\"/>",
+    "category": "Ferramentas"
+  },
+  {
+    "name": "more",
+    "label": "Mais opções",
+    "body": "<circle cx=\"4.5\" cy=\"12\" r=\"1.2\"/><circle cx=\"12\" cy=\"12\" r=\"1.2\"/><circle cx=\"19.5\" cy=\"12\" r=\"1.2\"/>",
+    "category": "Ferramentas"
+  },
+  {
+    "name": "document",
+    "label": "Documento",
+    "body": "<path d=\"M13 3H6.5Q3.5 3 3.5 6V18Q3.5 21 6.5 21H17.5Q20.5 21 20.5 18V10L13 3ZM13 3V7.5Q13 10 15.5 10H20.5M8 13H12M8 17H16\"/>",
+    "category": "Ferramentas"
+  },
+  {
+    "name": "copy",
+    "label": "Copiar",
+    "body": "<rect x=\"8\" y=\"8\" width=\"13\" height=\"13\" rx=\"3\"/><path d=\"M4 16Q2.5 15.5 2.5 13.5V5.5Q2.5 2.5 5.5 2.5H13.5Q15.5 2.5 16 4\"/>",
+    "category": "Ferramentas"
+  },
+  {
+    "name": "offline",
+    "label": "Sem ligação",
+    "body": "<path d=\"M3 3 21 21M8.5 5Q15 3 21.5 8M2.5 8Q3.8 7 5.1 6.3M12.5 10Q15.5 10 18 12M6 12Q7.2 11 8.5 10.5M9 16Q12 13.5 15 16\"/><circle cx=\"12\" cy=\"20\" r=\"1\" fill=\"currentColor\" stroke=\"none\"/>",
+    "category": "Ferramentas"
+  }
+]

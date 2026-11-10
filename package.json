@@ -12,10 +12,14 @@
     "check": "npm run lint && npm run typecheck && npm run test",
     "scan:bundle": "node scripts/scan-client-bundle.mjs",
     "e2e": "playwright test",
-    "lhci": "npx --yes @lhci/cli@0.15.1 autorun"
+    "lhci": "npx --yes @lhci/cli@0.15.1 autorun",
+    "messages": "node scripts/convert-messages.mjs",
+    "icons": "node scripts/generate-icons.mjs"
   },
   "dependencies": {
+    "decimal.js": "10.6.0",
     "next": "16.4.6",
+    "next-intl": "4.14.9",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },

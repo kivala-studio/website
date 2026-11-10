@@ -17,6 +17,8 @@ export const SECURITY_HEADERS: readonly { key: string; value: string }[] = [
 type CspInput = {
   nonce: string;
   isDev: boolean;
+  /** Only HTTPS responses ask for upgrades; on plain-HTTP localhost WebKit would break every asset. */
+  secure: boolean;
   supabaseUrl: string | null;
   sentryDsn: string | null;
 };
@@ -30,7 +32,7 @@ const originOf = (value: string | null) => {
   }
 };
 
-export function buildContentSecurityPolicy({ nonce, isDev, supabaseUrl, sentryDsn }: CspInput): string {
+export function buildContentSecurityPolicy({ nonce, isDev, secure, supabaseUrl, sentryDsn }: CspInput): string {
   const supabase = originOf(supabaseUrl);
   const realtime = supabase?.replace(/^http/, "ws") ?? null;
   const connect = ["'self'", supabase, realtime, POSTHOG_HOST, POSTHOG_ASSETS_HOST, originOf(sentryDsn)];
@@ -39,7 +41,7 @@ export function buildContentSecurityPolicy({ nonce, isDev, supabaseUrl, sentryDs
     "default-src": ["'self'"],
     "script-src": ["'self'", `'nonce-${nonce}'`, "'strict-dynamic'", isDev ? "'unsafe-eval'" : null],
     "style-src": ["'self'", isDev ? "'unsafe-inline'" : `'nonce-${nonce}'`],
-    "img-src": ["'self'", "blob:", "data:"],
+    "img-src": ["'self'", "blob:", "data:", supabase],
     "font-src": ["'self'"],
     "connect-src": connect,
     "worker-src": ["'self'"],
@@ -53,6 +55,6 @@ export function buildContentSecurityPolicy({ nonce, isDev, supabaseUrl, sentryDs
   const policy = Object.entries(directives).map(
     ([name, sources]) => `${name} ${sources.filter((source): source is string => source !== null).join(" ")}`,
   );
-  if (!isDev) policy.push("upgrade-insecure-requests");
+  if (secure) policy.push("upgrade-insecure-requests");
   return policy.join("; ");
 }

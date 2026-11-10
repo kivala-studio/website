@@ -1,0 +1,127 @@
+/* Colour tokens transcribed from iOS SemanticColors.swift (code wins over the iOS docs).
+ * Theme: <html data-theme="light|dark|system">. "system" and a missing attribute follow the OS.
+ * Increased contrast (prefers-contrast: more) only changes light values, as on iOS. */
+
+:root {
+  color-scheme: light;
+  --app-background: #f2f3f5;
+  --elevated-background: #ffffff;
+  --card-background: #ffffff;
+  --primary-text: #182231;
+  --secondary-text: #485364;
+  --tertiary-text: #596579;
+  --accent: #1854c5;
+  --on-accent: #ffffff;
+  --positive: #08704c;
+  --negative: #b9233d;
+  --warning: #845000;
+  --separator: #c5cdd8;
+  --chart-grid: #cbd2dc;
+  --card-outline: #c9d0db;
+  --control-outline: #778396;
+  --selected-tab-background: #e2eafa;
+  --widget-background: #f2f3f5;
+  --action-surface: #e5e9ef;
+  --accent-soft: #e2eafa;
+  --comparison-orange: #a34e00;
+  --comparison-purple: #7935b5;
+  --card-outline-width: 0px;
+  --control-outline-width: 1px;
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --secondary-text: #283445;
+    --tertiary-text: #3b4759;
+    --separator: #778396;
+    --chart-grid: #778396;
+    --card-outline: #778396;
+    --card-outline-width: 1px;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --app-background: #090b0f;
+  --elevated-background: #12151b;
+  --card-background: #171b22;
+  --primary-text: #f5f7fa;
+  --secondary-text: #a6afbd;
+  --tertiary-text: #747e8e;
+  --accent: #5a9bff;
+  --on-accent: #090b0f;
+  --positive: #35c98b;
+  --negative: #ff6677;
+  --warning: #f5b544;
+  --separator: #2a303a;
+  --chart-grid: #252b34;
+  --card-outline: #2a303a;
+  --control-outline: #2a303a;
+  --selected-tab-background: #303238;
+  --widget-background: #090b0f;
+  --action-surface: #171e2b;
+  --accent-soft: #192d4b;
+  --comparison-orange: #ff9400;
+  --comparison-purple: #ad52e0;
+  --control-outline-width: 0px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --app-background: #090b0f;
+    --elevated-background: #12151b;
+    --card-background: #171b22;
+    --primary-text: #f5f7fa;
+    --secondary-text: #a6afbd;
+    --tertiary-text: #747e8e;
+    --accent: #5a9bff;
+    --on-accent: #090b0f;
+    --positive: #35c98b;
+    --negative: #ff6677;
+    --warning: #f5b544;
+    --separator: #2a303a;
+    --chart-grid: #252b34;
+    --card-outline: #2a303a;
+    --control-outline: #2a303a;
+    --selected-tab-background: #303238;
+    --widget-background: #090b0f;
+    --action-surface: #171e2b;
+    --accent-soft: #192d4b;
+    --comparison-orange: #ff9400;
+    --comparison-purple: #ad52e0;
+    --control-outline-width: 0px;
+  }
+}
+
+@theme inline {
+  --color-app-background: var(--app-background);
+  --color-elevated-background: var(--elevated-background);
+  --color-card-background: var(--card-background);
+  --color-primary-text: var(--primary-text);
+  --color-secondary-text: var(--secondary-text);
+  --color-tertiary-text: var(--tertiary-text);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-positive: var(--positive);
+  --color-negative: var(--negative);
+  --color-warning: var(--warning);
+  --color-separator: var(--separator);
+  --color-chart-grid: var(--chart-grid);
+  --color-card-outline: var(--card-outline);
+  --color-control-outline: var(--control-outline);
+  --color-selected-tab-background: var(--selected-tab-background);
+  --color-widget-background: var(--widget-background);
+  --color-action-surface: var(--action-surface);
+  --color-accent-soft: var(--accent-soft);
+  --color-comparison-orange: var(--comparison-orange);
+  --color-comparison-purple: var(--comparison-purple);
+}
+
+/* Issuer monogram colour without a semantic token (iOS SecurityLogoView violet). */
+:root {
+  --brand-violet: #6e4fd6;
+}
+@theme inline {
+  --color-brand-violet: var(--brand-violet);
+}

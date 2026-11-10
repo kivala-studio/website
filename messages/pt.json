@@ -1,0 +1,2819 @@
+{
+  "legacy": {
+    "emAte5MinPara": "{arg1} {arg2} {arg3}% em até 5 min, para {arg4} {arg5}.",
+    "faceAoUltimoFechoPara": "{arg1} {arg2} {arg3}% face ao último fecho, para {arg4} {arg5}.",
+    "emCustos": "{arg1} em custos",
+    "100FechoFinalFechoDeReferencia": "100 × (fecho final − fecho de referência) ÷ fecho de referência. Só aparece a partir de 1% em valor absoluto.",
+    "100UltimoFechoExtremoAnteriorExtremo": "100 × (último fecho − extremo anterior) ÷ extremo anterior. Exige pelo menos cinco fechos e distância absoluta de 1% ou mais do extremo anterior.",
+    "aAcompanharEscuro": "A acompanhar escuro",
+    "aAcompanharVazio": "A acompanhar vazio",
+    "aCapitalizacaoVerificadaUltrapassouReferencepriceKz": "A capitalização verificada ultrapassou {referencePrice} Kz.",
+    "aGuardar": "A guardar",
+    "aTuaCarteira": "A tua carteira",
+    "aTuaCarteiraEmMovimento": "A tua carteira em movimento",
+    "aTuaCarteiraGanhouTerreno": "A tua carteira ganhou terreno",
+    "aTuaCarteiraPelosNumeros": "A tua carteira, pelos números",
+    "aTuaLista": "A tua lista",
+    "aTuaListaQuerAtencao": "A tua lista quer atenção 👀",
+    "aTuaListaAoFecho": "A tua lista, ao fecho",
+    "aVerificarAAutorizacaoDoIos": "A verificar a autorização do iOS.",
+    "abraAAplicacaoParaConsultarA": "Abra a aplicação para consultar a atualização.",
+    "abreAAplicacaoParaLerA": "Abre a aplicação para ler a publicação.",
+    "acompanharDesactualizado": "Acompanhar · desactualizado",
+    "acompanharGrandeDemonstracao": "Acompanhar · grande · demonstração",
+    "acompanharMedioDemonstracao": "Acompanhar · médio · demonstração",
+    "acompanharPequenoDemonstracao": "Acompanhar · pequeno · demonstração",
+    "acompanharVazio": "Acompanhar · vazio",
+    "activoDeDemonstracao": "Activo de demonstração",
+    "activoMedioDemonstracao": "Activo · médio · demonstração",
+    "activoPequenoDemonstracao": "Activo · pequeno · demonstração",
+    "activoSemSeleccao": "Activo · sem selecção",
+    "adicionaOsInstrumentosQueQueresAcompanhar": "Adiciona os instrumentos que queres acompanhar.",
+    "admissaoConfirmada": "Admissão · confirmada",
+    "admissaoEmBreve": "Admissão · em breve",
+    "admissaoEstatica": "Admissão · estática",
+    "admissaoHojePrevista": "Admissão · hoje prevista",
+    "admissaoJaVista": "Admissão · já vista",
+    "admissaoMovimentoReduzido": "Admissão · movimento reduzido",
+    "admissaoNomeLongo": "Admissão · nome longo",
+    "admissaoRecente": "Admissão · recente",
+    "admissaoSemLogotipo": "Admissão · sem logótipo",
+    "admissaoTextoGrande": "Admissão · texto grande",
+    "aindaFaltamDados": "Ainda faltam dados",
+    "aindaNaoHaDadosVerificadosSuficientes": "Ainda não há dados verificados suficientes para esta leitura.",
+    "anteriores": "Anteriores",
+    "anual": "Anual",
+    "aoCriarUmAlertaPediremosAutorizacao": "Ao criar um alerta, pediremos autorização para enviar notificações. Guardar uma regra não garante a entrega de avisos.",
+    "asNotificacoesEstaoBloqueadasNoIos": "As notificações estão bloqueadas no iOS. Pode guardar regras, mas precisa de permitir notificações nas definições para receber avisos.",
+    "atividade": "Atividade",
+    "autenticacao": "Autenticação",
+    "avisarSobreMovimentosRelevantes": "Avisar sobre movimentos relevantes",
+    "acoesEUnidadesDeParticipacaoCom": "Ações e unidades de participação com cotação monetária.",
+    "acoesEUnidadesDeParticipacaoEm": "Ações e unidades de participação em AOA com cotação disponível. A evolução futura do preço é uma hipótese introduzida por si.",
+    "bai": "BAI",
+    "carteira": "Carteira",
+    "carteiraVazia": "Carteira vazia",
+    "carteiraGrandeDemonstracao": "Carteira · grande · demonstração",
+    "carteiraMedioDemonstracao": "Carteira · médio · demonstração",
+    "carteiraPequenoDemonstracao": "Carteira · pequeno · demonstração",
+    "carteiraPrivada": "Carteira · privada",
+    "carteiraUmaPosicao": "Carteira · uma posição",
+    "carteiraValorParcial": "Carteira · valor parcial",
+    "carteiraVazia2": "Carteira · vazia",
+    "componentesEscuro": "Componentes · Escuro",
+    "cotacaoConsultadaNoServidorPodeReflectir": "Cotação consultada no servidor; pode reflectir um negócio anterior. Não é um preço de execução garantido.",
+    "criaUmAlertaParaAcompanharO": "Cria um alerta para acompanhar o preço ou a variação deste instrumento.",
+    "custoRegistado": "Custo registado",
+    "emitente": "Emitente",
+    "entre0E": "Entre 0% e +{arg1}%",
+    "entreE0": "Entre −{arg1}% e 0%",
+    "entregaDeNotificacoes": "Entrega de notificações",
+    "escolheUmInstrumentoParaVeresA": "Escolhe um instrumento para veres a projecção.",
+    "escolherInvestimento": "Escolher investimento",
+    "estados": "Estados",
+    "graficoDePreco": "Gráfico de preço",
+    "guardarAlteracoes": "Guardar alterações",
+    "hojeABodivaDecidiuDescansar": "Hoje a BODIVA decidiu descansar ☕️",
+    "hojeACarteiraRecuou": "Hoje a carteira recuou",
+    "haNovidadesSobreIssuer": "Há novidades sobre {issuer}",
+    "haUmMovimentoDeMercadoVerificado": "Há um movimento de mercado verificado. Abre a aplicação para consultar.",
+    "isin": "ISIN",
+    "instrumentosDisponiveis": "Instrumentos disponíveis",
+    "introduzUmValorInicialParaVeres": "Introduz um valor inicial para veres a projecção.",
+    "introduzaUmaTaxaSuperiorA100": "Introduza uma taxa superior a −100% e até 100%.",
+    "inicio": "Início",
+    "inicioDeSessaoClaro": "Início de sessão · Claro",
+    "inicioDeSessaoEscuro": "Início de sessão · Escuro",
+    "inicioDeSessaoTextoGrande": "Início de sessão · Texto grande",
+    "istoJaMereceAtencao": "Isto já merece atenção 👀",
+    "limitesValoresAte1BiliaoKz": "Limites: valores até 1 bilião Kz por campo, prazo de 1 a 600 meses e taxa anual superior a −100% e até 100%.",
+    "limparFiltros": "Limpar filtros",
+    "linhaContinuaProjeccao": "Linha contínua: projecção",
+    "linhaDeMercado": "Linha de mercado",
+    "linhaTracejadaTotalDisponibilizado": "Linha tracejada: total disponibilizado",
+    "maisNegociados": "Mais negociados",
+    "mercadoEmModoTranquilo": "Mercado em modo tranquilo",
+    "mercadoDesactualizado": "Mercado · desactualizado",
+    "mercadoGrandeDemonstracao": "Mercado · grande · demonstração",
+    "mercadoMedioDemonstracao": "Mercado · médio · demonstração",
+    "mercadoPequenoDemonstracao": "Mercado · pequeno · demonstração",
+    "mercadoQueda": "Mercado · queda",
+    "mercados": "Mercados",
+    "meses": "Meses",
+    "modoEscuro": "Modo escuro",
+    "newcomerInTheBuilding": "Newcomer in the building! 👋",
+    "novaInformacao": "Nova informação",
+    "novaInformacaoDeMercado": "Nova informação de mercado",
+    "novaInformacaoEmInvestAo": "Nova informação em invest.ao",
+    "novaInformacaoEmInvestAoAbra": "Nova informação em invest.ao. Abra a aplicação para consultar a atualização.",
+    "novaNoticiaNaInvestAo": "Nova notícia na invest.ao",
+    "novoNaBodiva": "Novo na BODIVA",
+    "novoResumoDeMercado": "Novo resumo de mercado",
+    "oIosPermiteNotificacoesAEntrega": "O iOS permite notificações. A entrega depende da ligação, das definições do dispositivo e da disponibilidade dos dados de mercado.",
+    "oMercadoPelosNumeros": "O mercado, pelos números",
+    "oMovimentoNaTuaLista": "O movimento na tua lista",
+    "oQueMarcouReferenceperiodComDados": "O que marcou {referencePeriod}, com dados verificados.",
+    "oTeuWeeklyWrapEstaPronto": "O teu Weekly Wrap está pronto",
+    "oTeuRadarAindaEstaVazio": "O teu radar ainda está vazio",
+    "onboardingClaro": "Onboarding · Claro",
+    "onboardingEscuro": "Onboarding · Escuro",
+    "opcoesDoAlerta": "Opções do alerta: {arg1}",
+    "osAvisosUsamASensibilidadeDefinida": "Os avisos usam a sensibilidade definida em Perfil e são independentes dos alertas personalizados.",
+    "osResultadosRefletemOsRegistosManuais": "Os resultados refletem os registos manuais e as cotações disponíveis. Não incluem dividendos, comissões ou impostos.",
+    "osReferencepriceNaoDuraramMuito": "Os {referencePrice} não duraram muito 👀",
+    "pesquisaACarregar": "Pesquisa a carregar",
+    "pesquisaEscura": "Pesquisa escura",
+    "pesquisaInicial": "Pesquisa inicial",
+    "pesquisarInstrumentos": "Pesquisar instrumentos",
+    "posicaoSimulada": "Posição simulada · {arg1}",
+    "precoFinalHipotetico": "Preço final hipotético: {arg1}",
+    "projeccao": "Projecção",
+    "projeccaoIlustrativaRentabilidadeNaoGarantidaSem": "Projecção ilustrativa. Rentabilidade não garantida. Sem dividendos, impostos, comissões ou inflação.",
+    "quemSeDestacouNaTuaLista": "Quem se destacou na tua lista",
+    "quemVaisAcompanhar": "Quem vais acompanhar?",
+    "registaUmaCompraQueJaFizeste": "Regista uma compra que já fizeste. Isto não envia uma ordem à corretora. O custo não inclui comissões ou impostos.",
+    "registaUmaVendaQueJaFizeste": "Regista uma venda que já fizeste. Isto não envia uma ordem à corretora. O valor não inclui comissões ou impostos.",
+    "resumo": "Resumo",
+    "reveASemanaNoMercadoAbre": "Revê a semana no mercado. Abre o Wrap e vê os destaques.",
+    "saldoNaoAplicado": "Saldo não aplicado: {arg1}",
+    "seEuInvestir": "Se eu investir",
+    "selecionaOInstrumentoParaASimulacao": "Seleciona o instrumento para a simulação",
+    "semGrandesMovimentosNoPeriodoObservado": "Sem grandes movimentos no período observado.",
+    "semLigacaoAInternet": "Sem ligação à Internet",
+    "semResultados": "Sem resultados",
+    "subidaVariacao0DescidaVariacao0": "Subida: variação > 0; descida: variação < 0; sem variação: = 0. A leitura exige pelo menos dois títulos e um movimento absoluto de 1% ou mais.",
+    "temMovimentoEmIssuer": "Tem movimento em {issuer} 👀",
+    "temosNovoMaximo": "Temos novo máximo 👀",
+    "tentarNovamente": "Tentar novamente",
+    "tocaNosValoresSublinhadosParaMudar": "Toca nos valores sublinhados para mudar o cenário.",
+    "umDosTeusFavoritosEstaA": "Um dos teus favoritos está a mexer",
+    "umaNovaAdmissaoABodivaFoi": "Uma nova admissão à BODIVA foi confirmada.",
+    "umaNovaMarcaNoMercado": "Uma nova marca no mercado 👀",
+    "unidadesIniciais": "Unidades iniciais: {arg1}",
+    "unidadesNoFinal": "Unidades no final: {arg1}",
+    "usarValoresIlustrativos": "Usar valores ilustrativos",
+    "valorDaVenda": "Valor da venda",
+    "valoresFinanceiros": "Valores financeiros",
+    "vamosVerOQueMexeu": "Vamos ver o que mexeu 👀",
+    "variacaoAnualHipoteticaDoPreco": "Variação anual hipotética do preço",
+    "verTodos": "Ver todos",
+    "verificaALigacaoETentaNovamente": "Verifica a ligação e tenta novamente.",
+    "verificaALigacaoAInternetE": "Verifica a ligação à Internet e tenta novamente.",
+    "ano": "ano",
+    "aoAno": "ao ano,",
+    "acoes": "ações",
+    "comUmaVariacaoDe": "com uma variação de",
+    "descida": "descida",
+    "eReforcar": "e reforçar",
+    "entreNegociacoesEmAte5Min": "entre negociações em até 5 min",
+    "entreOsFechosVerificadosDe": "entre os fechos verificados de {arg1}",
+    "escolherInstrumento": "escolher instrumento",
+    "eventoAnunciado": "evento anunciado",
+    "eventoRelacionado": "evento relacionado",
+    "eventosAnunciados": "eventos anunciados",
+    "eventosRelacionados": "eventos relacionados",
+    "faceAoUltimoFecho": "face ao último fecho",
+    "maximo": "máximo",
+    "mes": "mês",
+    "minimo": "mínimo",
+    "notificationUnusualSessionDormancyBreak": "Primeiro negócio em {arg1} sessões.",
+    "notificationUnusualSessionPriceMoveDown": "Desceu {arg1}% no fecho, {arg2}× a variação típica.",
+    "notificationUnusualSessionPriceMoveUp": "Subiu {arg1}% no fecho, {arg2}× a variação típica.",
+    "notificationUnusualSessionSpreadWider": "Diferença entre compra e venda {arg1}× maior que o habitual.",
+    "notificationUnusualSessionTradeCountSpike": "{arg1} negócios, {arg2}× o habitual.",
+    "notificationUnusualSessionVolumeSpike": "Negociou {arg1}× o volume habitual.",
+    "notificationUnusualTradeFundUnit": "Alguém acabou de comprar {arg1} unidades de participação de {arg2} a {arg3} por unidade.",
+    "niveis": "níveis",
+    "nivel": "nível",
+    "ordem": "ordem",
+    "ordens": "ordens",
+    "poderiaTer": "poderia ter:",
+    "porMesDurante": "por mês durante",
+    "subida": "subida",
+    "titulo": "título",
+    "titulos": "títulos",
+    "umInstrumento": "um instrumento",
+    "unidades": "unidades",
+    "unusualactivityRuleDormancyBreak": "Regresso à negociação",
+    "unusualactivityRuleLargeOrder": "Ordens de grande dimensão",
+    "unusualactivityRuleLargeTrade": "Negócios de grande dimensão",
+    "unusualactivityRulePriceMove": "Variação de preço",
+    "unusualactivityRuleSpreadChange": "Diferença compra/venda",
+    "unusualactivityRuleTradeCountSpike": "Número de negócios",
+    "unusualactivityRuleVolumeSpike": "Volume",
+    "issuerAcordouComVontade": "{issuer} acordou com vontade 📈",
+    "issuerChegouABodiva": "{issuer} chegou à BODIVA 👀",
+    "issuerEstaAMexer": "{issuer} está a mexer",
+    "issuerFechouEmDestaque": "{issuer} fechou em destaque",
+    "issuerHojeNaoVeioBrincar": "{issuer} hoje não veio brincar 📈",
+    "issuerJaEstaOficialmenteEmNegociacao": "{issuer} já está oficialmente em negociação na BODIVA.",
+    "issuerLevouUmAbanao": "{issuer} levou um abanão 👀",
+    "issuerMantemOPasso": "{issuer} mantém o passo",
+    "risingEmSubidaFallingEmDescida": "{rising} em subida · {falling} em descida · {unchanged} sem alteração, {referencePeriod}.",
+    "signedpercentagePorVariacaoDasCotacoesEntre": "{signedPercentage}% por variação das cotações entre fechos verificados.",
+    "symbolAtingiuUmNovoMaximoEm": "{symbol} atingiu um novo máximo em {referencePeriod}.",
+    "symbolUltrapassouAReferenciaVerificadaDe": "{symbol} ultrapassou a referência verificada de {referencePrice} Kz.",
+    "symbolExtremelabelDeFechoDoPeriodo": "{symbol}: {extremeLabel} de fecho do período, {referencePeriod}.",
+    "symbolSessionsSessoesDeDirectionlabelReferenceperiod": "{symbol}: {sessions} sessões de {directionLabel}, {referencePeriod}.",
+    "symbolSignedpercentageEntreNegociacoesEmAte": "{symbol}: {signedPercentage}% entre negociações em até 5 min, às {observationTime}.",
+    "symbolSignedpercentageComparisonlabel": "{symbol}: {signedPercentage}% {comparisonLabel}.",
+    "symbolSignedpercentageMaiorVariacaoAbsolutaNa": "{symbol}: {signedPercentage}% — maior variação absoluta na tua lista, {referencePeriod}.",
+    "ultimaCotacao": "Última cotação: {arg1}"
+  },
+  "alerts": {
+    "accessibility": {
+      "editAlert": "Editar alerta: {arg1}, {arg2}",
+      "enableAlert": "Ativar alerta: {arg1}"
+    },
+    "confirmation": {
+      "created": "Alerta criado",
+      "updated": "Alerta atualizado"
+    },
+    "error": {
+      "automaticLoadFailed": "Não foi possível carregar os avisos automáticos.",
+      "freePlanLimit": "O plano gratuito permite movimentos automáticos de 1 instrumento. Escolhe o instrumento nas definições do plano ou utiliza o Plus.",
+      "saveOptionFailed": "Não foi possível guardar esta opção. Tenta novamente."
+    },
+    "form": {
+      "aboveCurrentPrice": "{arg1} acima do preço atual",
+      "alertType": "Tipo de alerta",
+      "belowCurrentPrice": "{arg1} abaixo do preço atual",
+      "editTitle": "Editar alerta",
+      "sameAsCurrentPrice": "Igual ao preço atual",
+      "saveChanges": "Guardar alterações"
+    },
+    "list": {
+      "emptyTitle": "Ainda não tens alertas",
+      "loading": "A carregar alertas",
+      "title": "Os teus alertas"
+    },
+    "row": {
+      "above": "Acima",
+      "below": "Abaixo",
+      "edit": "Editar"
+    },
+    "threshold": {
+      "days": "{arg1} dias"
+    },
+    "unit": {
+      "days": "dias"
+    }
+  },
+  "app": {
+    "accountDeleted": {
+      "message": "A conta foi eliminada da invest.ao, incluindo o perfil, a carteira, a lista de acompanhamento, os alertas e o histórico de notificações.",
+      "title": "Conta eliminada"
+    },
+    "gift": {
+      "founder": "o fundador do invest.ao"
+    }
+  },
+  "appAvailability": {
+    "forceUpdate": {
+      "checkAgain": "Verificar novamente",
+      "checkFailed": "Não foi possível verificar a atualização.",
+      "message": "Esta versão já não é suportada. Atualiza a aplicação para continuares a acompanhar o mercado.",
+      "openStoreFailed": "Não foi possível abrir a App Store.",
+      "title": "Atualiza para continuar",
+      "updateButton": "Atualizar na App Store"
+    },
+    "maintenance": {
+      "checkFailed": "Não foi possível verificar o estado do serviço.",
+      "message": "Estamos a realizar trabalhos no serviço. Volta a tentar mais tarde.",
+      "stillInProgress": "A manutenção continua em curso.",
+      "title": "App em manutenção"
+    }
+  },
+  "assetDetails": {
+    "about": {
+      "bondCompany": "{arg1} é uma obrigação emitida por {arg2} e negociada no mercado angolano.",
+      "bondSovereign": "{arg1} é uma obrigação emitida pela República de Angola e negociada no mercado angolano.",
+      "fundUnit": "{arg1} é uma unidade de participação negociada no mercado angolano.",
+      "instrument": "{arg1} é um instrumento financeiro negociado no mercado angolano.",
+      "stock": "{arg1} é uma ação emitida por {arg2} e admitida à negociação no mercado angolano."
+    },
+    "accessibility": {
+      "addInstrument": "Adicionar {arg1} à comparação",
+      "addToComparison": "Adicionar título para comparação",
+      "alertHintCreate": "Define um alerta de preço ou variação",
+      "alertHintManage": "Abre os alertas deste instrumento para editar, pausar ou eliminar",
+      "bodivaChange": "Variação publicada pela BODIVA",
+      "candleSummary": "Às {arg1}, abertura {arg2}, máximo {arg3}, mínimo {arg4}, fecho {arg5}, volume {arg6}, {arg7} negócios",
+      "change": "Variação {arg1}",
+      "comparisonChart": "Gráfico de comparação por variação de preço",
+      "level": "{arg1}, nível {arg2}, preço {arg3}, quantidade {arg4}",
+      "loadingDetails": "A carregar detalhes do título",
+      "newcomer": "Novato: admitido há menos de cinco dias",
+      "noLevel": "{arg1}: sem nível disponível",
+      "openReport": "Abrir {arg1}",
+      "openWebsite": "Abrir site de {arg1}",
+      "priceHistory": "Histórico do preço",
+      "removeInstrument": "Remover {arg1}",
+      "retrySession": "Tentar carregar a sessão novamente",
+      "shareInstrument": "Partilhar instrumento",
+      "viewOfficialInfo": "Consultar informação oficial: {arg1}",
+      "watchlistOff": "Fora da lista",
+      "watchlistOn": "Na lista"
+    },
+    "alerts": {
+      "manyPaused": "{arg1} alertas pausados",
+      "oneActive": "1 alerta ativo",
+      "onePaused": "1 alerta pausado"
+    },
+    "bondFacts": {
+      "coupon": "Cupão",
+      "header": "Rendimento fixo",
+      "isin": "ISIN",
+      "maturity": "Vencimento",
+      "maturityFromCode": "Vencimento indicado no código",
+      "maturityNote": "Data deduzida do código do instrumento. Confirma as condições e o estado atual na documentação do emitente.",
+      "notCalculated": "Não calculada",
+      "quoteDisclaimer": "A cotação percentual não é o cupão nem a rendibilidade do investimento. A base de cotação e as condições contratuais precisam de confirmação na fonte. Um instrumento sem cotação não deve ser interpretado como vencido ou reembolsado.",
+      "unconfirmed": "Não confirmado",
+      "yieldToMaturity": "Rendibilidade até ao vencimento"
+    },
+    "chart": {
+      "lastTradeNote": "O último negócio pode diferir da cotação publicada.",
+      "loadingSession": "A carregar sessão…",
+      "noTrades": "Sem negócios nesta sessão",
+      "noTradesSentence": "Sem negócios nesta sessão.",
+      "notEnoughData": "Sem dados suficientes para mostrar a evolução do preço.",
+      "oneTrade": "Um negócio disponível",
+      "outdatedData": "Dados desatualizados",
+      "selectedPrice": "Preço selecionado",
+      "sessionUnavailable": "Os dados desta sessão estão indisponíveis."
+    },
+    "comparison": {
+      "axisTitle": "Variação de preço (%)",
+      "basisIntraday": "Intervalos comuns de 5 min",
+      "basisSessions": "Sessões comuns",
+      "caption": "{arg1}: {arg2} — {arg3}. Variação de preço, sem dividendos, comissões ou impostos.",
+      "chartTitle": "Variação de preço no período comum",
+      "confirmError": "Não foi possível confirmar a comparação. Tenta novamente com o mesmo par; a tentativa não gasta uma segunda comparação.",
+      "noCommonError": "Não existem duas observações comuns neste período. Escolhe outro período ou instrumento. A comparação gratuita não foi utilizada.",
+      "noCommonRequested": "Não existem duas observações comuns no período pedido. Altera o período ou os instrumentos.",
+      "notEnoughData": "Sem dados suficientes no mesmo período para comparar a variação de preço.",
+      "oneDay": "1 dia",
+      "preparing": "A preparar comparação",
+      "selectInstrument": "Seleciona pelo menos um instrumento para ver o gráfico.",
+      "shareChart": "Partilhar gráfico",
+      "threeMonths": "3 meses",
+      "title": "Comparar · {arg1}"
+    },
+    "dataSheet": {
+      "changeVsBaseline": "Variação face à base",
+      "firstObservation": "Primeira observação disponível",
+      "lastObservation": "Última observação disponível",
+      "noObservations": "Sem observações no período pedido.",
+      "requestedPeriod": "Período pedido: {arg1}",
+      "sourceNote": "Cotações disponíveis na invest.ao. As linhas ligam observações; não representam negociações entre esses pontos. Horas de Luanda.",
+      "title": "Dados do gráfico"
+    },
+    "export": {
+      "baselineNote": "Mesma base de partida · 0% · Cotações no fim do período",
+      "methodNote": "Variação de preço no período comum, sem dividendos, comissões ou impostos."
+    },
+    "exportHistory": "Exportar histórico",
+    "history": {
+      "header": "Histórico",
+      "lastUpdate": "A última atualização foi {arg1}.",
+      "unavailableTitle": "Histórico indisponível"
+    },
+    "issuer": {
+      "dividendFrequency": "Frequência",
+      "dividendPayment": "Pagamento",
+      "dividendPerShare": "Por ação",
+      "fundManager": "Sociedade gestora",
+      "headquarters": "Sede",
+      "noDividends": "Ainda não existem dados de dividendos publicados para este título.",
+      "noReports": "Os relatórios financeiros mais recentes ainda não estão disponíveis.",
+      "viewReports": "Ver relatórios",
+      "website": "Site"
+    },
+    "listing": {
+      "aboutHeader": "Sobre a empresa",
+      "admissionConfirmed": "Admissão confirmada",
+      "admissionExpected": "Admissão prevista",
+      "confirmedMessage": "A admissão foi confirmada. As cotações dependem dos dados de negociação disponíveis.",
+      "newAdmission": "Nova admissão à BODIVA",
+      "officialHeader": "Informação oficial",
+      "pendingMessage": "A data está anunciada. A negociação será indicada após a confirmação da admissão.",
+      "quotesMessage": "O preço e o histórico aparecem quando houver dados de negociação.",
+      "quotesTitle": "Cotações após a estreia",
+      "statusConfirmed": "Já faz parte do mercado",
+      "statusPending": "A aguardar confirmação",
+      "watchlistHint": "Quando as ações estiverem disponíveis, poderás adicioná-las à tua lista de acompanhamento."
+    },
+    "marketInfo": {
+      "symbol": "Símbolo",
+      "tradingStatus": "Estado da negociação",
+      "type": "Tipo"
+    },
+    "orderBook": {
+      "barsNote": "As barras comparam a quantidade em cada nível, na mesma escala para compra e venda.",
+      "countsNote": "O número de ordens não está disponível para todos os níveis.",
+      "quantity": "Qtd. {arg1}",
+      "subtitle": "Melhores preços no topo · Todos os níveis"
+    },
+    "orders": {
+      "emptyMessage": "Não existem ordens verificadas disponíveis."
+    },
+    "picker": {
+      "emptyMessage": "Não existem outros instrumentos desta categoria com preços disponíveis.",
+      "emptyTitle": "Sem instrumentos para comparar",
+      "title": "Comparar com"
+    },
+    "priceHeader": {
+      "newcomer": "Novato"
+    },
+    "share": {
+      "subject": "{arg1} na invest.ao",
+      "textWithChange": "{arg1} — {arg2}{arg3}{arg4} na invest.ao",
+      "textWithPrice": "{arg1} — {arg2} na invest.ao"
+    },
+    "statistics": {
+      "header": "Estatísticas",
+      "low": "Mínimo",
+      "marketCap": "Capitalização",
+      "open": "Abertura",
+      "tradeCount": "N.º de negócios",
+      "verificationUnavailable": "Data de verificação indisponível"
+    },
+    "tab": {
+      "orders": "Ordens",
+      "overview": "Visão geral"
+    }
+  },
+  "authentication": {
+    "accessibility": {
+      "appleHint": "Inicia sessão de forma segura com a tua conta Apple",
+      "googleHint": "Abre o início de sessão seguro do Google"
+    },
+    "error": {
+      "accountChanged": "A conta em sessão mudou. Confirma novamente a conta que queres eliminar.",
+      "deletionCheckConnection": "Não foi possível confirmar a eliminação da conta. Verifica a ligação à Internet e tenta novamente.",
+      "deletionRetry": "Não foi possível confirmar a eliminação da conta. Tenta novamente dentro de alguns instantes.",
+      "deletionSignInAgain": "Não foi possível confirmar a eliminação. Inicia sessão novamente antes de tentar.",
+      "signInRequired": "É necessário iniciar sessão para aceder aos dados da conta."
+    },
+    "header": {
+      "message": "Inicia sessão para guardar a tua lista de acompanhamento e os registos da tua carteira. Não liga a tua conta bancária ou de corretagem.",
+      "title": "O mercado angolano num só lugar"
+    },
+    "profile": {
+      "defaultName": "Perfil invest.ao"
+    },
+    "signIn": {
+      "apple": "Continuar com Apple",
+      "google": "Continuar com Google",
+      "progress": "A iniciar sessão…"
+    }
+  },
+  "benchmark": {
+    "difference": "Diferença",
+    "inflation": "Inflação",
+    "luibor": "LUIBOR",
+    "policyRate": "Taxa BNA",
+    "title": "Comparar com",
+    "treasuryBill": "BT 364 dias",
+    "unlock": "Comparar com inflação e taxas"
+  },
+  "bondYield": {
+    "accrued": "Juro corrido por 100",
+    "calculate": "Calcular",
+    "coupon": "Cupão anual (%)",
+    "currentYield": "Rendimento corrente",
+    "dirtyPrice": "Preço com juro corrido",
+    "frequency": {
+      "label": "Pagamento",
+      "annual": "Anual",
+      "quarterly": "Trimestral",
+      "semiannual": "Semestral"
+    },
+    "incomplete": "Indica o preço e o cupão",
+    "nextCoupon": "Próximo cupão",
+    "price": "Preço (% do nominal)",
+    "remainingCoupons": "Cupões por pagar",
+    "saveTerms": "Guardar cupão"
+  },
+  "cash": {
+    "add": "Registar dinheiro",
+    "amount": "Montante",
+    "balance": "Saldo em dinheiro",
+    "deposited": "Depositado",
+    "kind": {
+      "deposit": "Depósito",
+      "fee": "Taxa",
+      "withdrawal": "Levantamento"
+    },
+    "movements": "Movimentos",
+    "result": "Resultado",
+    "save": "Guardar",
+    "title": "Dinheiro",
+    "total": "Valor total"
+  },
+  "common": {
+    "about": "Sobre",
+    "aboutItem": "Informações sobre o {arg1}",
+    "account": "Conta",
+    "actionUnavailable": "Ação indisponível",
+    "activeAlertsCount": "{arg1} alertas ativos",
+    "activity": "Atividade",
+    "addInstruments": "Adicionar instrumentos",
+    "addToWatchlist": "Adicionar à lista de acompanhamento",
+    "alerts": "Alertas",
+    "all": "Tudo",
+    "allItems": "Todos",
+    "allocation": "Distribuição",
+    "alreadyListedOnBodiva": "Já faz parte do mercado BODIVA.",
+    "alreadyOnWatchlist": "Já na tua lista",
+    "amountRangeError": "Introduza um valor entre 0 e 1 000 000 000 000 Kz.",
+    "angolanMarket": "Mercado angolano",
+    "annual": "Anual",
+    "appIndicator": "Indicador invest.ao",
+    "appIndicatorDisclaimer": "Indicador invest.ao; não é um índice oficial da BODIVA.",
+    "appName": "invest.ao",
+    "appNameSpoken": "invest ponto ao",
+    "automaticMovements": "Movimentos automáticos",
+    "base": "Base",
+    "bidAskSpread": "Diferença compra/venda",
+    "bonds": "Obrigações",
+    "buy": "Compra",
+    "cancel": "Cancelar",
+    "change": "Variação",
+    "changeUnavailable": "Variação indisponível",
+    "checkConnectionMessage": "Verifica a ligação e tenta novamente.",
+    "chooseInstrument": "Escolher instrumento",
+    "close": "Fechar",
+    "closesOnDates": "Fechos de {arg1} e {arg2}",
+    "comingSoon": "Em breve",
+    "company": "Empresa",
+    "compare": "Comparar",
+    "comparison": "Comparação",
+    "comparisonBaseline": "Base de comparação",
+    "contentHiddenPrivacyMode": "Conteúdo oculto no Modo de privacidade.",
+    "continue": "Continuar",
+    "correctedDataEdition": "Dados corrigidos · edição {arg1}",
+    "createAlert": "Criar alerta",
+    "currency": "Moeda",
+    "currentValue": "Valor atual",
+    "dataAndMethod": "Dados e método",
+    "date": "Data",
+    "day": "Dia",
+    "delete": "Apagar",
+    "deleteAccount": "Eliminar conta",
+    "deleteRecord": "Eliminar registo",
+    "dividends": "Dividendos",
+    "done": "Concluído",
+    "edition": "Edição {arg1}",
+    "enableNotifications": "Ativar notificações",
+    "explore": "Explorar",
+    "exportStory": "Exportar story",
+    "faceValue": "Valor nominal",
+    "finalValue": "Valor final",
+    "financialReports": "Relatórios financeiros",
+    "follow": "Acompanhar",
+    "fromYourPortfolio": "DA TUA CARTEIRA",
+    "funds": "Fundos",
+    "hiddenValue": "Valor oculto",
+    "hiddenValues": "Valores ocultos",
+    "high": "Máximo",
+    "home": "Início",
+    "idVersion": "{arg1} · v{arg2}",
+    "includedPositions": "Posições incluídas",
+    "informationUnavailable": "Informação indisponível",
+    "initialAmount": "Valor inicial",
+    "instrument": "Instrumento",
+    "instrumentUnavailable": "Instrumento indisponível",
+    "instruments": "Instrumentos",
+    "instrumentsCount": "{arg1} instrumentos",
+    "investedAmount": "Valor investido",
+    "issuer": "Emitente",
+    "lastAvailableSession": "Última sessão disponível",
+    "lastBodivaClose": "Último fecho BODIVA",
+    "lastVerificationDate": "Última data de verificação",
+    "loadMore": "Carregar mais",
+    "loading": "A carregar",
+    "loadingInstruments": "A carregar instrumentos",
+    "loadingMarket": "A carregar mercado",
+    "manageAccount": "Gerir conta",
+    "manageSubscription": "Gerir subscrição",
+    "markAsRead": "Marcar como lida",
+    "market": "Mercado",
+    "marketClose": "Fecho",
+    "marketInformation": "Informação de mercado",
+    "marketStatus": "Mercado {arg1}",
+    "month": "Mês",
+    "monthly": "Mensal",
+    "name": "Nome",
+    "netIncome": "Rendimentos líquidos",
+    "newAlert": "Novo alerta",
+    "newInformationNotification": "Nova informação em invest.ao",
+    "news": "Notícias",
+    "noData": "Sem dados",
+    "noInstruments": "Sem instrumentos",
+    "noInternet": "Sem ligação à Internet",
+    "noQuote": "Sem cotação",
+    "noResults": "Sem resultados",
+    "notAvailable": "Não disponível",
+    "notifications": "Notificações",
+    "ofTotalValue": "Do valor total",
+    "ok": "OK",
+    "onTheMove": "Em movimento",
+    "oneMonth": "1 mês",
+    "onePosition": "1 posição",
+    "oneWeek": "1 semana",
+    "oneYear": "1 ano",
+    "openInstrument": "Abrir instrumento",
+    "openSecurityDetailsHint": "Abre os detalhes do título",
+    "orderBook": "Livro de ordens",
+    "other": "Outros",
+    "partialValue": "Valor parcial",
+    "paused": "Em pausa",
+    "performance": "Desempenho",
+    "portfolio": "Carteira",
+    "portfolioValue": "Valor da carteira",
+    "price": "Preço",
+    "priceChange": "Variação de preço",
+    "priceUnconfirmed": "Preço por confirmar",
+    "privacyPolicy": "Política de privacidade",
+    "quantity": "Quantidade",
+    "quote": "Cotação",
+    "quoteContext": "Cotação · {arg1}",
+    "quoteUnavailable": "Cotação indisponível",
+    "read": "Lida",
+    "realizedGain": "Ganho realizado",
+    "recordIncome": "Registar rendimento",
+    "recordPurchase": "Registar compra",
+    "recordSale": "Registar venda",
+    "records": "Registos",
+    "refresh": "Atualizar",
+    "refreshFailed": "Não foi possível atualizar os dados",
+    "relatedSecurities": "Títulos relacionados",
+    "removeFromWatchlist": "Remover da lista de acompanhamento",
+    "savePreferenceFailed": "Não foi possível guardar a preferência. Tenta novamente.",
+    "search": "Pesquisa",
+    "searchInstruments": "Pesquisar instrumentos",
+    "searchSymbolNameOrIssuer": "Procurar símbolo, nome ou emitente",
+    "security": "Título",
+    "selectedDate": "Data selecionada",
+    "sell": "Venda",
+    "sensitivity": "Sensibilidade",
+    "series": "Série",
+    "sessionRecoveryFailed": "Não foi possível recuperar a sessão",
+    "signOut": "Terminar sessão",
+    "significantMovement": "Movimento relevante",
+    "simulateInvestment": "Simular investimento",
+    "sixMonths": "6 meses",
+    "sourceLabel": "Fonte: {arg1}",
+    "sourcePublishedOn": "Fonte publicada em {arg1}",
+    "startedEndedSummary": "Começou em {arg1} e terminou em {arg2}",
+    "stock": "Ação",
+    "stocks": "Ações",
+    "symbolNameOrIssuer": "Símbolo, nome ou emitente",
+    "targetPrice": "Preço alvo",
+    "terms": "Termos",
+    "theme": "Tema",
+    "today": "Hoje",
+    "trades": "Negócios",
+    "tryAgain": "Tentar novamente",
+    "unavailable": "Indisponível",
+    "unchanged": "Sem alteração",
+    "unread": "Não lida",
+    "value": "Valor",
+    "valueUnavailable": "Valor indisponível",
+    "verifiedOn": "Verificado em {arg1}.",
+    "viewAll": "Ver tudo",
+    "viewMyWrap": "Ver o meu Wrap",
+    "waitingForData": "A aguardar dados",
+    "watchedAssets": "Ativos acompanhados",
+    "watchedInstrument": "Instrumento acompanhado",
+    "watchedInstrumentsCount": "{arg1} instrumentos a acompanhar",
+    "watchedSecurity": "Título acompanhado",
+    "watchlist": "Lista de acompanhamento",
+    "watchlistConfirmedOn": "Lista confirmada em {arg1}",
+    "watchlistFollowing": "A acompanhar",
+    "watchlistMovements": "Movimentos da tua lista",
+    "watchlistTab": "Lista",
+    "weeklyReview": "Leitura da semana",
+    "yesterday": "Ontem",
+    "yourMarketUpClose": "O teu mercado, de perto.",
+    "yourWatchlist": "A tua lista",
+    "yourWatchlistCaps": "A TUA LISTA"
+  },
+  "components": {
+    "button": {
+      "processing": "A processar"
+    },
+    "chart": {
+      "endLabel": "Fim",
+      "loadingHistory": "A carregar histórico",
+      "loadingPriceHistory": "A carregar histórico de preços",
+      "priceAccessibility": "Evolução do preço"
+    },
+    "emptyState": {
+      "dataUnavailable": "Dados indisponíveis",
+      "noFavoritesMessage": "Adiciona instrumentos para os acompanhar aqui.",
+      "noFavoritesTitle": "Sem favoritos"
+    },
+    "financial": {
+      "fellAccessibility": "Desceu {arg1}",
+      "roseAccessibility": "Subiu {arg1}",
+      "todaySession": "Sessão de hoje",
+      "valueAccessibility": "Valor financeiro"
+    },
+    "indexInfo": {
+      "calculatedBy": "Calculado pela invest.ao",
+      "dataSource": "Fonte dos dados",
+      "howCalculated": "Como é calculado",
+      "legalNotice": "Aviso legal",
+      "whatItIs": "O que é"
+    },
+    "offlineBanner": {
+      "outdated": "Os dados podem estar desatualizados."
+    },
+    "placeholder": {
+      "loadFailed": "Não foi possível carregar estes dados."
+    },
+    "privacy": {
+      "disabledAnnouncement": "Modo de privacidade desativado",
+      "enabledAnnouncement": "Modo de privacidade ativado",
+      "explanationDetail": "as cotações públicas e os campos de edição continuam visíveis. Não altera as notificações do sistema.",
+      "explanationIntro": "Oculta valores da carteira e dos alertas nesta aplicação. Os instrumentos, a tendência do gráfico, ",
+      "gotIt": "Entendido",
+      "hideValues": "Ocultar valores",
+      "protectedContent": "invest.ao. Conteúdo protegido.",
+      "showValues": "Mostrar valores"
+    },
+    "range": {
+      "allAccessibility": "Todo o histórico",
+      "oneDayAccessibility": "Um dia",
+      "oneMonthAccessibility": "Um mês",
+      "oneWeekAccessibility": "Uma semana",
+      "oneYearAccessibility": "Um ano",
+      "sixMonthsAccessibility": "Seis meses",
+      "threeMonthsAccessibility": "Três meses"
+    },
+    "toast": {
+      "dismiss": "Fechar aviso",
+      "retrying": "A tentar novamente"
+    }
+  },
+  "designSystem": {
+    "appearance": {
+      "dark": "Escuro",
+      "light": "Claro",
+      "system": "Sistema"
+    },
+    "gallery": {
+      "componentsTitle": "Componentes",
+      "controlsHeader": "Controlos",
+      "flowExplore": "Explorar → detalhe → acompanhar",
+      "flowPortfolio": "Carteira → registar compra",
+      "flowWelcome": "Boas-vindas → início de sessão",
+      "flowsHeader": "Fluxos",
+      "openActivity": "Abrir atividade",
+      "positive": "Positivo",
+      "previewBadge": "PRÉ-VISUALIZAÇÃO · DADOS ILUSTRATIVOS",
+      "sampleInsightMessage": "Consulta os documentos publicados para este título.",
+      "sampleInsightTitle": "BAI publicou informação ao mercado",
+      "surface": "Superfície",
+      "testNotificationMessage": "Ensaio da navegação a partir de Notificações.",
+      "testNotificationTitle": "[TESTE] Fecho das acções",
+      "title": "Sistema de design",
+      "valuesHeader": "Valores e variação",
+      "viewPortfolio": "Ver carteira",
+      "wrapSaveFailed": "Não foi possível guardar o Wrap de pré-visualização",
+      "wrapSaving": "A guardar o Wrap de pré-visualização"
+    },
+    "layout": {
+      "comparisonModeAccessibility": "Modo de comparação"
+    },
+    "search": {
+      "clearAccessibility": "Limpar pesquisa",
+      "prompt": "Pesquisar títulos ou emitentes"
+    }
+  },
+  "errors": {
+    "account": {
+      "deleteFailed": "Não foi possível eliminar a conta",
+      "signInFailed": "Não foi possível iniciar sessão",
+      "signOutFailed": "Não foi possível terminar sessão"
+    },
+    "alert": {
+      "updateFailed": "Não foi possível atualizar o alerta"
+    },
+    "chart": {
+      "shareFailed": "Não foi possível preparar o gráfico para partilhar"
+    },
+    "data": {
+      "chooseAnotherInstrument": "Volta à lista e escolhe outro instrumento.",
+      "unreadableMessage": "Os dados recebidos não estão disponíveis para consulta. Tenta mais tarde.",
+      "unreadableTitle": "Não foi possível apresentar os dados"
+    },
+    "generic": {
+      "loadFailed": "Não foi possível carregar os dados",
+      "message": "Fecha e volta a abrir a aplicação.",
+      "saveFailed": "Não foi possível guardar a alteração",
+      "title": "Não foi possível continuar"
+    },
+    "market": {
+      "loadFailed": "Não foi possível carregar o mercado",
+      "priceHistoryFailed": "Não foi possível carregar o histórico de preços",
+      "refreshFailed": "Não foi possível atualizar o mercado"
+    },
+    "network": {
+      "checkConnection": "Verifica a ligação à Internet e tenta novamente.",
+      "timeoutTitle": "O serviço demorou a responder"
+    },
+    "notification": {
+      "loadAlertsFailed": "Não foi possível carregar os alertas e as notificações",
+      "markReadFailed": "Não foi possível marcar a notificação como lida"
+    },
+    "permission": {
+      "deniedMessage": "A tua conta não tem permissão para esta ação.",
+      "deniedTitle": "Acesso não permitido"
+    },
+    "portfolio": {
+      "deletePurchaseFailed": "Não foi possível eliminar a compra",
+      "loadFailed": "Não foi possível carregar a carteira",
+      "savePurchaseFailed": "Não foi possível guardar a compra"
+    },
+    "rateLimit": {
+      "message": "Tenta novamente dentro de alguns instantes.",
+      "title": "Aguarda um momento"
+    },
+    "service": {
+      "unavailable": "Serviço indisponível. Tenta novamente daqui a pouco."
+    },
+    "session": {
+      "expiredMessage": "A tua sessão terminou. Inicia sessão para continuar.",
+      "signInAgainTitle": "Inicia sessão novamente",
+      "signInMessage": "Inicia sessão para continuar.",
+      "signInTitle": "Inicia sessão",
+      "signOutOthersFailed": "Não foi possível terminar a sessão nos outros dispositivos.",
+      "signedOutHereTitle": "Sessão terminada neste dispositivo"
+    },
+    "validation": {
+      "message": "Revê os dados e tenta novamente.",
+      "title": "Verifica os dados",
+      "unavailableForInstrument": "Esta ação não está disponível para este instrumento."
+    },
+    "watchlist": {
+      "updateFailed": "Não foi possível atualizar a lista de acompanhamento"
+    }
+  },
+  "formatting": {
+    "change": {
+      "betweenNegativeAndZero": "Entre −{arg1} e 0 p.p.",
+      "betweenZeroAndPositive": "Entre 0 e +{arg1} p.p."
+    },
+    "listing": {
+      "almostHere": "Está quase a chegar",
+      "awaitingDebut": "À espera da estreia",
+      "expectedToday": "É o dia previsto",
+      "newToMarket": "Novo no mercado",
+      "newcomer": "Newcomer in the building! 👋"
+    },
+    "listingDetail": {
+      "admissionExpectedDate": "Admissão prevista para {arg1}. Aguardamos a confirmação.",
+      "admissionExpectedOn": "Admissão à negociação prevista para {arg1}.",
+      "admissionExpectedToday": "Admissão prevista para hoje. Aguardamos a confirmação."
+    },
+    "notification": {
+      "bodivaUpdate": "Atualização BODIVA",
+      "changeAbove": "Variação superior a",
+      "dropped": "desceu",
+      "fell": "caiu",
+      "high52Week": "Máximo de 52 semanas",
+      "high52WeekReached": "{arg1} atingiu um máximo de 52 semanas.",
+      "intradayMovement": "Movimento intradiário",
+      "lessThan": "menos de {arg1}",
+      "low52Week": "Mínimo de 52 semanas",
+      "low52WeekReached": "{arg1} atingiu um mínimo de 52 semanas.",
+      "marketClose": "Fecho das acções",
+      "movementSummary": "{arg1} {arg2} {arg3}, de {arg4} para {arg5} {arg6}.",
+      "newInformation": "Nova informação",
+      "noTrades": "Dias sem negócios",
+      "noTradesReached": "{arg1} está há {arg2} dias sem negócios.",
+      "notifyChangeExceeds": "Avisar-me quando a variação superar",
+      "notifyFalls": "Avisar-me quando o preço baixar para",
+      "notifyHigh52Week": "Avisar quando atingir um novo máximo de 52 semanas",
+      "notifyLow52Week": "Avisar quando atingir um novo mínimo de 52 semanas",
+      "notifyNoTrades": "Avisar quando ficar sem negócios durante",
+      "notifyReaches": "Avisar-me quando o preço atingir",
+      "notifyVolumeAbove": "Avisar quando o volume do dia superar a média em",
+      "priceAbove": "Preço acima de",
+      "priceBelow": "Preço abaixo de",
+      "priceUpdate": "Há uma atualização de preço para {arg1}.",
+      "rose": "subiu",
+      "targetReached": "Preço alvo atingido",
+      "thresholdReached": "{arg1} atingiu o limiar de {arg2}.",
+      "volumeAbove": "Volume acima da média",
+      "volumeReached": "{arg1} negociou {arg2}× ou mais o volume médio."
+    },
+    "price": {
+      "historyNotCollected": "O histórico oficial ainda não foi recolhido para este instrumento.",
+      "invalidResponse": "A resposta da fonte não confirmou um preço válido.",
+      "noNewPrices": "A última consulta não trouxe novos preços oficiais.",
+      "noTrades": "Sem negócios no histórico oficial disponível.",
+      "provenanceUnconfirmed": "A proveniência do preço ainda não foi confirmada.",
+      "rateLimited": "A fonte limitou os pedidos. Voltamos a tentar após a espera indicada.",
+      "referenceUpdate": "Atualização da referência: ",
+      "sinceYesterday": "desde ontem",
+      "sourceNoResponse": "A fonte não respondeu à última verificação.",
+      "unconfirmed": "Ainda não foi possível confirmar um preço oficial."
+    },
+    "time": {
+      "luanda": "{arg1} · Luanda"
+    },
+    "weekAhead": {
+      "cancelled": "Cancelado",
+      "dateAnnounced": "Data anunciada",
+      "dateProvisional": "Data provisória · A confirmar",
+      "exclusiveEnd": "{arg1} – {arg2} (fim exclusivo)",
+      "luandaSuffix": " · Luanda",
+      "nextWeekCount": "{arg1} {arg2} para a próxima semana",
+      "portfolioCount": "{arg1} {arg2} com ações na tua carteira",
+      "relatedPortfolio": "Relacionado com ações na tua carteira",
+      "relatedWatchlist": "Relacionado com a tua lista",
+      "sourceDateMissing": "Data de publicação da fonte não disponibilizada",
+      "timeNotAnnounced": "{arg1} · Hora não anunciada",
+      "timesNotAnnounced": "{arg1} – {arg2} · Horas não anunciadas",
+      "watchlistCount": "{arg1} {arg2} com a tua lista"
+    },
+    "weeklyWrap": {
+      "closesChange": "Variação entre fechos observados",
+      "onMyWatchlist": "Na minha watchlist",
+      "priceChangeDetail": "Variação de preço entre fechos verificados"
+    }
+  },
+  "home": {
+    "accessibility": {
+      "activityNew": "Há atividade nova",
+      "activityNone": "Sem atividade nova",
+      "contextCardHint": "Abre o resumo com os dados e o período de comparação",
+      "dailyChange": "Variação diária",
+      "eventHint": "Abre os detalhes da admissão e da empresa",
+      "loadingMarket": "A carregar dados de mercado",
+      "loadingMovements": "A carregar movimentos do mercado",
+      "marketDetailsHint": "Abre o gráfico, os períodos e a origem dos dados",
+      "moversHint": "Abre todos os instrumentos do mercado",
+      "profile": "Perfil de {arg1}",
+      "saturdayHint": "Consultar a informação e as fontes",
+      "viewWatchlist": "Ver lista de acompanhamento",
+      "watchlistHint": "Abre a lista completa de instrumentos acompanhados"
+    },
+    "alert": {
+      "wrapUnavailableMessage": "Este período já terminou ou não foi possível confirmar a sua disponibilidade. Tenta novamente mais tarde.",
+      "wrapUnavailableTitle": "Wrap indisponível"
+    },
+    "chart": {
+      "indexSeries": "Índice"
+    },
+    "contextCard": {
+      "availableSummaries": "Resumos disponíveis"
+    },
+    "event": {
+      "meetCompany": "Conhecer a empresa",
+      "newAdmission": "Nova admissão",
+      "statusOnBodiva": "Já na BODIVA",
+      "statusPending": "Por confirmar"
+    },
+    "explore": {
+      "header": "Explorar o mercado"
+    },
+    "greeting": {
+      "afternoon": "Boa tarde",
+      "bodivaStatus": "BODIVA {arg1}",
+      "evening": "Boa noite",
+      "investor": "Investidor",
+      "morning": "Bom dia",
+      "updateUnavailable": "Data de atualização indisponível",
+      "updated": "Atualizado {arg1}"
+    },
+    "header": {
+      "marketSession": "Sessão de mercado"
+    },
+    "hero": {
+      "awaitingUpdate": "A aguardar atualização da sessão",
+      "changeAvailable": "Instrumentos com variação disponível nesta atualização",
+      "declines": "{arg1} descidas",
+      "gains": "{arg1} subidas",
+      "latestData": "Últimos dados publicados pela BODIVA",
+      "title": "Síntese do mercado",
+      "tradedSecurities": "Títulos negociados · {arg1} negócios"
+    },
+    "listing": {
+      "admissionTitle": "Admissão à BODIVA",
+      "confirmAdmission": "Confirmar admissão",
+      "replayAnimation": "Repetir animação",
+      "sampleDescription": "Banco comercial com atividade em Angola."
+    },
+    "loading": {
+      "fullMarket": "A carregar o mercado completo…"
+    },
+    "metrics": {
+      "available": "Disponíveis",
+      "securitiesCount": "{arg1} títulos",
+      "tradingVolume": "Volume negociado"
+    },
+    "movers": {
+      "declinesTab": "Descidas",
+      "emptyCategory": "Sem movimentos disponíveis nesta categoria.",
+      "gainsTab": "Subidas",
+      "header": "Movimentos do mercado",
+      "noDeclines": "Sem descidas disponíveis",
+      "noGains": "Sem subidas disponíveis",
+      "quotesUnavailable": "Cotações atuais indisponíveis. Voltamos a tentar automaticamente.",
+      "topGainers": "Maiores subidas",
+      "topLosers": "Maiores descidas"
+    },
+    "overview": {
+      "availableInstruments": "Instrumentos disponíveis",
+      "header": "Panorama do mercado",
+      "noVerifiedData": "O indicador e os totais da sessão ainda não têm dados verificados.",
+      "noVerifiedTotals": "Os totais da sessão ainda não têm dados verificados.",
+      "sessionVolume": "Volume da sessão",
+      "tradedSecurities": "títulos negociados",
+      "verifiedCloses": "Instrumentos com fecho verificado",
+      "viewDetails": "Ver detalhes do mercado"
+    },
+    "saturday": {
+      "fromWatchlist": "DA TUA LISTA",
+      "header": "Para explorar este sábado",
+      "message": "Uma seleção do que aconteceu no mercado e nos títulos que segues.",
+      "publication": "PUBLICAÇÃO · {arg1}",
+      "relatedPortfolio": "Relacionada com a tua carteira",
+      "relatedWatchlist": "Relacionada com a tua lista"
+    },
+    "savedCalendar": {
+      "open": "Abrir agenda guardada"
+    },
+    "savedWrap": {
+      "open": "Abrir Wrap guardado",
+      "preparedOn": "Preparado em {arg1}"
+    },
+    "summary": {
+      "staleData": "Alguns dados aguardam atualização."
+    },
+    "watchlist": {
+      "emptyMessage": "Escolhe instrumentos para veres aqui as suas cotações.",
+      "emptyTitle": "Começa pelos teus favoritos",
+      "noInstruments": "Sem instrumentos acompanhados"
+    }
+  },
+  "income": {
+    "action": {
+      "record": "Registar"
+    },
+    "empty": {
+      "upcoming": "Sem pagamentos anunciados"
+    },
+    "kind": {
+      "coupon": "Cupão",
+      "dividend": "Dividendo",
+      "maturity": "Reembolso"
+    },
+    "plus": {
+      "locked": "Totais e lembretes"
+    },
+    "reminder": {
+      "coupon": "Cupão de {arg1} hoje",
+      "dividend": "Dividendo de {arg1} hoje",
+      "maturity": "Reembolso de {arg1} hoje"
+    },
+    "reminders": "Lembrar no dia do pagamento",
+    "section": {
+      "past": "Últimos 12 meses",
+      "upcoming": "Próximos"
+    },
+    "status": {
+      "recorded": "Registado"
+    },
+    "title": "Rendimentos",
+    "total": {
+      "last12": "Últimos 12 meses",
+      "next12": "Próximos 12 meses"
+    }
+  },
+  "intelligence": {
+    "activity": {
+      "unavailableMessage": "Não foi possível consultar esta atualização."
+    },
+    "cachedInsight": {
+      "savedNotice": "Leitura guardada · dados de {arg1} · não atualizados em tempo real."
+    },
+    "discover": {
+      "action": "Descobrir",
+      "eyebrow": "PARA DESCOBRIR"
+    },
+    "home": {
+      "viewWatchlist": "Ver a minha lista"
+    },
+    "nextWeek": {
+      "action": "Preparar a semana",
+      "eyebrow": "PRÓXIMA SEMANA"
+    },
+    "priceAlert": {
+      "openMessage": "Abra o título para consultar o alerta.",
+      "triggeredTitle": "O seu alerta de preço foi atingido"
+    },
+    "watchlistMover": {
+      "detail": "Maior variação da tua lista entre fechos verificados.",
+      "eyebrow": "NA TUA LISTA · {arg1}",
+      "headline": "{arg1} variou {arg2} esta semana"
+    },
+    "weekAhead": {
+      "datesAnnounced": "{arg1} · Datas anunciadas nas fontes."
+    },
+    "weekSummary": {
+      "detail": "Variação de preço das posições iniciais, entre fechos verificados.",
+      "eyebrow": "A TUA SEMANA · {arg1}",
+      "headline": "As tuas posições variaram {arg1} na semana"
+    },
+    "weeklyClose": {
+      "action": "Ver o Wrap",
+      "detail": "Amostra com fechos verificados; não representa um índice BODIVA.",
+      "eyebrow": "FECHO DA SEMANA · {arg1}",
+      "headline": "{arg1} de {arg2} títulos observados subiram"
+    }
+  },
+  "intents": {
+    "portfolio": {
+      "title": "Abrir carteira"
+    },
+    "quote": {
+      "title": "Cotação de um instrumento",
+      "unavailable": "Sem cotação disponível para {arg1}."
+    },
+    "watchlist": {
+      "title": "Abrir lista"
+    }
+  },
+  "invest": {
+    "ao": "invest.ao"
+  },
+  "learn": {
+    "bodiva": {
+      "1": {
+        "body": "A BODIVA (Bolsa de Dívida e Valores de Angola) é o mercado regulamentado onde se negoceiam ações, obrigações do Tesouro e obrigações de empresas.",
+        "heading": "O mercado"
+      },
+      "2": {
+        "body": "A Comissão do Mercado de Capitais (CMC) regula e supervisiona o mercado, as empresas cotadas e os intermediários.",
+        "heading": "Quem supervisiona"
+      },
+      "3": {
+        "body": "Não compras diretamente na bolsa. As ordens passam por um agente de intermediação registado na CMC, como um banco ou uma sociedade corretora, onde abres uma conta de valores mobiliários.",
+        "heading": "Como se participa"
+      },
+      "title": "O que é a BODIVA"
+    },
+    "bonds": {
+      "1": {
+        "body": "Ao comprar uma obrigação emprestas dinheiro ao Estado ou a uma empresa. Em troca recebes juros, os cupões, e o valor nominal no vencimento.",
+        "heading": "Um empréstimo"
+      },
+      "2": {
+        "body": "O preço de uma obrigação é cotado em percentagem do valor nominal. Abaixo de 100% compras com desconto; acima, com prémio.",
+        "heading": "Preço e valor nominal"
+      },
+      "3": {
+        "body": "A rendibilidade até ao vencimento junta os cupões e a diferença entre o preço pago e o valor reembolsado. Na ficha de cada obrigação podes calculá-la para o preço que escolheres.",
+        "heading": "Rendibilidade"
+      },
+      "title": "Obrigações"
+    },
+    "disclaimer": "Conteúdo educativo. Não constitui recomendação de investimento.",
+    "income": {
+      "1": {
+        "body": "Para receber um dividendo tens de ter as ações antes da data ex-dividendo. Quem compra nessa data ou depois já não recebe esse pagamento.",
+        "heading": "A data ex-dividendo"
+      },
+      "2": {
+        "body": "Dividendos e juros podem estar sujeitos ao Imposto sobre a Aplicação de Capitais (IAC), normalmente retido na fonte. A taxa depende do título.",
+        "heading": "Impostos"
+      },
+      "3": {
+        "body": "Em Rendimentos, na carteira, vês os pagamentos previstos dos títulos que tens.",
+        "heading": "Na tua carteira"
+      },
+      "title": "Dividendos e cupões"
+    },
+    "orders": {
+      "1": {
+        "body": "Numa ordem limitada defines o preço máximo de compra ou mínimo de venda. Só é executada a esse preço ou melhor e pode ficar por executar.",
+        "heading": "Ordem limitada"
+      },
+      "2": {
+        "body": "Cada negócio tem custos: a comissão do intermediário, as taxas da bolsa e, muitas vezes, a custódia. Em montantes pequenos, os custos pesam mais no resultado.",
+        "heading": "Custos"
+      },
+      "3": {
+        "body": "Ao registar compras, vendas e comissões na carteira, vês o resultado real de cada posição.",
+        "heading": "Regista na carteira"
+      },
+      "title": "Comprar e vender"
+    },
+    "quote": {
+      "1": {
+        "body": "O preço mostrado é o do último negócio. A variação compara-o com o fecho da sessão anterior.",
+        "heading": "Preço e variação"
+      },
+      "2": {
+        "body": "O volume é a quantidade de títulos negociados e os negócios são o número de transações. Com poucos negócios, um só pode mover muito o preço.",
+        "heading": "Volume e negócios"
+      },
+      "3": {
+        "body": "Num título pouco negociado pode demorar a encontrar quem compre ou venda. A secção Liquidez de cada ficha mostra com que frequência negoceia.",
+        "heading": "Liquidez"
+      },
+      "title": "Ler uma cotação"
+    },
+    "read": "Lida",
+    "risk": {
+      "1": {
+        "body": "O valor de ações e obrigações pode descer, e podes recuperar menos do que investiste.",
+        "heading": "Os preços variam"
+      },
+      "2": {
+        "body": "Com poucos títulos, o resultado depende de poucas empresas. Repartir entre emitentes e tipos de título reduz o peso de cada um.",
+        "heading": "Concentração"
+      },
+      "3": {
+        "body": "Se vais precisar do dinheiro em breve, podes ter de vender num mau momento ou sem comprador. Pensa no prazo antes de investir.",
+        "heading": "Prazo"
+      },
+      "title": "Risco e diversificação"
+    },
+    "shares": {
+      "1": {
+        "body": "Uma ação é uma fração do capital de uma empresa. Quem a detém partilha os resultados e os riscos do negócio.",
+        "heading": "Uma parte da empresa"
+      },
+      "2": {
+        "body": "O preço resulta dos negócios entre compradores e vendedores. Sobe quando há mais procura do que oferta ao preço atual e desce no caso contrário.",
+        "heading": "Como se forma o preço"
+      },
+      "3": {
+        "body": "O retorno vem da variação do preço e dos dividendos que a empresa decida distribuir. Nenhum dos dois é garantido.",
+        "heading": "De onde vem o retorno"
+      },
+      "title": "Ações"
+    },
+    "title": "Aprender"
+  },
+  "liquidity": {
+    "averageValue": "Valor médio por sessão",
+    "exit": "Sessões para vender a sua posição",
+    "exitValue": "≈ {arg1}",
+    "sessions": "Sessões com negócios",
+    "sessionsValue": "{arg1} de {arg2}",
+    "title": "Liquidez",
+    "unlock": "Ver liquidez"
+  },
+  "market": {
+    "event": {
+      "dividendPayment": "Pagamento de dividendos",
+      "dividendRecordDate": "Data de registo para dividendos",
+      "exDividendDate": "Data ex-dividendo"
+    },
+    "index": {
+      "baseDescription": "A série contínua de sessões verificadas começa em 100 pontos.",
+      "baseTitle": "Base inicial de 100",
+      "changeDescription": "Comparam-se fechos verificados da sessão atual e da sessão de negociação anterior, para pelo menos dois instrumentos.",
+      "changeTitle": "Variação de cada instrumento",
+      "closesOn": "Fechos de {arg1}",
+      "cumulativeDescription": "Aplica-se a variação média de cada sessão ao valor anterior do indicador.",
+      "cumulativeTitle": "Evolução acumulada",
+      "dataSource": "Cotações de fecho do mercado oficial BODIVA",
+      "dataSourceDisclosure": "As cotações de fecho, os volumes e as datas das sessões provêm exclusivamente dos dados públicos das sessões oficiais da BODIVA (Bolsa de Dívida e Valores de Angola).",
+      "legalNotice": "O Indicador invest.ao é calculado pela invest.ao. Não é um índice oficial da BODIVA, nem é calculado, patrocinado ou aprovado pela BODIVA. Serve apenas para informação e não constitui aconselhamento financeiro nem uma recomendação de compra ou venda.",
+      "methodology": "A série verificada parte de 100 pontos. Em cada sessão, calcula a média das variações de pelo menos dois instrumentos com fechos verificados nessa sessão e na sessão de negociação anterior. Todos têm o mesmo peso. Essa média é aplicada ao valor anterior do indicador. Os instrumentos elegíveis podem variar entre sessões. Uma lacuna nos dados inicia uma nova série, sem ligar períodos não verificados.",
+      "onboardingSubtitle": "Baseado em cotações BODIVA",
+      "subtitle": "Baseado em cotações do mercado BODIVA",
+      "summary": "O Indicador invest.ao resume a evolução dos preços dos instrumentos com dados válidos. É calculado pela invest.ao e não é um índice oficial da BODIVA.",
+      "unavailableMessage": "Este indicador composto é calculado pela invest.ao, não pela BODIVA. Está indisponível enquanto a base histórica e os instrumentos usados no cálculo não estiverem verificados. Os fechos verificados de cada instrumento continuam disponíveis no mercado.",
+      "unavailableTitle": "Indicador indisponível",
+      "weightDescription": "Cada instrumento com dados válidos tem o mesmo peso na média, independentemente da dimensão do emitente.",
+      "weightTitle": "Peso igual"
+    },
+    "kind": {
+      "corporateBond": "Obrigação corporativa",
+      "fundUnit": "Unidade de participação",
+      "otherInstrument": "Outro instrumento",
+      "treasuryBond": "Obrigação do Tesouro"
+    },
+    "listing": {
+      "admissionConfirmation": "Confirmação da admissão"
+    },
+    "price": {
+      "bodivaQuote": "Cotação BODIVA",
+      "bodivaReference": "Referência BODIVA",
+      "lastBodivaQuote": "Última cotação BODIVA",
+      "lastVerifiedClose": "Último fecho verificado · {arg1}"
+    },
+    "range": {
+      "oneDay": "1D",
+      "oneMonth": "1M",
+      "oneWeek": "1S",
+      "oneYear": "1A",
+      "sixMonths": "6M",
+      "threeMonths": "3M"
+    },
+    "snapshot": {
+      "announcements": "Comunicados",
+      "issuers": "Emitentes",
+      "verifiedCloses": "Fechos verificados"
+    },
+    "source": {
+      "bodivaOfficialData": "Dados oficiais de mercado publicados pela BODIVA."
+    },
+    "status": {
+      "closed": "Fechado",
+      "open": "Aberto"
+    },
+    "watchlist": {
+      "freePlanLimit": "O plano gratuito permite guardar 3 instrumentos. Remove um instrumento ou utiliza o Plus."
+    }
+  },
+  "markets": {
+    "accessibility": {
+      "loading": "A carregar instrumentos de mercado",
+      "order": "Ordem {arg1}",
+      "orderHint": "Alterna entre ordem ascendente e descendente",
+      "sortBy": "Ordenar por {arg1}"
+    },
+    "category": {
+      "treasury": "Tesouro"
+    },
+    "details": {
+      "sessionData": "Dados da sessão"
+    },
+    "emptyState": {
+      "clearFilters": "Limpar filtros",
+      "noData": "Os instrumentos disponíveis aparecerão aqui quando houver dados de mercado.",
+      "noMatches": "Altera a pesquisa ou seleciona outra categoria.",
+      "selectTitle": "Seleciona um instrumento"
+    },
+    "header": {
+      "published": "Publicado {arg1}",
+      "publishedUnavailable": "Data de publicação indisponível"
+    },
+    "picker": {
+      "sortBy": "Ordenar por"
+    },
+    "sort": {
+      "ascending": "Ascendente",
+      "descending": "Descendente",
+      "volume": "Volume"
+    },
+    "summary": {
+      "tradedSecurities": "Títulos negociados",
+      "transactions": "Transações",
+      "verifiedTraded": "Negociados verificados"
+    }
+  },
+  "news": {
+    "accessibility": {
+      "storyPreview": "Pré-visualização do story. {arg1}. {arg2}"
+    },
+    "article": {
+      "loadFailed": "Não foi possível carregar a notícia. Verifica a ligação e tenta novamente.",
+      "navigationTitle": "Notícia",
+      "noLongerPublished": "Esta notícia já não está publicada.",
+      "optionsLabel": "Opções da notícia",
+      "primarySource": "Fonte primária",
+      "sources": "Fontes",
+      "unavailableTitle": "Notícia indisponível"
+    },
+    "export": {
+      "failedTitle": "Não foi possível gerar a imagem. Tenta novamente.",
+      "noTitle": "Esta notícia não tem título.",
+      "preparing": "A preparar imagem…",
+      "shareImage": "Partilhar imagem",
+      "tooLong": "O conteúdo é demasiado longo para caber numa imagem sem cortar texto. A notícia continua disponível para leitura.",
+      "unavailableTitle": "Não é possível exportar"
+    },
+    "feed": {
+      "emptyTitle": "Ainda sem notícias",
+      "loading": "A carregar notícias",
+      "searchFailed": "Não foi possível pesquisar as notícias.",
+      "searchPrompt": "Pesquisar por título",
+      "unavailableTitle": "Notícias indisponíveis"
+    },
+    "information": {
+      "categoryLabel": "Categoria",
+      "emptyMessage": "Novas atualizações de mercado aparecerão aqui.",
+      "emptyTitle": "Sem informação",
+      "openHint": "Abre a informação de mercado",
+      "rowOpenHint": "Abre informação de mercado",
+      "sectionSubtitle": "Atualizações da BODIVA, emitentes e títulos acompanhados.",
+      "subtitle": "Informação relevante sobre a BODIVA, emitentes e títulos acompanhados."
+    },
+    "kind": {
+      "annualRecap": "Recap anual",
+      "article": "Artigo",
+      "dailyRecap": "Recap diário",
+      "monthlyRecap": "Recap mensal",
+      "weeklyRecap": "Recap semanal"
+    },
+    "publications": {
+      "emptyMessage": "Os novos artigos e recaps aparecerão aqui.",
+      "emptyTitle": "Ainda sem publicações",
+      "loadingLabel": "A carregar artigos e recaps",
+      "refreshFailed": "Não foi possível atualizar as publicações.",
+      "unavailableTitle": "Publicações indisponíveis"
+    },
+    "row": {
+      "articleHint": "Abre o artigo completo",
+      "readArticle": "Ler artigo",
+      "readRecap": "Ler recap",
+      "recapHint": "Abre o recap completo"
+    },
+    "store": {
+      "loadMoreFailed": "Não foi possível carregar mais publicações.",
+      "refreshFailed": "Não foi possível atualizar os artigos e recaps."
+    },
+    "theme": {
+      "blueAurora": "Aurora azul",
+      "dawn": "Amanhecer",
+      "indigo": "Índigo",
+      "investBlue": "Azul invest.ao",
+      "softBlue": "Azul suave",
+      "teal": "Azul petróleo"
+    }
+  },
+  "notification": {
+    "close": {
+      "body": "{arg1} em alta e {arg2} em baixa. Maior variação: {arg3} {arg4}%.",
+      "flat": "Nenhuma ação mudou de preço.",
+      "title": "Fecho da BODIVA",
+      "watchlist": "Na tua lista: {arg1} em alta e {arg2} em baixa."
+    },
+    "generic": {
+      "body": "Abra a aplicação para consultar a atualização.",
+      "title": "Nova informação em invest.ao"
+    },
+    "listing": {
+      "body": "Uma nova admissão à BODIVA foi confirmada.",
+      "title": "Nova admissão à BODIVA"
+    },
+    "movement": {
+      "body": "Há um movimento de mercado verificado. Abre a aplicação para consultar.",
+      "title": "Movimento relevante"
+    },
+    "news": {
+      "title": "Nova notícia na invest.ao"
+    },
+    "publication": {
+      "body": "{arg1}. Abre a aplicação para ler a publicação."
+    },
+    "recap": {
+      "title": "Novo resumo de mercado"
+    },
+    "unusual": {
+      "digest": {
+        "more": "{arg1}, {arg2} e mais {arg3} títulos que segues tiveram atividade fora do habitual hoje.",
+        "one": "{arg1} teve atividade fora do habitual hoje.",
+        "title": "Atividade invulgar",
+        "two": "{arg1} e {arg2} tiveram atividade fora do habitual hoje."
+      },
+      "order": {
+        "buy": {
+          "body": "Alguém colocou uma ordem de compra de {arg1} a {arg2}.",
+          "title": "Ordem de compra em {arg1}"
+        },
+        "sell": {
+          "body": "Alguém colocou uma ordem de venda de {arg1} a {arg2}.",
+          "title": "Ordem de venda em {arg1}"
+        }
+      },
+      "session": {
+        "title": "Atividade invulgar em {arg1}"
+      },
+      "trade": {
+        "bond": "Alguém acabou de comprar {arg1} obrigações de {arg2} a {arg3} por obrigação.",
+        "share": "Alguém acabou de comprar {arg1} ações de {arg2} a {arg3} por ação.",
+        "title": "Negócio em {arg1}",
+        "unit": "Alguém acabou de comprar {arg1} unidades de {arg2} a {arg3} por unidade."
+      }
+    },
+    "voice": {
+      "capitalization": {
+        "title": "Uma nova marca no mercado 👀"
+      },
+      "empty-neutral": {
+        "title": "O teu radar ainda está vazio"
+      },
+      "empty-welcome": {
+        "title": "Quem vais acompanhar?"
+      },
+      "intraday-fact": {
+        "body": "{arg1}: {arg2}% entre negociações em até 5 min, às {arg3}."
+      },
+      "listing-conversation": {
+        "title": "{arg1} chegou à BODIVA 👀"
+      },
+      "listing-fact": {
+        "body": "{arg1} já está oficialmente em negociação na BODIVA."
+      },
+      "listing-neutral": {
+        "title": "Novo na BODIVA"
+      },
+      "listing-welcome": {
+        "title": "Newcomer in the building! 👋"
+      },
+      "move-attention": {
+        "title": "Isto já merece atenção 👀"
+      },
+      "move-curious": {
+        "title": "Tem movimento em {arg1} 👀"
+      },
+      "move-down": {
+        "title": "{arg1} levou um abanão 👀"
+      },
+      "move-early": {
+        "title": "{arg1} acordou com vontade 📈"
+      },
+      "move-neutral": {
+        "title": "{arg1} está a mexer"
+      },
+      "move-playful": {
+        "title": "{arg1} hoje não veio brincar 📈"
+      },
+      "movement-fact": {
+        "close": "{arg1}: {arg2}% face ao último fecho.",
+        "intraday": "{arg1}: {arg2}% entre negociações em até 5 min."
+      },
+      "portfolio-down": {
+        "title": "Hoje a carteira recuou"
+      },
+      "portfolio-neutral": {
+        "title": "A tua carteira em movimento"
+      },
+      "portfolio-up": {
+        "title": "A tua carteira ganhou terreno"
+      },
+      "quiet-neutral": {
+        "title": "Mercado em modo tranquilo"
+      },
+      "quiet-playful": {
+        "title": "Hoje a BODIVA decidiu descansar ☕️"
+      },
+      "record": {
+        "title": "Temos novo máximo 👀"
+      },
+      "unavailable": {
+        "title": "Ainda faltam dados"
+      },
+      "watched-breadth": {
+        "title": "O movimento na tua lista"
+      },
+      "watched-curious": {
+        "title": "A tua lista quer atenção 👀"
+      },
+      "watched-extreme": {
+        "title": "{arg1} fechou em destaque"
+      },
+      "watched-neutral": {
+        "title": "Um dos teus favoritos está a mexer"
+      },
+      "watched-news": {
+        "title": "Há novidades sobre {arg1}"
+      },
+      "watched-rank": {
+        "title": "Quem se destacou na tua lista"
+      },
+      "watched-run": {
+        "title": "{arg1} mantém o passo"
+      },
+      "wrap-curious": {
+        "title": "Vamos ver o que mexeu 👀"
+      },
+      "wrap-neutral": {
+        "title": "O mercado, pelos números"
+      },
+      "wrap-portfolio": {
+        "title": "A tua carteira, pelos números"
+      },
+      "wrap-watchlist": {
+        "title": "A tua lista, ao fecho"
+      }
+    },
+    "wrap": {
+      "body": "Revê a semana no mercado. Abre o Wrap e vê os destaques.",
+      "title": "O teu Weekly Wrap está pronto"
+    }
+  },
+  "notifications": {
+    "activity": {
+      "correctedData": "Dados corrigidos",
+      "destinationUnavailable": "O destino já não está disponível no catálogo atual.",
+      "loading": "A carregar atividade",
+      "noMovementsMessage": "Os movimentos dos teus títulos e da tua carteira aparecerão aqui.",
+      "noMovementsTitle": "Sem movimentos",
+      "noNewsMessage": "As publicações e os resumos de mercado aparecerão aqui.",
+      "noNewsTitle": "Sem notícias",
+      "openHint": "Abre a informação relacionada.",
+      "saveFailed": "Não foi possível guardar o histórico. Tentar novamente.",
+      "savedHistory": "Histórico guardado · última atualização em {arg1}.",
+      "unavailableMessage": "Não foi possível recuperar o histórico guardado.",
+      "unavailableTitle": "Atividade indisponível",
+      "upToDateMessage": "As atualizações relevantes aparecerão aqui.",
+      "upToDateTitle": "Tudo em dia",
+      "updatesPending": "Algumas atualizações estão pendentes. Tentar novamente."
+    },
+    "button": {
+      "markAllRead": "Ler todas",
+      "markMovementsRead": "Marcar movimentos como lidos",
+      "markNewsRead": "Marcar notícias como lidas",
+      "viewSources": "Ver fontes e cálculo"
+    },
+    "category": {
+      "movements": "Movimentos importantes",
+      "portfolio": "Movimentos da carteira"
+    },
+    "date": {
+      "today": "Hoje · {arg1}",
+      "yesterday": "Ontem · {arg1}"
+    },
+    "filter": {
+      "accessibility": "Filtrar atividade",
+      "movements": "Movimentos"
+    },
+    "listing": {
+      "admissionConfirmedMessage": "A admissão de {arg1} à negociação foi confirmada.",
+      "newOnBodivaTitle": "Novo na BODIVA"
+    },
+    "marketUpdate": {
+      "openMessage": "Abra para consultar a informação.",
+      "title": "Atualização de mercado"
+    },
+    "movementAlert": {
+      "high": "Alta",
+      "low": "Baixa"
+    },
+    "portfolio": {
+      "priceMovement": "Movimento das cotações · {arg1}",
+      "title": "A tua carteira",
+      "titleWithSubject": "A tua carteira: {arg1}"
+    },
+    "privacy": {
+      "hiddenContent": "Conteúdo pessoal oculto no Modo de privacidade."
+    },
+    "publication": {
+      "newInsight": "Nova leitura de mercado",
+      "newPublication": "Nova publicação de mercado"
+    },
+    "weeklyWrap": {
+      "availableTitle": "O Weekly Wrap está disponível",
+      "readyContext": "{arg1} · O que marcou a sua semana",
+      "readyTitle": "O seu Weekly Wrap está pronto",
+      "reviewAvailableTitle": "A leitura da semana está disponível"
+    }
+  },
+  "onboarding": {
+    "accessibility": {
+      "backHint": "Regressa ao passo anterior",
+      "backToName": "Voltar ao nome",
+      "notSelected": "Não selecionado",
+      "selected": "Selecionado",
+      "skipHint": "Avança para o início de sessão",
+      "stepName": "Passo 1 de 2, nome",
+      "stepProgress": "Passo {arg1} de {arg2}",
+      "stepWatchlist": "Passo 2 de 2, lista de acompanhamento"
+    },
+    "button": {
+      "addAndContinue": "Adicionar e continuar",
+      "continueWithoutRest": "Continuar sem adicionar os restantes",
+      "doLater": "Fazer isto mais tarde",
+      "notNow": "Agora não",
+      "saving": "A guardar"
+    },
+    "caption": {
+      "simulationDisclaimer": "As simulações são ilustrativas. A invest.ao não executa ordens nem guarda os teus investimentos."
+    },
+    "emptyState": {
+      "noInstrumentsMessage": "Podes criar a tua lista mais tarde.",
+      "noInstrumentsTitle": "Sem instrumentos disponíveis",
+      "noResultsMessage": "Procura por símbolo, nome ou emitente, ou escolhe outro mercado."
+    },
+    "error": {
+      "loadInstruments": "Não foi possível carregar os instrumentos. Verifica a ligação e tenta novamente.",
+      "partialSave": "Alguns instrumentos foram guardados. Tenta adicionar os restantes ou continua com os que já estão na lista.",
+      "saveGeneric": "Não foi possível guardar. Tenta novamente.",
+      "saveInstruments": "Não foi possível guardar os instrumentos. Tenta novamente ou continua sem os adicionar."
+    },
+    "form": {
+      "nameField": "O teu nome"
+    },
+    "goal": {
+      "alerts": "Receber alertas",
+      "companies": "Seguir empresas",
+      "comparison": "Comparar instrumentos",
+      "learning": "Aprender",
+      "news": "Ler notícias",
+      "prices": "Acompanhar preços"
+    },
+    "navigation": {
+      "back": "Voltar",
+      "signIn": "Iniciar sessão",
+      "skip": "Ignorar"
+    },
+    "page": {
+      "marketMessage": "Descobre ações, obrigações e fundos da BODIVA. Consulta preços, gráficos e detalhes.",
+      "marketTitle": "O mercado, mais perto.",
+      "portfolioMessage": "Regista as tuas compras, acompanha a evolução e explora cenários no simulador.",
+      "portfolioTitle": "A tua carteira, com clareza.",
+      "watchlistMessage": "Guarda os teus favoritos e recebe alertas de preços e movimentos.",
+      "watchlistTitle": "Segue o que te interessa."
+    },
+    "preview": {
+      "alertSet": "BAI · preço definido",
+      "examplePrice": "Preço de exemplo",
+      "followFavorites": "Acompanha os teus favoritos.",
+      "illustrativeExample": "EXEMPLO ILUSTRATIVO",
+      "manualRecord": "Registo manual",
+      "portfolioValue": "1 250 000 Kz",
+      "price": "65 000 Kz",
+      "priceAlerts": "Alertas de preço",
+      "savedInstruments": "Instrumentos guardados",
+      "symbol": "BAI",
+      "treasuryBonds": "Obrigações do Tesouro"
+    },
+    "profile": {
+      "following": "Só quero acompanhar",
+      "investor": "Já invisto na BODIVA",
+      "learning": "Quero aprender sobre o mercado",
+      "starting": "Estou a começar a investir"
+    },
+    "selection": {
+      "many": "{arg1} instrumentos selecionados",
+      "one": "1 instrumento selecionado"
+    },
+    "signOut": {
+      "message": "Podes continuar a configuração quando voltares a entrar.",
+      "title": "Terminar sessão?"
+    },
+    "step": {
+      "accountEyebrow": "A TUA CONTA",
+      "nameMessage": "Diz-nos como preferes ser tratado.",
+      "nameTitle": "Como te chamas?",
+      "progressFirst": "1 de 2",
+      "progressSecond": "2 de 2",
+      "watchlistMessage": "Adiciona instrumentos à tua lista de acompanhamento.",
+      "watchlistTitle": "O que queres acompanhar de perto?"
+    }
+  },
+  "orderBook": {
+    "unlockDepth": "Ver os {arg1} níveis"
+  },
+  "portfolio": {
+    "accessibility": {
+      "positionDetailsHint": "Abre os detalhes da posição",
+      "positionRecordsHint": "Abre os registos da posição"
+    },
+    "allocation": {
+      "oneInstrument": "1 instrumento"
+    },
+    "allocationRow": {
+      "portfolioWeight": "Peso na carteira"
+    },
+    "csvTransfer": {
+      "alreadyRecorded": "Já registado.",
+      "chooseFile": "Escolhe um ficheiro CSV com até 2 MB.",
+      "emptyFile": "Ficheiro vazio",
+      "export": "Exportar CSV",
+      "exportOrImport": "Exportar ou importar",
+      "import": "Importar CSV",
+      "importCount": "Importar {arg1} registos",
+      "importIncomplete": "Importação incompleta",
+      "importRecords": "Importar registos",
+      "importedCount": "Foram importados {arg1} de {arg2} registos.",
+      "income": "Rendimento",
+      "instrumentNotFound": "Instrumento não encontrado.",
+      "instrumentUnsupported": "Instrumento não suportado na carteira.",
+      "invalidDate": "Data inválida.",
+      "invalidNumber": "Número inválido.",
+      "invalidPortfolio": "Os registos deixariam a carteira inválida. Verifica as vendas.",
+      "invalidType": "Tipo inválido. Usa compra, venda ou rendimento.",
+      "invalidValues": "Valores inválidos para este instrumento.",
+      "lineLabel": "linha {arg1}",
+      "lineTitle": "Linha {arg1}",
+      "missingColumns": "Faltam colunas: data, símbolo, tipo e preço.",
+      "readFailed": "Não foi possível ler o ficheiro",
+      "title": "Carteira (CSV)"
+    },
+    "dashboard": {
+      "allocationUnavailable": "Sem cotações suficientes para calcular a distribuição.",
+      "partialValuesNotice": "Valores parciais: a distribuição e o ganho/perda usam apenas instrumentos com cotação.",
+      "positionsTab": "Posições",
+      "summaryTab": "Resumo"
+    },
+    "discardConfirmation": {
+      "continueEditing": "Continuar a editar",
+      "discard": "Descartar",
+      "message": "Os dados introduzidos ainda não foram guardados.",
+      "title": "Descartar alterações?"
+    },
+    "editor": {
+      "editBuyTitle": "Editar compra",
+      "editIncomeTitle": "Editar rendimento",
+      "editSellTitle": "Editar venda",
+      "saveBuy": "Guardar compra",
+      "saveIncome": "Guardar rendimento",
+      "saveSell": "Guardar venda"
+    },
+    "emptyState": {
+      "manualEntryNotice": "Os investimentos são adicionados manualmente. A invest.ao não tem acesso à tua conta bancária ou corretora.",
+      "message": "Regista as tuas compras para acompanhares o valor e o desempenho da carteira.",
+      "title": "Ainda não tens posições"
+    },
+    "error": {
+      "saveFailed": "Não foi possível guardar o registo",
+      "saveRetryMessage": "Verifica os dados e tenta novamente."
+    },
+    "form": {
+      "changeInstrument": "Alterar",
+      "fees": "Comissões",
+      "grossReceived": "Valor bruto recebido",
+      "lastQuote": "Última cotação",
+      "netReceived": "Valor líquido recebido",
+      "netSaleProceeds": "Valor líquido da venda",
+      "nominalBought": "Valor nominal comprado",
+      "nominalSold": "Valor nominal vendido",
+      "paymentDate": "Data do pagamento",
+      "pricePercentOfPar": "Preço face ao nominal",
+      "purchaseDate": "Data da compra",
+      "saleDate": "Data da venda",
+      "taxWithheld": "Imposto retido",
+      "totalCost": "Custo total",
+      "unitPrice": "Preço por unidade",
+      "unitsBoughtPrompt": "Quantas unidades compraste?",
+      "unitsSoldPrompt": "Quantas unidades vendeste?"
+    },
+    "header": {
+      "loading": "A carregar carteira",
+      "refresh": "Atualizar carteira"
+    },
+    "holdingRow": {
+      "stocksUnit": "ações"
+    },
+    "insight": {
+      "checkingWeek": "A verificar a semana",
+      "detailsHint": "Abre o detalhe das posições registadas e as fontes desta leitura.",
+      "privateValuesHidden": "Valores ocultos no modo privado.",
+      "refreshWeekly": "Atualizar leitura da semana"
+    },
+    "insightDetails": {
+      "allocationAtClose": "Distribuição ao fecho",
+      "allocationCaption": "Valor total incluído · quantidades dos registos até ao fim dessa semana.",
+      "approximateMessage": "Baseiam-se nos seus registos manuais e nos preços de fecho. Não temos acesso às suas posições reais na corretora, pelo que os valores podem não corresponder à sua carteira real.",
+      "approximateTitle": "Valores aproximados",
+      "byIssuer": "Por emitente",
+      "byIssuerSector": "Por setor do emitente",
+      "closeOn": "Fecho de {arg1}",
+      "closingPrice": "Preço de fecho",
+      "constantQuantity": "Quantidade constante",
+      "firstClose": "Primeiro fecho",
+      "includedValue": "Valor incluído",
+      "lastClose": "Último fecho",
+      "monetaryContribution": "Contributo monetário",
+      "notLive": "Esta leitura não é uma atualização em tempo real.",
+      "observedOn": "Dados observados em {arg1}.",
+      "priceBasedChange": "Variação por cotação",
+      "privacyHidden": "Posições e cálculos ocultos no Modo de privacidade.",
+      "recordedQuantity": "Quantidade registada",
+      "shareOfTotalChange": "Na variação total",
+      "sourcesCatalogue": "Catálogo de emitentes e setores consultado em {arg1}. A classificação corresponde ao catálogo consultado nessa data.",
+      "sourcesExclusions": "Exclui saldo em dinheiro, dividendos, cupões, comissões e impostos. Reflete as quantidades registadas; não verifica posições na corretora nem ajusta operações societárias não registadas.",
+      "sourcesRecords": "Registos manuais da carteira e preços de fecho BODIVA verificados para todas as sessões do período. Uma cotação em falta impede a geração do cálculo.",
+      "sourcesTitle": "Fontes e limites",
+      "title": "Detalhe da carteira"
+    },
+    "insightPresentation": {
+      "allocationAtClose": "Distribuição pelas posições registadas ao fecho.",
+      "issuerSector": "Setor do emitente · {arg1}",
+      "largestContribution": "Maior contributo · {arg1}",
+      "largestContributionDetail": "Contributo para a variação por cotação, {arg1}.",
+      "largestIssuerWeight": "Maior peso por emitente · {arg1}",
+      "largestPosition": "Maior posição · {arg1}",
+      "largestPositionDetail": "Do valor registado ao fecho de {arg1}.",
+      "lowestContribution": "Menor contributo · {arg1}",
+      "lowestContributionDetail": "Entre todas as posições verificadas no mesmo período.",
+      "positionMovements": "Movimento das posições",
+      "risersFallers": "{arg1} subiram · {arg2} desceram",
+      "sectorsIdentified": "Todas as posições têm setor identificado no catálogo atual.",
+      "unchangedCount": "{arg1} sem variação, entre {arg2} posições verificadas.",
+      "weeklyPriceChange": "Variação semanal por cotação",
+      "weeklyPriceChangeDetail": "{arg1}. Quantidades constantes; exclui rendimentos e custos."
+    },
+    "metrics": {
+      "changeVsCost": "Variação face ao custo",
+      "partialChangeVsCost": "Variação parcial face ao custo",
+      "partialGainLoss": "Ganho/perda parcial",
+      "unrealizedGainLoss": "Ganho/perda não realizado"
+    },
+    "performance": {
+      "chartUnavailable": "O gráfico aparece quando existirem cotações históricas suficientes.",
+      "title": "Evolução da carteira"
+    },
+    "picker": {
+      "searchInstruments": "Procurar instrumentos",
+      "selectInstrument": "Seleciona o instrumento para registar uma compra"
+    },
+    "positionContent": {
+      "averagePurchasePrice": "Preço médio de compra",
+      "currentPrice": "Preço atual",
+      "gainLoss": "Ganho/perda"
+    },
+    "positionDetail": {
+      "record": "Registar",
+      "title": "Posição",
+      "unavailableMessage": "Esta posição já não faz parte da carteira.",
+      "unavailableTitle": "Posição indisponível"
+    },
+    "privateTrend": {
+      "trend": "Tendência",
+      "valuesHiddenLabel": "Evolução da carteira. Valores ocultos."
+    },
+    "purchaseRow": {
+      "deleteMessage": "Este registo será eliminado se os restantes registos continuarem válidos. Isto não altera as transações na tua corretora.",
+      "deleteTitle": "Eliminar este registo?",
+      "editRecord": "Editar registo",
+      "options": "Opções"
+    },
+    "results": {
+      "byYear": "Resultados por ano"
+    },
+    "summary": {
+      "insufficientHistory": "Histórico insuficiente",
+      "manualRecords": "Registos manuais",
+      "missingQuoteOne": "1 instrumento sem cotação atual",
+      "missingQuotesCount": "{arg1} instrumentos sem cotação atual",
+      "noQuotes": "Ainda não há cotações atuais para os instrumentos registados.",
+      "partialValue": "Valor parcial da carteira",
+      "valueUnavailable": "Valor da carteira indisponível"
+    },
+    "validation": {
+      "amountNonNegative": "Introduz um valor igual ou superior a zero.",
+      "amountPositive": "Introduz um valor superior a zero.",
+      "costExceedsLimit": "O custo excede o valor suportado. Verifica a quantidade e o preço.",
+      "dateInFuture": "A data do registo não pode estar no futuro.",
+      "quantityPositive": "Introduz uma quantidade superior a zero.",
+      "quantityWholeNumber": "A quantidade deste instrumento deve ser um número inteiro.",
+      "taxExceedsGross": "O imposto retido não pode exceder o valor bruto.",
+      "unitPricePositive": "Introduz um preço por unidade superior a zero."
+    }
+  },
+  "portfolioBooks": {
+    "combined": "Todas as carteiras",
+    "create": "Criar",
+    "deleteConfirm": "Eliminar carteira e registos",
+    "deleteMessage": "Os registos desta carteira também são eliminados.",
+    "deleteTitle": "Eliminar {arg1}?",
+    "duplicate": "Já tens uma carteira com esse nome",
+    "main": "Principal",
+    "manage": "Gerir carteiras",
+    "name": "Nome",
+    "new": "Nova carteira",
+    "rename": "Mudar nome",
+    "renameConfirm": "Guardar",
+    "title": "Carteiras"
+  },
+  "portfolioShare": {
+    "create": "Criar",
+    "empty": "Sem links",
+    "failed": "Não foi possível atualizar os links.",
+    "label": "Para quem?",
+    "limit": "Chegaste ao limite de 20 links.",
+    "menu": "Partilhar só de leitura",
+    "new": "Novo link",
+    "revoke": "Revogar",
+    "send": "Enviar link",
+    "title": "Partilhar {arg1}"
+  },
+  "privacy": {
+    "notification": {
+      "message": "Abra a aplicação para consultar a atualização."
+    }
+  },
+  "profile": {
+    "navigation": {
+      "title": "Perfil"
+    }
+  },
+  "referral": {
+    "creditUntil": "Plus oferecido até {arg1}",
+    "error": {
+      "failed": "Não foi possível usar o código. Tenta novamente.",
+      "invalid": "Este código não existe.",
+      "notEligible": "Os códigos são para contas criadas há menos de 30 dias.",
+      "own": "Não podes usar o teu próprio código.",
+      "unavailable": "Os convites não estão disponíveis.",
+      "used": "Já usaste um código de convite."
+    },
+    "redeem": {
+      "label": "Tenho um código",
+      "action": "Usar",
+      "placeholder": "Código",
+      "title": "Código de convite"
+    },
+    "reward": "Cada amigo que convidares ganha 1 mês de Plus. Tu ganhas 1 mês quando ele subscrever o Plus.",
+    "share": "Partilhar",
+    "shareMessage": "Usa o meu código {arg1} no invest.ao e ganha 1 mês de Plus. {arg2}",
+    "title": "Convidar amigos"
+  },
+  "report": {
+    "commissions": "Comissões",
+    "export": "Relatório PDF",
+    "generated": "Gerado a {arg1}",
+    "instrument": "Instrumento",
+    "method": "Custo médio ponderado. Valores em AOA a partir dos registos da carteira.",
+    "title": "Ganhos e rendimentos {arg1}",
+    "total": "Total",
+    "withheldTax": "Imposto retido"
+  },
+  "search": {
+    "accessibility": {
+      "addToWatchlist": "Adicionar {arg1} à lista de acompanhamento",
+      "loading": "A carregar pesquisa de títulos",
+      "removeFromWatchlist": "Remover {arg1} da lista de acompanhamento"
+    },
+    "emptyState": {
+      "noRecents": "Ainda não há pesquisas recentes.",
+      "noResults": "Não encontrámos títulos para “{arg1}”."
+    },
+    "field": {
+      "prompt": "O que procuras?"
+    },
+    "filter": {
+      "stock": " Acção"
+    },
+    "header": {
+      "clear": "Limpar",
+      "highestVolume": "Maior volume",
+      "recents": "Recentes",
+      "subtitle": "Símbolos, emitentes e instrumentos",
+      "title": "Encontrar",
+      "volumeNote": "Ordenado pelo volume disponível de cada instrumento."
+    },
+    "list": {
+      "popular": "Populares",
+      "recentSearches": "Pesquisas recentes"
+    },
+    "results": {
+      "count": "{arg1} resultados",
+      "title": "Resultados"
+    },
+    "row": {
+      "treasury": "Tesouro"
+    },
+    "sample": {
+      "bank": "Banco",
+      "nonexistent": "XYZ inexistente"
+    }
+  },
+  "settings": {
+    "about": {
+      "description": "A invest.ao reúne cotações, notícias e alertas do mercado angolano. Permite acompanhar instrumentos e registar uma carteira manualmente.",
+      "disclaimer": "A aplicação disponibiliza informação para acompanhamento pessoal. As decisões de investimento são da responsabilidade de cada utilizador.",
+      "title": "Sobre a invest.ao"
+    },
+    "accessibility": {
+      "notificationsHint": "Abre as permissões e preferências de notificações"
+    },
+    "account": {
+      "accessTitle": "Acesso",
+      "signInMethods": "Métodos de acesso",
+      "signInProviders": "Google ou Apple"
+    },
+    "app": {
+      "title": "Aplicação",
+      "version": "Versão {arg1}"
+    },
+    "appearance": {
+      "language": "Idioma",
+      "title": "Aparência"
+    },
+    "categories": {
+      "dailyClose": "Fecho diário da BODIVA",
+      "footer": "Até cinco avisos opcionais por dia. Entre as 20h e as 8h, o radar fica em silêncio. Os valores da carteira e a tua relação com um título ficam dentro da aplicação.",
+      "holdingMovements": "Movimentos das tuas posições",
+      "newListings": "Novas admissões confirmadas",
+      "portfolioDaily": "Variação diária da carteira",
+      "publicFacts": "Mostrar factos públicos nas notificações",
+      "saveError": "Não foi possível guardar as preferências. Tenta novamente."
+    },
+    "dataSources": {
+      "description": "A fonte principal apresentada é a BODIVA. Poderão existir dados complementares de emitentes, comunicados oficiais e fontes públicas identificadas na aplicação.",
+      "title": "Fontes de dados"
+    },
+    "deleteAccount": {
+      "accountRemains": "A tua conta Google ou Apple mantém-se. Os registos da carteira são manuais: eliminar a conta não vende instrumentos nem encerra contas bancárias ou de corretagem.",
+      "confirmButton": "Eliminar definitivamente",
+      "confirmationMessage": "A conta {arg1}, o perfil, a carteira, a lista, os alertas e as notificações serão eliminados. Esta ação é irreversível. A tua conta Google ou Apple mantém-se.",
+      "confirmationTitle": "Eliminar conta na invest.ao?",
+      "irreversible": "Esta ação é irreversível",
+      "manageSubscription": "Gerir subscrição na App Store",
+      "noRecovery": "Não será possível recuperar estes dados depois da eliminação.",
+      "progress": "A eliminar conta…",
+      "subscriptionNote": "Eliminar a conta não cancela uma subscrição Plus na App Store.",
+      "warning": "Ao eliminares a conta da invest.ao, serão removidos o perfil, a carteira registada, a lista de acompanhamento, os alertas e o histórico de notificações."
+    },
+    "lockScreen": {
+      "marketSession": "Sessão da BODIVA",
+      "title": "Ecrã bloqueado"
+    },
+    "marketData": {
+      "dateUnavailable": "Data indisponível",
+      "disclaimer": "As cotações podem estar atrasadas, ser corrigidas ou ficar indisponíveis. A informação não constitui uma recomendação de investimento.",
+      "lastUpdate": "Última atualização",
+      "mainSource": "Fonte principal",
+      "status": "Estado do mercado",
+      "title": "Dados de mercado"
+    },
+    "marketRecap": {
+      "deliveryNote": "O aviso no ecrã também depende da permissão de notificações do iOS. Os resumos recebidos aparecem em Notificações.",
+      "description": "Um resumo editorial após o fecho da sessão, com os valores verificados e ligação ao artigo. Podes desligá-lo sem alterar os alertas de preços ou movimentos.",
+      "loadError": "Não foi possível carregar a preferência do resumo.",
+      "toggle": "Receber o fecho das acções"
+    },
+    "notifications": {
+      "articlesDescription": "Recebes avisos quando são publicados artigos e recaps. A entrega depende da permissão de notificações do iOS.",
+      "articlesTitle": "Artigos e resumos do fecho",
+      "devicePermission": "Permissão no dispositivo",
+      "iosLabel": "Notificações no iOS",
+      "iosStatus": "No iOS: {arg1}",
+      "loadError": "Não foi possível carregar a preferência de notificações.",
+      "manageInIOS": "Gerir no iOS",
+      "movementAlertsDescription": "Recebe avisos automáticos sobre movimentos relevantes dos títulos na tua lista. Podes desligar os avisos de cada título em Alertas.",
+      "openSettings": "Abrir definições de notificações",
+      "optionalTitle": "Notificações opcionais",
+      "permissionAuthorized": "O iOS permite notificações. Podes alterar a forma de entrega nas definições do dispositivo.",
+      "permissionChecking": "A verificar a autorização de notificações do dispositivo.",
+      "permissionDenied": "O iOS bloqueou as notificações. Podes voltar a permiti-las nas definições do dispositivo.",
+      "permissionNotDetermined": "Ativa as notificações para receber alertas de preços e movimentos dos títulos que acompanhas.",
+      "permissionProvisional": "O iOS entrega notificações discretamente. Podes ativar avisos visíveis nas definições do dispositivo.",
+      "statusChecking": "A verificar",
+      "statusDisabled": "Desativadas",
+      "statusEnabled": "Ativas",
+      "statusNotEnabled": "Por ativar",
+      "statusQuiet": "Entrega discreta"
+    },
+    "personalization": {
+      "description": "A carteira, a lista e os alertas ajudam a ordenar informação relevante. Os interesses de navegação perdem peso com o tempo.",
+      "interestsResetMessage": "Interesses reiniciados. Novas ações contam a partir de amanhã. A carteira, a lista e os alertas mantêm-se.",
+      "resetInterests": "Reiniciar interesses neste dispositivo",
+      "resetInterestsFooter": "Reinicia o uso do histórico de navegação para ordenar informação neste dispositivo. Não elimina os contadores sincronizados da conta.",
+      "resetUsefulness": "Repor preferências de utilidade",
+      "title": "Personalização",
+      "usefulnessFooter": "As preferências de utilidade ficam neste dispositivo e expiram após 56 dias. Eventos de elevada relevância continuam elegíveis.",
+      "usefulnessResetMessage": "Preferências de utilidade repostas."
+    },
+    "sensitivity": {
+      "description": "Escolhe a sensibilidade dos avisos automáticos para os títulos que acompanhas.",
+      "title": "Sensibilidade dos movimentos"
+    },
+    "subscription": {
+      "title": "Subscrição"
+    },
+    "theme": {
+      "systemDescription": "A opção Sistema acompanha a aparência definida no iPhone.",
+      "title": "Tema da aplicação"
+    },
+    "widgetPrivacy": {
+      "footer": "Por predefinição, os valores ficam ocultos. Ao ativar, autorizas a sua apresentação nos widgets deste dispositivo. O Modo de privacidade continua a ocultá-los.",
+      "showValues": "Mostrar valores da carteira nos widgets",
+      "title": "Privacidade nos widgets"
+    }
+  },
+  "simulation": {
+    "access": {
+      "signInPrompt": "Inicie sessão para simular investimentos."
+    },
+    "chart": {
+      "accessibilitySummary": "Ao fim de {arg1} meses, o total disponibilizado é {arg2} e o valor projectado, incluindo o saldo não aplicado, é {arg3}.",
+      "invested": "Investido",
+      "projectedValue": "Valor projectado",
+      "title": "Evolução estimada"
+    },
+    "controls": {
+      "annualPriceChange": "Variação anual do preço",
+      "duration": "Prazo",
+      "initialInvestment": "Investimento inicial",
+      "monthlyContribution": "Reforço mensal",
+      "monthsUnit": "meses"
+    },
+    "duration": {
+      "months": "{arg1} meses",
+      "years": "{arg1} anos"
+    },
+    "entry": {
+      "prompt": "Define um cenário e explora a evolução do teu investimento."
+    },
+    "error": {
+      "loadFailed": "Não foi possível obter os dados mais recentes.",
+      "retryAutomatically": " Voltamos a tentar automaticamente."
+    },
+    "loading": {
+      "fetchingQuotes": "A obter cotações",
+      "message": "A consultar a cotação mais recente para o teu cenário.",
+      "serverNotice": "A simulação usa a cotação disponível no servidor. Pode demorar alguns instantes.",
+      "title": "Preparar simulação"
+    },
+    "market": {
+      "noQuotesMessage": "Não existem ações ou unidades de participação em AOA com uma cotação válida neste momento. Voltamos a tentar automaticamente.",
+      "noQuotesTitle": "Sem cotações atuais para simular",
+      "partialQuotesNotice": "Alguns instrumentos não têm cotação atual e estão temporariamente indisponíveis para simular.",
+      "quotesUnavailableTitle": "Cotações indisponíveis"
+    },
+    "methodology": {
+      "contributions": "Os reforços entram no final de cada mês e compram unidades ao preço projectado desse mês. Para acções, compramos unidades inteiras; nos fundos, admitimos unidades fraccionadas. O saldo não aplicado fica disponível para o próximo reforço.",
+      "finalValue": "O valor final inclui as unidades projectadas e o saldo não aplicado. Não incluímos dividendos, impostos, comissões ou inflação. Obrigações não estão disponíveis porque a cotação percentual exige dados adicionais para calcular o seu valor monetário.",
+      "quoteAndPrice": "A cotação consultada no servidor determina quantas unidades pode adquirir. A variação anual do preço que introduz é uma hipótese, convertida numa taxa mensal equivalente e mantida durante todo o prazo. Não a inferimos do desempenho passado.",
+      "title": "Como calculamos"
+    },
+    "quote": {
+      "changeInstrument": "Alterar instrumento, {arg1}",
+      "checkTimeUnavailable": "Hora da verificação indisponível",
+      "disclaimer": "Cotação consultada no servidor. Não é um preço de execução garantido.",
+      "lastAvailable": "Última cotação disponível",
+      "lastChecked": "Última verificação: {arg1}",
+      "lastTrade": "Último negócio: {arg1}",
+      "lastTradeDateUnavailable": "Data do último negócio indisponível",
+      "refresh": "Actualizar cotações"
+    },
+    "result": {
+      "atDate": "Em {arg1}",
+      "estimatedFinalValue": "Valor final estimado",
+      "estimatedGain": "Ganho estimado",
+      "estimatedLoss": "Perda estimada",
+      "estimatedValue": "Valor estimado",
+      "finalUnits": "Unidades no final",
+      "finalValueUnavailable": "Valor final estimado indisponível",
+      "hypotheticalFinalPrice": "Preço final hipotético · {arg1}",
+      "initialUnits": "Unidades iniciais",
+      "ofInvested": "de {arg1} investidos",
+      "totalContributed": "Total disponibilizado",
+      "uninvestedBalance": "Saldo não aplicado",
+      "valuePlaceholder": "— Kz"
+    },
+    "validation": {
+      "calculationFailed": "Não foi possível calcular a projecção com estes valores.",
+      "durationRange": "Introduza um prazo entre 1 e 600 meses.",
+      "fieldRequired": "Preencha este campo.",
+      "invalidNumber": "Introduza um número válido. Use vírgula para os decimais.",
+      "noValidQuote": "Este activo não tem uma cotação válida para simular.",
+      "precisionExceeded": "A projecção excede a precisão disponível. Ajuste a taxa ou o prazo.",
+      "selectAsset": "Seleccione um activo com cotação disponível.",
+      "unsupportedCurrency": "A simulação está disponível apenas para activos cotados em AOA.",
+      "wholeMonths": "Introduza um prazo em meses inteiros."
+    }
+  },
+  "statement": {
+    "nothingFound": "Nenhum movimento encontrado",
+    "nothingFoundMessage": "Usa um extrato com data, código BODIVA, quantidade e preço em cada linha.",
+    "read": "Ler extrato",
+    "source": {
+      "pdf": "Ficheiro PDF ou imagem",
+      "photo": "Fotografia"
+    }
+  },
+  "subscriptions": {
+    "access": {
+      "comparisonSizeLimit": "O plano gratuito permite comparar 2 instrumentos. O Plus permite até 3.",
+      "insufficientData": "Ainda não existem dados verificados suficientes para esta comparação. A tua comparação gratuita não foi utilizada.",
+      "signInRequired": "Inicia sessão para utilizar a comparação semanal.",
+      "weeklyPairLimit": "Já escolheste o par desta semana. Podes voltar a compará-lo, utilizar o Plus ou escolher outro par na segunda-feira, às 00:00 de Luanda."
+    },
+    "button": {
+      "continueFree": "Continuar no gratuito",
+      "continuePlus": "Continuar com o Plus",
+      "continuePro": "Continuar com o Pro",
+      "refreshStatus": "Atualizar estado",
+      "startTrial": "Experimentar 7 dias grátis"
+    },
+    "comparison": {
+      "alertRules": "Alertas personalizados",
+      "benchmarkPlus": "Inflação e taxas",
+      "cashPlus": "Saldo e resultado total",
+      "clientViews": "Links só de leitura",
+      "csvOnly": "CSV",
+      "familyPlus": "Até 6 pessoas",
+      "familySharing": "Partilha familiar",
+      "featureHeader": "RECURSO",
+      "freeHeader": "GRÁTIS",
+      "history": "Histórico de preços",
+      "incomeFree": "Calendário",
+      "incomePlus": "Totais e lembretes",
+      "levels": "{arg1} níveis",
+      "liquidityPlus": "Frequência, valor e saída",
+      "movementsFree": "1 ativo",
+      "movementsPlus": "Todos guardados",
+      "pairsFree": "1 par/semana",
+      "pairsPlus": "Até 3 ativos · sem limite/semana",
+      "photoAndPDF": "CSV, foto e PDF",
+      "plusHeader": "PLUS",
+      "proHeader": "PRO",
+      "reportPlus": "Anual, por instrumento",
+      "unlimited": "Ilimitados",
+      "watchlistFree": "3 ativos",
+      "watchlistPlus": "Até 500"
+    },
+    "error": {
+      "accessUpdateFailed": "Não foi possível atualizar o acesso à subscrição. Tenta novamente.",
+      "noActiveSubscription": "Não foi encontrada uma subscrição Plus ativa para esta conta.",
+      "purchaseFailed": "Não foi possível concluir a compra. Se estiver pendente de aprovação, o acesso será atualizado após a confirmação.",
+      "restoreFailed": "Não foi possível restaurar as compras. Tenta novamente.",
+      "syncing": "O estado da subscrição está a ser sincronizado. Tenta atualizar novamente.",
+      "verifyFailed": "Não foi possível verificar a subscrição. Tenta novamente."
+    },
+    "freePlan": {
+      "chooseInstruments": "Escolher instrumentos gratuitos",
+      "comparisonLimitNote": "Podes reabrir o mesmo par e alterar o período. O limite renova segunda-feira, às 00:00 de Luanda.",
+      "prompt": "Preferes continuar no gratuito?",
+      "summary": "3 instrumentos guardados · movimentos automáticos de 1 instrumento · 1 par de 2 instrumentos por semana."
+    },
+    "freeSelection": {
+      "active": "Ativo",
+      "activeHeader": "Instrumentos ativos · {arg1}/3",
+      "instructions": "Escolhe até 3 instrumentos ativos e 1 para movimentos automáticos. Os restantes ficam guardados e pausados; não são eliminados.",
+      "loadError": "Não foi possível carregar o plano. Volta a abrir esta página para tentar novamente.",
+      "noneOption": "Nenhum",
+      "paused": "Pausado",
+      "plusNote": "Tens Plus: todos os instrumentos continuam ativos. Esta escolha define as tuas preferências para o plano gratuito.",
+      "saveButton": "Guardar escolha",
+      "saveError": "Não foi possível guardar. Atualiza a lista e tenta novamente.",
+      "saved": "Escolha guardada.",
+      "title": "Plano gratuito"
+    },
+    "gift": {
+      "benefitComparisons": "Comparações sem limite semanal",
+      "benefitMovements": "Movimentos automáticos nos guardados",
+      "benefitWatchlist": "Mais instrumentos na tua lista",
+      "closing": "Sem pagamentos. Sem renovação.\nÉ a nossa forma de te agradecer por fazeres parte desta jornada.",
+      "existingSubscriptionNote": "Se já tens uma subscrição na App Store, esta oferta não a cancela automaticamente. Podes geri-la na tua Conta Apple.",
+      "eyebrow": "UMA OFERTA PARA TI",
+      "manageButton": "Gerir uma subscrição existente",
+      "message": "{arg1} ofereceu-te acesso vitalício ao Invest.AO Plus.",
+      "startButton": "Começar a explorar",
+      "title": "O Plus é teu.\nPara sempre."
+    },
+    "legal": {
+      "privacy": "Privacidade",
+      "trialTerms": "O teste gratuito está disponível apenas para contas elegíveis, uma vez por grupo de assinaturas. Após o teste, a App Store cobra o plano escolhido. A subscrição renova automaticamente, salvo cancelamento pelo menos 24 horas antes do fim do período. Eliminar a conta invest.ao não cancela a subscrição."
+    },
+    "management": {
+      "confirmingAccess": "Estamos a confirmar o teu acesso. Atualiza o estado antes de continuar.",
+      "plusTitle": "invest.ao Plus",
+      "proTitle": "invest.ao Pro",
+      "restoreButton": "Restaurar",
+      "signInRequired": "Inicia sessão para subscrever ou restaurar compras."
+    },
+    "paywall": {
+      "alertsReason": "Crie mais de 2 alertas com o Plus.",
+      "benchmarkReason": "Comparar a carteira com inflação e taxas faz parte do Plus.",
+      "cashReason": "Acompanhe depósitos, levantamentos e taxas com o Plus.",
+      "comparisonReason": "O plano gratuito permite um par de 2 instrumentos por semana.",
+      "historyReason": "Veja todo o histórico de preços com o Plus.",
+      "incomeReason": "Totais e lembretes de rendimentos fazem parte do Plus.",
+      "liquidityReason": "Veja a liquidez de cada título com o Plus.",
+      "movementReason": "O plano gratuito acompanha movimentos automáticos de 1 instrumento.",
+      "onboardingReason": "Acompanha mais oportunidades e compara com mais liberdade.",
+      "portfoliosReason": "Carteiras separadas fazem parte do Plus.",
+      "priceExportReason": "Exporte o histórico de preços em CSV com o Plus.",
+      "reportReason": "O relatório anual em PDF faz parte do Plus.",
+      "statementReason": "Ler extratos em fotografia ou PDF faz parte do Plus.",
+      "watchlistGroupsReason": "Organize a sua lista em grupos com o Plus.",
+      "watchlistReason": "O plano gratuito inclui 3 instrumentos guardados."
+    },
+    "plan": {
+      "chooseTitle": "Escolhe o teu plano",
+      "demoPrices": "Pré-visualização · preços de demonstração",
+      "loadError": "Não foi possível carregar os planos.",
+      "loadErrorRetry": "Tenta novamente para consultar os preços da App Store.",
+      "monthlyPrice": "US$7,99/mês",
+      "pricesDisclosure": "Preços e condições apresentados antes da confirmação.",
+      "renewal": "{arg1}. Renovação automática.",
+      "renewalCancelHint": "{arg1}, com renovação automática. Cancela na tua Conta Apple.",
+      "savings": "Poupa {arg1}%",
+      "trialRenewal": "7 dias grátis, depois {arg1}. Renovação automática.",
+      "trialRenewalCancelHint": "7 dias grátis, depois {arg1}. Renovação automática. Cancela antes do fim do teste para evitar a cobrança.",
+      "yearlyPrice": "US$79,99/ano"
+    },
+    "status": {
+      "activeTitle": "O teu Plus está ativo",
+      "existingSubscriptionNote": "Se já tens uma subscrição na App Store, esta oferta não a cancela automaticamente.",
+      "giftFrom": "Uma oferta de {arg1}. Sem cobrança nem renovação.",
+      "lifetimeTitle": "Plus vitalício",
+      "proActiveTitle": "O teu Pro está ativo",
+      "thanks": "Obrigado por acompanhares o mercado connosco."
+    }
+  },
+  "unusualActivity": {
+    "bookImbalance": {
+      "buy": "{arg1} do valor no livro de ordens é de compra.",
+      "sell": "{arg1} do valor no livro de ordens é de venda."
+    },
+    "disclaimer": "Informação de mercado. Não constitui recomendação de investimento.",
+    "dormancyBreak": "Primeiro negócio em {arg1} sessões.",
+    "empty": "Sem atividade fora do habitual",
+    "priceMove": "Variação de {arg1} hoje, {arg2} desvios-padrão face ao habitual.",
+    "settings": {
+      "notifications": "Títulos que sigo"
+    },
+    "signal": {
+      "bookImbalance": {
+        "buy": "do livro do lado da compra",
+        "sell": "do livro do lado da venda"
+      },
+      "dormancy": {
+        "label": "em {arg1} sessões",
+        "value": "1.º negócio"
+      },
+      "largeOrder": {
+        "buy": "ordem de compra a {arg1}",
+        "sell": "ordem de venda a {arg1}"
+      },
+      "largeTrade": "num só negócio a {arg1}",
+      "priceMove": "{arg1} a variação típica",
+      "spread": "diferença compra/venda, {arg1} a habitual",
+      "trades": {
+        "label": "{arg1} o habitual",
+        "value": "{arg1} negócios"
+      },
+      "volume": "o volume habitual"
+    },
+    "spreadNarrower": "Diferença compra/venda de {arg1}, {arg2} mais estreita que a mediana.",
+    "spreadWider": "Diferença compra/venda de {arg1}, {arg2} a mediana.",
+    "title": "Atividade invulgar",
+    "tradeCountSpike": "{arg1} negócios hoje, {arg2} a mediana de {arg3} sessões.",
+    "volumeSpike": "O volume de hoje é {arg1} a mediana de {arg2} sessões.",
+    "withdrawn": "Já não está no livro de ordens"
+  },
+  "watchlist": {
+    "accessibility": {
+      "addSecurity": "Adicionar {arg1}, {arg2}",
+      "createAlert": "Criar alerta para {arg1}",
+      "insightOptions": "Opções: {arg1}",
+      "insightSourcesHint": "Abre as fontes e o período desta observação.",
+      "loading": "A carregar títulos acompanhados",
+      "manageAlerts": "Gerir {arg1} alertas para {arg2}"
+    },
+    "addSheet": {
+      "allAddedMessage": "Todos os títulos disponíveis já estão a ser acompanhados.",
+      "allAddedTitle": "Todos adicionados",
+      "searchMessage": "Procura por símbolo, nome ou emitente."
+    },
+    "alertForm": {
+      "aboveTarget": "Acima do alvo",
+      "belowTarget": "Abaixo do alvo",
+      "informationSection": "Informação",
+      "minimumChange": "Variação mínima",
+      "movementSection": "Movimento",
+      "newMarketInfo": "Nova informação de mercado",
+      "percentageChange": "Variação percentual",
+      "save": "Guardar"
+    },
+    "breadth": {
+      "context": "{arg1} sem variação · {arg2} títulos atuais\n{arg3}",
+      "description": "Cada título conta uma vez, sem ponderação por valor ou volume. Todos têm dados completos.{arg1}",
+      "headline": "{arg1} em subida · {arg2} em descida",
+      "title": "A sua lista na última semana concluída"
+    },
+    "closeMovement": {
+      "description": "Variação da cotação entre fechos verificados de todas as sessões do período. Não representa rendimento, juros ou dividendos.",
+      "formula": "100 × (fecho final − fecho de referência) ÷ fecho de referência.",
+      "title": "Movimento entre fechos"
+    },
+    "emptyState": {
+      "message": "Adiciona os instrumentos que queres acompanhar para veres as suas cotações num só lugar.",
+      "title": "O teu radar ainda está vazio."
+    },
+    "featuredClose": {
+      "description": "O último fecho ultrapassou estritamente todos os fechos anteriores deste período. Não é um máximo ou mínimo intradiário, anual ou histórico.",
+      "headline": "{arg1} · {arg2} de fecho do período",
+      "title": "Fecho em destaque"
+    },
+    "freePlan": {
+      "summary": "Gratuito · {arg1}/3 ativos · {arg2} pausados. Escolher"
+    },
+    "groups": {
+      "all": "Todos",
+      "new": "Novo grupo",
+      "rename": "Mudar nome",
+      "save": "Guardar",
+      "title": "Grupos"
+    },
+    "insight": {
+      "largestMovement": "Maior movimento",
+      "sourcesUnavailable": "Algumas fontes estão temporariamente indisponíveis.",
+      "watchedSecurities": "Títulos acompanhados"
+    },
+    "insightDetail": {
+      "applyError": "Não foi possível aplicar a preferência. Tenta novamente.",
+      "dataAsOf": "Dados de {arg1}. Não é uma atualização em tempo real.",
+      "notUseful": "Não foi útil",
+      "preferenceApplied": "Preferência aplicada neste dispositivo. Eventos relevantes continuam elegíveis.",
+      "preferenceReset": "Preferência reposta.",
+      "preferences": "Preferências desta observação",
+      "privacyHidden": "Observação pessoal oculta no Modo de privacidade.",
+      "readPublication": "Ler publicação",
+      "resetPreference": "Repor preferência",
+      "showFewer": "Mostrar menos deste tipo na lista",
+      "staleMessage": "Esta observação já não está atualizada.",
+      "title": "Observação"
+    },
+    "largestMovement": {
+      "description": "Maior variação percentual absoluta entre os {arg1} títulos que acompanha atualmente, todos com fechos verificados. Não representa rendimento, juros ou dividendos.",
+      "title": "Maior movimento da última semana concluída"
+    },
+    "menu": {
+      "dismissInsight": "Dispensar observação",
+      "viewSources": "Ver fontes"
+    },
+    "publication": {
+      "description": "Publicação com fonte primária identificada. A seleção consulta as vinte publicações públicas mais recentes e mostra apenas informação dos últimos sete dias. As relações com títulos vêm de ligações editoriais explícitas. Não implica impacto no preço.",
+      "formula": "Ligação editorial ao título + publicação nos últimos sete dias + fonte primária HTTPS válida.",
+      "title": "Informação publicada"
+    },
+    "row": {
+      "alertAction": "Alerta",
+      "manageAlerts": "Gerir alertas",
+      "removeAction": "Remover"
+    },
+    "sources": {
+      "closesDescription": "Preços de fecho BODIVA. Não inclui rendimentos, ajustes de operações societárias, compras ou vendas. Um fecho em falta impede a comparação desse título.",
+      "collectedOn": "Recolhido em {arg1}",
+      "record": "Registo: {arg1}",
+      "recordDetails": "Detalhes dos registos",
+      "verifiedCloses": "Fechos verificados ({arg1})"
+    },
+    "streak": {
+      "context": "{arg1} na sequência · {arg2}",
+      "description": "A sequência termina no último fecho verificado e inclui apenas sessões de mercado abertas. Uma sessão sem variação interrompe a sequência. Não prevê a próxima sessão.",
+      "formula": "Cada fecho é estritamente maior ou menor que o anterior. Exige três variações consecutivas na mesma direção e uma variação acumulada absoluta de pelo menos 1%.",
+      "headline": "{arg1} · {arg2} sessões de {arg3}",
+      "title": "Sessões consecutivas"
+    },
+    "undo": {
+      "button": "Desfazer",
+      "removed": "{arg1} removido."
+    }
+  },
+  "weekAhead": {
+    "about": {
+      "announcedDates": "Datas anunciadas em fontes identificadas. Podem ser alteradas ou canceladas; não pressupõem que o mercado esteja aberto nesse dia.",
+      "coverage": "A cobertura atual inclui datas explícitas de dividendos. A ausência de outros tipos de evento não significa que não estejam previstos.",
+      "portfolioLink": "Uma relação com ações na tua carteira não confirma direito ao dividendo nem recebimento. Consulta as condições do comunicado.",
+      "title": "Sobre esta agenda"
+    },
+    "banner": {
+      "cachedUpdated": "Agenda guardada · atualizada em {arg1}. Alterações por confirmar."
+    },
+    "emptyState": {
+      "message": "A ausência de eventos nesta agenda não confirma que não existam outros anúncios.",
+      "title": "Sem eventos verificados para este período"
+    },
+    "header": {
+      "navigationTitle": "Semana à frente"
+    },
+    "list": {
+      "noSession": "Sem sessão no calendário verificado. As datas anunciadas mantêm-se."
+    },
+    "row": {
+      "dateUpdated": "Data atualizada na fonte",
+      "financialYear": "Exercício de {arg1}",
+      "recordUpdated": "Registo atualizado em {arg1}."
+    },
+    "state": {
+      "checking": "A verificar a agenda…",
+      "unavailableMessage": "Não foi possível confirmar dados atuais para este período.",
+      "unavailableTitle": "Agenda indisponível"
+    },
+    "summary": {
+      "title": "A tua semana à frente",
+      "watchlistCount": "{arg1} {arg2} com a tua lista."
+    }
+  },
+  "weeklyWrap": {
+    "accessibility": {
+      "mute": "Silenciar",
+      "nextPage": "Página seguinte",
+      "pageOfTotal": "Página {arg1} de {arg2}",
+      "pause": "Pausar reprodução",
+      "previousPage": "Página anterior",
+      "progressPercent": "{arg1} por cento",
+      "resume": "Retomar reprodução",
+      "unmute": "Ativar som"
+    },
+    "breadth": {
+      "caption": "Variação entre os fechos observados.",
+      "comparableSample": "{arg1} ações com pelo menos dois fechos comparáveis",
+      "fell": "Desceram",
+      "rose": "Subiram",
+      "summary": "{arg1} subiram · {arg2} desceram · {arg3} sem alteração",
+      "verifiedSample": "{arg1} ações com todos os fechos verificados. Esta amostra não representa todo o mercado."
+    },
+    "closing": {
+      "nextStoryMonthly": "O próximo mês\ntraz uma nova história.",
+      "nextStoryWeekly": "A próxima semana\ntraz uma nova história.",
+      "nextStoryYearly": "O próximo ano\ntraz uma nova história."
+    },
+    "details": {
+      "comparesTitle": "O que esta semana compara",
+      "correctedData": "Dados corrigidos: {arg1}",
+      "edition": "Edição {arg1} · {arg2}",
+      "generatedOn": "Gerado em {arg1}. Esta versão fica guardada para o período.",
+      "omitMarketCoverage": "A amostra de ações não inclui todo o mercado.",
+      "omitPortfolioData": "A carteira não tem fechos completos e comparáveis para todas as posições.",
+      "omitPortfolioTransactions": "A carteira teve compras ou vendas; não se atribuiu o fluxo a desempenho.",
+      "omitWatchlistData": "A lista tem ativos sem fechos completos; o resumo total foi omitido.",
+      "omittedTitle": "Dados omitidos",
+      "originalWeekNote": "Os fechos pertencem à semana original. A lista reflete a data da recriação; os restantes capítulos foram preservados.",
+      "personalizationRecreated": "Personalização recriada com a lista confirmada em {arg1}.",
+      "portfolioExplanation": "A carteira usa quantidades mantidas no início da semana. Compras e vendas durante a semana impedem a comparação da carteira; dinheiro investido não é ganho. Rendimentos, comissões e impostos não entram nesta métrica.",
+      "positionInsight": "Insight {arg1} · transações {arg2}",
+      "positionUnits": "{arg1} · {arg2} unidades",
+      "positionsHidden": "Posições ocultas no Modo de privacidade.",
+      "positionsTitle": "Posições usadas",
+      "preservedVersion": "Versão preservada do arquivo anterior. O contexto de composição não foi registado nessa versão.",
+      "priceChangeExplanation": "A variação de preço compara o último fecho antes da semana com o último fecho desta semana, normalmente sexta-feira. Cada sessão intermédia precisa de uma observação final verificada. Sem negociação ou sem fecho fiável, o ativo fica de fora.",
+      "recreateButton": "Recriar com a lista atual",
+      "recreateExplanation": "Cria uma nova edição usando a lista atual e fechos verificados da semana original. A edição original continua disponível. A carteira e os capítulos do mercado ficam preservados.",
+      "recreateProgress": "A verificar a lista e os fechos da semana…",
+      "recreateTitle": "Recriar a personalização",
+      "replaces": "Substitui {arg1}",
+      "sourceRow": "{arg1} · recolhido {arg2} · {arg3} · parser {arg4} · linha {arg5} · lote {arg6} · SHA-256 {arg7}",
+      "sourcesTitle": "Fontes verificadas",
+      "viewCurrent": "Ver edição atual",
+      "viewOriginal": "Ver edição original"
+    },
+    "error": {
+      "catalogueRefresh": "Não foi possível atualizar o catálogo do mercado. Tenta novamente quando a ligação estiver disponível.",
+      "ended": "Este Wrap já terminou. O próximo estará disponível após o fecho semanal.",
+      "fetchFailed": "Não foi possível obter os dados verificados. Tenta novamente quando a ligação estiver disponível.",
+      "missingNames": "Faltam os nomes verificados de ativos da lista atual.",
+      "noPreviousClose": "Ainda não há um fecho anterior verificado para comparar este período.",
+      "noSavedVersion": "Não há uma versão guardada deste período. Um Wrap antigo não é reconstruído com a carteira ou a watchlist de hoje.",
+      "notEnoughCloses": "Ainda não há fechos verificados suficientes para contar este período.",
+      "notEnoughData": "Ainda não há fechos verificados ou atividade suficiente. Os dados em falta não são estimados.",
+      "portfolioUpdating": "A carteira ainda está a ser atualizada. Tenta novamente dentro de instantes.",
+      "signInRequired": "Inicia sessão para ver o teu Wrap.",
+      "unavailableReason": "Este Wrap está indisponível: {arg1}",
+      "unavailableTitle": "Wrap ainda indisponível",
+      "watchlistUnconfirmed": "A lista ainda não está confirmada. Tenta novamente; nenhum Wrap parcial foi guardado."
+    },
+    "highlights": {
+      "declineTitle": "Uma descida\nem destaque",
+      "gainTitle": "Uma subida\nem destaque",
+      "watchlistTitle": "O maior movimento\nna tua lista"
+    },
+    "market": {
+      "tagline": "Os movimentos. Os destaques.\nA tua perspetiva.",
+      "title": "O teu\nmercado."
+    },
+    "player": {
+      "close": "Fechar Wrap",
+      "share": "Partilhar",
+      "shareVideo": "Partilhar vídeo do Wrap"
+    },
+    "portfolio": {
+      "contributionCaption": "Contributo estimado para a variação da carteira",
+      "contributionHidden": "Contributo oculto",
+      "contributorsTitle": "Quem mais\ncontribuiu",
+      "lowestHidden": "Menor contributo oculto",
+      "lowestSymbol": "Menor contributo: {arg1}",
+      "priceChangeNote": "Variação de preço das posições mantidas. Não inclui rendimentos, comissões ou entradas de dinheiro."
+    },
+    "radar": {
+      "assetFollowedPlural": "ativos que acompanhas",
+      "assetFollowedSingular": "ativo que acompanhas",
+      "assetsCaption": "ativos diferentes passaram pelo teu radar",
+      "interestTitle": "O teu interesse\nem destaque",
+      "interestViews": "Abriste este ativo {arg1} vezes, em pelo menos dois dias deste período.",
+      "lensTitle": "O mercado,\npela tua lente.",
+      "title": "O teu radar\ndo mercado"
+    },
+    "repair": {
+      "missingContext": "Esta versão não tem contexto suficiente para recriar a personalização. A edição guardada foi preservada.",
+      "newEditionSaved": "Nova edição guardada. A edição original continua disponível.",
+      "newerEdition": "Há uma edição mais recente. Abre a edição atual e tenta novamente.",
+      "openFailed": "Não foi possível abrir essa edição guardada.",
+      "sameEdition": "Esta edição já usa a mesma lista e os mesmos fechos verificados.",
+      "verificationFailed": "Não foi possível verificar todos os fechos e o calendário da semana original. Tenta novamente quando esses dados estiverem disponíveis. A edição guardada foi preservada.",
+      "watchlistUnconfirmed": "Não foi possível confirmar a lista atual. Tenta novamente; a edição guardada foi preservada."
+    },
+    "share": {
+      "addingMusic": "A adicionar música…",
+      "assetsFollowed": "ATIVOS QUE ACOMPANHO",
+      "badgeMonthly": "MONTHLY WRAP",
+      "badgeWeekly": "WEEKLY WRAP",
+      "badgeYearly": "YEARLY WRAP",
+      "errorTitle": "Não foi possível preparar o vídeo",
+      "estimatedChange": "Variação estimada entre fechos",
+      "portfolioTitle": "A minha carteira",
+      "preparingVideo": "A preparar vídeo…",
+      "recreatedEdition": "Personalização recriada · edição {arg1}",
+      "sampleObserved": "Amostra observada nesta semana",
+      "titleMonthly": "O meu mês\nno mercado 🇦🇴",
+      "titleWeekly": "A minha semana\nno mercado 🇦🇴",
+      "titleYearly": "O meu ano\nno mercado 🇦🇴",
+      "verifiedStocks": "AÇÕES COM FECHOS VERIFICADOS"
+    },
+    "stage": {
+      "eyebrowMonthly": "O MÊS EM MOVIMENTO",
+      "eyebrowWeekly": "A SEMANA EM MOVIMENTO",
+      "eyebrowYearly": "O ANO EM MOVIMENTO",
+      "introMonthly": "O teu\nmês.",
+      "introWeekly": "A tua\nsemana.",
+      "introYearly": "O teu\nano.",
+      "marketMonthly": "Este mês\nno mercado",
+      "marketWeekly": "Esta semana\nno mercado",
+      "marketYearly": "Este ano\nno mercado",
+      "portfolioMonthly": "A tua carteira.\nEste mês.",
+      "portfolioWeekly": "A tua carteira.\nEsta semana.",
+      "portfolioYearly": "A tua carteira.\nEste ano.",
+      "preparingMonthly": "A preparar o teu mês…",
+      "preparingWeekly": "A preparar a tua semana…",
+      "preparingYearly": "A preparar o teu ano…",
+      "reviewMonthly": "Rever o teu mês",
+      "reviewWeekly": "Rever a tua semana",
+      "reviewYearly": "Rever o teu ano",
+      "sectionHighlights": "OS DESTAQUES",
+      "sectionMarket": "O MERCADO",
+      "sectionPortfolio": "A TUA CARTEIRA",
+      "sectionRadar": "O TEU RADAR",
+      "stocksMonthly": "As ações\ndo mês",
+      "stocksWeekly": "As ações\nda semana",
+      "stocksYearly": "As ações\ndo ano",
+      "titleMonthly": "O teu mês no mercado",
+      "titleWeekly": "A tua semana no mercado",
+      "titleYearly": "O teu ano no mercado",
+      "yoursMonthly": "O MÊS É TEU",
+      "yoursWeekly": "A SEMANA É TUA",
+      "yoursYearly": "O ANO É TEU"
+    }
+  },
+  "widgets": {
+    "common": {
+      "openApp": "Abrir invest.ao →"
+    },
+    "configuration": {
+      "featuredDescription": "No widget pequeno, destaca este instrumento ou o primeiro da tua lista.",
+      "featuredTitle": "Instrumento em destaque",
+      "intentDescription": "Escolhe um instrumento carregado no invest.ao. Abre a aplicação para atualizar a lista."
+    },
+    "liveActivity": {
+      "closed": "Fechada",
+      "opens": "Abre {arg1}"
+    },
+    "market": {
+      "calculatedNotOfficial": "Calculado pela invest.ao · não é um índice oficial da BODIVA",
+      "decline": "Descida",
+      "description": "Indicador proprietário e movimentos dos instrumentos, com base em cotações BODIVA.",
+      "displayName": "Mercado invest.ao",
+      "gain": "Subida",
+      "incompleteChanges": "Variações incompletas",
+      "indicatorNotOfficial": "Indicador invest.ao · não é índice oficial da BODIVA",
+      "largestDecline": "Maior descida",
+      "largestGain": "Maior subida",
+      "noMovement": "Sem movimento",
+      "openAppHint": "Abre o invest.ao para carregar os dados do mercado.",
+      "unofficialIndex": "Índice não oficial"
+    },
+    "movement": {
+      "fell": "Desceu",
+      "rose": "Subiu"
+    },
+    "portfolio": {
+      "addPositionsHint": "Regista as tuas posições no invest.ao.",
+      "description": "Valor e desempenho das posições registadas no invest.ao.",
+      "largestPositions": "Maiores posições",
+      "openAppHint": "Abre o invest.ao para carregar a tua carteira.",
+      "partialResult": "Resultado parcial",
+      "unrealizedResult": "Resultado não realizado"
+    },
+    "security": {
+      "chooseInstrumentHint": "Edita o widget para escolher um instrumento.",
+      "closingHistory": "Histórico de fecho",
+      "description": "Escolhe um instrumento para acompanhar a sua cotação e variação.",
+      "noHistory": "Sem histórico",
+      "openAppHint": "Abre o invest.ao para atualizar este instrumento."
+    },
+    "status": {
+      "marketClosed": "Mercado fechado",
+      "marketOpen": "Mercado aberto",
+      "marketUnavailable": "Mercado indisponível",
+      "openingSoon": "Abertura em breve"
+    },
+    "watchlist": {
+      "addInstrumentsHint": "Adiciona instrumentos à tua lista no invest.ao.",
+      "description": "Cotações dos instrumentos da tua lista de acompanhamento.",
+      "openAppHint": "Abre o invest.ao para carregar a tua lista."
+    }
+  }
+}
