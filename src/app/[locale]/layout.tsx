@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import type { ReactNode } from "react";
 
+import { maintenanceActive } from "@/data/flags/maintenance-gate";
+import { MaintenanceScreen } from "@/features/maintenance/maintenance-screen";
 import { routing } from "@/i18n/routing";
 import { parseTheme, THEME_COOKIE } from "@/ui/theme/theme";
 
@@ -36,7 +38,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale === "pt" ? "pt-AO" : "en-AO"} data-theme={theme} className="h-full antialiased">
       <body className="flex min-h-full flex-col">
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>{maintenanceActive() ? <MaintenanceScreen /> : children}</NextIntlClientProvider>
       </body>
     </html>
   );

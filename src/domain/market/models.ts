@@ -183,6 +183,8 @@ export interface MarketSourceMetadata {
   readonly availability?: MarketSourceAvailability;
   /** Build time of the shared snapshot this data came from; absent for direct reads. */
   readonly snapshotGeneratedAt?: EpochMs;
+  /** `ETag` of that shared snapshot; a Realtime announcement with the same tag needs no reload. */
+  readonly snapshotETag?: string;
 }
 
 export interface MarketSnapshot {

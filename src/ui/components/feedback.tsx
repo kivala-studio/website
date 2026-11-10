@@ -23,6 +23,8 @@ export type ToastMessage = {
   /** Shown with `onRetry`; a toast with a retry never dismisses itself. */
   actionTitle?: string;
   onRetry?: () => Promise<void> | void;
+  /** Called when this toast closes without being replaced (dismissed or timed out). */
+  onDismiss?: () => void;
 };
 
 type Toast = ToastMessage & { id: number };
@@ -44,7 +46,16 @@ export function ToastHost({ children }: { children: ReactNode }) {
   const [retrying, setRetrying] = useState(false);
   const counter = useRef(0);
 
-  const dismiss = useCallback(() => setToast(null), []);
+  const current = useRef<Toast | null>(null);
+  useEffect(() => {
+    current.current = toast;
+  }, [toast]);
+
+  const dismiss = useCallback(() => {
+    current.current?.onDismiss?.();
+    current.current = null;
+    setToast(null);
+  }, []);
   const show = useCallback((next: ToastMessage) => {
     counter.current += 1;
     setToast({ ...next, id: counter.current });
@@ -52,9 +63,11 @@ export function ToastHost({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!toast || toast.onRetry) return;
-    const timer = setTimeout(() => setToast((current) => (current?.id === toast.id ? null : current)), AUTO_DISMISS_MS);
+    const timer = setTimeout(() => {
+      if (current.current?.id === toast.id) dismiss();
+    }, AUTO_DISMISS_MS);
     return () => clearTimeout(timer);
-  }, [toast]);
+  }, [toast, dismiss]);
 
   const value = useMemo(() => ({ show, dismiss }), [show, dismiss]);
 

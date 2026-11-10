@@ -1,0 +1,11 @@
+{
+  "recordedAt": "2026-11-10T22:45:34Z",
+  "request": "GET /functions/v1/market-snapshot (anon, publishable key)",
+  "status": 200,
+  "headers": {
+    "cache-control": "public, max-age=118, stale-while-revalidate=5",
+    "content-type": "application/json; charset=utf-8",
+    "etag": "W/\"93969d6b60e289cf67c33cced4ff41307f046530afc1b181e761015eb8621c52\"",
+    "x-investao-generated-at": "2026-11-10T22:45:33.906Z"
+  }
+}

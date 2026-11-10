@@ -31,14 +31,22 @@ const object = (value: Json, path: string): JsonObject =>
 const string: Read<string> = (value, path) => (typeof value === "string" ? value : fail(path, "string"));
 const boolean: Read<boolean> = (value, path) => (typeof value === "boolean" ? value : fail(path, "boolean"));
 const integer: Read<number> = (value, path) => (Number.isInteger(value) ? (value as number) : fail(path, "integer"));
-/** Seconds and other non-monetary quantities. */
-const number: Read<number> = (value, path) =>
-  typeof value === "number" && Number.isFinite(value) ? value : fail(path, "number");
+const NUMERIC_TEXT = /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/;
+
+/**
+ * Seconds and other non-monetary quantities. `parseExactJson` may hand over a long literal
+ * (an epoch with microseconds) as text; a float is precise enough here.
+ */
+const number: Read<number> = (value, path) => {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string" && NUMERIC_TEXT.test(value)) return Number(value);
+  return fail(path, "number");
+};
 
 // Contract §2: numeric columns arrive as JSON numbers (evidence RPCs send strings); both become Decimal.
 const decimal: Read<Decimal> = (value, path) => {
   if (typeof value === "number" && Number.isFinite(value)) return new Decimal(value);
-  if (typeof value === "string" && /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/.test(value.trim())) return new Decimal(value.trim());
+  if (typeof value === "string" && NUMERIC_TEXT.test(value.trim())) return new Decimal(value.trim());
   return fail(path, "decimal");
 };
 
@@ -289,6 +297,30 @@ export const readVerifiedCloseRow: Read<VerifiedCloseRow> = (value, path) => {
   };
 };
 
+/** `price_history` row (M13). Legacy imports may lack OHLC or volume. */
+export interface PriceHistoryRow {
+  readonly securityID: string;
+  readonly tradingDate: string;
+  readonly closePrice?: Decimal;
+  readonly openPrice?: Decimal;
+  readonly highPrice?: Decimal;
+  readonly lowPrice?: Decimal;
+  readonly volume?: Decimal;
+}
+
+export const readPriceHistoryRow: Read<PriceHistoryRow> = (value, path) => {
+  const record = object(value, path);
+  return {
+    securityID: required(record, "security_id", string, path),
+    tradingDate: required(record, "trading_date", string, path),
+    closePrice: optional(record, "close_price", decimal, path),
+    openPrice: optional(record, "open_price", decimal, path),
+    highPrice: optional(record, "high_price", decimal, path),
+    lowPrice: optional(record, "low_price", decimal, path),
+    volume: optional(record, "volume", decimal, path),
+  };
+};
+
 export interface MarketPulseRow {
   readonly tradingDate: string;
   readonly value: Decimal;
@@ -440,6 +472,7 @@ export const decodeCalendarResponse = (json: Json) => readCalendarResponse(json,
 export const decodeSecurityRows = (json: Json) => lossy(readSecurityRow)(json, "$");
 export const decodeVerifiedCloseRows = (json: Json) => array(readVerifiedCloseRow)(json, "$");
 export const decodePulseRows = (json: Json) => array(readPulseRow)(json, "$");
+export const decodePriceHistoryRows = (json: Json) => array(readPriceHistoryRow)(json, "$");
 export const decodeReferencePriceRow = (json: Json) => readReferencePriceRow(json, "$");
 export const decodeVerifiedCloseRow = (json: Json) => readVerifiedCloseRow(json, "$");
 export const decodePulseRow = (json: Json) => readPulseRow(json, "$");
