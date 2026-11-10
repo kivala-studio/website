@@ -64,9 +64,6 @@ function collectPublic(source: Source, problems: string[]): PublicEnv {
     if (supabaseKey === null) problems.push("NEXT_PUBLIC_SUPABASE_KEY is missing");
   }
   checkUrl("NEXT_PUBLIC_SUPABASE_URL", supabaseUrl, problems);
-  if (supabaseKey !== null && /service_role|^sb_secret_/.test(supabaseKey)) {
-    problems.push("NEXT_PUBLIC_SUPABASE_KEY must be the publishable key, not a secret key");
-  }
 
   const sentryDsn = read(source, "NEXT_PUBLIC_SENTRY_DSN");
   checkUrl("NEXT_PUBLIC_SENTRY_DSN", sentryDsn, problems);
@@ -91,6 +88,11 @@ export function parsePublicEnv(source: Source): PublicEnv {
 export function parseServerEnv(source: Source): ServerEnv {
   const problems: string[] = [];
   const env = collectPublic(source, problems);
+  // Checked only here (`next build` and `next start` run it): in `collectPublic` the pattern
+  // itself would ship in every client bundle that reads the public environment.
+  if (env.supabaseKey !== null && /service_role|^sb_secret_/.test(env.supabaseKey)) {
+    problems.push("NEXT_PUBLIC_SUPABASE_KEY must be the publishable key, not a secret key");
+  }
   const siteUrl = read(source, "SITE_URL");
   if (siteUrl === null) problems.push("SITE_URL is missing");
   checkUrl("SITE_URL", siteUrl, problems);
