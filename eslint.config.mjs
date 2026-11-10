@@ -35,6 +35,25 @@ const eslintConfig = defineConfig([
       ],
     },
   },
+  {
+    // Money, prices, thresholds and ledger values stay Decimal: no conversion to binary floats in the domain.
+    files: ["src/domain/**/*.ts"],
+    ignores: ["**/*.test.ts"],
+    rules: {
+      "no-restricted-globals": ["error", { name: "parseFloat", message: "Use new Decimal(text) for financial values." }],
+      "no-restricted-properties": [
+        "error",
+        { object: "Number", property: "parseFloat", message: "Use new Decimal(text) for financial values." },
+      ],
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "CallExpression[callee.property.name=/^to(Number|NearestNumber)$/]",
+          message: "Keep financial values as Decimal; convert only at the UI edge (e.g. chart coordinates).",
+        },
+      ],
+    },
+  },
   globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", "playwright-report/**", "test-results/**", ".lighthouseci/**"]),
 ]);
 
