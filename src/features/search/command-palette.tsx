@@ -54,12 +54,12 @@ export function CommandPalette({ rows, renderedAt }: { rows: readonly CatalogueR
         onClick={show}
         aria-keyshortcuts="/ Control+K Meta+K"
         aria-haspopup="dialog"
-        className="hidden min-h-11 items-center gap-2 rounded-full bg-action-surface px-4 text-secondary text-secondary-text lg:inline-flex"
+        className="hidden min-h-11 w-full max-w-md items-center gap-2 rounded-medium border border-hairline bg-app-background px-3 text-secondary text-secondary-text hover:border-separator lg:flex"
         data-testid="search-palette-button"
       >
         <Icon name="search" />
-        <span>{t("common.search")}</span>
-        <kbd aria-hidden className="rounded-small border border-separator px-1.5 text-micro">
+        <span className="flex-1 text-left">{t("common.search")}</span>
+        <kbd aria-hidden className="rounded-[0.3rem] border border-separator px-1.5 font-sans text-micro">
           /
         </kbd>
       </button>

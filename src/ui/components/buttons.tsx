@@ -19,7 +19,7 @@ const KIND: Record<Kind, string> = {
 };
 
 const BASE =
-  "motion-press inline-flex w-full min-h-14 items-center justify-center gap-2 rounded-full px-5 py-4 text-center text-body font-semibold disabled:opacity-42 aria-disabled:opacity-42";
+  "motion-press inline-flex w-full min-h-14 items-center justify-center gap-2 rounded-full px-5 py-4 text-center text-body font-semibold desk:min-h-11 desk:px-4 desk:py-2 disabled:opacity-42 aria-disabled:opacity-42";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   kind?: Kind;
@@ -70,7 +70,7 @@ export function IconButton({ icon, label, className, ...props }: IconButtonProps
       title={label}
       {...props}
       className={cn(
-        "motion-press inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-action-surface text-primary-text disabled:opacity-42",
+        "motion-press inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-action-surface desk:size-11 text-primary-text disabled:opacity-42",
         className,
       )}
     >
@@ -93,7 +93,7 @@ export function ActionTile({ icon, title, selected = false, className, ...props 
       aria-pressed={selected}
       {...props}
       className={cn(
-        "motion-press flex min-h-20 w-full flex-col items-center justify-center gap-2 rounded-large px-2 py-2 text-caption font-medium text-primary-text",
+        "motion-press flex min-h-20 desk:min-h-16 w-full flex-col items-center justify-center gap-2 rounded-large px-2 py-2 text-caption font-medium text-primary-text",
         "border-[length:var(--control-outline-width)]",
         selected ? "bg-accent-soft border-accent" : "bg-action-surface border-control-outline",
         className,

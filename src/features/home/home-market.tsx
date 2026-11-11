@@ -79,8 +79,8 @@ export function HomeView({
           data-testid="home-refresh"
         />
       </div>
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start lg:gap-x-10" aria-busy={state.load.kind === "loading" || undefined}>
-        <div className="contents lg:flex lg:flex-col lg:gap-10">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:gap-x-6" aria-busy={state.load.kind === "loading" || undefined}>
+        <div className="contents lg:flex lg:min-w-0 lg:flex-col lg:gap-6">
           <div className="max-lg:order-1">
             {failed ? (
               <ErrorState
@@ -103,7 +103,7 @@ export function HomeView({
             </div>
           )}
         </div>
-        <div className="contents lg:flex lg:flex-col lg:gap-10">
+        <div className="contents lg:flex lg:flex-col lg:gap-4">
           {failed ? null : (
             <div className="max-lg:order-2">
               <WatchlistRail loaded={loaded} rows={byID} />
@@ -125,7 +125,7 @@ function OverviewCard({ loaded, stale }: { loaded: Loaded | undefined; stale: bo
   const [open, setOpen] = useState(false);
   if (!loaded) {
     return (
-      <Card aria-label={t("home.accessibility.loadingMarket")} className="flex flex-col gap-5 rounded-[1.5rem]">
+      <Card aria-label={t("home.accessibility.loadingMarket")} className="flex flex-col gap-5">
         <Skeleton className="h-6 w-48" />
         <Skeleton className="h-10 w-40" />
         <Skeleton className="h-4 w-full" />
@@ -140,7 +140,7 @@ function OverviewCard({ loaded, stale }: { loaded: Loaded | undefined; stale: bo
   const visible = visibleOutsideSearch(snapshot.securities, at);
   const verifiedCloses = visible.filter((security) => security.closingPrice !== undefined).length;
   return (
-    <Card className="flex flex-col gap-5 rounded-[1.5rem]" data-testid="home-overview">
+    <Card className="flex flex-col gap-5" data-testid="home-overview">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-section text-primary-text">{t("home.overview.header")}</h2>
         <MarketStatusIndicator status={snapshot.status} />
@@ -188,7 +188,7 @@ function OverviewCard({ loaded, stale }: { loaded: Loaded | undefined; stale: bo
         </div>
       )}
       {stale ? <p className="text-caption text-warning">{t("home.summary.staleData")}</p> : null}
-      <div className="border-t border-separator pt-1">
+      <div className="border-t border-separator pt-1 lg:border-hairline">
         <button
           type="button"
           onClick={() => setOpen(true)}
@@ -221,7 +221,7 @@ function Sparkline({ values }: { values: number[] }) {
 function InstrumentLink({ security, row, at }: { security: MarketSecurity; row: CatalogueRow | undefined; at: number }) {
   const t = useTranslations();
   return (
-    <Link href={`/mercado/${encodeURIComponent(security.symbol)}`} prefetch={false} className="flex min-h-18 items-center gap-3 rounded-small py-2">
+    <Link href={`/mercado/${encodeURIComponent(security.symbol)}`} prefetch={false} className="flex min-h-18 items-center gap-3 rounded-small py-2 desk:min-h-12">
       <SecurityLogo symbol={security.symbol} logoUrl={row?.logoURL ?? security.logoURL} brandColor={row?.bond ? "violet" : "blue"} />
       <span className="flex min-w-0 flex-1 flex-col gap-1">
         <span className="text-body font-semibold text-primary-text">{security.symbol}</span>
@@ -242,7 +242,7 @@ function WatchlistRail({ loaded, rows }: { loaded: Loaded | undefined; rows: Map
     return ids.flatMap((id) => byID.get(id) ?? []).slice(0, RAIL_LIMIT);
   }, [ids, loaded]);
   return (
-    <section aria-labelledby="home-watchlist" className="flex flex-col gap-3" data-testid="home-watchlist">
+    <section aria-labelledby="home-watchlist" className="flex flex-col gap-3 lg:panel lg:gap-1 lg:px-4 lg:py-3" data-testid="home-watchlist">
       <SectionHeader
         id="home-watchlist"
         title={t("common.yourWatchlist")}
@@ -275,7 +275,7 @@ function WatchlistRail({ loaded, rows }: { loaded: Loaded | undefined; rows: Map
           {securities.map((security) => {
             const row = rows.get(security.id);
             return (
-              <li key={security.id} className="w-44 shrink-0 snap-start rounded-[1.5rem] bg-card-background p-4 lg:w-auto lg:rounded-none lg:border-b lg:border-separator lg:bg-transparent lg:p-0 lg:last:border-b-0">
+              <li key={security.id} className="w-44 shrink-0 snap-start rounded-[1.5rem] bg-card-background p-4 lg:w-auto lg:rounded-none lg:border-b lg:border-hairline lg:bg-transparent lg:p-0 lg:last:border-b-0">
                 <RailTile security={security} row={row} at={loaded!.at} />
               </li>
             );
@@ -329,7 +329,7 @@ function MovementFeed({ loaded, rows }: { loaded: Loaded | undefined; rows: Map<
   }, [loaded]);
   const items = feed?.items[tab];
   return (
-    <section aria-labelledby="home-movement" className="flex flex-col gap-3" data-testid="home-movement">
+    <section aria-labelledby="home-movement" className="flex flex-col gap-3 lg:panel lg:p-4" data-testid="home-movement">
       <SectionHeader id="home-movement" title={t("common.onTheMove")} />
       <OptionGroup
         label={t("common.onTheMove")}
@@ -352,13 +352,13 @@ function MovementFeed({ loaded, rows }: { loaded: Loaded | undefined; rows: Map<
       ) : (
         <ul className="flex flex-col">
           {items.map((security, index) => (
-            <li key={security.id} className={cn("border-b border-separator last:border-b-0", index >= 3 && "max-lg:hidden")}>
+            <li key={security.id} className={cn("border-b border-separator last:border-b-0 lg:border-hairline", index >= 3 && "max-lg:hidden")}>
               <InstrumentLink security={security} row={rows.get(security.id)} at={loaded!.at} />
             </li>
           ))}
         </ul>
       )}
-      <ButtonLink href="/mercado" kind="secondary" className="self-start">
+      <ButtonLink href="/mercado" kind="secondary" className="self-start lg:w-auto">
         {t("home.explore.header")}
       </ButtonLink>
     </section>

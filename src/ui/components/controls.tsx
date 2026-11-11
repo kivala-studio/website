@@ -62,7 +62,7 @@ export function SectionTabs({
           tabIndex={index === selected ? 0 : -1}
           onClick={() => onSelect(index)}
           className={cn(
-            "relative min-h-12 shrink-0 text-body",
+            "relative min-h-12 shrink-0 text-body desk:min-h-11",
             index === selected
               ? "font-semibold text-primary-text after:absolute after:inset-x-0 after:bottom-0 after:h-[3px] after:rounded-full after:bg-accent"
               : "text-secondary-text",
@@ -194,7 +194,7 @@ export function SearchField({
   const input = useRef<HTMLInputElement>(null);
   const prompt = placeholder ?? t("prompt");
   return (
-    <div className="flex min-h-12 items-center gap-2 rounded-medium bg-elevated-background pl-4 pr-1 text-secondary-text focus-within:outline-2 focus-within:outline-accent">
+    <div className="flex min-h-12 items-center gap-2 rounded-medium bg-elevated-background pl-4 pr-1 desk:min-h-11 desk:pl-3 text-secondary-text focus-within:outline-2 focus-within:outline-accent">
       <Icon name="search" />
       <input
         ref={input}
@@ -210,7 +210,7 @@ export function SearchField({
         aria-label={prompt}
         enterKeyHint="search"
         autoComplete="off"
-        className="min-w-0 flex-1 bg-transparent py-3 text-body text-primary-text outline-none placeholder:text-secondary-text [&::-webkit-search-cancel-button]:hidden"
+        className="min-w-0 flex-1 bg-transparent py-3 desk:py-2 text-body text-primary-text outline-none placeholder:text-secondary-text [&::-webkit-search-cancel-button]:hidden"
       />
       {value ? (
         <button

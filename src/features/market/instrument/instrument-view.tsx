@@ -36,7 +36,7 @@ import { useMarketState, useMarketStore } from "@/features/market/market-provide
 import { cn } from "@/ui/cn";
 import { SectionTabs, type TimeRange as RangeName, TimeRangePicker } from "@/ui/components/controls";
 import { MarketStatusIndicator } from "@/ui/components/financial";
-import { SectionHeader } from "@/ui/components/layout";
+import { Panel, SectionHeader, StatStrip } from "@/ui/components/layout";
 import { SecurityLogo } from "@/ui/components/rows";
 import { ChartShimmer, SectionPlaceholder } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
@@ -174,18 +174,25 @@ export function InstrumentView({
   const issue = !selectedPoint && security ? referenceUpdateIssue(security.referenceUpdateStatus, security.referenceUpdateReason) : undefined;
 
   return (
-    <div className="flex flex-col gap-8">
-      <header className="flex flex-col items-center gap-3 text-center">
-        <SecurityLogo symbol={instrument.symbol} logoUrl={instrument.logoURL} brandColor={instrument.bond ? "violet" : "blue"} size="l" />
-        <div className="flex flex-col gap-1">
-          <h1 className="text-section text-primary-text">{instrument.symbol}</h1>
-          {instrument.name ? <p className="text-secondary text-secondary-text">{instrument.name}</p> : null}
+    <div className="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_18.75rem] lg:items-start lg:gap-6">
+      <div className="flex min-w-0 flex-col gap-8 lg:gap-6">
+    {/* From 1024 px: one panel with the identity and actions on top, the price, the chart and the key statistics. */}
+    <div className="flex flex-col gap-8 lg:panel lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-x-4 lg:gap-y-5 lg:overflow-hidden lg:p-5 lg:pb-0">
+      <header className="flex flex-col items-center gap-3 text-center lg:contents lg:text-left">
+        <div className="flex flex-col items-center gap-3 lg:min-w-0 lg:flex-row">
+          <SecurityLogo symbol={instrument.symbol} logoUrl={instrument.logoURL} brandColor={instrument.bond ? "violet" : "blue"} size="l" />
+          <div className="flex min-w-0 flex-col items-center gap-1 lg:items-start lg:gap-0.5">
+            <div className="flex flex-col gap-1 lg:flex-row lg:items-baseline lg:gap-2">
+              <h1 className="text-section text-primary-text">{instrument.symbol}</h1>
+              {instrument.name ? <p className="text-secondary text-secondary-text lg:truncate">{instrument.name}</p> : null}
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <span className="text-caption text-secondary-text">{t(kindLabelKey(instrument.kind))}</span>
+              {status ? <MarketStatusIndicator status={status} /> : null}
+            </div>
+          </div>
         </div>
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          <span className="text-caption text-secondary-text">{t(kindLabelKey(instrument.kind))}</span>
-          {status ? <MarketStatusIndicator status={status} /> : null}
-        </div>
-        <div className="flex flex-col items-center gap-1" data-testid="instrument-price">
+        <div className="flex flex-col items-center gap-1 lg:col-span-2 lg:items-start" data-testid="instrument-price">
           <p className={cn("text-primary-text", selectedPoint || live || close ? "text-headline" : "text-display")}>
             <span className="sr-only">{`${t("common.price")}: `}</span>
             {headline}
@@ -200,9 +207,11 @@ export function InstrumentView({
         </div>
       </header>
 
-      <InstrumentActions instrument={instrument} security={security} at={at} points={points} />
+      <div className="lg:col-start-2 lg:row-start-1 lg:self-center">
+        <InstrumentActions instrument={instrument} security={security} at={at} points={points} />
+      </div>
 
-      <section aria-label={t("assetDetails.history.header")} className="flex flex-col gap-4">
+      <section aria-label={t("assetDetails.history.header")} className="flex flex-col gap-4 lg:col-span-2 lg:-mx-2">
         {chartLoading ? (
           <ChartShimmer className="h-[258px]" />
         ) : range === "1D" && visible.length < 2 ? (
@@ -253,7 +262,7 @@ export function InstrumentView({
             {intradayLine.showsLastTradeNote ? <span className="basis-full text-secondary-text">{t("assetDetails.chart.lastTradeNote")}</span> : null}
           </div>
         ) : null}
-        <div className="self-end">
+        <div className="self-end lg:px-2">
           <TimeRangePicker
             label={t("assetDetails.history.header")}
             ranges={ranges}
@@ -268,7 +277,10 @@ export function InstrumentView({
         </div>
       </section>
 
-      <div className="flex flex-col gap-8">
+      <Statistics instrument={instrument} security={security} at={at} />
+    </div>
+
+      <div className="flex flex-col gap-8 lg:panel lg:gap-6 lg:px-5 lg:pb-6">
         <SectionTabs
           label={t("common.security")}
           titles={account ? [t("assetDetails.tab.overview"), t("common.about"), t("assetDetails.tab.orders")] : [t("assetDetails.tab.overview"), t("common.about")]}
@@ -279,9 +291,7 @@ export function InstrumentView({
         <div role="tabpanel" id="instrument-panel-0" aria-labelledby="instrument-tab-0" hidden={tab !== 0} className="flex flex-col gap-8">
           {overview}
           {points && points.length > 1 ? <Performance instrument={instrument} points={points} /> : null}
-          <Statistics instrument={instrument} security={security} at={at} />
           {account && points && points.length > 0 ? <LiquiditySection instrument={instrument} points={points} /> : null}
-          <MarketInformation instrument={instrument} status={status} />
         </div>
         <div role="tabpanel" id="instrument-panel-1" aria-labelledby="instrument-tab-1" hidden={tab !== 1} className="flex flex-col gap-8">
           {about}
@@ -292,6 +302,11 @@ export function InstrumentView({
           </div>
         ) : null}
       </div>
+      </div>
+
+      <aside className="lg:sticky lg:top-20">
+        <MarketInformation instrument={instrument} status={status} />
+      </aside>
     </div>
   );
 }
@@ -323,15 +338,6 @@ function Performance({ instrument, points }: { instrument: InstrumentData; point
   );
 }
 
-function Fact({ title, value, tone }: { title: string; value: string; tone?: string }) {
-  return (
-    <div className="flex min-h-18 flex-col justify-center gap-1 border-b border-separator py-2">
-      <dt className="text-caption text-secondary-text">{title}</dt>
-      <dd className={cn("text-body text-primary-text", tone)}>{value}</dd>
-    </div>
-  );
-}
-
 function Statistics({ instrument, security, at }: { instrument: InstrumentData; security?: MarketSecurity; at?: number }) {
   const t = useTranslations();
   const format = useFormat();
@@ -352,13 +358,11 @@ function Statistics({ instrument, security, at }: { instrument: InstrumentData; 
     verifiedAt === undefined ? t("assetDetails.statistics.verificationUnavailable") : format.timestamp(verifiedAt),
   ]);
   return (
-    <section aria-labelledby="statistics" className="flex flex-col gap-2">
-      <SectionHeader id="statistics" title={t("assetDetails.statistics.header")} />
-      <dl className="grid grid-cols-1 gap-x-6 min-[24rem]:grid-cols-2">
-        {items.map(([title, value]) => (
-          <Fact key={title} title={title} value={value} />
-        ))}
-      </dl>
+    <section aria-labelledby="statistics" className="flex flex-col gap-2 lg:col-span-2 lg:-mx-5 lg:border-t lg:border-hairline">
+      <h2 id="statistics" className="text-section text-primary-text lg:sr-only">
+        {t("assetDetails.statistics.header")}
+      </h2>
+      <StatStrip items={items.map(([title, value]) => ({ title, value }))} className="max-lg:rounded-large max-lg:border max-lg:border-hairline max-lg:bg-card-background" />
     </section>
   );
 }
@@ -374,17 +378,16 @@ function MarketInformation({ instrument, status = "unknown" }: { instrument: Ins
   rows.push([t("common.currency"), instrument.currency], [t("common.market"), "BODIVA"]);
   rows.push([t("assetDetails.marketInfo.tradingStatus"), t(MARKET_MESSAGE_KEYS.status[status]), STATUS_TONE[status]]);
   return (
-    <section aria-labelledby="market-information" className="flex flex-col gap-2">
-      <SectionHeader id="market-information" title={t("common.marketInformation")} />
-      <dl className="flex flex-col">
+    <Panel title={t("common.marketInformation")} titleId="market-information" flush>
+      <dl className="flex flex-col lg:px-4">
         {rows.map(([title, value, tone]) => (
-          <div key={title} className="flex items-baseline justify-between gap-5 border-b border-separator py-3">
+          <div key={title} className="flex items-baseline justify-between gap-5 border-b border-separator py-3 lg:border-hairline lg:py-2.5 lg:last:border-b-0">
             <dt className="text-secondary text-secondary-text">{title}</dt>
             <dd className={cn("text-right text-secondary font-medium break-all text-primary-text", tone)}>{value}</dd>
           </div>
         ))}
       </dl>
-    </section>
+    </Panel>
   );
 }
 

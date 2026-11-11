@@ -7,6 +7,7 @@ import { type MarketSecurity, hasUsableQuote, hasUsableStatistics, isSameDay, ki
 import { useMarketState } from "@/features/market/market-provider";
 import { Link } from "@/i18n/navigation";
 import { MarketStatusIndicator } from "@/ui/components/financial";
+import { Panel } from "@/ui/components/layout";
 import { Dialog } from "@/ui/components/dialog";
 import { SecurityLogo } from "@/ui/components/rows";
 import { InstrumentRowSkeleton } from "@/ui/components/states";
@@ -30,7 +31,7 @@ export function SessionStatus() {
   return (
     <div className="flex flex-wrap items-center justify-between gap-2">
       <MarketStatusIndicator status={loaded.snapshot.status} />
-      <span className="text-caption text-tertiary-text">
+      <span className="text-caption text-secondary-text">
         {published !== undefined ? t("markets.header.published", { arg1: format.timestamp(published) }) : t("markets.header.publishedUnavailable")}
       </span>
     </div>
@@ -174,8 +175,8 @@ function MoverList({ title, empty, securities, rows, at }: { title: string; empt
           {securities.map((security) => {
             const row = rows.get(security.id);
             return (
-              <li key={security.id} className="border-b border-separator last:border-b-0">
-                <Link href={`/mercado/${encodeURIComponent(security.symbol)}`} prefetch={false} className="flex min-h-18 items-center gap-3 rounded-small py-2">
+              <li key={security.id} className="border-b border-separator last:border-b-0 lg:border-hairline">
+                <Link href={`/mercado/${encodeURIComponent(security.symbol)}`} prefetch={false} className="flex min-h-18 items-center gap-3 rounded-small py-2 desk:min-h-12">
                   <SecurityLogo symbol={security.symbol} logoUrl={row?.logoURL ?? security.logoURL} brandColor={row?.bond ? "violet" : "blue"} />
                   <span className="flex min-w-0 flex-1 flex-col gap-1">
                     <span className="text-body font-semibold text-primary-text">{security.symbol}</span>
@@ -201,18 +202,15 @@ export function Movers({ rows }: { rows: CatalogueRow[] }) {
   const movers = loaded ? marketMovers(loaded.snapshot.securities, loaded.at, 3) : undefined;
   const failed = state.load.kind === "failed";
   return (
-    <section aria-labelledby="movers" className="flex flex-col gap-3">
-      <h2 id="movers" className="text-section text-primary-text">
-        {t("home.movers.header")}
-      </h2>
+    <Panel title={t("home.movers.header")} titleId="movers">
       {failed ? (
         <p className="text-secondary text-secondary-text">{t("home.movers.quotesUnavailable")}</p>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-1 lg:gap-4">
           <MoverList title={t("home.movers.topGainers")} empty={t("home.movers.noGains")} securities={movers?.gains} rows={byID} at={loaded?.at ?? 0} />
           <MoverList title={t("home.movers.topLosers")} empty={t("home.movers.noDeclines")} securities={movers?.losses} rows={byID} at={loaded?.at ?? 0} />
         </div>
       )}
-    </section>
+    </Panel>
   );
 }

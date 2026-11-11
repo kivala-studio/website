@@ -179,7 +179,7 @@ export function InstrumentActions({ instrument, security, at, points }: { instru
   const alertIcon = !counts || counts.enabled + counts.paused === 0 ? "notification" : "alert";
 
   return (
-    <div className="flex flex-col gap-3" data-testid="instrument-actions">
+    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-2" data-testid="instrument-actions">
       <div className="flex items-center justify-center gap-2">
         <WatchStar id={instrument.id} symbol={instrument.symbol} variant="toolbar" />
         <button type="button" onClick={() => void share()} aria-label={t("assetDetails.accessibility.shareInstrument")} title={t("assetDetails.accessibility.shareInstrument")} className={ACTION}>
@@ -198,11 +198,11 @@ export function InstrumentActions({ instrument, security, at, points }: { instru
           </button>
         ) : null}
       </div>
-      <div className="grid grid-cols-2 gap-3">
-        <Button kind="secondary" icon="chart" onClick={() => setComparing(true)} disabled={!security} data-testid="compare">
+      <div className="grid grid-cols-2 gap-3 lg:flex lg:gap-2">
+        <Button kind="secondary" icon="chart" onClick={() => setComparing(true)} disabled={!security} data-testid="compare" className="lg:w-auto">
           {t("common.compare")}
         </Button>
-        <Button icon={alertIcon} onClick={() => setAlertsOpen(true)} data-testid="alerts">
+        <Button icon={alertIcon} onClick={() => setAlertsOpen(true)} data-testid="alerts" className="lg:w-auto">
           {alertLabel}
         </Button>
       </div>

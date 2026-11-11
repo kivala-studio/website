@@ -23,8 +23,8 @@ const BRAND: Record<BrandColor, string> = {
 
 const LOGO_SIZE = {
   s: { box: "size-8", monogram: "text-micro" },
-  m: { box: "size-12", monogram: "text-caption" },
-  l: { box: "size-16", monogram: "text-secondary" },
+  m: { box: "size-12 desk:size-9", monogram: "text-caption desk:text-micro" },
+  l: { box: "size-16 desk:size-12", monogram: "text-secondary desk:text-caption" },
 } as const;
 
 /** Circular issuer logo; falls back to a coloured monogram when there is no image or it fails. */
@@ -105,7 +105,7 @@ export function AssetRow({ symbol, name, price, change, bond, code, logoUrl, bra
       </span>
     </>
   );
-  const layout = "flex min-h-20 w-full items-center gap-2 py-3 max-[20rem]:flex-col max-[20rem]:items-start";
+  const layout = "flex min-h-20 w-full items-center gap-2 py-3 desk:min-h-14 desk:py-2 max-[20rem]:flex-col max-[20rem]:items-start";
   return href ? (
     <Link href={href} className={cn(layout, "rounded-small")} aria-description={t("openSecurityDetailsHint")}>
       {content}
