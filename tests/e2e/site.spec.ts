@@ -4,12 +4,28 @@ import { expect, type Page, test } from "@playwright/test";
 // Portuguese is the default locale; without this, locale detection sends the browser to /en.
 test.use({ locale: "pt-AO" });
 
-const PAGES = ["/", "/policy", "/termos", "/suporte", "/eliminar-conta", "/convite/ABCD2345"];
+const PAGES = [
+  "/",
+  "/policy",
+  "/termos",
+  "/suporte",
+  "/eliminar-conta",
+  "/convite/ABCD2345",
+  "/mercado",
+  "/mercado/BFAAAAAA",
+  "/mercado/OH15S28A",
+  "/noticias",
+  "/noticias/fecho-da-sessao",
+  "/aprender",
+  "/aprender/acoes",
+];
 const localized = (path: string) => [path, path === "/" ? "/en" : `/en${path}`];
 /** Functional cookies only: the saved theme and next-intl's language choice. */
 const FUNCTIONAL_COOKIES = ["theme", "NEXT_LOCALE"];
 
 async function seriousAxeIssues(page: Page) {
+  // A value that changes rolls in over 0.25 s; axe would sample its contrast mid-animation.
+  await page.emulateMedia({ reducedMotion: "reduce" });
   const { violations } = await new AxeBuilder({ page }).analyze();
   return violations.filter((violation) => ["serious", "critical"].includes(violation.impact ?? "")).map((violation) => violation.id);
 }
@@ -69,6 +85,10 @@ test("language and theme switches work from the keyboard", async ({ page, contex
   await page.goto("/policy");
   await page.keyboard.press("Tab");
   await expect(page.getByRole("link", { name: "invest.ao, início" })).toBeFocused();
+  for (const section of ["Mercado", "Notícias", "Aprender"]) {
+    await page.keyboard.press("Tab");
+    await expect(page.getByRole("link", { name: section, exact: true })).toBeFocused();
+  }
   await page.keyboard.press("Tab");
   const english = page.getByRole("link", { name: "English" });
   await expect(english).toBeFocused();
@@ -110,9 +130,12 @@ test("unknown pages render the translated 404", async ({ page }) => {
 test("sitemap lists only the public indexable pages; robots points to it", async ({ request, baseURL }) => {
   const sitemap = await (await request.get("/sitemap.xml")).text();
   const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(([, url]) => url.replace(baseURL!, ""));
-  expect(urls.sort()).toEqual(
-    ["/", "/en", "/policy", "/en/policy", "/termos", "/en/termos", "/suporte", "/en/suporte", "/eliminar-conta", "/en/eliminar-conta"].sort(),
+  const fixed = ["/", "/policy", "/termos", "/suporte", "/eliminar-conta", "/mercado", "/noticias", "/aprender"];
+  expect(urls.filter((url) => !/^(\/en)?\/(mercado|noticias|aprender)\/./.test(url)).sort()).toEqual(
+    fixed.flatMap((path) => [path, path === "/" ? "/en" : `/en${path}`]).sort(),
   );
+  for (const path of ["/mercado/BFAAAAAA", "/en/mercado/BFAAAAAA", "/aprender/acoes", "/noticias/fecho-da-sessao"]) expect(urls).toContain(path);
+  expect(urls.filter((url) => /partilha|convite|entrar|\/dev\//.test(url))).toEqual([]);
   const robots = await (await request.get("/robots.txt")).text();
   expect(robots).toContain(`Sitemap: ${baseURL}/sitemap.xml`);
   expect(robots).toContain("Disallow: /dev/");

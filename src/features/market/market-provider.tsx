@@ -4,6 +4,7 @@ import { createContext, type ReactNode, useContext, useEffect, useState, useSync
 
 import { publicEnv } from "@/config/public-env";
 import { browserConnectivity, observeConnectivity } from "@/data/market/connectivity";
+import { routeHistorySource } from "@/data/market/history-wire";
 import { listenToQuoteAnnouncements } from "@/data/market/realtime";
 import { SupabaseMarketRepository, type SnapshotSource } from "@/data/market/repository";
 import { routeSnapshotSource } from "@/data/market/route-source";
@@ -31,14 +32,18 @@ let tabStore: MarketStore | undefined;
 /** One market store per browser tab, created on first use. */
 function marketStoreForTab(scenario: string | undefined): MarketStore {
   if (tabStore) return tabStore;
+  const server = typeof window === "undefined";
   const demo = publicEnv.dataMode === "demo";
   const source = routeSnapshotSource(demo ? scenario : undefined);
   const repository = new SupabaseMarketRepository({
     snapshot: demo && scenario === "offline" ? offlineAfterFirstLoad(source) : source,
     supabase: demo ? undefined : loadClient,
+    history: routeHistorySource,
   });
-  tabStore = new MarketStore({ repository, errors: appErrors });
-  return tabStore;
+  const store = new MarketStore({ repository, errors: appErrors });
+  // Server rendering gets an idle store per request: it never loads, and it is never shared between visitors.
+  if (!server) tabStore = store;
+  return store;
 }
 
 const MarketStoreContext = createContext<MarketStore | null>(null);

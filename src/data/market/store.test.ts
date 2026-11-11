@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { AppError, CancellationError, presentError } from "@/domain/errors";
 import { hasUsableQuote, hasUsableStatistics, marketSecurity, marketSnapshot } from "@/domain/market";
-import { SECOND_MS } from "@/domain/market/zone";
+import { DAY_MS, SECOND_MS } from "@/domain/market/zone";
 
 import { observeConnectivity } from "./connectivity";
 import { MarketStore, type MarketStoreOptions } from "./store";
@@ -416,8 +416,35 @@ describe("error recovery (market)", () => {
   it.todo("repeated failed watchlist writes restore confirmed membership (W8)");
   it.todo("older intraday request cannot overwrite a newer trading day (W7)");
   it.todo("cancelled intraday caller still loads the chart (W7)");
-  it.todo("history failures preserve the series and retry the original range (W5)");
-  it.todo("empty history is valid data (W5)");
+  // Daily-history halves of the iOS cases; the intraday halves belong to W7 (todos above).
+  it("history failures preserve the series and retry the original range", async () => {
+    const repository = new ScriptedRepository();
+    const series = [{ date: T - DAY_MS, value: new Decimal(99) }];
+    repository.histories.set("SEC", series);
+    const store = makeStore(repository);
+    await store.load();
+    expect(await store.loadHistory("SEC")).toBe(true);
+    repository.historyFailure = new AppError("timeout", { operation: "test" });
+    expect(await store.loadHistory("SEC", { force: true })).toBe(false);
+    expect(store.getSnapshot().historyErrors.SEC?.category).toBe("timeout");
+    expect(store.getSnapshot().histories.SEC).toEqual(series);
+    repository.historyFailure = undefined;
+    expect(await store.loadHistory("SEC")).toBe(true);
+    expect(store.getSnapshot().historyErrors.SEC).toBeUndefined();
+    expect(repository.historyRequests).toEqual(["SEC", "SEC", "SEC"]);
+    expect(store.getSnapshot().loadingHistories).toEqual({});
+  });
+
+  it("empty history is valid data", async () => {
+    const repository = new ScriptedRepository();
+    const store = makeStore(repository);
+    await store.load();
+    expect(await store.loadHistory("SEC")).toBe(true);
+    expect(store.getSnapshot().historyErrors.SEC).toBeUndefined();
+    expect(store.getSnapshot().histories.SEC).toEqual([]);
+    expect(await store.loadHistory("SEC")).toBe(true);
+    expect(repository.historyRequests).toEqual(["SEC"]);
+  });
   it.todo("watchlist failure rolls back, then retry persists the original operation (W8)");
   it.todo("a new watchlist intent supersedes an obsolete retry (W8)");
   it.todo("alert write failure rolls back and grouped retry recovers (W8)");

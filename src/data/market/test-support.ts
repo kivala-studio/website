@@ -6,6 +6,7 @@ import {
   type MarketClientControl,
   type MarketIndex,
   type MarketSnapshot,
+  type PricePoint,
   EMPTY_MARKET_INDEX,
   marketSecurity,
   marketSnapshot,
@@ -145,6 +146,17 @@ export class ScriptedRepository implements MarketRepository {
 
   async fetchMarketIndex(): Promise<MarketIndex> {
     return EMPTY_MARKET_INDEX;
+  }
+
+  /** Daily history per security; `historyFailure` fails every history read until cleared. */
+  histories = new Map<string, PricePoint[]>();
+  historyFailure: unknown;
+  historyRequests: string[] = [];
+
+  async fetchDailyHistory(securityID: string): Promise<PricePoint[]> {
+    this.historyRequests.push(securityID);
+    if (this.historyFailure) throw this.historyFailure;
+    return this.histories.get(securityID) ?? [];
   }
 
   clientControl(): MarketClientControl | undefined {

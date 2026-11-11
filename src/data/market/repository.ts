@@ -37,8 +37,13 @@ export interface MarketRepository {
   fetchLightSnapshot(signal?: AbortSignal): Promise<MarketSnapshot>;
   fetchTradingCalendar(signal?: AbortSignal): Promise<MarketCalendar | undefined>;
   fetchMarketIndex(signal?: AbortSignal): Promise<MarketIndex>;
+  /** Daily closes for one security over the range its source allows (one year for public pages). */
+  fetchDailyHistory(securityID: string, signal?: AbortSignal): Promise<PricePoint[]>;
   clientControl(): MarketClientControl | undefined;
 }
+
+/** Where daily history comes from: `/api/market/history/{id}` in the browser. */
+export type HistorySource = (securityID: string, signal?: AbortSignal) => Promise<PricePoint[]>;
 
 const SECURITY_COLUMNS = "id,symbol,isin,name,currency,security_type,issuer_id,is_active";
 
@@ -63,6 +68,7 @@ export class SupabaseMarketRepository implements MarketRepository {
       snapshot: SnapshotSource;
       /** Loaded on first use, so pages that never fall back do not load the SDK. */
       supabase?: () => SupabaseClient | Promise<SupabaseClient>;
+      history?: HistorySource;
       now?: () => EpochMs;
       route?: SnapshotRoute;
     },
@@ -132,6 +138,15 @@ export class SupabaseMarketRepository implements MarketRepository {
       return makeMarketIndex(decodePulseRows(unwrap(await query)));
     } catch (error) {
       throw boundaryError(error, "supabase.fetchMarketIndex");
+    }
+  }
+
+  async fetchDailyHistory(securityID: string, signal?: AbortSignal): Promise<PricePoint[]> {
+    if (!this.options.history) return [];
+    try {
+      return await this.options.history(securityID, signal);
+    } catch (error) {
+      throw boundaryError(error, "market.fetchDailyHistory");
     }
   }
 
