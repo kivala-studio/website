@@ -23,8 +23,10 @@ const CATEGORY_KIND: Record<Exclude<MarketCategory, "all">, SecurityKind> = {
   treasury: "treasuryBond",
 };
 
-export const categoryIncludes = (category: MarketCategory, security: MarketSecurity) =>
-  category === "all" || CATEGORY_KIND[category] === security.kind;
+export const categoryIncludesKind = (category: MarketCategory, kind: SecurityKind) =>
+  category === "all" || CATEGORY_KIND[category] === kind;
+
+export const categoryIncludes = (category: MarketCategory, security: MarketSecurity) => categoryIncludesKind(category, security.kind);
 
 export const MARKET_SORT_KEYS = ["percentageChange", "price", "volume", "name"] as const;
 export type MarketSortKey = (typeof MARKET_SORT_KEYS)[number];

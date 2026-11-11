@@ -10,8 +10,14 @@ const env = parseServerEnv(process.env);
 const nextConfig: NextConfig = {
   // Cache Components / Partial Prerendering are off: the nonce-based CSP needs every page rendered per request.
   poweredByHeader: false,
-  // `*.dev.tsx` routes (the /dev/design gallery) exist only outside production mode.
-  pageExtensions: env.dataMode === "production" ? ["tsx", "ts"] : ["dev.tsx", "tsx", "ts"],
+  // `*.dev.tsx` routes (the /dev/design gallery) exist only outside production mode; `*.local.ts` routes (the
+  // password sign-in for the seeded development accounts) only in `local` mode.
+  pageExtensions: [
+    ...(env.dataMode === "local" ? ["local.ts"] : []),
+    ...(env.dataMode === "production" ? [] : ["dev.tsx"]),
+    "tsx",
+    "ts",
+  ],
   turbopack: {
     rules: {
       "*.css": {
