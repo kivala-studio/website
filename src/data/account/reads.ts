@@ -6,29 +6,13 @@ import { type SubscriptionAccess, decodeSubscriptionAccess } from "@/domain/acco
 import { DecodingError } from "@/domain/errors";
 
 import { readPriceHistoryRows } from "../market/history";
-import { readAll, unwrap } from "../supabase/read";
+import { unwrap } from "../supabase/read";
 
 /** `get_subscription_access()` (contract §7.3). */
 export async function readSubscriptionAccess(client: SupabaseClient): Promise<SubscriptionAccess> {
   const access = decodeSubscriptionAccess(unwrap(await client.rpc("get_subscription_access")));
   if (!access) throw new DecodingError("subscription access");
   return access;
-}
-
-/** This account's alert rules on one instrument, as the asset page's alert button counts them. */
-export async function readAlertCounts(client: SupabaseClient, userID: string, securityID: string) {
-  const rows = await readAll<{ is_enabled: boolean }>((from, to) =>
-    client
-      .from("notification_rules")
-      .select("is_enabled")
-      .eq("user_id", userID)
-      .eq("security_id", securityID)
-      .order("created_at")
-      .order("id")
-      .range(from, to),
-  );
-  const enabled = rows.filter((row) => row.is_enabled === true).length;
-  return { enabled, paused: rows.length - enabled };
 }
 
 /** `get_intraday_chart` (contract §3.6, signed-in only); decoded by the browser's domain code. */

@@ -6,4 +6,12 @@ export type DemoTier = (typeof DEMO_TIERS)[number];
 export const isDemoTier = (value: unknown): value is DemoTier => typeof value === "string" && (DEMO_TIERS as readonly string[]).includes(value);
 
 /** Every cookie the demo account keeps its data in; sign-out clears them. */
-export const DEMO_COOKIES = [DEMO_ACCOUNT_COOKIE, "demo-watchlist", "demo-comparison-pair"] as const;
+export const DEMO_COOKIES = [
+  DEMO_ACCOUNT_COOKIE,
+  "demo-watchlist",
+  "demo-comparison-pair",
+  "demo-automatic",
+  "demo-groups",
+  "demo-rules",
+  "demo-sensitivity",
+] as const;

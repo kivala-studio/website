@@ -86,7 +86,7 @@ const RULES: Record<Exclude<ServerRuleCode, "PLUS_REQUIRED">, { upgrade?: Upgrad
   COMPARISON_DATA_UNAVAILABLE: { messageKey: "subscriptions.access.insufficientData" },
   // The paywall reason is the only Pro copy; there is no inline message.
   PRO_REQUIRED: { upgrade: "clientViews", messageKey: null },
-  WATCHLIST_GROUP_LIMIT: { messageKey: null },
+  WATCHLIST_GROUP_LIMIT: { messageKey: "site.watchlist.groupLimit" },
   PORTFOLIO_LIMIT: { messageKey: null },
   SHARE_LIMIT: { messageKey: "portfolioShare.limit" },
   PORTFOLIO_NOT_FOUND: { messageKey: "portfolioShare.failed" },
