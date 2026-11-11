@@ -7,7 +7,8 @@ import { cn } from "../cn";
 import { IconButton } from "./buttons";
 
 /**
- * Modal built on <dialog>: focus is trapped, Escape closes, focus returns to the opener.
+ * Modal built on <dialog>: focus is trapped, Escape closes, focus returns to the opener. Opening focuses
+ * the first control, or a descendant marked `data-autofocus`.
  * `sheet` is a side panel on wide screens and a bottom sheet on phones (iOS sheets);
  * `dialog` is a centred window.
  */
@@ -34,7 +35,11 @@ export function Dialog({
   useEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;
-    if (open && !dialog.open) dialog.showModal();
+    if (open && !dialog.open) {
+      dialog.showModal();
+      // `showModal` focuses the first control (Close); a field that asked for focus keeps it.
+      dialog.querySelector<HTMLElement>("[data-autofocus]")?.focus();
+    }
     if (!open && dialog.open) dialog.close();
   }, [open]);
 

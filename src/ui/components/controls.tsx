@@ -77,18 +77,18 @@ export function SectionTabs({
 
 type Option<T extends string> = { value: T; title: string; spoken?: string; disabled?: boolean };
 
-function OptionGroup<T extends string>({
+export function OptionGroup<T extends string>({
   options,
   value,
   onChange,
   label,
-  variant,
+  variant = "segmented",
 }: {
   options: readonly Option<T>[];
   value: T;
   onChange: (value: T) => void;
   label: string;
-  variant: "segmented" | "ranges";
+  variant?: "segmented" | "ranges";
 }) {
   const selected = Math.max(0, options.findIndex((option) => option.value === value));
   const { refs, onKeyDown } = useRovingKeys(
@@ -176,12 +176,19 @@ export function SearchField({
   onChange,
   placeholder,
   name,
+  autoFocus,
+  onKeyDown,
+  controls,
 }: {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
   /** Form field name, so the search also works as a plain GET form without JavaScript. */
   name?: string;
+  autoFocus?: boolean;
+  onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
+  /** Id of the results this field filters. */
+  controls?: string;
 }) {
   const t = useTranslations("designSystem.search");
   const input = useRef<HTMLInputElement>(null);
@@ -195,6 +202,10 @@ export function SearchField({
         name={name}
         value={value}
         onChange={(event) => onChange(event.target.value)}
+        onKeyDown={onKeyDown}
+        autoFocus={autoFocus}
+        data-autofocus={autoFocus || undefined}
+        aria-controls={controls}
         placeholder={prompt}
         aria-label={prompt}
         enterKeyHint="search"

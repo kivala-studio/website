@@ -1,5 +1,7 @@
 "use client";
 
+import type { ReactNode } from "react";
+
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
 import { Icon, type IconName } from "@/ui/icons/icon";
@@ -55,12 +57,13 @@ type HeaderProps = {
   activityLabel: string;
   activityState: string;
   hasUnread: boolean;
+  search?: ReactNode;
 };
 
 const HEADER_LINK = "relative inline-flex size-11 items-center justify-center rounded-full text-primary-text";
 
 /** Profile initials (to the profile page), unusual activity and the bell, which shows a dot when there is something unread. */
-export function ShellHeader({ initials, profileLabel, unusualLabel, activityLabel, activityState, hasUnread }: HeaderProps) {
+export function ShellHeader({ initials, profileLabel, unusualLabel, activityLabel, activityState, hasUnread, search }: HeaderProps) {
   const pathname = usePathname();
   const current = (href: string) => (isCurrentTab(href, pathname) ? ("page" as const) : undefined);
   return (
@@ -71,6 +74,7 @@ export function ShellHeader({ initials, profileLabel, unusualLabel, activityLabe
         <span className="sr-only">{profileLabel}</span>
       </Link>
       <div className="flex items-center gap-1">
+        {search}
         <Link href="/atividade-invulgar" aria-current={current("/atividade-invulgar")} className={HEADER_LINK}>
           <Icon name="chart" label={unusualLabel} scale="l" />
         </Link>

@@ -64,6 +64,10 @@ export const ERROR_MESSAGE_KEYS = [
   "subscriptions.paywall.cashReason",
   "subscriptions.paywall.alertsReason",
   "subscriptions.paywall.watchlistGroupsReason",
+  "subscriptions.paywall.historyReason",
+  "subscriptions.paywall.priceExportReason",
+  "subscriptions.paywall.liquidityReason",
+  "common.orderBook",
 ] as const;
 
 export type ErrorMessageKey = (typeof ERROR_MESSAGE_KEYS)[number];

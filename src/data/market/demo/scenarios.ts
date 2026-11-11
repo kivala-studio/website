@@ -12,8 +12,9 @@ import recorded from "../../../../tests/fixtures/market/market-snapshot.producti
  *   empty    no instruments, prices, sessions or closes
  *   partial  session open, half of the prices missing
  *   offline  as `open` on the server; the browser treats the connection as lost after loading
+ *   listing  as `open`, plus an announced new admission (`market_events`) highlighted on Home
  */
-export const DEMO_SCENARIOS = ["open", "closed", "stale", "empty", "partial", "offline"] as const;
+export const DEMO_SCENARIOS = ["open", "closed", "stale", "empty", "partial", "offline", "listing"] as const;
 export type DemoScenario = (typeof DEMO_SCENARIOS)[number];
 export const DEFAULT_DEMO_SCENARIO: DemoScenario = "open";
 export const DEMO_SCENARIO_COOKIE = "demo-scenario";
@@ -78,13 +79,15 @@ export function demoSnapshot(scenario: DemoScenario, now: EpochMs): Row {
   if (scenario === "partial") prices = prices.filter((_, index) => index % 2 === 0);
   const closes: Row[] =
     scenario === "closed"
-      ? recorded.quotes.prices.map((row) => ({
-          security_id: row.security_id,
-          price: row.last_price,
-          trading_date: today,
-          confirmed_at: iso(now - 60 * SECOND_MS),
-          verified_change_percent: row.verified_change_percent,
-        }))
+      ? recorded.quotes.prices
+          .filter((row) => row.last_price !== null)
+          .map((row) => ({
+            security_id: row.security_id,
+            price: row.last_price,
+            trading_date: today,
+            confirmed_at: iso(now - 60 * SECOND_MS),
+            verified_change_percent: row.verified_change_percent,
+          }))
       : recorded.closes;
   const status = session ? "open" : "closed";
   const stamps = { collected_at: iso(observed), published_at: iso(observed) };

@@ -9,6 +9,7 @@ import { publicEnv } from "@/config/public-env";
 import { needsAccountSetup, preferredName, setupCompletion, type UserMetadata } from "@/domain/auth/account";
 import { signInHref } from "@/domain/auth/next-path";
 
+import { demoAccount } from "../demo/account";
 import { serverSupabase } from "../supabase/server-client";
 import { hasSessionCookie } from "./cookies";
 import { REQUEST_PATH_HEADER, SESSION_STATE_HEADER, SESSION_UNAVAILABLE } from "./request-path";
@@ -23,12 +24,15 @@ export interface SignedInAccount {
 }
 
 /**
- * The verified account of this request, or null. Demo mode has no accounts. Visitors without a session cookie
+ * The verified account of this request, or null. Demo mode has only the cookie-chosen demo account. Visitors without a session cookie
  * never reach Supabase. The JWT is verified with the project's signing keys (`getClaims`), so a forged cookie
  * is not an account; data reads are still scoped by row-level security on the server.
  */
 export const currentAccount = cache(async (): Promise<SignedInAccount | null> => {
-  if (publicEnv.dataMode === "demo") return null;
+  if (publicEnv.dataMode === "demo") {
+    const demo = await demoAccount();
+    return demo && { id: demo.id, name: null, needsSetup: false };
+  }
   if (!hasSessionCookie((await cookies()).getAll())) return null;
   const supabase = await serverSupabase();
   const { data } = await supabase.auth.getClaims();

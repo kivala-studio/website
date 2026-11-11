@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 
 import { publicEnv } from "@/config/public-env";
 import { isSameOriginPost, requestSupabase } from "@/data/auth/request-client";
+import { DEMO_COOKIES } from "@/data/demo/tiers";
 import { SIGN_IN_REASONS } from "@/domain/auth/next-path";
 
 /**
@@ -21,6 +22,7 @@ export async function POST(request: NextRequest) {
   }
   const response = NextResponse.redirect(new URL(target, request.url), 303);
   supabase?.clearAll(response);
+  if (publicEnv.dataMode === "demo") for (const name of DEMO_COOKIES) response.cookies.delete(name);
   response.headers.set("Clear-Site-Data", '"cache"');
   response.headers.set("Cache-Control", "no-store");
   return response;

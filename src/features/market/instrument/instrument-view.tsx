@@ -10,7 +10,6 @@ import {
   type MarketSecurity,
   type PricePoint,
   type SecurityKind,
-  type TimeRange,
   TIME_RANGE_LINE_WIDTH,
   displayPercentageChange,
   displayPrice,
@@ -19,6 +18,9 @@ import {
   displayPriceLabel,
   displayPriceVerification,
   hasUsableQuote,
+  intradayChartPoints,
+  intradayEmptyKey,
+  intradayStatusLine,
   isRangeAvailable,
   kindLabelKey,
   marketSecurity,
@@ -27,7 +29,9 @@ import {
   referenceUnavailableKey,
   referenceUpdateIssue,
 } from "@/domain/market";
+import { useAccount } from "@/features/account/account-provider";
 import { PriceChart } from "@/features/chart/price-chart";
+import { RANGE_OF } from "@/features/chart/ranges";
 import { useMarketState, useMarketStore } from "@/features/market/market-provider";
 import { cn } from "@/ui/cn";
 import { SectionTabs, type TimeRange as RangeName, TimeRangePicker } from "@/ui/components/controls";
@@ -37,6 +41,8 @@ import { SecurityLogo } from "@/ui/components/rows";
 import { ChartShimmer, SectionPlaceholder } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
+
+import { InstrumentActions, LiquiditySection, OrderBookPanel, useFullHistory, useIntraday } from "./account-panels";
 
 /** What the server knows about an instrument: identity and dated verified evidence, never a current price. */
 export type InstrumentData = {
@@ -53,14 +59,9 @@ export type InstrumentData = {
   close?: { price: string; date: string; confirmedAt: number; change?: string };
 };
 
-const RANGES: Record<Exclude<RangeName, "oneDay" | "all">, TimeRange> = {
-  oneWeek: "1S",
-  oneMonth: "1M",
-  threeMonths: "3M",
-  sixMonths: "6M",
-  oneYear: "1A",
-};
-const RANGE_NAMES = Object.keys(RANGES) as (keyof typeof RANGES)[];
+/** Visitors: daily closes up to a year. Accounts add today's session (`1D`) and the full history (`Tudo`, Plus). */
+const PUBLIC_RANGES: readonly RangeName[] = ["oneWeek", "oneMonth", "threeMonths", "sixMonths", "oneYear"];
+const ACCOUNT_RANGES: readonly RangeName[] = ["oneDay", ...PUBLIC_RANGES, "all"];
 const PERFORMANCE = [
   ["1S", "common.oneWeek"],
   ["1M", "common.oneMonth"],
@@ -107,14 +108,34 @@ export function InstrumentView({
   const format = useFormat();
   const store = useMarketStore();
   const state = useMarketState();
+  const account = useAccount();
   const { security, at, status } = useLiveSecurity(instrument.id);
   const serverPoints = useMemo(() => (history ? decodePoints(history) : undefined), [history]);
   const points = state.histories[instrument.id] ?? serverPoints;
-  const [rangeName, setRangeName] = useState<keyof typeof RANGES>("oneWeek");
+  const [rangeName, setRangeName] = useState<RangeName>("oneWeek");
   const [selected, setSelected] = useState<number>();
   const [tab, setTab] = useState(0);
-  const range = RANGES[rangeName];
-  const visible = useMemo(() => (points ? rangePoints(range, points) : []), [points, range]);
+  const range = RANGE_OF[rangeName];
+  const intraday = useIntraday(instrument.id, account !== null && range === "1D");
+  const full = useFullHistory(instrument.id, account !== null && account.unlocksPlus && range === "Tudo");
+  const today = at !== undefined ? state.calendar?.day(at, at) : undefined;
+  const sessionOpensAt = today?.kind === "trading" ? today.session.opensAt : undefined;
+  const visible = useMemo(() => {
+    if (range === "1D") {
+      const data = intraday.data?.points ?? [];
+      return security && sessionOpensAt !== undefined ? intradayChartPoints(security, data, sessionOpensAt) : [...data];
+    }
+    if (range === "Tudo") return full.data ? rangePoints(range, full.data) : [];
+    return points ? rangePoints(range, points) : [];
+  }, [points, range, intraday.data, full.data, security, sessionOpensAt]);
+  const chartLoading = range === "1D" ? intraday.data === undefined && !intraday.failed : range === "Tudo" ? full.data === undefined && !full.failed : false;
+  const intradayLine = range === "1D" ? intradayStatusLine(intraday.data, intraday.failed) : undefined;
+  const ranges = account ? ACCOUNT_RANGES : PUBLIC_RANGES;
+  const rangeEnabled = (name: RangeName) => {
+    if (name === "oneDay") return today?.kind !== "nonTrading";
+    if (name === "all") return !!points && points.length >= 2;
+    return !!points && isRangeAvailable(RANGE_OF[name], points);
+  };
   const money = (value: Decimal.Value) => format.securityPrice(value, { bond: instrument.bond, code: instrument.currency });
   const changeText = (amount: Decimal | undefined, percentage: Decimal) =>
     amount === undefined
@@ -179,8 +200,21 @@ export function InstrumentView({
         </div>
       </header>
 
+      <InstrumentActions instrument={instrument} security={security} at={at} points={points} />
+
       <section aria-label={t("assetDetails.history.header")} className="flex flex-col gap-4">
-        {points === undefined ? (
+        {chartLoading ? (
+          <ChartShimmer className="h-[258px]" />
+        ) : range === "1D" && visible.length < 2 ? (
+          <div className="flex h-[258px] flex-col items-center justify-center gap-3 px-6 text-center text-secondary-text" data-testid="intraday-empty">
+            <Icon name="chart" className="text-display" />
+            <p className="text-body">{t(intradayEmptyKey(intraday.data, intraday.failed))}</p>
+          </div>
+        ) : range === "Tudo" && full.failed ? (
+          <div className="flex h-[258px] flex-col justify-center">
+            <SectionPlaceholder title={t("assetDetails.history.header")} failed onRetry={full.reload} />
+          </div>
+        ) : points === undefined && range !== "1D" ? (
           state.loadingHistories[instrument.id] ? (
             <ChartShimmer className="h-[258px]" />
           ) : (
@@ -203,15 +237,32 @@ export function InstrumentView({
             <p className="text-body">{t("assetDetails.chart.notEnoughData")}</p>
           </div>
         )}
+        {intradayLine ? (
+          <div className="flex flex-wrap items-center gap-2 text-caption" data-testid="intraday-status">
+            <span className={intradayLine.stale ? "font-semibold text-warning" : "text-secondary-text"}>{t(intradayLine.key)}</span>
+            {intradayLine.stale ? (
+              <button
+                type="button"
+                onClick={intraday.reload}
+                aria-label={t("assetDetails.accessibility.retrySession")}
+                className="inline-flex size-11 items-center justify-center rounded-full border border-separator text-primary-text"
+              >
+                <Icon name="refresh" />
+              </button>
+            ) : null}
+            {intradayLine.showsLastTradeNote ? <span className="basis-full text-secondary-text">{t("assetDetails.chart.lastTradeNote")}</span> : null}
+          </div>
+        ) : null}
         <div className="self-end">
           <TimeRangePicker
             label={t("assetDetails.history.header")}
-            ranges={RANGE_NAMES}
+            ranges={ranges}
             value={rangeName}
-            isEnabled={(name) => !!points && isRangeAvailable(RANGES[name as keyof typeof RANGES], points)}
+            isEnabled={rangeEnabled}
             onChange={(name) => {
+              if (name === "all" && account && !account.unlocksPlus) return account.requestUpgrade("history");
               setSelected(undefined);
-              setRangeName(name as keyof typeof RANGES);
+              setRangeName(name);
             }}
           />
         </div>
@@ -220,7 +271,7 @@ export function InstrumentView({
       <div className="flex flex-col gap-8">
         <SectionTabs
           label={t("common.security")}
-          titles={[t("assetDetails.tab.overview"), t("common.about")]}
+          titles={account ? [t("assetDetails.tab.overview"), t("common.about"), t("assetDetails.tab.orders")] : [t("assetDetails.tab.overview"), t("common.about")]}
           selected={tab}
           onSelect={setTab}
           idPrefix="instrument"
@@ -229,11 +280,17 @@ export function InstrumentView({
           {overview}
           {points && points.length > 1 ? <Performance instrument={instrument} points={points} /> : null}
           <Statistics instrument={instrument} security={security} at={at} />
+          {account && points && points.length > 0 ? <LiquiditySection instrument={instrument} points={points} /> : null}
           <MarketInformation instrument={instrument} status={status} />
         </div>
         <div role="tabpanel" id="instrument-panel-1" aria-labelledby="instrument-tab-1" hidden={tab !== 1} className="flex flex-col gap-8">
           {about}
         </div>
+        {account ? (
+          <div role="tabpanel" id="instrument-panel-2" aria-labelledby="instrument-tab-2" hidden={tab !== 2} className="flex flex-col gap-8">
+            <OrderBookPanel instrument={instrument} security={security} at={at} active={tab === 2} />
+          </div>
+        ) : null}
       </div>
     </div>
   );
