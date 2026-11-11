@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { usePathname as useRawPathname, useSearchParams, useSelectedLayoutSegment } from "next/navigation";
+import { usePathname as useRawPathname, useSearchParams } from "next/navigation";
 import { type ReactNode, useMemo, useState } from "react";
 
 import {
@@ -14,12 +14,14 @@ import {
   type MarketSortKey,
   SORT_DIRECTION_LABEL_KEYS,
   applyDiscoveryQuery,
+  hasUsableQuote,
   kindLabelKey,
   securityDisplayName,
   isVisibleOutsideSearch,
   marketSecurity,
 } from "@/domain/market";
 import { useMarketState } from "@/features/market/market-provider";
+import { useFormat } from "@/ui/format";
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
 import { SearchField } from "@/ui/components/controls";
@@ -30,7 +32,7 @@ import { Icon } from "@/ui/icons/icon";
 import { type CatalogueRow, ChangeCell, PriceCell } from "./price-cell";
 import { MARKET_DEFAULT_QUERY, marketQueryParams, readMarketQuery } from "./query";
 
-const CHIP = "inline-flex min-h-11 items-center rounded-full px-4 text-secondary font-semibold";
+const CHIP = "inline-flex min-h-11 items-center rounded-full px-4 text-secondary font-semibold whitespace-nowrap desk:px-3";
 
 /** The query the list is showing; links and the search keep it in the URL. */
 function useMarketQuery() {
@@ -54,9 +56,9 @@ function useMarketQuery() {
 export function MarketBrowser({ rows, renderedAt }: { rows: CatalogueRow[]; renderedAt: number }) {
   const t = useTranslations();
   const translate = (key: string) => t(key as never);
+  const format = useFormat();
   const pathname = usePathname();
   const rawPathname = useRawPathname();
-  const selected = useSelectedLayoutSegment();
   const state = useMarketState();
   const snapshot = state.load.kind === "loaded" ? state.load.snapshot : undefined;
   const at = snapshot ? (state.assessedAt ?? renderedAt) : renderedAt;
@@ -81,21 +83,16 @@ export function MarketBrowser({ rows, renderedAt }: { rows: CatalogueRow[]; rend
   const ariaSort = (key: MarketSortKey) => (key === query.sortKey ? query.direction : undefined);
 
   return (
-    <section aria-labelledby="market-list" data-selected={selected !== null || undefined} className={cn("flex flex-col gap-3 @container", selected !== null && "max-lg:hidden")}>
-      {selected === null ? (
-        <h1 id="market-list" className="text-display text-primary-text">
-          {t("common.market")}
-        </h1>
-      ) : (
-        <h2 id="market-list" className="text-display text-primary-text">
-          {t("common.market")}
-        </h2>
-      )}
+    <section aria-labelledby="market-list" className="flex min-w-0 flex-col gap-3 @container lg:gap-4">
+      <h1 id="market-list" className="text-display text-primary-text">
+        {t("common.market")}
+      </h1>
+      <div className="flex flex-col gap-3 @2xl:flex-row-reverse @2xl:items-center @2xl:justify-between">
       <form
         role="search"
         action={rawPathname}
         onSubmit={(event) => event.preventDefault()}
-        className="flex flex-col"
+        className="flex flex-col @2xl:w-64"
       >
         {hidden.map(([name, value]) => (
           <input key={name} type="hidden" name={name} value={value} />
@@ -104,7 +101,7 @@ export function MarketBrowser({ rows, renderedAt }: { rows: CatalogueRow[]; rend
       </form>
 
       <nav aria-label={t("news.information.categoryLabel")}>
-        <ul className="flex flex-wrap gap-2">
+        <ul className="flex flex-wrap gap-2 desk:gap-1.5">
           {MARKET_CATEGORIES.map((category) => (
             <li key={category}>
               <Link
@@ -112,7 +109,7 @@ export function MarketBrowser({ rows, renderedAt }: { rows: CatalogueRow[]; rend
                 prefetch={false}
                 scroll={false}
                 aria-current={category === query.category ? "true" : undefined}
-                className={cn(CHIP, category === query.category ? "bg-accent text-on-accent" : "bg-elevated-background text-primary-text")}
+                className={cn(CHIP, category === query.category ? "bg-accent text-on-accent" : "bg-elevated-background text-primary-text lg:border lg:border-hairline")}
               >
                 {translate(MARKET_CATEGORY_LABEL_KEYS[category])}
               </Link>
@@ -120,6 +117,7 @@ export function MarketBrowser({ rows, renderedAt }: { rows: CatalogueRow[]; rend
           ))}
         </ul>
       </nav>
+      </div>
 
       <div className="flex items-center gap-2">
         <p className="text-caption text-tertiary-text" aria-live="polite" data-testid="market-count">
@@ -191,17 +189,25 @@ export function MarketBrowser({ rows, renderedAt }: { rows: CatalogueRow[]; rend
           />
         </div>
       ) : (
+        <div className="lg:panel lg:overflow-hidden">
         <table className="w-full table-fixed border-collapse" data-testid="market-table">
           <thead className="sr-only @lg:not-sr-only">
-            <tr className="text-caption text-secondary-text">
-              <SortHeader label={t("common.instrument")} sort={ariaSort("name")} href={sortLink("name")} align="left" className="w-auto" />
+            <tr className="text-caption text-secondary-text lg:border-b lg:border-hairline">
+              <SortHeader label={t("common.instrument")} sort={ariaSort("name")} href={sortLink("name")} align="left" className="w-auto lg:pl-4" />
               <SortHeader label={t("common.price")} sort={ariaSort("price")} href={sortLink("price")} align="right" className="w-36" />
               <SortHeader
                 label={t("common.change")}
                 sort={ariaSort("percentageChange")}
                 href={sortLink("percentageChange")}
                 align="right"
-                className="hidden w-28 @lg:table-cell"
+                className="hidden w-28 @lg:table-cell @2xl:pr-0 @max-2xl:lg:pr-4"
+              />
+              <SortHeader
+                label={translate(MARKET_SORT_LABEL_KEYS.volume)}
+                sort={ariaSort("volume")}
+                href={sortLink("volume")}
+                align="right"
+                className="hidden w-32 @2xl:table-cell lg:pr-4"
               />
             </tr>
           </thead>
@@ -209,39 +215,38 @@ export function MarketBrowser({ rows, renderedAt }: { rows: CatalogueRow[]; rend
             {results.map((security) => {
               const row = byID.get(security.id);
               const live = snapshot ? security : undefined;
-              const current = selected !== null && decodeURIComponent(selected).toUpperCase() === security.symbol.toUpperCase();
+              const volume = live && hasUsableQuote(live, at) ? format.count(live.volume) : undefined;
               return (
-                <tr
-                  key={security.id}
-                  data-testid="market-row"
-                  className={cn("relative border-b border-separator", current && "bg-elevated-background shadow-[inset_3px_0_0_var(--color-accent)]")}
-                >
-                  <th scope="row" className="py-3 pr-2 text-left font-normal">
+                <tr key={security.id} data-testid="market-row" className="relative border-b border-separator lg:border-hairline lg:last:border-b-0 lg:hover:bg-app-background">
+                  <th scope="row" className="py-3 pr-2 text-left font-normal desk:py-2 lg:pl-4">
                     <Link
                       href={{ pathname: `/mercado/${encodeURIComponent(security.symbol)}`, query: marketQueryParams(query) }}
                       prefetch={false}
-                      aria-current={current ? "page" : undefined}
                       aria-description={t("common.openSecurityDetailsHint")}
-                      className="flex min-h-14 min-w-0 items-center gap-3 outline-none after:absolute after:inset-0 after:rounded-small after:content-[''] focus-visible:after:outline-2 focus-visible:after:-outline-offset-2 focus-visible:after:outline-accent"
+                      className="flex min-h-14 min-w-0 items-center gap-3 outline-none after:absolute after:inset-0 after:rounded-small after:content-[''] focus-visible:after:outline-2 focus-visible:after:-outline-offset-2 focus-visible:after:outline-accent desk:min-h-11"
                     >
                       <SecurityLogo symbol={security.symbol} logoUrl={row?.logoURL ?? security.logoURL} brandColor={row?.bond ? "violet" : "blue"} />
-                      <span className="flex min-w-0 flex-col gap-1">
-                        <span className="text-body font-semibold text-primary-text">{security.symbol}</span>
+                      <span className="flex min-w-0 flex-col gap-1 desk:gap-0">
+                        <span className="truncate text-body font-semibold text-primary-text">{security.symbol}</span>
                         <span className="truncate text-secondary text-secondary-text">{securityDisplayName(security) ?? translate(kindLabelKey(security.kind))}</span>
                       </span>
                     </Link>
                   </th>
-                  <td className="py-3 text-right align-middle">
+                  <td className="py-3 text-right align-middle desk:py-2">
                     <PriceCell row={row} security={live} at={snapshot ? at : undefined} inlineChange="@lg:hidden" />
                   </td>
-                  <td className="hidden py-3 pl-2 text-right align-middle @lg:table-cell">
+                  <td className="hidden py-3 pl-2 text-right align-middle desk:py-2 @lg:table-cell @max-2xl:lg:pr-4">
                     <ChangeCell row={row} security={live} at={snapshot ? at : undefined} />
+                  </td>
+                  <td className="hidden py-3 pl-2 text-right align-middle text-body text-primary-text desk:py-2 @2xl:table-cell lg:pr-4">
+                    {volume ?? <span aria-hidden className="text-tertiary-text">—</span>}
                   </td>
                 </tr>
               );
             })}
           </tbody>
         </table>
+        </div>
       )}
     </section>
   );

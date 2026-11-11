@@ -35,7 +35,7 @@ export function ShellNav({ items, label, variant }: { items: readonly Item[]; la
                   "flex min-h-11 items-center rounded-medium font-medium",
                   bar
                     ? "min-h-16 flex-col justify-center gap-1 px-1 text-micro tracking-normal"
-                    : "gap-3 px-3 py-2 text-body",
+                    : "gap-3 px-3 py-2 text-body desk:py-1.5",
                   current ? (bar ? "text-accent" : "bg-selected-tab-background text-primary-text") : "text-secondary-text",
                 )}
               >
@@ -60,21 +60,24 @@ type HeaderProps = {
   search?: ReactNode;
 };
 
-const HEADER_LINK = "relative inline-flex size-11 items-center justify-center rounded-full text-primary-text";
+const HEADER_LINK = "relative inline-flex size-11 shrink-0 items-center justify-center rounded-full text-primary-text";
 
-/** Profile initials (to the profile page), unusual activity and the bell, which shows a dot when there is something unread. */
+/**
+ * Profile initials (to the profile page), unusual activity and the bell, which shows a dot when there is something
+ * unread. From 1024 px it is the web top bar: the search field first, the profile last.
+ */
 export function ShellHeader({ initials, profileLabel, unusualLabel, activityLabel, activityState, hasUnread, search }: HeaderProps) {
   const pathname = usePathname();
   const current = (href: string) => (isCurrentTab(href, pathname) ? ("page" as const) : undefined);
   return (
-    <header className="sticky top-0 z-10 flex items-center justify-between gap-2 bg-app-background px-4 py-2 sm:px-6">
+    <header className="sticky top-0 z-10 flex items-center gap-2 bg-app-background px-4 py-2 sm:px-6 lg:min-h-14 lg:gap-3 lg:border-b lg:border-hairline lg:bg-elevated-background">
       {/* The initials are decorative: the link is named by the profile label. */}
-      <Link href="/definicoes" aria-current={current("/definicoes")} className={cn(HEADER_LINK, "bg-action-surface text-secondary font-semibold")}>
+      <Link href="/definicoes" aria-current={current("/definicoes")} className={cn(HEADER_LINK, "bg-action-surface text-secondary font-semibold lg:order-last")}>
         <span aria-hidden>{initials}</span>
         <span className="sr-only">{profileLabel}</span>
       </Link>
+      <div className="flex min-w-0 flex-1">{search}</div>
       <div className="flex items-center gap-1">
-        {search}
         <Link href="/atividade-invulgar" aria-current={current("/atividade-invulgar")} className={HEADER_LINK}>
           <Icon name="chart" label={unusualLabel} scale="l" />
         </Link>

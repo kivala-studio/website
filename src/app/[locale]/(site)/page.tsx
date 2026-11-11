@@ -40,7 +40,7 @@ export default function HomePage() {
       <OrganizationData />
       <section className={cn(PAGE_WIDTH, "grid items-center gap-12 pt-6 pb-16 md:grid-cols-[minmax(0,1fr)_18rem] md:gap-16 md:pt-12 md:pb-24 lg:grid-cols-[minmax(0,1fr)_20rem]")}>
         <div className="flex max-w-xl flex-col items-start gap-6">
-          <h1 className="text-display text-primary-text sm:text-headline">{t("common.yourMarketUpClose")}</h1>
+          <h1 className="text-display text-primary-text sm:text-headline lg:text-[3.25rem] lg:leading-[1.05] lg:tracking-[-0.03em]">{t("common.yourMarketUpClose")}</h1>
           <p className="text-body text-secondary-text sm:text-price sm:font-normal">{t("site.meta.homeDescription")}</p>
           <StoreButton className="w-full sm:w-auto" />
         </div>

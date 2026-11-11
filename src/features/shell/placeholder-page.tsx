@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/ui/cn";
 import { PageHeading } from "@/ui/components/layout";
 
-export const SIGNED_IN_PAGE = "mx-auto w-full max-w-6xl px-4 pt-2 pb-16 sm:px-6";
+export const SIGNED_IN_PAGE = "mx-auto w-full max-w-6xl px-4 pt-2 pb-16 sm:px-6 lg:pt-6";
 
 type Params = { params: Promise<{ locale: string }> };
 

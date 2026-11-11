@@ -118,6 +118,31 @@
   --color-comparison-purple: var(--comparison-purple);
 }
 
+/* Web-only surfaces (no iOS counterpart): a hairline softer than the separator, and the panel shadow. */
+:root {
+  --hairline: #dde2e9;
+  --panel-shadow: 0 1px 2px rgb(24 34 49 / 0.05), 0 2px 8px rgb(24 34 49 / 0.04);
+}
+@media (prefers-contrast: more) {
+  :root {
+    --hairline: #778396;
+  }
+}
+:root[data-theme="dark"] {
+  --hairline: #232933;
+  --panel-shadow: none;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --hairline: #232933;
+    --panel-shadow: none;
+  }
+}
+@theme inline {
+  --color-hairline: var(--hairline);
+  --shadow-panel: var(--panel-shadow);
+}
+
 /* Issuer monogram colour without a semantic token (iOS SecurityLogoView violet). */
 :root {
   --brand-violet: #6e4fd6;

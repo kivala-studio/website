@@ -2,7 +2,7 @@
 
 invest.ao website: Next.js App Router, TypeScript strict, Tailwind. Plan: `docs/plan/WEBSITE_IMPLEMENTATION_PLAN.md`. References: `docs/reference/`. Golden fixtures: `tests/fixtures/` (unchanged copies; never edit).
 
-Commands: `npm run check` (lint, typecheck, unit tests), `npm run build` (build + client bundle scan), `npm run e2e` (Playwright, demo mode), `npm run lhci` (Lighthouse budgets), `npm run messages` (regenerate `messages/*.json` from the iOS catalogue), `npm run icons` (regenerate the icon pack). Design gallery: `/dev/design` (not in production builds). Copy `.env.example` to `.env.local` for development.
+Commands: `npm run check` (lint, typecheck, unit tests), `npm run build` (build + client bundle scan), `npm run e2e` (Playwright, demo mode), `npm run lhci` (Lighthouse budgets), `npm run messages` (regenerate `messages/*.json` from the iOS catalogue), `npm run icons` (regenerate the icon pack). Design gallery: `/dev/design` (not in production builds). Web layer: `lg:` for page layout and the `panel` surface, `desk:` (≥ 1024 px with a mouse or trackpad) for the web type scale and tighter padding; colour tokens stay the iOS ones. Copy `.env.example` to `.env.local` for development.
 
 The sections below are copied word for word from the plan (sections 1.2 to 1.5).
 

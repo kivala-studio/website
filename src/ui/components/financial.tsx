@@ -58,7 +58,7 @@ export function ChangeBadge({ value, className }: { value: Numeric; className?: 
       ? t("components.financial.fellAccessibility", { arg1: text.replace("-", "") })
       : t("common.unchanged");
   return (
-    <span className={cn("inline-flex min-h-7 shrink-0 items-center gap-1 rounded-full px-2 text-caption font-semibold", tone, className)}>
+    <span className={cn("inline-flex min-h-7 shrink-0 items-center gap-1 rounded-full px-2 text-caption font-semibold desk:min-h-6 desk:rounded-md desk:px-1.5", tone, className)}>
       <Icon name={icon} aria-hidden />
       <span aria-hidden key={text} className="motion-value">{text}</span>
       <span className="sr-only">{`${t("common.change")}: ${spoken}`}</span>

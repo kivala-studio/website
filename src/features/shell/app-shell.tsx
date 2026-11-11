@@ -50,8 +50,8 @@ export async function AppShell({
     <AreaMessages area="app">
       <MarketArea>
         <AccountProvider initial={account}>
-          <div className="flex min-h-dvh flex-col lg:grid lg:grid-cols-[15rem_minmax(0,1fr)]">
-            <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-dvh lg:flex-col lg:gap-6 lg:border-r lg:border-separator lg:px-3 lg:py-4">
+          <div className="flex min-h-dvh flex-col lg:grid lg:grid-cols-[14rem_minmax(0,1fr)]">
+            <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-dvh lg:flex-col lg:gap-6 lg:border-r lg:border-hairline lg:bg-elevated-background lg:px-3 lg:py-3">
               <Link
                 href="/inicio"
                 aria-label={t("site.header.homeLabel")}

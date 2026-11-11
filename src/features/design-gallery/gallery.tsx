@@ -9,7 +9,7 @@ import { SearchField, SectionTabs, SegmentedControl, ThemeSwitch, type TimeRange
 import { Dialog } from "@/ui/components/dialog";
 import { OfflineBanner, SensitiveValue, ToastHost, useToast } from "@/ui/components/feedback";
 import { ChangeBadge, FinancialValue, MarketMetric, MarketStatusIndicator } from "@/ui/components/financial";
-import { Card, PageHeading, SectionHeader } from "@/ui/components/layout";
+import { Card, PageHeading, Panel, SectionHeader, StatStrip } from "@/ui/components/layout";
 import { AssetRow, FeatureRow, SecurityLogo } from "@/ui/components/rows";
 import {
   ChartShimmer,
@@ -163,6 +163,19 @@ export function DesignGallery({ initialTheme }: { initialTheme: Theme }) {
           <Card surface="elevated" compact>
             <SectionHeader title={t("designSystem.gallery.surface")} />
           </Card>
+        </Story>
+
+        <Story name="Panel and statistics strip">
+          <Panel title={t("designSystem.gallery.valuesHeader")} always flush>
+            <StatStrip
+              items={[
+                { title: t("common.trades"), value: "186" },
+                { title: t("common.change"), value: "+2,14%", tone: "text-positive" },
+                { title: t("common.price"), value: "72 500,00 Kz" },
+                { title: t("designSystem.gallery.surface"), value: "—" },
+              ]}
+            />
+          </Panel>
         </Story>
 
         <Story name="Tabs and segmented control">

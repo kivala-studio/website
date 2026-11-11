@@ -67,7 +67,7 @@ export default async function HomePage() {
         news={<HomeNews articles={news?.articles ?? null} format={format} title={t("common.news")} unavailable={t("components.placeholder.loadFailed")} kind={(article) => t(newsKindKey(article))} />}
         recaps={wraps.length > 0 ? <Recaps wraps={wraps} title={t("home.contextCard.availableSummaries")} label={(wrap) => `${t(REVIEW_KEY[wrap.period])} · ${format.civilPeriod(wrap.startsOn, wrap.endsOn)}`} /> : null}
         simulator={
-          <Link href="/simulador" className="flex min-h-18 items-center gap-4 rounded-small border-y border-separator py-3" data-testid="home-simulator">
+          <Link href="/simulador" className="flex min-h-18 items-center gap-4 rounded-small border-y border-separator py-3 lg:panel lg:min-h-14 lg:px-4" data-testid="home-simulator">
             <span aria-hidden className="flex size-11 shrink-0 items-center justify-center rounded-full bg-accent/12 text-accent">
               <Icon name="calculator" />
             </span>
@@ -98,7 +98,7 @@ function HomeNews({
 }) {
   if (articles?.length === 0) return null;
   return (
-    <section aria-labelledby="home-news" className="flex flex-col gap-2" data-testid="home-news">
+    <section aria-labelledby="home-news" className="flex flex-col gap-2 lg:panel lg:gap-0 lg:px-4 lg:py-3" data-testid="home-news">
       <SectionHeader
         id="home-news"
         title={title}
@@ -113,8 +113,8 @@ function HomeNews({
       ) : (
         <ul className="flex flex-col">
           {articles.map((article) => (
-            <li key={article.id} className="border-b border-separator last:border-b-0">
-              <Link href={`/noticias/${article.slug}`} className="flex flex-col gap-2 rounded-small py-3">
+            <li key={article.id} className="border-b border-separator last:border-b-0 lg:border-hairline">
+              <Link href={`/noticias/${article.slug}`} className="flex flex-col gap-2 rounded-small py-3 desk:gap-1 desk:py-2.5">
                 <span lang={ARTICLE_LANGUAGE} className="line-clamp-2 text-body font-semibold text-primary-text">
                   {article.title}
                 </span>
@@ -132,7 +132,7 @@ function HomeNews({
 
 function Recaps({ wraps, title, label }: { wraps: readonly AvailableWrap[]; title: string; label: (wrap: AvailableWrap) => string }) {
   return (
-    <section aria-labelledby="home-recaps" className="flex flex-col gap-2" data-testid="home-recaps">
+    <section aria-labelledby="home-recaps" className="flex flex-col gap-2 lg:panel lg:gap-0 lg:px-4 lg:py-3" data-testid="home-recaps">
       <h2 id="home-recaps" className="text-secondary font-semibold text-secondary-text">
         {title}
       </h2>
