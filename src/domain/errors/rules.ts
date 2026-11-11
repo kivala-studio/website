@@ -32,6 +32,10 @@ export type UpgradeReason =
   | "cash"
   | "alerts"
   | "watchlistGroups"
+  | "history"
+  | "priceExport"
+  | "liquidity"
+  | "orderBookDepth"
   | "clientViews";
 
 export type Tier = "plus" | "pro";
@@ -45,8 +49,15 @@ export const UPGRADE_REASON_KEYS: Record<UpgradeReason, ErrorMessageKey> = {
   cash: "subscriptions.paywall.cashReason",
   alerts: "subscriptions.paywall.alertsReason",
   watchlistGroups: "subscriptions.paywall.watchlistGroupsReason",
+  history: "subscriptions.paywall.historyReason",
+  priceExport: "subscriptions.paywall.priceExportReason",
+  liquidity: "subscriptions.paywall.liquidityReason",
+  orderBookDepth: "common.orderBook",
   clientViews: "portfolioShare.menu",
 };
+
+/** iOS `UpgradeReason.tier`. */
+export const upgradeTier = (reason: UpgradeReason): Tier => (reason === "orderBookDepth" || reason === "clientViews" ? "pro" : "plus");
 
 export type ServerRule = {
   readonly code: ServerRuleCode;

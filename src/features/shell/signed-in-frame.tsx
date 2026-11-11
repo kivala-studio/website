@@ -7,9 +7,10 @@ import { readWatchlist } from "@/data/account/watchlist";
 import type { SignedInAccount } from "@/data/auth/account";
 import { REQUEST_PATH_HEADER } from "@/data/auth/request-path";
 import { requestTime } from "@/data/clock";
-import { serverSupabase } from "@/data/supabase/server-client";
+import { accountSession } from "@/data/account/session";
 import { safeNextPath } from "@/domain/auth/next-path";
 import { AccountSetup } from "@/features/account-setup/account-setup";
+import { readAccountState } from "@/features/account/state";
 import { catalogueRows } from "@/features/market/browse/catalogue";
 import { AreaMessages } from "@/i18n/area-messages";
 
@@ -17,8 +18,10 @@ import { AppShell } from "./app-shell";
 
 /** A signed-in page: account setup first when the account still needs it, the app shell otherwise. */
 export async function SignedInFrame({ account, children }: { account: SignedInAccount; children: ReactNode }) {
-  const supabase = await serverSupabase();
-  if (account.needsSetup) {
+  const session = await accountSession();
+  if (!session || session.userID !== account.id) return <SessionUnavailable />;
+  if (account.needsSetup && session.kind === "supabase") {
+    const supabase = session.client;
     const [rows, watched] = await Promise.all([catalogueRows(requestTime()), readWatchlist(supabase, account.id).catch(() => [])]);
     return (
       <AreaMessages area="setup">
@@ -31,8 +34,13 @@ export async function SignedInFrame({ account, children }: { account: SignedInAc
       </AreaMessages>
     );
   }
+  const [state, hasUnread, rows] = await Promise.all([
+    readAccountState(session),
+    session.kind === "supabase" ? hasUnreadActivity(session.client) : false,
+    catalogueRows(requestTime()),
+  ]);
   return (
-    <AppShell name={account.name} hasUnread={await hasUnreadActivity(supabase)}>
+    <AppShell name={account.name} hasUnread={hasUnread} account={{ userID: state.userID, watchlist: state.watchlist, access: state.access }} rows={rows ?? []}>
       {children}
     </AppShell>
   );

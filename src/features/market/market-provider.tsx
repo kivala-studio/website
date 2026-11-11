@@ -9,7 +9,8 @@ import { listenToQuoteAnnouncements } from "@/data/market/realtime";
 import { SupabaseMarketRepository, type SnapshotSource } from "@/data/market/repository";
 import { routeSnapshotSource } from "@/data/market/route-source";
 import { MarketStore, type MarketStoreState } from "@/data/market/store";
-import { appErrors } from "@/features/errors/error-presenter";
+import { ErrorPresenter, appErrors } from "@/features/errors/error-presenter";
+import { ToastHost } from "@/ui/components/feedback";
 
 const loadClient = () => import("@/data/supabase/browser-client").then((module) => module.browserSupabase());
 
@@ -69,6 +70,28 @@ export function useMarketState(): MarketStoreState {
  * announcements. Hiding the tab suspends it and revokes current quotes; showing it refreshes.
  */
 export function MarketProvider({ children, scenario }: { children: ReactNode; scenario?: string }) {
+  const parent = useContext(MarketStoreContext);
+  return parent ? children : <RunningMarket scenario={scenario}>{children}</RunningMarket>;
+}
+
+/**
+ * The market area of a page: toasts, the store and the error presenter. A page inside the signed-in shell
+ * already has one; nesting adds nothing (one poll loop and one presenter per tab).
+ */
+export function MarketArea({ children, scenario }: { children: ReactNode; scenario?: string }) {
+  const parent = useContext(MarketStoreContext);
+  if (parent) return children;
+  return (
+    <ToastHost>
+      <RunningMarket scenario={scenario}>
+        <ErrorPresenter />
+        {children}
+      </RunningMarket>
+    </ToastHost>
+  );
+}
+
+function RunningMarket({ children, scenario }: { children: ReactNode; scenario?: string }) {
   const [store] = useState(() => marketStoreForTab(scenario));
 
   useEffect(() => {

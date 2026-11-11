@@ -21,6 +21,20 @@ export async function readWatchlist(client: SupabaseClient, userID: string): Pro
   return rows.map((row) => row.security_id);
 }
 
+/** Adds one instrument at the end of the list (iOS `addToWatchlist`). A tier limit throws its `P0001`. */
+export async function addOneToWatchlist(client: SupabaseClient, userID: string, id: string): Promise<void> {
+  const rows = unwrap(
+    await client.from("watchlist_items").select("security_id,sort_order").eq("user_id", userID).order("sort_order", { ascending: false }).limit(1000),
+  ) as WatchlistRow[];
+  if (rows.some((row) => row.security_id === id)) return;
+  unwrap(await client.from("watchlist_items").insert({ user_id: userID, security_id: id, sort_order: (rows[0]?.sort_order ?? -1) + 1 }));
+}
+
+/** Removes one instrument (iOS `removeFromWatchlist`); removing one that is not saved is not an error. */
+export async function removeFromWatchlist(client: SupabaseClient, userID: string, id: string): Promise<void> {
+  unwrap(await client.from("watchlist_items").delete().eq("user_id", userID).eq("security_id", id));
+}
+
 /**
  * Adds instruments one at a time at the end of the list, in id order (iOS `saveOnboardingWatchlist`), and
  * returns the ids the server confirmed. Each refusal (a tier limit, a lost connection) leaves that id

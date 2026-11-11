@@ -7,6 +7,7 @@ import { buildContentSecurityPolicy } from "@/config/security";
 import { PRIVATE_NO_STORE, hasSessionCookie } from "@/data/auth/cookies";
 import { REQUEST_PATH_HEADER, SESSION_STATE_HEADER, SESSION_UNAVAILABLE } from "@/data/auth/request-path";
 import { requestSupabase } from "@/data/auth/request-client";
+import { DEMO_ACCOUNT_COOKIE, isDemoTier } from "@/data/demo/tiers";
 import { signInHref } from "@/domain/auth/next-path";
 import { isSignedInPath } from "@/features/shell/destinations";
 import { routing } from "@/i18n/routing";
@@ -19,7 +20,10 @@ const handleLocale = createMiddleware(routing);
  * saved session is kept for a retry instead of being treated as ended.
  */
 async function refreshSession(request: NextRequest) {
-  if (publicEnv.dataMode === "demo" || !hasSessionCookie(request.cookies.getAll())) {
+  if (publicEnv.dataMode === "demo") {
+    return { supabase: null, signedIn: isDemoTier(request.cookies.get(DEMO_ACCOUNT_COOKIE)?.value), unavailable: false };
+  }
+  if (!hasSessionCookie(request.cookies.getAll())) {
     return { supabase: null, signedIn: false, unavailable: false };
   }
   const supabase = requestSupabase(request);

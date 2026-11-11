@@ -49,6 +49,8 @@ Portuguese slugs for both languages; English lives under `/en/…`.
 | `local` | Local Supabase stack (`http://127.0.0.1:54321`) seeded by backend phase B0, with a development-only password sign-in for B0's accounts | Integration of auth, writes and limits |
 | `production` | Hosted project | Deployed site and owner smoke tests only. No automated test targets it |
 
+Demo mode cookies: `demo-scenario` picks the market (`open`, `closed`, `stale`, `empty`, `partial`, `offline`, `listing`; default `open`); `demo-account` signs in a demo account (`free`, `plus`, `pro`) whose watchlist and comparison pair live in cookies. Without `demo-account` the app is signed out.
+
 A single public `GET /functions/v1/market-snapshot` may be recorded once into fixtures; nothing else touches production from a test.
 
 ### 1.5 Definition of done for every phase

@@ -42,10 +42,13 @@ export function PriceChart({
   lineWidth,
   selected,
   onSelect,
+  formatValue,
 }: {
   points: readonly PricePoint[];
   bond: boolean;
   currency: string;
+  /** Values that are not prices (the index): their own format. */
+  formatValue?: (value: PricePoint["value"]) => string;
   lineWidth: number;
   selected: number | undefined;
   onSelect: (index: number | undefined) => void;
@@ -78,7 +81,7 @@ export function PriceChart({
     return { coordinates, line, area, ticks: labelled, first, span };
   }, [points]);
 
-  const price = (point: PricePoint) => format.securityPrice(point.value, { bond, code: currency });
+  const price = (point: PricePoint) => (formatValue ? formatValue(point.value) : format.securityPrice(point.value, { bond, code: currency }));
   const summary =
     points.length > 0 ? t("common.startedEndedSummary", { arg1: price(points[0]), arg2: price(points.at(-1)!) }) : t("common.noData");
   const selectedPoint = selected === undefined ? undefined : points[selected];

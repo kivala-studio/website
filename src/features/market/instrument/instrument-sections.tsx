@@ -9,6 +9,7 @@ import { SectionPlaceholder } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
 
+import { BondYieldRows } from "./bond-yield-dialog";
 import { DividendYield } from "./instrument-view";
 
 /*
@@ -47,9 +48,8 @@ export function BondFacts({ instrument, issuerName }: { instrument: PublicInstru
       </dl>
       {maturity !== undefined ? <p className="text-caption text-secondary-text">{t("assetDetails.bondFacts.maturityNote")}</p> : null}
       <dl className="flex flex-col">
-        <Row title={t("assetDetails.bondFacts.coupon")}>{t("common.notAvailable")}</Row>
         <Row title={t("common.faceValue")}>{t("common.notAvailable")}</Row>
-        <Row title={t("assetDetails.bondFacts.yieldToMaturity")}>{t("assetDetails.bondFacts.notCalculated")}</Row>
+        <BondYieldRows id={instrument.id} symbol={instrument.symbol} />
       </dl>
       <p className="text-caption text-secondary-text">{t("assetDetails.bondFacts.quoteDisclaimer")}</p>
     </section>
