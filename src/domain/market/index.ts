@@ -15,3 +15,4 @@ export * from "./snapshot";
 export * from "./snapshot-route";
 export * from "./time-range";
 export * from "./zone";
+export * from "./updates";

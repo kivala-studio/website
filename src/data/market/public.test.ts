@@ -26,7 +26,7 @@ describe("public market reads", () => {
     const now = Date.parse(recorded.generated_at);
     const catalogue = publicCatalogue(rows, now);
     expect(catalogue).toHaveLength(recorded.securities.length);
-    const allowed = new Set(["id", "symbol", "name", "isin", "currency", "kind", "issuerID", "isListed", "closingPrice"]);
+    const allowed = new Set(["id", "symbol", "name", "isin", "currency", "kind", "securityType", "issuerID", "isListed", "closingPrice"]);
     for (const instrument of catalogue) {
       for (const key of Object.keys(instrument)) expect(allowed, key).toContain(key);
       for (const key of Object.keys(instrument.closingPrice ?? {})) {

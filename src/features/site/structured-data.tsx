@@ -4,6 +4,19 @@ import { serverEnv } from "@/config/server-env";
 
 import { APP_STORE_URL, SUPPORT_EMAIL } from "./site";
 
+/** A JSON-LD script with the request's CSP nonce. */
+export async function JsonLd({ data }: { data: object }) {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+  return (
+    <script
+      type="application/ld+json"
+      nonce={nonce}
+      // Escapes `<` so the payload can never close the script element.
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, "\\u003c") }}
+    />
+  );
+}
+
 /** schema.org Organization for the landing page. The script carries the request's CSP nonce. */
 export async function OrganizationData() {
   const nonce = (await headers()).get("x-nonce") ?? undefined;

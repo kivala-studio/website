@@ -6,6 +6,7 @@ import { ThemeSwitch } from "@/ui/components/controls";
 import type { Theme } from "@/ui/theme/theme";
 
 import { LanguageSwitch } from "./language-switch";
+import { SectionLink } from "./section-link";
 import { INDEXABLE_PAGES, SIGN_IN_PATH } from "./site";
 
 /** The palanca-negra mark. A template image used as a mask, so it takes the current text colour in both themes. */
@@ -27,18 +28,35 @@ const NAV_LINK = "inline-flex min-h-11 items-center rounded-small px-3 text-seco
 
 export function SiteHeader() {
   const t = useTranslations();
+  const sections = [
+    { href: INDEXABLE_PAGES.market, title: t("common.market") },
+    { href: INDEXABLE_PAGES.news, title: t("common.news") },
+    { href: INDEXABLE_PAGES.learn, title: t("learn.title") },
+  ];
   return (
-    <header className={cn(PAGE_WIDTH, "flex items-center justify-between gap-2 py-3")}>
+    <header className={cn(PAGE_WIDTH, "flex flex-wrap items-center justify-between gap-x-2 py-3")}>
       <Link href="/" prefetch={false} aria-label={t("site.header.homeLabel")} className="-ml-1 inline-flex min-h-11 items-center gap-2 rounded-small px-1 text-primary-text">
         <PalancaMark className="size-8" />
         <span className="text-body font-semibold tracking-wide">{t("common.appName")}</span>
       </Link>
-      <nav className="-mr-3 flex items-center">
+      {/* Below `md` the sections take a row of their own under the logo. */}
+      <nav aria-label={t("site.header.navLabel")} className="order-last -ml-3 w-full md:order-none md:ml-4 md:w-auto md:flex-1">
+        <ul className="flex flex-wrap">
+          {sections.map((section) => (
+            <li key={section.href}>
+              <SectionLink href={section.href} className={NAV_LINK}>
+                {section.title}
+              </SectionLink>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <div className="-mr-3 flex items-center">
         <LanguageSwitch className={cn(NAV_LINK, "text-secondary-text")} />
         <Link href={SIGN_IN_PATH} prefetch={false} className={cn(NAV_LINK, "text-accent")}>
           {t("onboarding.navigation.signIn")}
         </Link>
-      </nav>
+      </div>
     </header>
   );
 }

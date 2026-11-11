@@ -31,6 +31,8 @@ export interface PublicInstrument {
   readonly isin?: string;
   readonly currency?: string;
   readonly kind: SecurityKind;
+  /** Backend `security_type`; portfolio maths scales bonds by it. */
+  readonly securityType: string;
   readonly issuerID?: string;
   readonly isListed?: boolean;
   /** The last verified close with its session date: display evidence, never a live price. */
@@ -48,6 +50,7 @@ export function publicInstrument(row: SecurityRow, closingPrice: VerifiedClosing
     isin: row.isin,
     currency: row.currency,
     kind: classifySecurityKind({ type: row.securityType, name: row.name, symbol: row.symbol }),
+    securityType: row.securityType,
     issuerID: row.issuerID,
     isListed: row.isActive,
     closingPrice,
@@ -201,6 +204,22 @@ export async function readPublicNews(
       .range(offset, offset + limit),
   ) as Row[];
   return { articles: rows.slice(0, limit), hasMore: rows.length > limit };
+}
+
+/** Every published article whose title contains `title` (case-insensitive), newest first. */
+export function readPublicNewsSearch(client: SupabaseClient, title: string, now: EpochMs): Promise<Row[]> {
+  const literal = title.replaceAll("\\", "\\\\").replaceAll("%", "\\%").replaceAll("_", "\\_");
+  return readAll((from, to) =>
+    client
+      .from("news_articles")
+      .select(NEWS_SUMMARY_SELECT)
+      .eq("status", "published")
+      .lte("published_at", new Date(now).toISOString())
+      .ilike("title", `%${literal}%`)
+      .order("published_at", { ascending: false })
+      .order("id", { ascending: false })
+      .range(from, to),
+  ) as Promise<Row[]>;
 }
 
 /** One published article with its Markdown body, by slug. */

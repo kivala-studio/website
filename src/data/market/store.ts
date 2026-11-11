@@ -4,6 +4,7 @@ import {
   type MarketCalendar,
   type MarketDataAvailability,
   type MarketSnapshot,
+  type PricePoint,
   type RefreshState,
   acceptsAnnouncement,
   applyCurrentQuotePolicy,
@@ -42,6 +43,11 @@ export interface MarketStoreState {
   readonly hasLoadedLiveSnapshot: boolean;
   readonly isReceivingLiveQuotes: boolean;
   readonly refresh: RefreshState;
+  /** Daily closes per security id (public pages: at most one year). An empty series is valid data. */
+  readonly histories: Readonly<Record<string, readonly PricePoint[]>>;
+  /** The last history failure per security id; the series already shown stays. */
+  readonly historyErrors: Readonly<Record<string, AppError>>;
+  readonly loadingHistories: Readonly<Record<string, true>>;
 }
 
 export type Sleep = (ms: number, signal: AbortSignal) => Promise<void>;
@@ -58,6 +64,7 @@ export interface MarketStoreOptions {
 }
 
 const LOAD = "market.load";
+const HISTORY = "market.history";
 /** An announcement within this long of a load attempt is already covered by it. */
 const ANNOUNCEMENT_QUIET_MS = 5 * SECOND_MS;
 /** Longest wait `setTimeout` accepts. */
@@ -76,6 +83,9 @@ const defaultSleep: Sleep = (ms, signal) =>
       { once: true },
     );
   });
+
+const without = <T,>(record: Readonly<Record<string, T>>, key: string): Record<string, T> =>
+  Object.fromEntries(Object.entries(record).filter(([entry]) => entry !== key));
 
 /** The shared task's result for one caller; that caller's abort ends only its own wait, with `false`. */
 function untilAborted(task: Promise<boolean>, signal: AbortSignal | undefined): Promise<boolean> {
@@ -114,6 +124,7 @@ export class MarketStore {
   private indexLoaded = false;
   private expiryTimer: ReturnType<typeof setTimeout> | undefined;
   private loopGeneration: number | undefined;
+  private readonly historyTasks = new Map<string, Promise<boolean>>();
 
   constructor(options: MarketStoreOptions) {
     this.repository = options.repository;
@@ -130,6 +141,9 @@ export class MarketStore {
       hasLoadedLiveSnapshot: false,
       isReceivingLiveQuotes: false,
       refresh: INITIAL_REFRESH_STATE,
+      histories: {},
+      historyErrors: {},
+      loadingHistories: {},
     };
   }
 
@@ -229,7 +243,11 @@ export class MarketStore {
       isSuspended: false,
       hasLoadedLiveSnapshot: false,
       refresh: INITIAL_REFRESH_STATE,
+      histories: {},
+      historyErrors: {},
+      loadingHistories: {},
     };
+    this.historyTasks.clear();
     this.emit();
   }
 
@@ -312,6 +330,49 @@ export class MarketStore {
     }
     if (token !== this.generation || this.state.isSuspended) return;
     await this.load({ force: true });
+  }
+
+  /** Server-rendered history: installed once, so the browser does not read it again. */
+  seedHistory(securityID: string, points: readonly PricePoint[]): void {
+    if (this.state.histories[securityID] !== undefined) return;
+    this.patch({ histories: { ...this.state.histories, [securityID]: points } });
+  }
+
+  /**
+   * Daily history for one security, always the same (server-bounded) range. Concurrent calls share
+   * one request; a failure keeps the series already shown and records the error, and the next call
+   * retries the same range. Results that arrive after a reset are discarded.
+   */
+  loadHistory(securityID: string, { force = false }: { force?: boolean } = {}): Promise<boolean> {
+    const running = this.historyTasks.get(securityID);
+    if (running) return running;
+    if (!force && this.state.histories[securityID] !== undefined && !this.state.historyErrors[securityID]) return Promise.resolve(true);
+    const token = this.generation;
+    const task = this.performHistoryLoad(securityID, token).finally(() => {
+      if (this.historyTasks.get(securityID) === task) this.historyTasks.delete(securityID);
+    });
+    this.historyTasks.set(securityID, task);
+    return task;
+  }
+
+  private async performHistoryLoad(securityID: string, token: number): Promise<boolean> {
+    this.patch({ loadingHistories: { ...this.state.loadingHistories, [securityID]: true } });
+    const settled = (changes: Partial<MarketStoreState> = {}) => {
+      this.patch({ ...changes, loadingHistories: without(this.state.loadingHistories, securityID) });
+    };
+    try {
+      const points = await this.repository.fetchDailyHistory(securityID, this.lifecycle.signal);
+      if (token !== this.generation) return false;
+      settled({ histories: { ...this.state.histories, [securityID]: points }, historyErrors: without(this.state.historyErrors, securityID) });
+      return true;
+    } catch (error) {
+      if (token !== this.generation) return false;
+      const mapped = mapError(error, HISTORY);
+      settled(mapped ? { historyErrors: { ...this.state.historyErrors, [securityID]: mapped } } : {});
+      return false;
+    } finally {
+      if (token !== this.generation && this.state.loadingHistories[securityID]) settled();
+    }
   }
 
   private async performLoad(token: number, request: number): Promise<boolean> {

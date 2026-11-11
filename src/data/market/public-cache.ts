@@ -3,13 +3,16 @@ import "server-only";
 import { unstable_cache } from "next/cache";
 
 import { publicEnv } from "@/config/public-env";
+import { demoHistoryRows, demoNewsRows } from "@/data/market/demo/public-demo";
 import { recordedSnapshot } from "@/data/market/demo/scenarios";
 import { civilDate, tradingDateNoon } from "@/domain/market/zone";
+import { type NewsArticle, decodeNewsArticle, decodeNewsArticles } from "@/domain/news/article";
 
 import { anonymousSupabase } from "../supabase/anonymous-client";
 import { pricePoints, readPulseRows } from "./history";
 import {
   type CatalogueRows,
+  PUBLIC_HISTORY_DAYS,
   publicCatalogue,
   publicPulse,
   readCatalogueRows,
@@ -18,6 +21,7 @@ import {
   readPublicHistoryRows,
   readPublicIssuer,
   readPublicNews,
+  readPublicNewsSearch,
   readPublicReports,
 } from "./public";
 
@@ -67,6 +71,11 @@ const news = unstable_cache(
   ["public-news-v1"],
   { revalidate: PUBLIC_REVALIDATE.news, tags: ["public-news"] },
 );
+const newsSearch = unstable_cache(
+  (title: string) => readPublicNewsSearch(anonymousSupabase(), title, Date.now()),
+  ["public-news-search-v1"],
+  { revalidate: PUBLIC_REVALIDATE.news, tags: ["public-news"] },
+);
 const article = unstable_cache((slug: string) => readPublicArticle(anonymousSupabase(), slug, Date.now()), ["public-article-v1"], {
   revalidate: PUBLIC_REVALIDATE.news,
   tags: ["public-news"],
@@ -82,7 +91,7 @@ export async function getPublicCatalogue(now = Date.now()) {
 }
 
 export async function getPublicDailyHistory(securityID: string, now = Date.now()) {
-  return pricePoints(demo ? [] : await historyRows(securityID, luandaDay(now)));
+  return pricePoints(demo ? demoHistoryRows(securityID, PUBLIC_HISTORY_DAYS) : await historyRows(securityID, luandaDay(now)));
 }
 
 export async function getPublicPulse(now = Date.now()) {
@@ -92,5 +101,29 @@ export async function getPublicPulse(now = Date.now()) {
 export const getPublicIssuer = (id: string) => (demo ? Promise.resolve(undefined) : issuer(id));
 export const getPublicDividend = (id: string) => (demo ? Promise.resolve(undefined) : dividend(id));
 export const getPublicReports = (id: string) => (demo ? Promise.resolve([]) : reports(id));
-export const getPublicNews = (offset = 0, limit = 20) => (demo ? Promise.resolve({ articles: [], hasMore: false }) : news(offset, limit));
-export const getPublicArticle = (slug: string) => (demo ? Promise.resolve(undefined) : article(slug));
+
+/** A page of published articles, newest first, decoded; `hasMore` comes from one extra row. */
+export async function getPublicNews(offset = 0, limit = 20): Promise<{ articles: NewsArticle[]; hasMore: boolean }> {
+  if (demo) {
+    const rows = demoNewsRows(Date.now());
+    return { articles: decodeNewsArticles(rows.slice(offset, offset + limit)), hasMore: rows.length > offset + limit };
+  }
+  const page = await news(offset, limit);
+  return { articles: decodeNewsArticles(page.articles), hasMore: page.hasMore };
+}
+
+/** Published articles whose title contains `title`. */
+export async function searchPublicNews(title: string): Promise<NewsArticle[]> {
+  const query = title.trim();
+  if (query === "") return [];
+  if (demo) {
+    const folded = query.toLocaleLowerCase("pt");
+    return decodeNewsArticles(demoNewsRows(Date.now()).filter((row) => String(row.title).toLocaleLowerCase("pt").includes(folded)));
+  }
+  return decodeNewsArticles(await newsSearch(query));
+}
+
+export async function getPublicArticle(slug: string): Promise<NewsArticle | undefined> {
+  if (demo) return decodeNewsArticle(demoNewsRows(Date.now()).find((row) => row.slug === slug));
+  return decodeNewsArticle(await article(slug));
+}

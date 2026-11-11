@@ -175,10 +175,13 @@ export function SearchField({
   value,
   onChange,
   placeholder,
+  name,
 }: {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  /** Form field name, so the search also works as a plain GET form without JavaScript. */
+  name?: string;
 }) {
   const t = useTranslations("designSystem.search");
   const input = useRef<HTMLInputElement>(null);
@@ -189,6 +192,7 @@ export function SearchField({
       <input
         ref={input}
         type="search"
+        name={name}
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={prompt}

@@ -2824,12 +2824,18 @@
       "termsDescription": "Termos de utilização da invest.ao.",
       "supportDescription": "Ajuda e contacto de suporte da invest.ao.",
       "deletionDescription": "Como eliminar a tua conta invest.ao na app ou no site.",
-      "inviteDescription": "Usa este código no invest.ao e ganha 1 mês de Plus."
+      "inviteDescription": "Usa este código no invest.ao e ganha 1 mês de Plus.",
+      "marketDescription": "Cotações e fechos verificados de ações, obrigações e fundos negociados na BODIVA.",
+      "instrumentDescription": "{arg1} na BODIVA: último fecho verificado, histórico de um ano e informação do emitente.",
+      "newsDescription": "Notícias e recaps do mercado angolano, com fontes indicadas.",
+      "learnDescription": "Sete lições curtas sobre o funcionamento do mercado angolano.",
+      "shareTitle": "Carteira partilhada"
     },
     "header": {
       "homeLabel": "invest.ao, início",
       "languageCode": "EN",
-      "languageName": "English"
+      "languageName": "English",
+      "navLabel": "Navegação principal"
     },
     "footer": {
       "label": "invest.ao",
@@ -2861,6 +2867,15 @@
     },
     "notFound": {
       "title": "Página não encontrada"
+    },
+    "share": {
+      "notFoundTitle": "Link indisponível",
+      "notFoundMessage": "Este link não existe ou foi revogado."
+    },
+    "issuer": {
+      "sector": "Sector",
+      "dividendYield": "Dividend yield",
+      "exDividend": "Ex-dividendo"
     }
   }
 }

@@ -2824,12 +2824,18 @@
       "termsDescription": "invest.ao terms of use.",
       "supportDescription": "invest.ao help and support contact.",
       "deletionDescription": "How to delete your invest.ao account in the app or on the web.",
-      "inviteDescription": "Use this code on invest.ao to get 1 month of Plus."
+      "inviteDescription": "Use this code on invest.ao to get 1 month of Plus.",
+      "marketDescription": "Quotes and verified closes for shares, bonds and funds traded on BODIVA.",
+      "instrumentDescription": "{arg1} on BODIVA: last verified close, one year of history and issuer information.",
+      "newsDescription": "News and recaps from the Angolan market, with their sources.",
+      "learnDescription": "Seven short lessons on how the Angolan market works.",
+      "shareTitle": "Shared portfolio"
     },
     "header": {
       "homeLabel": "invest.ao, home",
       "languageCode": "PT",
-      "languageName": "Português"
+      "languageName": "Português",
+      "navLabel": "Main navigation"
     },
     "footer": {
       "label": "invest.ao",
@@ -2861,6 +2867,15 @@
     },
     "notFound": {
       "title": "Page not found"
+    },
+    "share": {
+      "notFoundTitle": "Link unavailable",
+      "notFoundMessage": "This link does not exist or has been revoked."
+    },
+    "issuer": {
+      "sector": "Sector",
+      "dividendYield": "Dividend yield",
+      "exDividend": "Ex-dividend"
     }
   }
 }

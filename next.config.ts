@@ -21,7 +21,17 @@ const nextConfig: NextConfig = {
     },
   },
   async headers() {
-    return [{ source: "/:path*", headers: [...SECURITY_HEADERS] }];
+    // Share links carry a bearer token in the path: never sent on as a referrer, never stored by a cache.
+    const share = [
+      { key: "Referrer-Policy", value: "no-referrer" },
+      { key: "Cache-Control", value: "no-store" },
+      { key: "X-Robots-Tag", value: "noindex, nofollow" },
+    ];
+    return [
+      { source: "/:path*", headers: [...SECURITY_HEADERS] },
+      { source: "/partilha/:token", headers: share },
+      { source: "/en/partilha/:token", headers: share },
+    ];
   },
 };
 

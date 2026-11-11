@@ -18,7 +18,7 @@ export function Spinner({ className }: { className?: string }) {
   );
 }
 
-function StateBody({ icon, tone, title, message }: { icon: IconName; tone: "neutral" | "warning"; title: string; message: string }) {
+function StateBody({ icon, tone, title, message }: { icon: IconName; tone: "neutral" | "warning"; title: string; message?: string }) {
   return (
     <div className="flex min-h-55 flex-col items-center justify-center gap-3 px-6 text-center">
       <span
@@ -30,7 +30,7 @@ function StateBody({ icon, tone, title, message }: { icon: IconName; tone: "neut
         <Icon name={icon} />
       </span>
       <h3 className="text-section text-primary-text">{title}</h3>
-      <p className="text-secondary text-secondary-text">{message}</p>
+      {message ? <p className="text-secondary text-secondary-text">{message}</p> : null}
     </div>
   );
 }
@@ -46,7 +46,7 @@ export function LoadingState({ message }: { message?: string }) {
   );
 }
 
-export function EmptyState({ title, message, icon = "info", action }: { title: string; message: string; icon?: IconName; action?: ReactNode }) {
+export function EmptyState({ title, message, icon = "info", action }: { title: string; message?: string; icon?: IconName; action?: ReactNode }) {
   return (
     <div className="flex flex-col items-center gap-4">
       <StateBody icon={icon} tone="neutral" title={title} message={message} />
