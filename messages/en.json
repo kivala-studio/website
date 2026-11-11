@@ -2876,6 +2876,12 @@
       "sector": "Sector",
       "dividendYield": "Dividend yield",
       "exDividend": "Ex-dividend"
+    },
+    "auth": {
+      "noBankLink": "This does not connect your bank or brokerage account.",
+      "unavailable": "Sign-in is not available on this version of the site.",
+      "email": "Email",
+      "password": "Password"
     }
   }
 }

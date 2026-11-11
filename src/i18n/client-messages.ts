@@ -41,6 +41,19 @@ export const AREA_KEYS = {
   news: ["news.feed", "news.kind", "news.publications", "news.row", "news.store"],
   learn: ["learn.read"],
   share: ["portfolio.summary"],
+  auth: ["authentication.signIn"],
+  setup: [
+    "onboarding.accessibility",
+    "onboarding.button",
+    "onboarding.emptyState",
+    "onboarding.error",
+    "onboarding.form",
+    "onboarding.selection",
+    "onboarding.signOut",
+    "onboarding.step",
+    "markets.category.treasury",
+    "news.information.categoryLabel",
+  ],
 } as const satisfies Record<string, readonly string[]>;
 
 type Tree = { [key: string]: string | Tree };

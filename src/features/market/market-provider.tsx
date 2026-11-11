@@ -46,6 +46,11 @@ function marketStoreForTab(scenario: string | undefined): MarketStore {
   return store;
 }
 
+/** Sign-out and session expiry: the tab's store forgets everything and pending results are discarded. */
+export function resetTabMarketStore(): void {
+  tabStore?.reset();
+}
+
 const MarketStoreContext = createContext<MarketStore | null>(null);
 
 export function useMarketStore(): MarketStore {
