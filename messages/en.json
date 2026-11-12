@@ -2882,6 +2882,19 @@
       "unavailable": "Sign-in is not available on this version of the site.",
       "email": "Email",
       "password": "Password"
+    },
+    "watchlist": {
+      "options": "Options for {arg1}",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "groupLimit": "You have reached the limit of 20 groups."
+    },
+    "alerts": {
+      "changeBelow": "Change below",
+      "notifyChangeBelow": "Notify me when the change falls to",
+      "sensitivityNormal": "Normal",
+      "delivery": "Alerts arrive in the mobile apps and the Activity centre.",
+      "dismissDelivery": "Dismiss notice"
     }
   }
 }

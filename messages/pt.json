@@ -2882,6 +2882,19 @@
       "unavailable": "O início de sessão não está disponível nesta versão do site.",
       "email": "Email",
       "password": "Palavra-passe"
+    },
+    "watchlist": {
+      "options": "Opções de {arg1}",
+      "moveUp": "Mover para cima",
+      "moveDown": "Mover para baixo",
+      "groupLimit": "Atingiste o limite de 20 grupos."
+    },
+    "alerts": {
+      "changeBelow": "Variação inferior a",
+      "notifyChangeBelow": "Avisar-me quando a variação descer até",
+      "sensitivityNormal": "Normal",
+      "delivery": "Os alertas chegam nas apps móveis e no centro de Atividade.",
+      "dismissDelivery": "Fechar aviso"
     }
   }
 }

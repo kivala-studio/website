@@ -26,7 +26,7 @@ describe("server rules", () => {
       [rule("PLUS_REQUIRED", '{"feature":"toString"}'), { upgrade: { reason: "onboarding", tier: "plus" } }],
       [rule("PRO_REQUIRED", '{"feature":"clientViews"}'), { upgrade: { reason: "clientViews", tier: "pro" }, messageKey: null }],
       [rule("SHARE_LIMIT", '{"limit":20}'), { limit: 20, upgrade: null, messageKey: "portfolioShare.limit" }],
-      [rule("WATCHLIST_GROUP_LIMIT", "not json"), { feature: null, limit: null, upgrade: null, messageKey: null }],
+      [rule("WATCHLIST_GROUP_LIMIT", "not json"), { feature: null, limit: null, upgrade: null, messageKey: "site.watchlist.groupLimit" }],
       [rule("FREE_COMPARISON_WEEK_LIMIT"), { upgrade: { reason: "comparison", tier: "plus" }, messageKey: "subscriptions.access.weeklyPairLimit" }],
       [rule("REFERRAL_OWN_CODE"), { upgrade: null, messageKey: "referral.error.own" }],
     ] as const;

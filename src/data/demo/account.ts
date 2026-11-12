@@ -30,7 +30,7 @@ const IDS: Record<DemoTier, string> = {
   pro: "d5e00000-0000-4000-8000-000000000003",
 };
 
-const COOKIE_OPTIONS = { path: "/", sameSite: "lax", httpOnly: true, maxAge: 60 * 60 * 24 } as const;
+export const COOKIE_OPTIONS = { path: "/", sameSite: "lax", httpOnly: true, maxAge: 60 * 60 * 24 } as const;
 const UUID = /^[0-9a-f-]{36}$/i;
 
 /** The demo account of this request, or null (always null outside demo mode). */
@@ -62,7 +62,12 @@ export async function saveDemoWatchlist(ids: readonly string[]): Promise<void> {
   (await cookies()).set(WATCHLIST_COOKIE, ids.join("."), COOKIE_OPTIONS);
 }
 
-export function demoAccess(account: DemoAccount, watchlist: readonly string[], pair: readonly string[] | null): SubscriptionAccess {
+/**
+ * The access document: Free's active three are the first three rows; its movement instrument is the first
+ * active row with automatic alerts on (`automatic` defaults to the first row).
+ */
+export function demoAccess(account: DemoAccount, watchlist: readonly string[], pair: readonly string[] | null, automatic?: ReadonlySet<string>): SubscriptionAccess {
+  const active = account.tier === "free" ? watchlist.slice(0, 3) : [...watchlist];
   return {
     isPlus: account.tier !== "free",
     isPro: account.tier === "pro",
@@ -70,8 +75,8 @@ export function demoAccess(account: DemoAccount, watchlist: readonly string[], p
     weekStart: null,
     resetsAt: null,
     comparisonPair: pair,
-    activeWatchlistIDs: watchlist.slice(0, 3),
-    movementSecurityID: watchlist[0] ?? null,
+    activeWatchlistIDs: active,
+    movementSecurityID: (automatic ? active.find((id) => automatic.has(id)) : watchlist[0]) ?? null,
   };
 }
 
@@ -83,14 +88,6 @@ export async function demoComparisonPair(): Promise<string[] | null> {
 
 export async function saveDemoComparisonPair(ids: readonly string[]): Promise<void> {
   (await cookies()).set(PAIR_COOKIE, ids.join("."), COOKIE_OPTIONS);
-}
-
-/** Alert rules: Plus and Pro have one active rule on their first watched instrument and one paused on the second. */
-export function demoAlerts(account: DemoAccount, watchlist: readonly string[], securityID: string) {
-  if (account.tier === "free") return { enabled: 0, paused: 0 };
-  if (securityID === watchlist[0]) return { enabled: 1, paused: 0 };
-  if (securityID === watchlist[1]) return { enabled: 0, paused: 1 };
-  return { enabled: 0, paused: 0 };
 }
 
 /** Full daily history (three years); the server's one-year bound for Free is applied by the caller. */

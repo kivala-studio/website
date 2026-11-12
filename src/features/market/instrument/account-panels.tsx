@@ -2,7 +2,7 @@
 
 import Decimal from "decimal.js";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 
 import { decodePoints, type WirePoint } from "@/data/market/history-wire";
 import {
@@ -16,6 +16,7 @@ import {
   decodeIntradayChart,
   decodeOrderBookRows,
   depthBarScale,
+  displayPrice,
   exportPriceHistoryCSV,
   isBondKind,
   liquidityProfile,
@@ -25,16 +26,17 @@ import {
   priceHistoryCSVFileName,
 } from "@/domain/market";
 import { FREE_PLAN_LIMITS } from "@/domain/account/access";
-import { useAccount } from "@/features/account/account-provider";
+import { useAccount, useAccountStores } from "@/features/account/account-provider";
 import { WatchStar } from "@/features/search/watch-star";
 import { useMarketState } from "@/features/market/market-provider";
 import { cn } from "@/ui/cn";
 import { Button } from "@/ui/components/buttons";
-import { Dialog } from "@/ui/components/dialog";
 import { SectionHeader } from "@/ui/components/layout";
 import { SectionPlaceholder } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
+
+import { AlertsDialog } from "@/features/alerts/alerts-dialog";
 
 import { ComparisonSheet } from "./comparison-sheet";
 import type { InstrumentData } from "./instrument-view";
@@ -97,6 +99,25 @@ export function useAccountResource<T>(
   return { ...state, reload };
 }
 
+/** Enabled and paused rules on one instrument, from the account's rules (read once per account). */
+function useAlertCounts(securityID: string) {
+  const stores = useAccountStores();
+  const subscribe = stores?.alerts.subscribe ?? (() => () => {});
+  const snapshot = useSyncExternalStore(subscribe, () => stores?.alerts.getSnapshot(), () => undefined);
+  useEffect(() => {
+    if (!stores) return;
+    const controller = new AbortController();
+    void stores.alerts.load(controller.signal);
+    return () => controller.abort();
+  }, [stores]);
+  return useMemo(() => {
+    if (snapshot?.status !== "loaded") return undefined;
+    const rules = snapshot.rules.filter((rule) => rule.securityID === securityID);
+    const enabled = rules.filter((rule) => rule.isEnabled).length;
+    return { enabled, paused: rules.length - enabled };
+  }, [snapshot, securityID]);
+}
+
 /** Today's 5-minute series (`1D`), refreshed every minute while shown. */
 export function useIntraday(id: string, enabled: boolean) {
   return useAccountResource<IntradayChartSnapshot>(`/api/account/intraday/${id}`, (body) => decodeIntradayChart(body.chart, Date.now()), {
@@ -138,11 +159,7 @@ export function InstrumentActions({ instrument, security, at, points }: { instru
   const [alertsOpen, setAlertsOpen] = useState(false);
   const [comparing, setComparing] = useState(false);
   const exportable = points !== undefined && canExportPriceHistory(points);
-  const alerts = useAccountResource(
-    `/api/account/alerts/${instrument.id}`,
-    (body) => ({ enabled: Number(body.enabled) || 0, paused: Number(body.paused) || 0 }),
-    { enabled: account !== null },
-  );
+  const counts = useAlertCounts(instrument.id);
   if (!account) return null;
 
   const share = async () => {
@@ -166,7 +183,6 @@ export function InstrumentActions({ instrument, security, at, points }: { instru
     if (rows && canExportPriceHistory(rows)) download(exportPriceHistoryCSV(rows), priceHistoryCSVFileName(instrument.symbol));
   };
 
-  const counts = alerts.data;
   const alertLabel = !counts || counts.enabled + counts.paused === 0
     ? t("common.createAlert")
     : counts.enabled > 0
@@ -206,11 +222,17 @@ export function InstrumentActions({ instrument, security, at, points }: { instru
           {alertLabel}
         </Button>
       </div>
-      <Dialog open={alertsOpen} onClose={() => setAlertsOpen(false)} title={alertLabel}>
-        <div className="px-5 pt-2 pb-8">
-          <p className="text-body text-secondary-text">{t(counts && counts.enabled + counts.paused > 0 ? "assetDetails.accessibility.alertHintManage" : "assetDetails.accessibility.alertHintCreate")}</p>
-        </div>
-      </Dialog>
+      <AlertsDialog
+        open={alertsOpen}
+        onClose={() => setAlertsOpen(false)}
+        target={{
+          id: instrument.id,
+          symbol: instrument.symbol,
+          bond: isBondKind(instrument.kind),
+          currency: security?.currency ?? "AOA",
+          price: security && at !== undefined ? displayPrice(security, at) : undefined,
+        }}
+      />
       {security ? <ComparisonSheet open={comparing} onClose={() => setComparing(false)} base={security} /> : null}
     </div>
   );

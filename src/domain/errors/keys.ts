@@ -10,6 +10,7 @@ export const ERROR_MESSAGE_KEYS = [
   "errors.account.signInFailed",
   "errors.account.signOutFailed",
   "errors.alert.updateFailed",
+  "site.watchlist.groupLimit",
   "errors.chart.shareFailed",
   "errors.data.chooseAnotherInstrument",
   "errors.data.unreadableMessage",
