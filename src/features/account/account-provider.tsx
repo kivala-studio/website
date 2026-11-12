@@ -7,6 +7,9 @@ import { type SubscriptionAccess, unlocks } from "@/domain/account/access";
 import { decodeAccessJSON } from "@/domain/account/watchlist";
 import { UPGRADE_REASON_KEYS, type UpgradeReason } from "@/domain/errors";
 import { upgradeTier } from "@/domain/errors/rules";
+import { ACTIVITY_REFRESH_MS, ActivityStore } from "@/features/activity/activity-store";
+import { PreferencesStore } from "@/features/activity/preferences-store";
+import { accountActivityRepository, accountPreferencesRepository } from "@/features/activity/repository";
 import { AlertsStore } from "@/features/alerts/alerts-store";
 import { accountAlertRepository } from "@/features/alerts/repository";
 import { appErrors } from "@/features/errors/error-presenter";
@@ -14,6 +17,7 @@ import { accountWatchlistRepository } from "@/features/watchlist/repository";
 import { WatchlistStore } from "@/features/watchlist/watchlist-store";
 import { Button } from "@/ui/components/buttons";
 import { Dialog } from "@/ui/components/dialog";
+import { useToast } from "@/ui/components/feedback";
 
 import { readAccountRoute } from "./results";
 
@@ -22,6 +26,8 @@ export type AccountInitial = {
   readonly watchlist: readonly string[];
   /** Null when it could not be read: nothing is locked then (the server still enforces). */
   readonly access: SubscriptionAccess | null;
+  /** The bell's dot as the server saw it for this page. */
+  readonly hasUnread: boolean;
 };
 
 /** The plan access of this tab's account; re-read after confirmed watchlist changes. */
@@ -65,6 +71,8 @@ type AccountContextValue = {
   access: AccessStore;
   watchlist: WatchlistStore;
   alerts: AlertsStore;
+  activity: ActivityStore;
+  preferences: PreferencesStore;
   /** Opens the neutral plan dialog with the reason sentence (the plans page arrives in W16). */
   requestUpgrade: (reason: UpgradeReason) => void;
 };
@@ -110,6 +118,7 @@ export type Account = NonNullable<ReturnType<typeof useAccount>>;
 
 export function AccountProvider({ initial, children }: { initial: AccountInitial; children: ReactNode }) {
   const t = useTranslations();
+  const toast = useToast();
   // The reason stays after closing so the dialog does not go blank while it animates out.
   const [reason, setReason] = useState<UpgradeReason | null>(null);
   const [open, setOpen] = useState(false);
@@ -124,8 +133,30 @@ export function AccountProvider({ initial, children }: { initial: AccountInitial
       accessChanged: (next) => (next ? access.apply(next) : access.refreshSoon()),
     });
     const alerts = new AlertsStore(accountAlertRepository(initial.userID), appErrors, (next) => requestUpgrade(next));
-    return { userID: initial.userID, access, watchlist, alerts, requestUpgrade };
+    const activity = new ActivityStore(accountActivityRepository(initial.userID), appErrors, initial.hasUnread, {
+      // New rows while the site is open: one quiet toast that never carries a threshold or an amount.
+      arrived: () => {
+        if (!appErrors.current) toast.show({ title: t("common.activity"), message: t("common.newInformationNotification") });
+      },
+    });
+    const preferences = new PreferencesStore(accountPreferencesRepository(initial.userID), appErrors);
+    return { userID: initial.userID, access, watchlist, alerts, activity, preferences, requestUpgrade };
   });
+
+  // The bell and the inbox: re-read every minute while the tab is visible, and on return after a minute away.
+  useEffect(() => {
+    const refresh = () => {
+      if (document.hidden) return;
+      const { loadedAt } = value.activity.getSnapshot();
+      if (loadedAt === null || Date.now() - loadedAt >= ACTIVITY_REFRESH_MS - 1000) void value.activity.load({ quiet: true });
+    };
+    const timer = setInterval(refresh, ACTIVITY_REFRESH_MS);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, [value]);
 
   useEffect(() => {
     let controller: AbortController | undefined;

@@ -2,7 +2,6 @@ import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import type { ReactNode } from "react";
 
-import { hasUnreadActivity } from "@/data/account/activity";
 import { readWatchlist } from "@/data/account/watchlist";
 import type { SignedInAccount } from "@/data/auth/account";
 import { REQUEST_PATH_HEADER } from "@/data/auth/request-path";
@@ -11,6 +10,7 @@ import { accountSession } from "@/data/account/session";
 import { safeNextPath } from "@/domain/auth/next-path";
 import { AccountSetup } from "@/features/account-setup/account-setup";
 import { readAccountState } from "@/features/account/state";
+import { hasUnreadActivity } from "@/features/activity/server";
 import { catalogueRows } from "@/features/market/browse/catalogue";
 import { AreaMessages } from "@/i18n/area-messages";
 
@@ -36,11 +36,11 @@ export async function SignedInFrame({ account, children }: { account: SignedInAc
   }
   const [state, hasUnread, rows] = await Promise.all([
     readAccountState(session),
-    session.kind === "supabase" ? hasUnreadActivity(session.client) : false,
+    hasUnreadActivity(session, requestTime()),
     catalogueRows(requestTime()),
   ]);
   return (
-    <AppShell name={account.name} hasUnread={hasUnread} account={{ userID: state.userID, watchlist: state.watchlist, access: state.access }} rows={rows ?? []}>
+    <AppShell name={account.name} account={{ userID: state.userID, watchlist: state.watchlist, access: state.access, hasUnread }} rows={rows ?? []}>
       {children}
     </AppShell>
   );

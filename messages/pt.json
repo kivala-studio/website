@@ -2895,6 +2895,9 @@
       "sensitivityNormal": "Normal",
       "delivery": "Os alertas chegam nas apps móveis e no centro de Atividade.",
       "dismissDelivery": "Fechar aviso"
+    },
+    "settings": {
+      "notificationLimits": "Até cinco avisos opcionais por dia. Entre as 20h e as 8h, o radar fica em silêncio."
     }
   }
 }

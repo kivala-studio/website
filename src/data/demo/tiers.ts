@@ -14,4 +14,6 @@ export const DEMO_COOKIES = [
   "demo-groups",
   "demo-rules",
   "demo-sensitivity",
+  "demo-activity-read",
+  "demo-notification-preferences",
 ] as const;

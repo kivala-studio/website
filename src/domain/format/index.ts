@@ -4,6 +4,7 @@ import {
   type CivilDate,
   type Instant,
   formatCivilAbbreviated,
+  formatCivilDayMonth,
   formatCivilLong,
   formatInstantDate,
   formatInstantDateTime,
@@ -121,6 +122,9 @@ export function createFormat(locale: FormatLocale, translate: Translate) {
   /** Civil dates: transaction day (`8/10/2026`) and maturity (`8 de maio de 2030`). */
   const civilDate = (value: CivilDate) => formatCivilAbbreviated(value, locale);
   const maturity = (value: CivilDate) => formatCivilLong(value, locale);
+  /** Activity day headers: `8 de maio` this year, `8 de maio de 2025` otherwise. */
+  const dayMonth = (value: CivilDate, now: Instant) =>
+    value.slice(0, 4) === luandaCivilDate(now).slice(0, 4) ? formatCivilDayMonth(value, locale) : formatCivilLong(value, locale);
   const civilPeriod = (first: CivilDate, last: CivilDate) => `${civilDate(first)} – ${civilDate(last)}`;
 
   /** `Hoje · 15:30`, `Ontem · 09:05`, otherwise the Luanda timestamp. */
@@ -152,6 +156,7 @@ export function createFormat(locale: FormatLocale, translate: Translate) {
     period,
     civilDate,
     maturity,
+    dayMonth,
     civilPeriod,
     relativeDay,
   };

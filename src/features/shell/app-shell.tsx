@@ -22,17 +22,16 @@ import { ShellHeader, ShellNav } from "./shell-nav";
  */
 export async function AppShell({
   name,
-  hasUnread,
   account,
   rows,
   children,
 }: {
   name: string | null;
-  hasUnread: boolean;
   account: {
     userID: string;
     watchlist: readonly string[];
     access: SubscriptionAccess | null;
+    hasUnread: boolean;
   };
   rows: readonly CatalogueRow[];
   children: ReactNode;
@@ -72,12 +71,8 @@ export async function AppShell({
                 })}
                 unusualLabel={t("unusualActivity.title")}
                 activityLabel={t("common.activity")}
-                activityState={t(
-                  hasUnread
-                    ? "home.accessibility.activityNew"
-                    : "home.accessibility.activityNone",
-                )}
-                hasUnread={hasUnread}
+                activityStates={{ new: t("home.accessibility.activityNew"), none: t("home.accessibility.activityNone") }}
+                hasUnread={account.hasUnread}
                 search={
                   <CommandPalette rows={rows} renderedAt={requestTime()} />
                 }
