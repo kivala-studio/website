@@ -1,6 +1,8 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { type ReactNode, useSyncExternalStore } from "react";
+
+import { useAccountStores } from "@/features/account/account-provider";
 
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
@@ -55,10 +57,13 @@ type HeaderProps = {
   profileLabel: string;
   unusualLabel: string;
   activityLabel: string;
-  activityState: string;
+  /** The bell's accessible state: something new, or nothing new. */
+  activityStates: { readonly new: string; readonly none: string };
   hasUnread: boolean;
   search?: ReactNode;
 };
+
+const NO_SUBSCRIPTION = () => () => {};
 
 const HEADER_LINK = "relative inline-flex size-11 shrink-0 items-center justify-center rounded-full text-primary-text";
 
@@ -66,8 +71,14 @@ const HEADER_LINK = "relative inline-flex size-11 shrink-0 items-center justify-
  * Profile initials (to the profile page), unusual activity and the bell, which shows a dot when there is something
  * unread. From 1024 px it is the web top bar: the search field first, the profile last.
  */
-export function ShellHeader({ initials, profileLabel, unusualLabel, activityLabel, activityState, hasUnread, search }: HeaderProps) {
+export function ShellHeader({ initials, profileLabel, unusualLabel, activityLabel, activityStates, hasUnread: initial, search }: HeaderProps) {
   const pathname = usePathname();
+  const activity = useAccountStores()?.activity;
+  const hasUnread = useSyncExternalStore(
+    activity?.subscribe ?? NO_SUBSCRIPTION,
+    () => activity?.getSnapshot().hasNew ?? initial,
+    () => initial,
+  );
   const current = (href: string) => (isCurrentTab(href, pathname) ? ("page" as const) : undefined);
   return (
     <header className="sticky top-0 z-10 flex items-center gap-2 bg-app-background px-4 py-2 sm:px-6 lg:min-h-14 lg:gap-3 lg:border-b lg:border-hairline lg:bg-elevated-background">
@@ -83,7 +94,7 @@ export function ShellHeader({ initials, profileLabel, unusualLabel, activityLabe
         </Link>
         <Link href="/atividade" aria-current={current("/atividade")} className={HEADER_LINK}>
           <Icon name="notification" scale="l" />
-          <span className="sr-only">{`${activityLabel}, ${activityState}`}</span>
+          <span className="sr-only">{`${activityLabel}, ${hasUnread ? activityStates.new : activityStates.none}`}</span>
           {hasUnread ? <span aria-hidden className="absolute top-2 right-2 size-2.5 rounded-full bg-negative ring-2 ring-app-background" /> : null}
         </Link>
       </div>

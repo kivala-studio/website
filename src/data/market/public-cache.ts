@@ -5,7 +5,7 @@ import { unstable_cache } from "next/cache";
 import { publicEnv } from "@/config/public-env";
 import { demoHistoryRows, demoNewsRows } from "@/data/market/demo/public-demo";
 import { recordedSnapshot } from "@/data/market/demo/scenarios";
-import { civilDate, tradingDateNoon } from "@/domain/market/zone";
+import { DAY_MS, civilDate, tradingDateNoon } from "@/domain/market/zone";
 import { type NewsArticle, decodeNewsArticle, decodeNewsArticles } from "@/domain/news/article";
 
 import { anonymousSupabase } from "../supabase/anonymous-client";
@@ -91,7 +91,12 @@ export async function getPublicCatalogue(now = Date.now()) {
 }
 
 export async function getPublicDailyHistory(securityID: string, now = Date.now()) {
-  return pricePoints(demo ? demoHistoryRows(securityID, PUBLIC_HISTORY_DAYS) : await historyRows(securityID, luandaDay(now)));
+  if (demo) {
+    // The recorded closes stay put while the calendar moves: keep the server's one-year bound from today.
+    const from = civilDate(now - PUBLIC_HISTORY_DAYS * DAY_MS);
+    return pricePoints(demoHistoryRows(securityID, PUBLIC_HISTORY_DAYS).filter((row) => String(row.trading_date) > from));
+  }
+  return pricePoints(await historyRows(securityID, luandaDay(now)));
 }
 
 export async function getPublicPulse(now = Date.now()) {

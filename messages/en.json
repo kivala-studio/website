@@ -2895,6 +2895,9 @@
       "sensitivityNormal": "Normal",
       "delivery": "Alerts arrive in the mobile apps and the Activity centre.",
       "dismissDelivery": "Dismiss notice"
+    },
+    "settings": {
+      "notificationLimits": "Up to five optional notifications a day. From 8 pm to 8 am, the radar stays silent."
     }
   }
 }

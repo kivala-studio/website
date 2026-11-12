@@ -80,6 +80,12 @@ export function formatInstantDateTime(instant: Instant, locale: FormatLocale) {
 }
 export const formatCivilAbbreviated = (date: CivilDate, locale: FormatLocale) => abbreviated(parseCivilDate(date), locale);
 export const formatCivilLong = (date: CivilDate, locale: FormatLocale) => long(parseCivilDate(date), locale);
+/** Day and full month, for a date of the current year: `8 de maio`, `May 8`. */
+export function formatCivilDayMonth(date: CivilDate, locale: FormatLocale) {
+  const { month, day } = parseCivilDate(date);
+  const name = MONTHS_LONG[locale][month - 1];
+  return locale === "pt" ? `${day} de ${name}` : `${name} ${day}`;
+}
 
 /** Whole Luanda days from `from` to `to` (both civil dates). */
 export function civilDaysBetween(from: CivilDate, to: CivilDate): number {
