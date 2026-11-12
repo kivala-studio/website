@@ -19,11 +19,13 @@ import {
 } from "@/domain/account/alerts";
 import { formatAmountForInput, parseAmount } from "@/domain/format/amount-input";
 import { useAccountStores } from "@/features/account/account-provider";
+import { PrivacyModeButton, usePrivacyMode } from "@/features/privacy/privacy-mode";
 import { cn } from "@/ui/cn";
 import { AmountField } from "@/ui/components/amount-field";
 import { Button, IconButton } from "@/ui/components/buttons";
 import { OptionGroup } from "@/ui/components/controls";
 import { Dialog } from "@/ui/components/dialog";
+import { HiddenValue } from "@/ui/components/feedback";
 import { SwitchRow } from "@/ui/components/menu";
 import { Skeleton } from "@/ui/components/states";
 import type { Format } from "@/domain/format";
@@ -160,6 +162,8 @@ function AlertList({ target, onEdit }: { target: AlertTarget; onEdit: (rule: Ale
   const rules = alerts.rules.filter((rule) => rule.securityID === target.id);
   const watched = list.order.includes(target.id);
   const translate = (key: string, values?: Record<string, string>) => t(key as never, values as never);
+  // Thresholds are personal: privacy mode hides them; the rule type and its controls stay.
+  const hidden = usePrivacyMode();
 
   return (
     <div className="flex flex-col gap-6" data-testid="alerts-panel">
@@ -172,9 +176,12 @@ function AlertList({ target, onEdit }: { target: AlertTarget; onEdit: (rule: Ale
       ) : null}
 
       <section aria-labelledby="alert-rules" className="flex flex-col gap-2">
-        <h3 id="alert-rules" className="text-headline text-primary-text">
-          {t("alerts.list.title")}
-        </h3>
+        <div className="flex items-center justify-between gap-2">
+          <h3 id="alert-rules" className="text-headline text-primary-text">
+            {t("alerts.list.title")}
+          </h3>
+          {rules.length > 0 ? <PrivacyModeButton className="-my-2" /> : null}
+        </div>
         {alerts.status === "loading" || alerts.status === "idle" ? (
           <div aria-label={t("alerts.list.loading")} role="status" className="flex flex-col gap-2">
             <Skeleton className="h-14" />
@@ -199,15 +206,16 @@ function AlertList({ target, onEdit }: { target: AlertTarget; onEdit: (rule: Ale
                 <li key={rule.id} className="flex items-center gap-2 py-1" data-testid="alert-rule">
                   <div className="min-w-0 flex-1">
                     <SwitchRow
-                      label={value ? `${title} ${value}` : title}
+                      label={value && !hidden ? `${title} ${value}` : title}
                       checked={rule.isEnabled}
                       disabled={pending}
                       onChange={(enabled) => stores.alerts.setEnabled(rule.id, enabled)}
                     >
+                      {value && hidden ? <HiddenValue className="text-secondary" /> : null}
                       {rule.isEnabled ? null : <span className="text-caption text-secondary-text">{t("common.paused")}</span>}
                     </SwitchRow>
                   </div>
-                  <IconButton icon="edit" label={t("alerts.accessibility.editAlert", { arg1: title, arg2: value ?? target.symbol })} disabled={pending} onClick={() => onEdit(rule)} />
+                  <IconButton icon="edit" label={t("alerts.accessibility.editAlert", { arg1: title, arg2: hidden ? t("common.hiddenValue") : (value ?? target.symbol) })} disabled={pending} onClick={() => onEdit(rule)} />
                   <IconButton icon="trash" label={`${t("common.delete")}: ${title}`} disabled={pending} onClick={() => stores.alerts.delete(rule.id)} className="text-negative" />
                 </li>
               );

@@ -2860,7 +2860,9 @@
       "inApp": "In the iPhone app",
       "onWeb": "On the web",
       "webMessage": "Sign in with the same account and delete it in settings.",
-      "path": "Path in the app"
+      "path": "Path in the app",
+      "appleConfirm": "Apple will ask you to confirm.",
+      "cancelled": "Deletion cancelled. Your account remains."
     },
     "invite": {
       "offer": "Use this code on invest.ao to get 1 month of Plus."

@@ -73,6 +73,8 @@ export const AREA_KEYS = {
     "notification.close",
     "settings.categories",
     "settings.marketRecap.toggle",
+    "settings.deleteAccount",
+    "settings.marketData",
     "unusualActivity.title",
     "unusualActivity.settings",
     "legacy.unusualactivityRuleDormancyBreak",

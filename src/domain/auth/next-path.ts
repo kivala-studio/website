@@ -33,7 +33,7 @@ export function safeNextPath(raw: string | null | undefined, fallback: string = 
 export const localeOfPath = (path: string): "pt" | "en" => (/^\/en(?:[/?#]|$)/.test(path) ? "en" : "pt");
 
 /** Why the sign-in page was opened, carried as `?motivo=` (Portuguese values in both languages). */
-export const SIGN_IN_REASONS = { expired: "sessao", failed: "falha", signedOutHere: "local" } as const;
+export const SIGN_IN_REASONS = { expired: "sessao", failed: "falha", signedOutHere: "local", deleted: "eliminada" } as const;
 export type SignInReason = keyof typeof SIGN_IN_REASONS;
 
 export function readSignInReason(value: string | null | undefined): SignInReason | null {

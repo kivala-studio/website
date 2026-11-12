@@ -16,6 +16,7 @@ import {
 import { cn } from "../cn";
 import { Icon } from "../icons/icon";
 import { Spinner } from "./states";
+import { PRIVACY_MASK } from "@/domain/privacy/privacy";
 
 export type ToastMessage = {
   title: string;
@@ -145,9 +146,18 @@ export function OfflineBanner({ forceVisible = false }: { forceVisible?: boolean
   );
 }
 
-const MASK = "••••••";
+/** Six dots in place of a personal value, announced as "Valor oculto"; the value itself is not in the page. */
+export function HiddenValue({ className }: { className?: string }) {
+  const t = useTranslations("common");
+  return (
+    <span className={cn("text-secondary-text", className)}>
+      <span aria-hidden>{PRIVACY_MASK}</span>
+      <span className="sr-only">{t("hiddenValue")}</span>
+    </span>
+  );
+}
 
-/** Hides a personal value but keeps its layout; announced as "Valor oculto". */
+/** Hides a personal value but keeps its layout (tables, metrics); announced as "Valor oculto". */
 export function SensitiveValue({ hidden, children, className }: { hidden: boolean; children: ReactNode; className?: string }) {
   const t = useTranslations("common");
   if (!hidden) return <>{children}</>;
@@ -157,7 +167,7 @@ export function SensitiveValue({ hidden, children, className }: { hidden: boolea
         {children}
       </span>
       <span className="col-start-1 row-start-1 self-center truncate text-secondary-text">
-        <span aria-hidden>{MASK}</span>
+        <span aria-hidden>{PRIVACY_MASK}</span>
         <span className="sr-only">{t("hiddenValue")}</span>
       </span>
     </span>
