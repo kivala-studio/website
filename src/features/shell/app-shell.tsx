@@ -1,12 +1,15 @@
 import { getTranslations } from "next-intl/server";
+import { cookies } from "next/headers";
 import type { ReactNode } from "react";
 
 import { requestTime } from "@/data/clock";
 import type { SubscriptionAccess } from "@/domain/account/access";
 import { profileInitials } from "@/domain/auth/account";
+import { PRIVACY_COOKIE, parsePrivacyMode } from "@/domain/privacy/privacy";
 import { AccountProvider } from "@/features/account/account-provider";
 import type { CatalogueRow } from "@/features/market/browse/price-cell";
 import { MarketArea } from "@/features/market/market-provider";
+import { PrivacyModeProvider } from "@/features/privacy/privacy-mode";
 import { CommandPalette } from "@/features/search/command-palette";
 import { PalancaMark } from "@/features/site/chrome";
 import { AreaMessages } from "@/i18n/area-messages";
@@ -37,6 +40,7 @@ export async function AppShell({
   children: ReactNode;
 }) {
   const t = await getTranslations();
+  const privacy = parsePrivacyMode((await cookies()).get(PRIVACY_COOKIE)?.value);
   const displayName = name ?? t("authentication.profile.defaultName");
   const tabs = TABS.map(({ href, labelKey, icon }) => ({
     href,
@@ -49,6 +53,7 @@ export async function AppShell({
     <AreaMessages area="app">
       <MarketArea>
         <AccountProvider initial={account}>
+          <PrivacyModeProvider initial={privacy}>
           <div className="flex min-h-dvh flex-col lg:grid lg:grid-cols-[14rem_minmax(0,1fr)]">
             <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-dvh lg:flex-col lg:gap-6 lg:border-r lg:border-hairline lg:bg-elevated-background lg:px-3 lg:py-3">
               <Link
@@ -81,6 +86,7 @@ export async function AppShell({
             </div>
             <ShellNav items={tabs} label={navLabel} variant="bar" />
           </div>
+          </PrivacyModeProvider>
         </AccountProvider>
       </MarketArea>
     </AreaMessages>

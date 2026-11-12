@@ -1,12 +1,13 @@
 import { useTranslations } from "next-intl";
 
 import { siteMetadata } from "@/features/site/metadata";
+import { ACCOUNT_PAGE } from "@/domain/account/deletion";
 import { ReadingPage, SupportContact } from "@/features/site/pages";
 import { APP_STORE_SUBSCRIPTIONS_URL, INDEXABLE_PAGES, SIGN_IN_PATH } from "@/features/site/site";
 import { ButtonLink } from "@/ui/components/buttons";
 import { Icon } from "@/ui/icons/icon";
 
-// The public account-deletion URL the stores ask for. Works signed out; web deletion itself arrives in W10.
+// The public account-deletion URL the stores ask for. Works signed out; signing in leads straight to the deletion screen.
 export const generateMetadata = siteMetadata({ path: INDEXABLE_PAGES.deletion, image: "deletion" }, (t) => ({
   title: t("common.deleteAccount"),
   description: t("site.meta.deletionDescription"),
@@ -46,7 +47,7 @@ export default function DeleteAccountPage() {
           {t("site.deletion.onWeb")}
         </h2>
         <p className="text-body text-primary-text">{t("site.deletion.webMessage")}</p>
-        <ButtonLink href={`${SIGN_IN_PATH}?next=/definicoes`} prefetch={false} className="sm:w-auto! sm:self-start">
+        <ButtonLink href={`${SIGN_IN_PATH}?next=${ACCOUNT_PAGE}`} prefetch={false} className="sm:w-auto! sm:self-start">
           {t("onboarding.navigation.signIn")}
         </ButtonLink>
       </section>

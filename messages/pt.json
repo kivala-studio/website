@@ -2860,7 +2860,9 @@
       "inApp": "Na app para iPhone",
       "onWeb": "No site",
       "webMessage": "Inicia sessão com a mesma conta e elimina-a nas definições.",
-      "path": "Caminho na app"
+      "path": "Caminho na app",
+      "appleConfirm": "A Apple vai pedir-te para confirmar.",
+      "cancelled": "Eliminação cancelada. A tua conta mantém-se."
     },
     "invite": {
       "offer": "Usa este código no invest.ao e ganha 1 mês de Plus."

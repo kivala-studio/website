@@ -45,6 +45,12 @@ export default async function SignInPage({ params, searchParams }: Props) {
         <h1 className="text-display text-primary-text">{t("onboarding.navigation.signIn")}</h1>
         <p className="text-body text-secondary-text">{t("site.auth.noBankLink")}</p>
       </div>
+      {reason === "deleted" ? (
+        <div role="status" className="flex flex-col gap-1 rounded-medium bg-elevated-background px-4 py-3" data-testid="account-deleted">
+          <p className="text-body font-semibold text-primary-text">{t("app.accountDeleted.title")}</p>
+          <p className="text-secondary text-secondary-text">{t("app.accountDeleted.message")}</p>
+        </div>
+      ) : null}
       {reason === "expired" || reason === "signedOutHere" ? (
         <div role="status" className="flex flex-col gap-1 rounded-medium bg-elevated-background px-4 py-3">
           <p className="text-body font-semibold text-primary-text">

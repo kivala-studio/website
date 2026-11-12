@@ -8,7 +8,7 @@ import { activityText } from "@/domain/activity/copy";
 import type { Translate } from "@/domain/format";
 import { DAY_MS, civilDate } from "@/domain/market/zone";
 import { useAccountStores } from "@/features/account/account-provider";
-import { usePrivacyMode } from "@/features/privacy/privacy-mode";
+import { PrivacyModeButton, usePrivacyMode } from "@/features/privacy/privacy-mode";
 import { Link, useRouter } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
 import { Button, IconButton } from "@/ui/components/buttons";
@@ -91,6 +91,7 @@ export function ActivityCenter({ symbols, renderedAt }: { symbols: Readonly<Reco
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="min-w-0 flex-1 text-display text-primary-text">{t("common.activity")}</h1>
         <div className="flex items-center gap-2">
+          <PrivacyModeButton />
           <IconButton icon="refresh" label={t("common.refresh")} onClick={() => void store.load()} />
           <Button
             kind="secondary"
