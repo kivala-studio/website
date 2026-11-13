@@ -1,0 +1,1990 @@
+{
+  "schemaVersion": 1,
+  "catalogueVersion": "1.0.0",
+  "locale": "pt-AO",
+  "strategies": [
+    {
+      "id": "movement",
+      "eventFamilies": [
+        "movement"
+      ],
+      "requiredCapabilities": [],
+      "privacyClass": "public_market"
+    },
+    {
+      "id": "watchlist_rank",
+      "eventFamilies": [
+        "watchlist_rank"
+      ],
+      "requiredCapabilities": [],
+      "privacyClass": "personal_context"
+    },
+    {
+      "id": "watchlist_breadth",
+      "eventFamilies": [
+        "watchlist_breadth"
+      ],
+      "requiredCapabilities": [],
+      "privacyClass": "personal_context"
+    },
+    {
+      "id": "watchlist_run",
+      "eventFamilies": [
+        "watchlist_run"
+      ],
+      "requiredCapabilities": [],
+      "privacyClass": "personal_context"
+    },
+    {
+      "id": "watchlist_extreme",
+      "eventFamilies": [
+        "watchlist_extreme"
+      ],
+      "requiredCapabilities": [],
+      "privacyClass": "personal_context"
+    },
+    {
+      "id": "publication",
+      "eventFamilies": [
+        "publication"
+      ],
+      "requiredCapabilities": [],
+      "privacyClass": "public_market"
+    },
+    {
+      "id": "listing",
+      "eventFamilies": [
+        "listing"
+      ],
+      "requiredCapabilities": [],
+      "privacyClass": "public_market"
+    },
+    {
+      "id": "portfolio_daily",
+      "eventFamilies": [
+        "portfolio_daily"
+      ],
+      "requiredCapabilities": [],
+      "privacyClass": "private_financial"
+    },
+    {
+      "id": "wrap",
+      "eventFamilies": [
+        "wrap"
+      ],
+      "requiredCapabilities": [],
+      "privacyClass": "public_market"
+    },
+    {
+      "id": "quiet_market",
+      "eventFamilies": [
+        "quiet_market"
+      ],
+      "requiredCapabilities": [],
+      "privacyClass": "public_market"
+    },
+    {
+      "id": "empty_watchlist",
+      "eventFamilies": [
+        "empty_watchlist"
+      ],
+      "requiredCapabilities": [],
+      "privacyClass": "public_market"
+    },
+    {
+      "id": "unavailable",
+      "eventFamilies": [
+        "unavailable"
+      ],
+      "requiredCapabilities": [],
+      "privacyClass": "public_market"
+    },
+    {
+      "id": "listing_price_break",
+      "eventFamilies": [
+        "listing_price_break"
+      ],
+      "requiredCapabilities": [],
+      "privacyClass": "public_market"
+    },
+    {
+      "id": "record",
+      "eventFamilies": [
+        "record"
+      ],
+      "requiredCapabilities": [],
+      "privacyClass": "public_market"
+    },
+    {
+      "id": "capitalization",
+      "eventFamilies": [
+        "capitalization"
+      ],
+      "requiredCapabilities": [],
+      "privacyClass": "public_market"
+    }
+  ],
+  "hooks": [
+    {
+      "id": "move-neutral",
+      "text": "{issuer} está a mexer",
+      "eventFamilies": [
+        "movement"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "movement"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "move-neutral"
+    },
+    {
+      "id": "move-curious",
+      "text": "Tem movimento em {issuer} 👀",
+      "eventFamilies": [
+        "movement"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "movement"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "move-curious"
+    },
+    {
+      "id": "move-playful",
+      "text": "{issuer} hoje não veio brincar 📈",
+      "eventFamilies": [
+        "movement"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up"
+      ],
+      "significanceLevels": [
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "energetic"
+      ],
+      "requiredCapabilities": [
+        "movement",
+        "current_session"
+      ],
+      "privacyClass": "public_market",
+      "playful": true,
+      "hookFamily": "nao-veio-brincar"
+    },
+    {
+      "id": "move-early",
+      "text": "{issuer} acordou com vontade 📈",
+      "eventFamilies": [
+        "movement"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "energetic",
+        "curious"
+      ],
+      "requiredCapabilities": [
+        "movement",
+        "early_session"
+      ],
+      "privacyClass": "public_market",
+      "playful": true,
+      "hookFamily": "move-early"
+    },
+    {
+      "id": "move-down",
+      "text": "{issuer} levou um abanão 👀",
+      "eventFamilies": [
+        "movement"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "down"
+      ],
+      "significanceLevels": [
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "cautious"
+      ],
+      "requiredCapabilities": [
+        "movement"
+      ],
+      "privacyClass": "public_market",
+      "playful": true,
+      "hookFamily": "move-down"
+    },
+    {
+      "id": "move-attention",
+      "text": "Isto já merece atenção 👀",
+      "eventFamilies": [
+        "movement"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "movement"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "move-attention"
+    },
+    {
+      "id": "watched-neutral",
+      "text": "Um dos teus favoritos está a mexer",
+      "eventFamilies": [
+        "movement"
+      ],
+      "surfaces": [
+        "activity",
+        "watchlist"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "movement",
+        "watched"
+      ],
+      "privacyClass": "personal_context",
+      "playful": false,
+      "hookFamily": "watched-neutral"
+    },
+    {
+      "id": "watched-curious",
+      "text": "A tua lista quer atenção 👀",
+      "eventFamilies": [
+        "watchlist_rank",
+        "watchlist_breadth"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "complete_watchlist"
+      ],
+      "privacyClass": "personal_context",
+      "playful": false,
+      "hookFamily": "watched-curious"
+    },
+    {
+      "id": "watched-rank",
+      "text": "Quem se destacou na tua lista",
+      "eventFamilies": [
+        "watchlist_rank"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "complete_watchlist"
+      ],
+      "privacyClass": "personal_context",
+      "playful": false,
+      "hookFamily": "watched-rank"
+    },
+    {
+      "id": "watched-breadth",
+      "text": "O movimento na tua lista",
+      "eventFamilies": [
+        "watchlist_breadth"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "complete_watchlist"
+      ],
+      "privacyClass": "personal_context",
+      "playful": false,
+      "hookFamily": "watched-breadth"
+    },
+    {
+      "id": "watched-run",
+      "text": "{issuer} mantém o passo",
+      "eventFamilies": [
+        "watchlist_run"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "verified_run"
+      ],
+      "privacyClass": "personal_context",
+      "playful": false,
+      "hookFamily": "watched-run"
+    },
+    {
+      "id": "watched-extreme",
+      "text": "{issuer} fechou em destaque",
+      "eventFamilies": [
+        "watchlist_extreme"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "period_extreme"
+      ],
+      "privacyClass": "personal_context",
+      "playful": false,
+      "hookFamily": "watched-extreme"
+    },
+    {
+      "id": "watched-news",
+      "text": "Há novidades sobre {issuer}",
+      "eventFamilies": [
+        "publication"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "verified_publication"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "watched-news"
+    },
+    {
+      "id": "listing-neutral",
+      "text": "Novo na BODIVA",
+      "eventFamilies": [
+        "listing"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "confirmed_listing"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "listing-neutral"
+    },
+    {
+      "id": "listing-welcome",
+      "text": "Newcomer in the building! 👋",
+      "eventFamilies": [
+        "listing"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "confirmed_listing"
+      ],
+      "privacyClass": "public_market",
+      "playful": true,
+      "hookFamily": "listing-welcome"
+    },
+    {
+      "id": "listing-conversation",
+      "text": "{issuer} chegou à BODIVA 👀",
+      "eventFamilies": [
+        "listing"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "confirmed_listing"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "listing-conversation"
+    },
+    {
+      "id": "portfolio-neutral",
+      "text": "A tua carteira em movimento",
+      "eventFamilies": [
+        "portfolio_daily"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "complete_portfolio"
+      ],
+      "privacyClass": "private_financial",
+      "playful": false,
+      "hookFamily": "portfolio-neutral"
+    },
+    {
+      "id": "portfolio-up",
+      "text": "A tua carteira ganhou terreno",
+      "eventFamilies": [
+        "portfolio_daily"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "complete_portfolio"
+      ],
+      "privacyClass": "private_financial",
+      "playful": false,
+      "hookFamily": "portfolio-up"
+    },
+    {
+      "id": "portfolio-down",
+      "text": "Hoje a carteira recuou",
+      "eventFamilies": [
+        "portfolio_daily"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "down"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "cautious"
+      ],
+      "requiredCapabilities": [
+        "complete_portfolio"
+      ],
+      "privacyClass": "private_financial",
+      "playful": false,
+      "hookFamily": "portfolio-down"
+    },
+    {
+      "id": "wrap-neutral",
+      "text": "O mercado, pelos números",
+      "eventFamilies": [
+        "wrap"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "verified_period"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "wrap-neutral"
+    },
+    {
+      "id": "wrap-curious",
+      "text": "Vamos ver o que mexeu 👀",
+      "eventFamilies": [
+        "wrap"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "verified_period"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "wrap-curious"
+    },
+    {
+      "id": "quiet-neutral",
+      "text": "Mercado em modo tranquilo",
+      "eventFamilies": [
+        "quiet_market"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "verified_quiet"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "quiet-neutral"
+    },
+    {
+      "id": "quiet-playful",
+      "text": "Hoje a BODIVA decidiu descansar ☕️",
+      "eventFamilies": [
+        "quiet_market"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "verified_quiet"
+      ],
+      "privacyClass": "public_market",
+      "playful": true,
+      "hookFamily": "quiet-playful"
+    },
+    {
+      "id": "empty-neutral",
+      "text": "O teu radar ainda está vazio",
+      "eventFamilies": [
+        "empty_watchlist"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "empty_watchlist"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "empty-neutral"
+    },
+    {
+      "id": "empty-welcome",
+      "text": "Quem vais acompanhar?",
+      "eventFamilies": [
+        "empty_watchlist"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "empty_watchlist"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "empty-welcome"
+    },
+    {
+      "id": "unavailable",
+      "text": "Ainda faltam dados",
+      "eventFamilies": [
+        "unavailable"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "unavailable"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "unavailable"
+    },
+    {
+      "id": "reference-break",
+      "text": "Os {referencePrice} não duraram muito 👀",
+      "eventFamilies": [
+        "listing_price_break"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "verified_reference",
+        "verified_crossing",
+        "confirmed_listing"
+      ],
+      "privacyClass": "public_market",
+      "playful": true,
+      "hookFamily": "reference-break"
+    },
+    {
+      "id": "record",
+      "text": "Temos novo máximo 👀",
+      "eventFamilies": [
+        "record"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "verified_record"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "record"
+    },
+    {
+      "id": "capitalization",
+      "text": "Uma nova marca no mercado 👀",
+      "eventFamilies": [
+        "capitalization"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "verified_capitalization"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "capitalization"
+    },
+    {
+      "id": "wrap-watchlist",
+      "text": "A tua lista, ao fecho",
+      "eventFamilies": [
+        "wrap"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "verified_period",
+        "watchlist_chapter"
+      ],
+      "privacyClass": "personal_context",
+      "playful": false,
+      "hookFamily": "wrap-watchlist"
+    },
+    {
+      "id": "wrap-portfolio",
+      "text": "A tua carteira, pelos números",
+      "eventFamilies": [
+        "wrap"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "verified_period",
+        "portfolio_chapter"
+      ],
+      "privacyClass": "private_financial",
+      "playful": false,
+      "hookFamily": "wrap-portfolio"
+    }
+  ],
+  "factClauses": [
+    {
+      "id": "movement-fact",
+      "text": "{symbol}: {signedPercentage}% {comparisonLabel}.",
+      "eventFamilies": [
+        "movement"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "movement"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "movement-fact"
+    },
+    {
+      "id": "intraday-fact",
+      "text": "{symbol}: {signedPercentage}% entre negociações em até 5 min, às {observationTime}.",
+      "eventFamilies": [
+        "movement"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "movement",
+        "intraday"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "intraday-fact"
+    },
+    {
+      "id": "listing-fact",
+      "text": "{issuer} já está oficialmente em negociação na BODIVA.",
+      "eventFamilies": [
+        "listing"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "confirmed_listing"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "listing-fact"
+    },
+    {
+      "id": "rank-fact",
+      "text": "{symbol}: {signedPercentage}% — maior variação absoluta na tua lista, {referencePeriod}.",
+      "eventFamilies": [
+        "watchlist_rank"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "complete_watchlist"
+      ],
+      "privacyClass": "personal_context",
+      "playful": false,
+      "hookFamily": "rank-fact"
+    },
+    {
+      "id": "breadth-fact",
+      "text": "{rising} em subida · {falling} em descida · {unchanged} sem alteração, {referencePeriod}.",
+      "eventFamilies": [
+        "watchlist_breadth"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "complete_watchlist"
+      ],
+      "privacyClass": "personal_context",
+      "playful": false,
+      "hookFamily": "breadth-fact"
+    },
+    {
+      "id": "run-fact",
+      "text": "{symbol}: {sessions} sessões de {directionLabel}, {referencePeriod}.",
+      "eventFamilies": [
+        "watchlist_run"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "verified_run"
+      ],
+      "privacyClass": "personal_context",
+      "playful": false,
+      "hookFamily": "run-fact"
+    },
+    {
+      "id": "extreme-fact",
+      "text": "{symbol}: {extremeLabel} de fecho do período, {referencePeriod}.",
+      "eventFamilies": [
+        "watchlist_extreme"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "period_extreme"
+      ],
+      "privacyClass": "personal_context",
+      "playful": false,
+      "hookFamily": "extreme-fact"
+    },
+    {
+      "id": "publication-fact",
+      "text": "{publicationTitle}",
+      "eventFamilies": [
+        "publication"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "verified_publication"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "publication-fact"
+    },
+    {
+      "id": "portfolio-fact",
+      "text": "{signedPercentage}% por variação das cotações entre fechos verificados.",
+      "eventFamilies": [
+        "portfolio_daily"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "complete_portfolio"
+      ],
+      "privacyClass": "private_financial",
+      "playful": false,
+      "hookFamily": "portfolio-fact"
+    },
+    {
+      "id": "wrap-fact",
+      "text": "O que marcou {referencePeriod}, com dados verificados.",
+      "eventFamilies": [
+        "wrap"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "verified_period"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "wrap-fact"
+    },
+    {
+      "id": "quiet-fact",
+      "text": "Sem grandes movimentos no período observado.",
+      "eventFamilies": [
+        "quiet_market"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "verified_quiet"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "quiet-fact"
+    },
+    {
+      "id": "empty-fact",
+      "text": "Adiciona os instrumentos que queres acompanhar.",
+      "eventFamilies": [
+        "empty_watchlist"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "empty_watchlist"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "empty-fact"
+    },
+    {
+      "id": "unavailable-fact",
+      "text": "Ainda não há dados verificados suficientes para esta leitura.",
+      "eventFamilies": [
+        "unavailable"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "unavailable"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "unavailable-fact"
+    },
+    {
+      "id": "reference-fact",
+      "text": "{symbol} ultrapassou a referência verificada de {referencePrice} Kz.",
+      "eventFamilies": [
+        "listing_price_break"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "verified_reference",
+        "verified_crossing",
+        "confirmed_listing"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "reference-fact"
+    },
+    {
+      "id": "record-fact",
+      "text": "{symbol} atingiu um novo máximo em {referencePeriod}.",
+      "eventFamilies": [
+        "record"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "verified_record"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "record-fact"
+    },
+    {
+      "id": "capitalization-fact",
+      "text": "A capitalização verificada ultrapassou {referencePrice} Kz.",
+      "eventFamilies": [
+        "capitalization"
+      ],
+      "surfaces": [
+        "push",
+        "activity",
+        "watchlist",
+        "home",
+        "listing",
+        "wrap",
+        "empty"
+      ],
+      "directions": [
+        "up",
+        "down",
+        "neutral"
+      ],
+      "significanceLevels": [
+        "routine",
+        "notable",
+        "significant",
+        "exceptional"
+      ],
+      "moods": [
+        "calm",
+        "curious",
+        "energetic",
+        "cautious",
+        "celebratory"
+      ],
+      "requiredCapabilities": [
+        "verified_capitalization"
+      ],
+      "privacyClass": "public_market",
+      "playful": false,
+      "hookFamily": "capitalization-fact"
+    }
+  ],
+  "closers": [],
+  "neutralFallbacks": [
+    {
+      "id": "safe-generic",
+      "title": "Nova informação em invest.ao",
+      "body": "Abre a aplicação para consultar a atualização."
+    }
+  ]
+}
