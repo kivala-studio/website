@@ -11,7 +11,7 @@ const id = (symbol: string) => recordedSnapshot.securities.find((row) => row.sym
 
 export async function demoSharedPortfolio(token: string): Promise<unknown> {
   if (token !== DEMO_SHARE_TOKEN) {
-    // A link created in this browser with the demo Pro account.
+    // A link created in this browser with a demo Plus account.
     const { demoCreatedSharedPortfolio } = await import("@/data/demo/portfolio");
     return demoCreatedSharedPortfolio(token);
   }

@@ -1,5 +1,6 @@
 /** Demo mode's signed-in accounts, chosen by the `demo-account` cookie (see `./account.ts`). */
 export const DEMO_ACCOUNT_COOKIE = "demo-account";
+/** `pro` is kept as another Plus account: the backend folded Pro into Plus. */
 export const DEMO_TIERS = ["free", "plus", "pro"] as const;
 export type DemoTier = (typeof DEMO_TIERS)[number];
 

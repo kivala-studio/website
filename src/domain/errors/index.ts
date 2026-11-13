@@ -44,6 +44,5 @@ export {
   parseServerRule,
   type ServerRule,
   type ServerRuleCode,
-  type Tier,
   type UpgradeReason,
 } from "./rules";

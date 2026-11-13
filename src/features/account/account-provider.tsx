@@ -3,10 +3,9 @@
 import { useTranslations } from "next-intl";
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 
-import { type SubscriptionAccess, unlocks } from "@/domain/account/access";
+import { type SubscriptionAccess, unlocksPlus } from "@/domain/account/access";
 import { decodeAccessJSON } from "@/domain/account/watchlist";
 import { UPGRADE_REASON_KEYS, type UpgradeReason } from "@/domain/errors";
-import { upgradeTier } from "@/domain/errors/rules";
 import { ACTIVITY_REFRESH_MS, ActivityStore } from "@/features/activity/activity-store";
 import { PreferencesStore } from "@/features/activity/preferences-store";
 import { accountActivityRepository, accountPreferencesRepository } from "@/features/activity/repository";
@@ -107,8 +106,7 @@ export function useAccount() {
     access,
     /** Instruments whose membership is being saved. */
     saving,
-    unlocksPlus: unlocks(access, "plus"),
-    unlocksPro: unlocks(access, "pro"),
+    unlocksPlus: unlocksPlus(access),
     isWatched: (id: string) => list.order.includes(id),
     requestUpgrade,
     applyAccess: (next: SubscriptionAccess | null) => context.access.apply(next),
@@ -187,7 +185,7 @@ export function AccountProvider({ initial, children }: { initial: AccountInitial
         variant="dialog"
         open={open}
         onClose={() => setOpen(false)}
-        title={reason ? t(upgradeTier(reason) === "pro" ? "subscriptions.management.proTitle" : "subscriptions.management.plusTitle") : ""}
+        title={reason ? t("subscriptions.management.plusTitle") : ""}
         footer={
           <Button kind="secondary" className="w-full" onClick={() => setOpen(false)}>
             {t("common.ok")}

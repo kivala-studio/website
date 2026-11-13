@@ -1,8 +1,6 @@
 /** `get_subscription_access()` (contract §7.3; iOS `SubscriptionAccess`). Dates stay as the server sent them. */
 export interface SubscriptionAccess {
   readonly isPlus: boolean;
-  /** Missing on backends that predate Pro. */
-  readonly isPro: boolean;
   readonly enforcementEnabled: boolean;
   readonly weekStart: string | null;
   readonly resetsAt: string | null;
@@ -32,7 +30,6 @@ export function decodeSubscriptionAccess(body: unknown): SubscriptionAccess | nu
   if (typeof row.is_plus !== "boolean" || typeof row.enforcement_enabled !== "boolean") return null;
   return {
     isPlus: row.is_plus,
-    isPro: row.is_pro === true,
     enforcementEnabled: row.enforcement_enabled,
     weekStart: text(row.week_start),
     resetsAt: text(row.resets_at),
@@ -43,14 +40,13 @@ export function decodeSubscriptionAccess(body: unknown): SubscriptionAccess | nu
 }
 
 /**
- * iOS `unlocksPlusFeatures` / `unlocksProFeatures`: every feature is open unless the server enforces limits
- * for this account; an unknown access state never locks anything (the server still enforces).
+ * iOS `unlocksPlusFeatures`: every feature is open unless the server enforces limits for this account; an
+ * unknown access state never locks anything (the server still enforces). Plus is the only paid plan.
  */
-export function unlocks(access: SubscriptionAccess | null | undefined, tier: "plus" | "pro"): boolean {
-  if (!access || !access.enforcementEnabled) return true;
-  return tier === "pro" ? access.isPro : access.isPlus;
+export function unlocksPlus(access: SubscriptionAccess | null | undefined): boolean {
+  return !access || !access.enforcementEnabled || access.isPlus;
 }
 
 /** Instruments a comparison may hold in total, the primary included. */
 export const comparisonCapacity = (access: SubscriptionAccess | null | undefined) =>
-  unlocks(access, "plus") ? FREE_PLAN_LIMITS.plusComparisonInstruments : FREE_PLAN_LIMITS.comparisonInstruments;
+  unlocksPlus(access) ? FREE_PLAN_LIMITS.plusComparisonInstruments : FREE_PLAN_LIMITS.comparisonInstruments;

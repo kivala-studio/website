@@ -238,7 +238,7 @@ export function InstrumentActions({ instrument, security, at, points }: { instru
   );
 }
 
-/** `Ordens`: the latest verified book, five levels a side without Pro, refreshed every minute while shown. */
+/** `Ordens`: the latest verified book, five levels a side without Plus, refreshed every minute while shown. */
 export function OrderBookPanel({ instrument, security, at, active }: { instrument: InstrumentData; security?: MarketSecurity; at?: number; active: boolean }) {
   const t = useTranslations();
   const format = useFormat();
@@ -261,7 +261,7 @@ export function OrderBookPanel({ instrument, security, at, active }: { instrumen
       </section>
     );
   }
-  const layout = orderBookLayout(levels, orderBookDepthLimit(account.unlocksPro));
+  const layout = orderBookLayout(levels, orderBookDepthLimit(account.unlocksPlus));
   const money = (value: Decimal) => format.securityPrice(value, { bond: instrument.bond, code: instrument.currency });
   const levelWord = (count: number) => `${format.count(count)} ${t(count === 1 ? "legacy.nivel" : "legacy.niveis")}`;
   const cell = (level: OrderBookLevel | undefined, side: "bid" | "ask") => {
@@ -315,10 +315,10 @@ export function OrderBookPanel({ instrument, security, at, active }: { instrumen
           </li>
         ))}
       </ol>
-      {layout.isTruncated || (!account.unlocksPro && layout.depth >= FREE_PLAN_LIMITS.orderBookLevels) ? (
+      {layout.isTruncated || (!account.unlocksPlus && layout.depth >= FREE_PLAN_LIMITS.orderBookLevels) ? (
         <Button kind="secondary" icon="lock" className="self-start" onClick={() => account.requestUpgrade("orderBookDepth")} data-testid="order-book-unlock">
-          {/* The server withholds deeper levels from non-Pro accounts, so their number is known only when it sent them. */}
-          {layout.isTruncated ? t("orderBook.unlockDepth", { arg1: format.count(layout.depth) }) : t("subscriptions.management.proTitle")}
+          {/* The server withholds deeper levels from non-Plus accounts, so their number is known only when it sent them. */}
+          {layout.isTruncated ? t("orderBook.unlockDepth", { arg1: format.count(layout.depth) }) : t("subscriptions.management.plusTitle")}
         </Button>
       ) : null}
       <p className="text-caption text-secondary-text">{t("assetDetails.orderBook.barsNote")}</p>

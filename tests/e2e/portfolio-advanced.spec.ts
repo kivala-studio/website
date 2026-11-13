@@ -15,7 +15,7 @@ const expect = baseExpect.configure({ timeout: 15_000 });
 
 const EVIDENCE = "docs/evidence/w12";
 
-async function signIn(context: BrowserContext, tier: "free" | "plus" | "pro" = "plus", portfolio = "full") {
+async function signIn(context: BrowserContext, tier: "free" | "plus" = "plus", portfolio = "full") {
   await context.addCookies(
     [
       ["demo-account", tier],

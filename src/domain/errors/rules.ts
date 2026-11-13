@@ -42,8 +42,6 @@ export type UpgradeReason =
   | "income"
   | "statement";
 
-export type Tier = "plus" | "pro";
-
 export const UPGRADE_REASON_KEYS: Record<UpgradeReason, ErrorMessageKey> = {
   onboarding: "subscriptions.paywall.onboardingReason",
   watchlist: "subscriptions.paywall.watchlistReason",
@@ -64,8 +62,6 @@ export const UPGRADE_REASON_KEYS: Record<UpgradeReason, ErrorMessageKey> = {
   statement: "subscriptions.paywall.statementReason",
 };
 
-/** iOS `UpgradeReason.tier`. Read-only links come with Plus since the backend folded Pro into it. */
-export const upgradeTier = (reason: UpgradeReason): Tier => (reason === "orderBookDepth" ? "pro" : "plus");
 
 export type ServerRule = {
   readonly code: ServerRuleCode;
@@ -73,8 +69,8 @@ export type ServerRule = {
   readonly feature: string | null;
   /** `details.limit`: the count the account reached. */
   readonly limit: number | null;
-  /** A higher tier lifts the rule: open the paywall with this reason. */
-  readonly upgrade: { readonly reason: UpgradeReason; readonly tier: Tier } | null;
+  /** Plus lifts the rule: open the paywall with this reason. */
+  readonly upgrade: { readonly reason: UpgradeReason } | null;
   /** Inline copy; null when the catalogue has none and the caller's generic copy applies. */
   readonly messageKey: ErrorMessageKey | null;
 };
@@ -141,7 +137,7 @@ export function parseServerRule(code: unknown, message: unknown, details: unknow
     code: ruleCode,
     feature,
     limit,
-    upgrade: upgrade ? { reason: upgrade, tier: upgradeTier(upgrade) } : null,
+    upgrade: upgrade ? { reason: upgrade } : null,
     messageKey,
   };
 }

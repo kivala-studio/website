@@ -70,7 +70,6 @@ export function demoAccess(account: DemoAccount, watchlist: readonly string[], p
   const active = account.tier === "free" ? watchlist.slice(0, 3) : [...watchlist];
   return {
     isPlus: account.tier !== "free",
-    isPro: account.tier === "pro",
     enforcementEnabled: true,
     weekStart: null,
     resetsAt: null,
@@ -146,7 +145,7 @@ export function demoIntraday(securityID: string, scenario: DemoScenario, now: nu
 
 /**
  * `quality_latest_order_books` for one instrument: eight levels a side around the recorded last price, cut to
- * five without Pro (the row-level bound). Valid evidence only while the demo session is open.
+ * five without Plus (the row-level bound). Valid evidence only while the demo session is open.
  */
 export function demoOrderBook(securityID: string, scenario: DemoScenario, now: number, tier: DemoTier): Record<string, unknown> | null {
   const row = quote(securityID);
@@ -155,7 +154,7 @@ export function demoOrderBook(securityID: string, scenario: DemoScenario, now: n
   const price = Number(row.last_price);
   const bond = recordedSnapshot.securities.find((security) => security.id === securityID)?.security_type?.includes("bond");
   const step = bond ? 0.25 : Math.max(1, Math.round(price * 0.004));
-  const depth = tier === "pro" ? 8 : 5;
+  const depth = tier === "free" ? 5 : 8;
   const levels: Record<string, unknown>[] = [];
   for (const side of ["bid", "ask"] as const) {
     for (let level = 1; level <= depth; level += 1) {
