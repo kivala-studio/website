@@ -18,6 +18,7 @@ import { SectionTabs } from "@/ui/components/controls";
 import { Menu, type MenuEntry } from "@/ui/components/menu";
 import { SecurityLogo } from "@/ui/components/rows";
 import { EmptyState, InstrumentRowSkeleton, SectionPlaceholder } from "@/ui/components/states";
+import { WatchlistInsights } from "@/features/intelligence/watchlist-insights";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
 
@@ -396,6 +397,7 @@ export function WatchlistView({ rows, renderedAt }: { rows: readonly CatalogueRo
           </ul>
         )}
       </section>
+      {loaded && list.order.length > 0 && !group ? <WatchlistInsights /> : null}
 
       <AddDialog open={adding} onClose={() => setAdding(false)} rows={rows} renderedAt={renderedAt} />
       {choosing && account.access ? <FreeSelectionDialog onClose={() => setChoosing(false)} rows={byID} /> : null}

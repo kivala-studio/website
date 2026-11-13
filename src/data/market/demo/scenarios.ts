@@ -21,8 +21,7 @@ export type DemoScenario = (typeof DEMO_SCENARIOS)[number];
 export const DEFAULT_DEMO_SCENARIO: DemoScenario = "open";
 export const DEMO_SCENARIO_COOKIE = "demo-scenario";
 
-export const isDemoScenario = (value: unknown): value is DemoScenario =>
-  typeof value === "string" && (DEMO_SCENARIOS as readonly string[]).includes(value);
+export const isDemoScenario = (value: unknown): value is DemoScenario => typeof value === "string" && (DEMO_SCENARIOS as readonly string[]).includes(value);
 
 type Row = Record<string, unknown>;
 
@@ -32,7 +31,7 @@ export const recordedSnapshot = recorded;
 const iso = (instant: EpochMs) => new Date(instant).toISOString();
 const epoch = (instant: EpochMs) => instant / SECOND_MS;
 
-function calendar(now: EpochMs, today: string, session: boolean, freshUntil: EpochMs): Row {
+function calendar(now: EpochMs, today: string, session: boolean, freshUntil: EpochMs, regularWeek: boolean): Row {
   const week = MarketCalendar.week(now)!;
   const start = addDays(week.start, -28);
   const end = addDays(week.endExclusive, 14);
@@ -40,12 +39,8 @@ function calendar(now: EpochMs, today: string, session: boolean, freshUntil: Epo
   for (let day = start; day < end; day = addDays(day, 1)) {
     const date = civilDate(day);
     const regular = weekday(day) >= 2 && weekday(day) <= 6;
-    if (date === today) {
-      days.push(
-        session
-          ? { day: date, kind: "exceptional_session", opens_at: "00:00:00", closes_at: "23:59:00" }
-          : { day: date, kind: "exceptional_closure" },
-      );
+    if (date === today && !regularWeek) {
+      days.push(session ? { day: date, kind: "exceptional_session", opens_at: "00:00:00", closes_at: "23:59:00" } : { day: date, kind: "exceptional_closure" });
     } else {
       days.push(regular ? { day: date, kind: "regular", opens_at: "09:25:00", closes_at: "15:00:00" } : { day: date, kind: "non_trading" });
     }
@@ -65,8 +60,11 @@ function shiftedDate(date: string, weeks: number): string {
   return civilDate(addDays(dayStart(date)!, weeks * 7));
 }
 
-/** The re-dated bundle for `scenario` at `now`, as the Edge Function would send it. */
-export function demoSnapshot(scenario: DemoScenario, now: EpochMs): Row {
+/**
+ * The re-dated bundle for `scenario` at `now`, as the Edge Function would send it. `regularWeek` (a demo clock is
+ * set) keeps today's regular hours, so a Friday afternoon is after the close and a Saturday is the weekend.
+ */
+export function demoSnapshot(scenario: DemoScenario, now: EpochMs, regularWeek = false): Row {
   const today = civilDate(now);
   const session = scenario !== "closed" && scenario !== "empty";
   const freshUntil = now + (session ? 90 : 300) * SECOND_MS;
@@ -125,7 +123,7 @@ export function demoSnapshot(scenario: DemoScenario, now: EpochMs): Row {
     },
     closes,
     pulse: recorded.pulse.map((row) => ({ ...row, trading_date: shiftedDate(row.trading_date, weeks) })),
-    calendar: calendar(now, today, session, freshUntil),
+    calendar: calendar(now, today, session, freshUntil, regularWeek),
   };
   if (scenario !== "empty") return bundle;
   return {

@@ -1,3 +1,4 @@
+import { type DebugScore, IntelligenceDebugCapture } from "../intelligence/debug";
 import { allows } from "../intelligence/privacy";
 import { DAY_MS, startOfDay, weekday } from "../market/zone";
 import { type PersonalizationAvailability, personalizationAvailability } from "./availability";
@@ -76,10 +77,113 @@ export function evaluatePersonalization(
         ? V2_CONFIGURATION
         : configuration;
   const cached = rankingCache.value(candidates, context, limit, effective);
-  if (cached) return cached;
+  if (cached) {
+    recordRanking(cached, context, effective, true);
+    return cached;
+  }
   const result = calculate(candidates, context, limit, effective);
   rankingCache.insert(result, candidates, context, limit, effective);
+  recordRanking(result, context, effective, false);
   return result;
+}
+
+const KNOWN_REASONS = new Set([
+  "conflicting-revisions",
+  "missing-evidence",
+  "expired",
+  "future-observation",
+  "below-surface-threshold",
+  "selection-limit",
+  "same-fact",
+  "exploration-slot",
+  "diversity-limit",
+  "market-exploration",
+  "mandatory-financial-context",
+  "relevance",
+  "eligible",
+  "insufficient-significance",
+  "insufficient-explicit-relationship",
+  "scheduled-event-requires-orchestration",
+  "already-exposed",
+  "not-a-holding",
+  "not-watched",
+  "not-upcoming",
+  "not-saturday-closed",
+  "shown-on-home",
+  "already-opened",
+  "unverified-stale-or-unrelated",
+  "missing-or-expired-server-qualification",
+]);
+const safeReason = (value: string) => (KNOWN_REASONS.has(value) ? value : "unclassified-rejection");
+
+/** iOS `IntelligenceDebugCapture.recordRanking` (developer diagnostics, off by default; never analytics). */
+function recordRanking(
+  result: PersonalizationEvaluation,
+  context: PersonalizationContext,
+  configuration: PersonalizationConfiguration,
+  cacheHit: boolean,
+): void {
+  const run = IntelligenceDebugCapture.shared.begin(context.surface, "personalization", context.now, cacheHit);
+  if (!run) return;
+  result.decisions.forEach((decision, identityIndex) => {
+    const { candidate, score } = decision;
+    const reason = safeReason(decision.rejection ?? decision.selectionReason ?? "eligible");
+    const token = run.token(candidate.id);
+    if (score) {
+      const related = decision.debug.relationship ?? "market";
+      const breakdown: DebugScore = {
+        baseRelevance: score.significance + score.marketImportance,
+        significance: score.significance,
+        marketImportance: score.marketImportance,
+        portfolioRelationship: related === "portfolio" ? score.relationship : 0,
+        watchlistRelationship: related === "watchlist" ? score.relationship : 0,
+        alertRelationship: related === "alert" ? score.relationship : 0,
+        behavioralInterest: score.interest,
+        freshness: score.recency,
+        novelty: Math.max(0, score.novelty),
+        repetitionPenalty: Math.min(0, score.novelty),
+        feedbackAdjustment: score.feedback,
+        noveltyReason: decision.debug.noveltyReason ?? "unknown",
+        diversity:
+          decision.rejection === "diversity-limit" || decision.rejection === "exploration-slot"
+            ? reason
+            : context.surface === "saturdayDiscover" || context.surface === "weeklyWrap"
+              ? "hard-quota-passed-or-not-reached"
+              : "not-applied",
+        finalScore: scoreTotal(score),
+        minimumScore: minimumScore(configuration, context.surface),
+        mandatory: Boolean(candidate.isMandatory),
+      };
+      run.append({
+        stage: "RANKED",
+        subject: "candidate",
+        reason: decision.selectionReason ?? "scored",
+        token,
+        significance: candidate.significance,
+        score: breakdown,
+        rank: decision.debug.rank,
+        selectedPosition: decision.debug.selectedPosition,
+        observedAt: candidate.observedAt,
+        familyTiePriority: familyTiePriority(candidate.family, context.surface),
+        identityOrder: identityIndex + 1,
+      });
+      if (decision.rejection !== null) {
+        run.append({
+          stage: "SUPPRESSED",
+          subject: "candidate",
+          reason,
+          token,
+          significance: candidate.significance,
+          score: breakdown,
+          rank: decision.debug.rank,
+        });
+      }
+    } else {
+      run.append({ stage: "REJECTED", subject: "candidate", reason, token, significance: candidate.significance });
+    }
+  });
+  if (result.decisions.length === 0) run.note("evaluation", "OBSERVED", "no-candidates-supplied");
+  run.finish();
 }
 
 function aliasClosure(initial: ReadonlySet<string>, candidates: readonly PersonalizationCandidate[]): Set<string> {

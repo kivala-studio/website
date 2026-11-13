@@ -1,6 +1,7 @@
 import type { Messages } from "next-intl";
 
 import { ERROR_MESSAGE_KEYS } from "@/domain/errors";
+import { PRODUCT_VOICE_MESSAGE_KEYS } from "@/domain/product-voice/localization";
 
 /**
  * Namespaces that client components read. Only these are serialised into every page; the whole catalogue
@@ -10,12 +11,7 @@ import { ERROR_MESSAGE_KEYS } from "@/domain/errors";
 export const CLIENT_NAMESPACES = ["common", "components", "designSystem", "errors", "formatting", "market", "site"] as const;
 
 /** Single keys from larger namespaces: the shared formatter's bands and days, and every error the presenter can show. */
-export const FORMAT_MESSAGE_KEYS = [
-  "legacy.entre0E",
-  "legacy.entreE0",
-  "notifications.date.today",
-  "notifications.date.yesterday",
-] as const;
+export const FORMAT_MESSAGE_KEYS = ["legacy.entre0E", "legacy.entreE0", "notifications.date.today", "notifications.date.yesterday"] as const;
 
 export const CLIENT_KEYS: readonly string[] = [...FORMAT_MESSAGE_KEYS, ...ERROR_MESSAGE_KEYS];
 
@@ -68,8 +64,7 @@ export const AREA_KEYS = {
     "subscriptions.freeSelection",
     "settings.sensitivity",
     "notifications",
-    "intelligence.activity",
-    "intelligence.priceAlert",
+    "intelligence",
     "notification.close",
     "settings.categories",
     "settings.marketRecap.toggle",
@@ -115,6 +110,30 @@ export const AREA_KEYS = {
     "statement",
     "portfolioBooks",
     "portfolioShare",
+    // The weekly reading: Watchlist card, Portfolio tiles, Home slot, Activity rows and Settings resets.
+    "watchlist.insight",
+    "watchlist.insightDetail",
+    "watchlist.menu",
+    "watchlist.closeMovement",
+    "watchlist.largestMovement",
+    "watchlist.breadth",
+    "watchlist.streak",
+    "watchlist.featuredClose",
+    "watchlist.publication",
+    "watchlist.sources",
+    "portfolio.insight",
+    "portfolio.insightPresentation",
+    "portfolio.insightDetails",
+    "settings.personalization",
+    "legacy.subida",
+    "legacy.descida",
+    "legacy.maximo",
+    "legacy.minimo",
+    "legacy.eventoAnunciado",
+    "legacy.eventosAnunciados",
+    "legacy.eventoRelacionado",
+    "legacy.eventosRelacionados",
+    ...PRODUCT_VOICE_MESSAGE_KEYS,
   ],
   news: ["news.feed", "news.kind", "news.publications", "news.row", "news.store"],
   learn: ["learn.read"],

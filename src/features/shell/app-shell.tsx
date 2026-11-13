@@ -9,6 +9,7 @@ import { PRIVACY_COOKIE, parsePrivacyMode } from "@/domain/privacy/privacy";
 import { AccountProvider } from "@/features/account/account-provider";
 import type { CatalogueRow } from "@/features/market/browse/price-cell";
 import { MarketArea } from "@/features/market/market-provider";
+import { IntelligenceProvider } from "@/features/intelligence/intelligence-provider";
 import { PrivacyModeProvider } from "@/features/privacy/privacy-mode";
 import { CommandPalette } from "@/features/search/command-palette";
 import { PalancaMark } from "@/features/site/chrome";
@@ -54,38 +55,36 @@ export async function AppShell({
       <MarketArea>
         <AccountProvider initial={account}>
           <PrivacyModeProvider initial={privacy}>
-          <div className="flex min-h-dvh flex-col lg:grid lg:grid-cols-[14rem_minmax(0,1fr)]">
-            <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-dvh lg:flex-col lg:gap-6 lg:border-r lg:border-hairline lg:bg-elevated-background lg:px-3 lg:py-3">
-              <Link
-                href="/inicio"
-                aria-label={t("site.header.homeLabel")}
-                className="inline-flex min-h-11 items-center gap-2 self-start rounded-small px-2 text-primary-text"
-              >
-                <PalancaMark className="size-8" />
-                <span className="text-body font-semibold tracking-wide">
-                  {t("common.appName")}
-                </span>
-              </Link>
-              <ShellNav items={tabs} label={navLabel} variant="sidebar" />
-            </aside>
-            <div className="flex min-w-0 flex-1 flex-col pb-20 lg:pb-0">
-              <ShellHeader
-                initials={profileInitials(displayName)}
-                profileLabel={t("home.accessibility.profile", {
-                  arg1: displayName,
-                })}
-                unusualLabel={t("unusualActivity.title")}
-                activityLabel={t("common.activity")}
-                activityStates={{ new: t("home.accessibility.activityNew"), none: t("home.accessibility.activityNone") }}
-                hasUnread={account.hasUnread}
-                search={
-                  <CommandPalette rows={rows} renderedAt={requestTime()} />
-                }
-              />
-              {children}
-            </div>
-            <ShellNav items={tabs} label={navLabel} variant="bar" />
-          </div>
+            <IntelligenceProvider>
+              <div className="flex min-h-dvh flex-col lg:grid lg:grid-cols-[14rem_minmax(0,1fr)]">
+                <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-dvh lg:flex-col lg:gap-6 lg:border-r lg:border-hairline lg:bg-elevated-background lg:px-3 lg:py-3">
+                  <Link
+                    href="/inicio"
+                    aria-label={t("site.header.homeLabel")}
+                    className="inline-flex min-h-11 items-center gap-2 self-start rounded-small px-2 text-primary-text"
+                  >
+                    <PalancaMark className="size-8" />
+                    <span className="text-body font-semibold tracking-wide">{t("common.appName")}</span>
+                  </Link>
+                  <ShellNav items={tabs} label={navLabel} variant="sidebar" />
+                </aside>
+                <div className="flex min-w-0 flex-1 flex-col pb-20 lg:pb-0">
+                  <ShellHeader
+                    initials={profileInitials(displayName)}
+                    profileLabel={t("home.accessibility.profile", {
+                      arg1: displayName,
+                    })}
+                    unusualLabel={t("unusualActivity.title")}
+                    activityLabel={t("common.activity")}
+                    activityStates={{ new: t("home.accessibility.activityNew"), none: t("home.accessibility.activityNone") }}
+                    hasUnread={account.hasUnread}
+                    search={<CommandPalette rows={rows} renderedAt={requestTime()} />}
+                  />
+                  {children}
+                </div>
+                <ShellNav items={tabs} label={navLabel} variant="bar" />
+              </div>
+            </IntelligenceProvider>
           </PrivacyModeProvider>
         </AccountProvider>
       </MarketArea>

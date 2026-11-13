@@ -64,8 +64,14 @@ function semanticIdentity(insight: Insight): string {
           .sort(byText)
           .map((id) => `${new TextEncoder().encode(id).length}:${id}`)
           .join("|");
-  return `fact:${insight.type}:${assets}:${insight.period.start / 1000}:${insight.period.endExclusive / 1000}`;
+  return `fact:${insight.type}:${assets}:${seconds(insight.period.start)}:${seconds(insight.period.endExclusive)}`;
 }
+
+/** Epoch seconds as Swift prints a `TimeInterval` (`1790031600.0`), so ids match the iOS archive. */
+const seconds = (instant: EpochMs) => {
+  const value = instant / 1000;
+  return Number.isInteger(value) ? value.toFixed(1) : String(value);
+};
 
 export const stableActivityID = (identity: string) => sha256Hex(identity);
 

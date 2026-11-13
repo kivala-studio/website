@@ -67,7 +67,7 @@ async function securities(now: EpochMs): Promise<WeekSecurity[]> {
  * read fresh, the verified calendar for the same week, the instruments the ledger holds and the catalogue's issuers.
  * A failed source read throws; a calendar that is missing or unverified withholds the week.
  */
-export async function readWeekAhead(session: AccountSession, now: EpochMs): Promise<WeekAheadPayload> {
+export async function readWeekAhead(session: AccountSession, now: EpochMs, regularWeek = false): Promise<WeekAheadPayload> {
   const period = nextWeek(now);
   if (!period) throw new Error("week");
   let calendarJson: unknown;
@@ -75,7 +75,7 @@ export async function readWeekAhead(session: AccountSession, now: EpochMs): Prom
   let held: Promise<string[]>;
   if (session.kind === "demo") {
     const scenario = await demoScenario();
-    calendarJson = demoWeekCalendar(scenario, now);
+    calendarJson = demoWeekCalendar(scenario, now, regularWeek);
     rows = demoWeekDividendRows(scenario, now);
     held = heldIDs(demoLedger, now);
   } else {
@@ -86,7 +86,8 @@ export async function readWeekAhead(session: AccountSession, now: EpochMs): Prom
       readAll<unknown>((from, to) => client.from("issuer_dividends").select(DIVIDEND_EVENT_COLUMNS).order("id").range(from, to)),
     ]);
   }
-  const fetchedAt = Date.now();
+  // The demo clock may stand on another day; the batch is dated on it.
+  const fetchedAt = session.kind === "demo" ? now : Date.now();
   const closedDays = verifiedClosures(calendarOf(calendarJson, fetchedAt), period, fetchedAt);
   if (closedDays === null) return { verified: false, periodID: period.id };
   const [heldList, catalogue] = await Promise.all([held, securities(now)]);

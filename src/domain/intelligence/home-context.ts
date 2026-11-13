@@ -155,7 +155,7 @@ export function resolveHomeContext(raw: HomeContextInput, dependencies: HomeCont
       const personal = wrapFeature(input, dependencies, true);
       if (personal) return personal;
       const policy = { surface: "inApp", privacyEnabled: input.hidesPersonalValues } as const;
-      const insight = allows(policy, "personalContext") && insights.length ? (dependencies.watchlistCandidate?.(insights) ?? null) : null;
+      const insight = allows(policy, "personalContext") ? (dependencies.watchlistCandidate?.(insights) ?? null) : null;
       if (insight) {
         return {
           content: { kind: "watchlist", insight },

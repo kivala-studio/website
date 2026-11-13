@@ -113,6 +113,24 @@ export type WeeklyWrapStory =
 
 export type WeeklyWrapOmission = "portfolioTransactions" | "portfolioDataMissing" | "watchlistDataMissing" | "marketCoveragePartial";
 
+/** Content edition and pinned algorithm contracts, independent of the archive's decoding schema (iOS `WeeklyWrapSnapshotMetadata`). */
+export interface WeeklyWrapSnapshotMetadata {
+  readonly snapshotID: string;
+  readonly edition: number;
+  readonly contracts: readonly { readonly id: string; readonly version: number }[];
+  readonly assets: readonly {
+    readonly id: string;
+    readonly symbol: string;
+    readonly name: string;
+    readonly issuer: string;
+    readonly currencyCode: string | null;
+  }[];
+  readonly watchedAssetIDs: readonly string[];
+  readonly marketUniverseIDs: readonly string[];
+  readonly correction: null;
+  readonly migratedFromLegacyCache: boolean;
+}
+
 export interface WeeklyWrap {
   readonly period: WeeklyWrapPeriod;
   readonly stories: readonly WeeklyWrapStory[];
@@ -123,6 +141,7 @@ export interface WeeklyWrap {
   readonly generatedAt?: EpochMs | null;
   readonly verifiedInsights?: readonly Insight[] | null;
   readonly omissions?: readonly WeeklyWrapOmission[] | null;
+  readonly snapshotMetadata?: WeeklyWrapSnapshotMetadata | null;
 }
 
 export function storyPrivacyClassification(story: WeeklyWrapStory): IntelligencePrivacyClassification {

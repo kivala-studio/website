@@ -46,7 +46,7 @@ const minuteOf = (value: unknown) => {
 const isOpen = (day: Row) => day.kind === "regular" || day.kind === "exceptional_session";
 
 /** The RPC response for `starts_on`…`ends_on` (inclusive Luanda days) at `now`. */
-export function demoMarketPeriodEvidence(scenario: DemoScenario, startsOn: string, endsOn: string, now: EpochMs): Row {
+export function demoMarketPeriodEvidence(scenario: DemoScenario, startsOn: string, endsOn: string, now: EpochMs, regularWeek = false): Row {
   const fetchedAt = now - SECOND_MS;
   const start = dayStart(startsOn);
   const last = dayStart(endsOn);
@@ -54,7 +54,7 @@ export function demoMarketPeriodEvidence(scenario: DemoScenario, startsOn: strin
   if (start === undefined || last === undefined || last < start) return insufficient;
   const first = start - 14 * DAY_MS;
   const end = last + DAY_MS;
-  const snapshot = demoSnapshot(scenario, now);
+  const snapshot = demoSnapshot(scenario, now, regularWeek);
   const calendar = snapshot.calendar as Row;
   const days = (calendar.days as Row[]).filter((day) => {
     const at = dayStart(String(day.day));

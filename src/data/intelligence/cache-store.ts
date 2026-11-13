@@ -1,12 +1,13 @@
 import { type CacheBackend, IntelligenceCache } from "@/domain/intelligence/cache";
 
+import { INTELLIGENCE_DATABASE as DATABASE } from "./database";
+
 /*
  * IndexedDB behind the intelligence cache and the Activity centre's local archive. One database per browser;
  * keys are `<user id>:<kind>`, so an account only ever reads its own rows. Every call fails soft: private
  * windows, blocked storage and quota errors leave the app working from memory.
  */
 
-const DATABASE = "investao-intelligence";
 const STORE = "readings";
 const VERSION = 1;
 

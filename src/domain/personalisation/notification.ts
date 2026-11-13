@@ -1,3 +1,4 @@
+import { IntelligenceDebugCapture } from "../intelligence/debug";
 import { type EpochMs, parseInstant } from "../market/zone";
 import { type ContentExposureSnapshot, type PersonalizationCandidate, personalizationContext } from "./candidate";
 import { type PersonalizationEvaluation, evaluatePersonalization } from "./engine";
@@ -52,6 +53,11 @@ export function evaluateNotification(
               : !(expires - checked > 0 && expires - checked <= 120_000)
                 ? "invalid-qualification-window"
                 : null;
+  const trace = IntelligenceDebugCapture.shared.begin("notification", "server-qualification-validation", now);
+  if (trace) {
+    trace.note("qualification", failure === null ? "OBSERVED" : "REJECTED", failure ?? "qualification-valid-not-delivery", { id: qualification.factKey });
+    trace.finish();
+  }
   // These explicit relationships have just passed the server's owner and preferences check.
   const profile =
     qualification.kind === "verified_movement" ? interestProfile({ watchedIDs: new Set([asset]) }) : interestProfile({ alertIDs: new Set([asset]) });

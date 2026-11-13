@@ -53,7 +53,7 @@ export function HomeView({
   simulator,
 }: {
   rows: readonly CatalogueRow[];
-  /** The context slot (at most one item; empty for now except a listing highlight). */
+  /** The context slot: at most one item. */
   context: ReactNode;
   news: ReactNode;
   recaps: ReactNode;
@@ -80,7 +80,10 @@ export function HomeView({
           data-testid="home-refresh"
         />
       </div>
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:gap-x-6" aria-busy={state.load.kind === "loading" || undefined}>
+      <div
+        className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:gap-x-6"
+        aria-busy={state.load.kind === "loading" || undefined}
+      >
         <div className="contents lg:flex lg:min-w-0 lg:flex-col lg:gap-6">
           <div className="max-lg:order-1">
             {failed ? (
@@ -97,7 +100,7 @@ export function HomeView({
               <OverviewCard loaded={loaded} stale={state.refreshError !== null} />
             )}
           </div>
-          {context ? <div className="max-lg:order-3">{context}</div> : null}
+          <div className="empty:hidden max-lg:order-3">{context}</div>
           {failed ? null : (
             <div className="max-lg:order-4">
               <MovementFeed loaded={loaded} rows={byID} />
@@ -214,7 +217,9 @@ function Sparkline({ values }: { values: number[] }) {
   if (values.length < 2) return null;
   const lower = Math.min(...values);
   const span = Math.max(...values) - lower || 1;
-  const path = values.map((value, index) => `${index === 0 ? "M" : "L"}${((index / (values.length - 1)) * 100).toFixed(2)} ${(60 - ((value - lower) / span) * 56).toFixed(2)}`).join(" ");
+  const path = values
+    .map((value, index) => `${index === 0 ? "M" : "L"}${((index / (values.length - 1)) * 100).toFixed(2)} ${(60 - ((value - lower) / span) * 56).toFixed(2)}`)
+    .join(" ");
   return (
     <svg aria-hidden viewBox="0 0 100 64" className="h-16 w-25 shrink-0 overflow-visible text-accent" preserveAspectRatio="none">
       <path d={path} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
@@ -225,7 +230,11 @@ function Sparkline({ values }: { values: number[] }) {
 function InstrumentLink({ security, row, at }: { security: MarketSecurity; row: CatalogueRow | undefined; at: number }) {
   const t = useTranslations();
   return (
-    <Link href={`/mercado/${encodeURIComponent(security.symbol)}`} prefetch={false} className="flex min-h-18 items-center gap-3 rounded-small py-2 desk:min-h-12">
+    <Link
+      href={`/mercado/${encodeURIComponent(security.symbol)}`}
+      prefetch={false}
+      className="flex min-h-18 items-center gap-3 rounded-small py-2 desk:min-h-12"
+    >
       <SecurityLogo symbol={security.symbol} logoUrl={row?.logoURL ?? security.logoURL} brandColor={row?.bond ? "violet" : "blue"} />
       <span className="flex min-w-0 flex-1 flex-col gap-1">
         <span className="text-body font-semibold text-primary-text">{security.symbol}</span>
@@ -252,7 +261,11 @@ function WatchlistRail({ loaded, rows }: { loaded: Loaded | undefined; rows: Map
         title={t("common.yourWatchlist")}
         action={
           ids.length > 0 ? (
-            <Link href="/lista" aria-label={t("home.accessibility.viewWatchlist")} className="inline-flex size-11 items-center justify-center rounded-full text-accent">
+            <Link
+              href="/lista"
+              aria-label={t("home.accessibility.viewWatchlist")}
+              className="inline-flex size-11 items-center justify-center rounded-full text-accent"
+            >
               <Icon name="arrow-right" />
             </Link>
           ) : null
@@ -279,7 +292,10 @@ function WatchlistRail({ loaded, rows }: { loaded: Loaded | undefined; rows: Map
           {securities.map((security) => {
             const row = rows.get(security.id);
             return (
-              <li key={security.id} className="w-44 shrink-0 snap-start rounded-[1.5rem] bg-card-background p-4 lg:w-auto lg:rounded-none lg:border-b lg:border-hairline lg:bg-transparent lg:p-0 lg:last:border-b-0">
+              <li
+                key={security.id}
+                className="w-44 shrink-0 snap-start rounded-[1.5rem] bg-card-background p-4 lg:w-auto lg:rounded-none lg:border-b lg:border-hairline lg:bg-transparent lg:p-0 lg:last:border-b-0"
+              >
                 <RailTile security={security} row={row} at={loaded!.at} />
               </li>
             );
@@ -294,11 +310,7 @@ function RailTile({ security, row, at }: { security: MarketSecurity; row: Catalo
   const t = useTranslations();
   return (
     <>
-      <Link
-        href={`/mercado/${encodeURIComponent(security.symbol)}`}
-        prefetch={false}
-        className="flex flex-col gap-3 rounded-small lg:hidden"
-      >
+      <Link href={`/mercado/${encodeURIComponent(security.symbol)}`} prefetch={false} className="flex flex-col gap-3 rounded-small lg:hidden">
         <SecurityLogo symbol={security.symbol} logoUrl={row?.logoURL ?? security.logoURL} brandColor={row?.bond ? "violet" : "blue"} size="s" />
         <span className="flex min-w-0 flex-col gap-0.5">
           <span className="text-body font-semibold text-primary-text">{security.symbol}</span>

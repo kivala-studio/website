@@ -9,6 +9,7 @@ import { NotificationSettings } from "@/features/activity/notification-settings"
 import { SignOutForm } from "@/features/auth/sign-out-form";
 import { LanguageChoice } from "@/features/settings/language-choice";
 import { MarketDataGroup } from "@/features/settings/market-data-group";
+import { PersonalisationGroup } from "@/features/settings/personalisation-group";
 import { ControlRow, DisclosureRow, LinkRow, SettingsGroup } from "@/features/settings/settings-ui";
 import { SignedInPage, signedInMetadata } from "@/features/shell/placeholder-page";
 import { INDEXABLE_PAGES } from "@/features/site/site";
@@ -20,7 +21,7 @@ export const generateMetadata = signedInMetadata("profile.navigation.title");
 
 /**
  * Perfil (iOS `ProfileView` + `SettingsView`), in the iOS group order. iOS-only rows are left out: subscription
- * (no web purchases yet), notification permission, lock screen, widget privacy and personalisation (W14).
+ * (no web purchases yet), notification permission, lock screen and widget privacy.
  */
 export default async function ProfilePage() {
   const t = await getTranslations();
@@ -52,6 +53,8 @@ export default async function ProfilePage() {
       </SettingsGroup>
 
       <NotificationSettings />
+
+      <PersonalisationGroup />
 
       <SettingsGroup id="settings-appearance" title={t("settings.appearance.title")}>
         <ControlRow label={t("common.theme")}>

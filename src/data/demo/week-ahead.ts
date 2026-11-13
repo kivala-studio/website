@@ -40,6 +40,6 @@ export function demoWeekDividendRows(scenario: DemoScenario, now: EpochMs): Row[
 }
 
 /** The re-dated snapshot's calendar document; `unverified` has none for the coming week, `empty` keeps the verified one. */
-export function demoWeekCalendar(scenario: DemoScenario, now: EpochMs): Row | null {
-  return scenario === "unverified" ? null : (demoSnapshot(scenario === "empty" ? "open" : scenario, now).calendar as Row);
+export function demoWeekCalendar(scenario: DemoScenario, now: EpochMs, regularWeek = false): Row | null {
+  return scenario === "unverified" ? null : (demoSnapshot(scenario === "empty" ? "open" : scenario, now, regularWeek).calendar as Row);
 }

@@ -8,6 +8,7 @@ import { type FormatLocale, createFormat } from "@/domain/format";
 import { homeListing } from "@/domain/market";
 import { newsKindKey } from "@/domain/news/article";
 import { HomeView } from "@/features/home/home-market";
+import { HomeContextSlot } from "@/features/intelligence/home-context-slot";
 import { Publications } from "@/features/news/publications";
 import { catalogueRows } from "@/features/market/browse/catalogue";
 import { SIGNED_IN_PAGE, signedInMetadata } from "@/features/shell/placeholder-page";
@@ -40,34 +41,58 @@ export default async function HomePage() {
       <HomeView
         rows={rows ?? []}
         context={
-          listing ? (
-            <Link
-              href={`/mercado/admissao/${listing.id}`}
-              className="flex min-h-18 items-center gap-4 rounded-large bg-elevated-background p-4"
-              data-testid="home-listing"
-            >
-              <span aria-hidden className="flex size-12 shrink-0 items-center justify-center rounded-full border-2 border-accent text-accent">
-                <Icon name="calendar" scale="l" />
-              </span>
-              <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                <span className="text-micro font-bold tracking-wide text-accent uppercase">{t("home.event.newAdmission")}</span>
-                <span className="truncate text-body font-semibold text-primary-text">{listing.title}</span>
-                <span className="text-caption text-secondary-text">
-                  {listing.status === "confirmed" ? t("home.event.statusOnBodiva") : t("home.event.statusPending")}
-                  {listing.scheduledDate ? ` · ${format.civilDate(listing.scheduledDate)}` : ""}
-                </span>
-              </span>
-              <span className="flex items-center gap-1 text-secondary font-semibold text-accent max-sm:sr-only">
-                {t("home.event.meetCompany")}
-                <Icon name="arrow-right" />
-              </span>
-            </Link>
+          <HomeContextSlot
+            fallback={
+              listing ? (
+                <Link
+                  href={`/mercado/admissao/${listing.id}`}
+                  className="flex min-h-18 items-center gap-4 rounded-large bg-elevated-background p-4"
+                  data-testid="home-listing"
+                >
+                  <span aria-hidden className="flex size-12 shrink-0 items-center justify-center rounded-full border-2 border-accent text-accent">
+                    <Icon name="calendar" scale="l" />
+                  </span>
+                  <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                    <span className="text-micro font-bold tracking-wide text-accent uppercase">{t("home.event.newAdmission")}</span>
+                    <span className="truncate text-body font-semibold text-primary-text">{listing.title}</span>
+                    <span className="text-caption text-secondary-text">
+                      {listing.status === "confirmed" ? t("home.event.statusOnBodiva") : t("home.event.statusPending")}
+                      {listing.scheduledDate ? ` · ${format.civilDate(listing.scheduledDate)}` : ""}
+                    </span>
+                  </span>
+                  <span className="flex items-center gap-1 text-secondary font-semibold text-accent max-sm:sr-only">
+                    {t("home.event.meetCompany")}
+                    <Icon name="arrow-right" />
+                  </span>
+                </Link>
+              ) : null
+            }
+          />
+        }
+        news={
+          <Publications
+            articles={news?.articles ?? null}
+            format={format}
+            title={t("common.news")}
+            unavailable={t("components.placeholder.loadFailed")}
+            kind={(article) => t(newsKindKey(article))}
+          />
+        }
+        recaps={
+          wraps.length > 0 ? (
+            <Recaps
+              wraps={wraps}
+              title={t("home.contextCard.availableSummaries")}
+              label={(wrap) => `${t(REVIEW_KEY[wrap.period])} · ${format.civilPeriod(wrap.startsOn, wrap.endsOn)}`}
+            />
           ) : null
         }
-        news={<Publications articles={news?.articles ?? null} format={format} title={t("common.news")} unavailable={t("components.placeholder.loadFailed")} kind={(article) => t(newsKindKey(article))} />}
-        recaps={wraps.length > 0 ? <Recaps wraps={wraps} title={t("home.contextCard.availableSummaries")} label={(wrap) => `${t(REVIEW_KEY[wrap.period])} · ${format.civilPeriod(wrap.startsOn, wrap.endsOn)}`} /> : null}
         simulator={
-          <Link href="/simulador" className="flex min-h-18 items-center gap-4 rounded-small border-y border-separator py-3 lg:panel lg:min-h-14 lg:px-4" data-testid="home-simulator">
+          <Link
+            href="/simulador"
+            className="flex min-h-18 items-center gap-4 rounded-small border-y border-separator py-3 lg:panel lg:min-h-14 lg:px-4"
+            data-testid="home-simulator"
+          >
             <span aria-hidden className="flex size-11 shrink-0 items-center justify-center rounded-full bg-accent/12 text-accent">
               <Icon name="calculator" />
             </span>

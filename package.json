@@ -17,7 +17,8 @@
     "e2e:local": "playwright test -c playwright.local.config.ts",
     "lhci": "npx --yes @lhci/cli@0.15.1 autorun",
     "messages": "node scripts/convert-messages.mjs",
-    "icons": "node scripts/generate-icons.mjs"
+    "icons": "node scripts/generate-icons.mjs",
+    "intelligence:evaluate": "INTELLIGENCE_EVALUATION_OUTPUT=docs/evidence/w14/web-intelligence-evaluation.json vitest run src/domain/intelligence/evaluation"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",
