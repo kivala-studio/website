@@ -13,8 +13,10 @@ import recorded from "../../../../tests/fixtures/market/market-snapshot.producti
  *   partial  session open, half of the prices missing
  *   offline  as `open` on the server; the browser treats the connection as lost after loading
  *   listing  as `open`, plus an announced new admission (`market_events`) highlighted on Home
+ *   unverified  as `open`, but no verified calendar for the coming week (the week ahead stays withheld)
+ *   updates  as `open`, plus market information (`MarketUpdate`, which no live source sends yet)
  */
-export const DEMO_SCENARIOS = ["open", "closed", "stale", "empty", "partial", "offline", "listing"] as const;
+export const DEMO_SCENARIOS = ["open", "closed", "stale", "empty", "partial", "offline", "listing", "unverified", "updates"] as const;
 export type DemoScenario = (typeof DEMO_SCENARIOS)[number];
 export const DEFAULT_DEMO_SCENARIO: DemoScenario = "open";
 export const DEMO_SCENARIO_COOKIE = "demo-scenario";

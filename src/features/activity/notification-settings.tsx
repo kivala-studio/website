@@ -4,11 +4,13 @@ import { useTranslations } from "next-intl";
 import { useEffect, useSyncExternalStore } from "react";
 
 import { MOVEMENT_SENSITIVITIES, type MovementSensitivity } from "@/domain/account/alerts";
-import { CATEGORY_PREFERENCES, CONFIGURABLE_UNUSUAL_RULES, type CategoryPreference, type UnusualRule } from "@/domain/activity/preferences";
+import { CATEGORY_PREFERENCES, CONFIGURABLE_UNUSUAL_RULES, type CategoryPreference, type UnusualPreferences } from "@/domain/activity/preferences";
 import { useAccountStores } from "@/features/account/account-provider";
 import { OptionGroup } from "@/ui/components/controls";
 import { SwitchRow } from "@/ui/components/menu";
 import { SectionPlaceholder } from "@/ui/components/states";
+
+import type { PreferencesStore } from "./preferences-store";
 
 const CATEGORY_LABELS: Record<CategoryPreference, string> = {
   watched_movements_enabled: "common.watchlistMovements",
@@ -66,7 +68,6 @@ export function NotificationSettings() {
     );
   }
 
-  const rulesEnabled = preferences.unusual.enabled;
   return (
     <section aria-labelledby="notifications-title" className="flex max-w-2xl flex-col gap-6" data-testid="notification-settings">
       <h2 id="notifications-title" className="text-section text-primary-text">
@@ -98,23 +99,33 @@ export function NotificationSettings() {
 
       <div className="flex flex-col">
         <h3 className="pb-1 text-body font-semibold text-primary-text">{t("unusualActivity.title")}</h3>
-        <SwitchRow
-          label={t("unusualActivity.settings.notifications")}
-          checked={rulesEnabled}
-          onChange={(value) => store.setUnusualEnabled(value)}
-          testID="preference-unusual"
-        />
-        {CONFIGURABLE_UNUSUAL_RULES.map((rule: UnusualRule) => (
-          <SwitchRow
-            key={rule}
-            label={t(RULE_LABELS[rule as keyof typeof RULE_LABELS] as never)}
-            checked={!preferences.unusual.disabledRules.includes(rule)}
-            disabled={!rulesEnabled}
-            onChange={(enabled) => store.setUnusualRule(rule, enabled)}
-            testID={`preference-rule-${rule}`}
-          />
-        ))}
+        <UnusualActivitySwitches preferences={preferences.unusual} store={store} />
       </div>
     </section>
+  );
+}
+
+/** The unusual-activity switches: `Títulos que sigo`, then one per configurable rule (shared with `/atividade-invulgar`). */
+export function UnusualActivitySwitches({ preferences, store }: { preferences: UnusualPreferences; store: PreferencesStore }) {
+  const t = useTranslations();
+  return (
+    <>
+      <SwitchRow
+        label={t("unusualActivity.settings.notifications")}
+        checked={preferences.enabled}
+        onChange={(value) => store.setUnusualEnabled(value)}
+        testID="preference-unusual"
+      />
+      {CONFIGURABLE_UNUSUAL_RULES.map((rule) => (
+        <SwitchRow
+          key={rule}
+          label={t(RULE_LABELS[rule] as never)}
+          checked={!preferences.disabledRules.includes(rule)}
+          disabled={!preferences.enabled}
+          onChange={(enabled) => store.setUnusualRule(rule, enabled)}
+          testID={`preference-rule-${rule}`}
+        />
+      ))}
+    </>
   );
 }

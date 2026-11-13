@@ -6,13 +6,13 @@ import { readListingEvents } from "@/data/market/listing";
 import { getPublicNews } from "@/data/market/public-cache";
 import { type FormatLocale, createFormat } from "@/domain/format";
 import { homeListing } from "@/domain/market";
-import { ARTICLE_LANGUAGE, type NewsArticle, newsKindKey } from "@/domain/news/article";
+import { newsKindKey } from "@/domain/news/article";
 import { HomeView } from "@/features/home/home-market";
+import { Publications } from "@/features/news/publications";
 import { catalogueRows } from "@/features/market/browse/catalogue";
 import { SIGNED_IN_PAGE, signedInMetadata } from "@/features/shell/placeholder-page";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
-import { SectionHeader } from "@/ui/components/layout";
 import { OfflineBanner } from "@/ui/components/feedback";
 import { Icon } from "@/ui/icons/icon";
 
@@ -64,7 +64,7 @@ export default async function HomePage() {
             </Link>
           ) : null
         }
-        news={<HomeNews articles={news?.articles ?? null} format={format} title={t("common.news")} unavailable={t("components.placeholder.loadFailed")} kind={(article) => t(newsKindKey(article))} />}
+        news={<Publications articles={news?.articles ?? null} format={format} title={t("common.news")} unavailable={t("components.placeholder.loadFailed")} kind={(article) => t(newsKindKey(article))} />}
         recaps={wraps.length > 0 ? <Recaps wraps={wraps} title={t("home.contextCard.availableSummaries")} label={(wrap) => `${t(REVIEW_KEY[wrap.period])} · ${format.civilPeriod(wrap.startsOn, wrap.endsOn)}`} /> : null}
         simulator={
           <Link href="/simulador" className="flex min-h-18 items-center gap-4 rounded-small border-y border-separator py-3 lg:panel lg:min-h-14 lg:px-4" data-testid="home-simulator">
@@ -80,53 +80,6 @@ export default async function HomePage() {
         }
       />
     </main>
-  );
-}
-
-function HomeNews({
-  articles,
-  format,
-  title,
-  unavailable,
-  kind,
-}: {
-  articles: readonly NewsArticle[] | null;
-  format: ReturnType<typeof createFormat>;
-  title: string;
-  unavailable: string;
-  kind: (article: NewsArticle) => string;
-}) {
-  if (articles?.length === 0) return null;
-  return (
-    <section aria-labelledby="home-news" className="flex flex-col gap-2 lg:panel lg:gap-0 lg:px-4 lg:py-3" data-testid="home-news">
-      <SectionHeader
-        id="home-news"
-        title={title}
-        action={
-          <Link href="/noticias" aria-label={title} className="inline-flex size-11 items-center justify-center rounded-full text-accent">
-            <Icon name="arrow-right" />
-          </Link>
-        }
-      />
-      {articles === null ? (
-        <p className="text-secondary text-secondary-text">{unavailable}</p>
-      ) : (
-        <ul className="flex flex-col">
-          {articles.map((article) => (
-            <li key={article.id} className="border-b border-separator last:border-b-0 lg:border-hairline">
-              <Link href={`/noticias/${article.slug}`} className="flex flex-col gap-2 rounded-small py-3 desk:gap-1 desk:py-2.5">
-                <span lang={ARTICLE_LANGUAGE} className="line-clamp-2 text-body font-semibold text-primary-text">
-                  {article.title}
-                </span>
-                <span className="text-caption text-secondary-text">
-                  {kind(article)} · <time dateTime={new Date(article.publishedAt).toISOString()}>{format.date(article.publishedAt)}</time>
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
   );
 }
 
