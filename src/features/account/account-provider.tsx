@@ -13,6 +13,8 @@ import { accountActivityRepository, accountPreferencesRepository } from "@/featu
 import { AlertsStore } from "@/features/alerts/alerts-store";
 import { accountAlertRepository } from "@/features/alerts/repository";
 import { appErrors } from "@/features/errors/error-presenter";
+import { PortfolioStore } from "@/features/portfolio/portfolio-store";
+import { accountPortfolioRepository } from "@/features/portfolio/repository";
 import { accountWatchlistRepository } from "@/features/watchlist/repository";
 import { WatchlistStore } from "@/features/watchlist/watchlist-store";
 import { Button } from "@/ui/components/buttons";
@@ -73,6 +75,7 @@ type AccountContextValue = {
   alerts: AlertsStore;
   activity: ActivityStore;
   preferences: PreferencesStore;
+  portfolio: PortfolioStore;
   /** Opens the neutral plan dialog with the reason sentence (the plans page arrives in W16). */
   requestUpgrade: (reason: UpgradeReason) => void;
 };
@@ -140,7 +143,8 @@ export function AccountProvider({ initial, children }: { initial: AccountInitial
       },
     });
     const preferences = new PreferencesStore(accountPreferencesRepository(initial.userID), appErrors);
-    return { userID: initial.userID, access, watchlist, alerts, activity, preferences, requestUpgrade };
+    const portfolio = new PortfolioStore(accountPortfolioRepository(initial.userID), appErrors);
+    return { userID: initial.userID, access, watchlist, alerts, activity, preferences, portfolio, requestUpgrade };
   });
 
   // The bell and the inbox: re-read every minute while the tab is visible, and on return after a minute away.

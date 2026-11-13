@@ -16,4 +16,6 @@ export const DEMO_COOKIES = [
   "demo-sensitivity",
   "demo-activity-read",
   "demo-notification-preferences",
+  "demo-portfolio",
+  "demo-portfolio-scenario",
 ] as const;
