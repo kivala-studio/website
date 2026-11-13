@@ -10,7 +10,7 @@ test.use({ locale: "pt-AO" });
 
 const INSTRUMENT = "/mercado/BAIAAAAA";
 
-async function signIn(context: BrowserContext, tier: "free" | "plus" | "pro", scenario = "open") {
+async function signIn(context: BrowserContext, tier: "free" | "plus", scenario = "open") {
   await context.addCookies(
     [
       ["demo-account", tier],
@@ -124,7 +124,7 @@ test("Free: every plan gate shows its reason; the server keeps the limits", asyn
   await page.getByRole("tab", { name: "Ordens" }).click();
   await expect(page.getByTestId("order-book-levels").locator("li")).toHaveCount(5);
   await page.getByTestId("order-book-unlock").click();
-  await expect(page.getByRole("dialog", { name: "invest.ao Pro" })).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "invest.ao Plus" })).toBeVisible();
   await closeUpgrade(page);
 
   // Comparison: the first pair is authorised; a third instrument is the server's refusal.
@@ -137,7 +137,7 @@ test("Free: every plan gate shows its reason; the server keeps the limits", asyn
   await expect(upgradeReason(page)).toHaveText("O plano gratuito permite um par de 2 instrumentos por semana.");
 });
 
-test("Plus and Pro: full history, CSV and the whole order book", async ({ page, context }) => {
+test("Plus: full history, CSV and the whole order book", async ({ page, context }) => {
   await signIn(context, "plus");
   await page.goto(INSTRUMENT);
   await page.getByRole("radio", { name: /tudo|todo o histórico/i }).click();
@@ -147,8 +147,6 @@ test("Plus and Pro: full history, CSV and the whole order book", async ({ page, 
   expect((await download).suggestedFilename()).toBe("invest-ao-baiaaaaa-historico.csv");
   await expect(page.getByTestId("liquidity").getByText("Sessões com negócios")).toBeVisible();
 
-  await signIn(context, "pro");
-  await page.goto(INSTRUMENT);
   await page.getByRole("tab", { name: "Ordens" }).click();
   await expect(page.getByTestId("order-book-levels").locator("li")).toHaveCount(8);
   await expect(page.getByTestId("order-book-unlock")).toHaveCount(0);

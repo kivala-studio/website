@@ -19,16 +19,16 @@ const rule = (message: string, details: unknown = null) => ({ code: "P0001", mes
 describe("server rules", () => {
   it("map P0001 messages to typed, non-retryable rules", () => {
     const cases = [
-      [rule("FREE_WATCHLIST_LIMIT", '{"feature":"watchlist","limit":3}'), { feature: "watchlist", limit: 3, upgrade: { reason: "watchlist", tier: "plus" }, messageKey: "market.watchlist.freePlanLimit" }],
-      [rule("FREE_MOVEMENT_LIMIT", { feature: "movement_alerts", limit: 1 }), { limit: 1, upgrade: { reason: "movement", tier: "plus" }, messageKey: "alerts.error.freePlanLimit" }],
-      [rule("PLUS_REQUIRED", '{"feature":"portfolios"}'), { upgrade: { reason: "portfolios", tier: "plus" }, messageKey: "subscriptions.paywall.portfoliosReason" }],
-      [rule("PLUS_REQUIRED", '{"feature":"alert_rules","limit":2}'), { limit: 2, upgrade: { reason: "alerts", tier: "plus" } }],
-      [rule("PLUS_REQUIRED", '{"feature":"toString"}'), { upgrade: { reason: "onboarding", tier: "plus" } }],
-      [rule("PRO_REQUIRED", '{"feature":"clientViews"}'), { upgrade: { reason: "clientViews", tier: "plus" }, messageKey: null }],
-      [rule("PLUS_REQUIRED", '{"feature":"clientViews"}'), { upgrade: { reason: "clientViews", tier: "plus" }, messageKey: "portfolioShare.menu" }],
+      [rule("FREE_WATCHLIST_LIMIT", '{"feature":"watchlist","limit":3}'), { feature: "watchlist", limit: 3, upgrade: { reason: "watchlist" }, messageKey: "market.watchlist.freePlanLimit" }],
+      [rule("FREE_MOVEMENT_LIMIT", { feature: "movement_alerts", limit: 1 }), { limit: 1, upgrade: { reason: "movement" }, messageKey: "alerts.error.freePlanLimit" }],
+      [rule("PLUS_REQUIRED", '{"feature":"portfolios"}'), { upgrade: { reason: "portfolios" }, messageKey: "subscriptions.paywall.portfoliosReason" }],
+      [rule("PLUS_REQUIRED", '{"feature":"alert_rules","limit":2}'), { limit: 2, upgrade: { reason: "alerts" } }],
+      [rule("PLUS_REQUIRED", '{"feature":"toString"}'), { upgrade: { reason: "onboarding" } }],
+      [rule("PRO_REQUIRED", '{"feature":"clientViews"}'), { upgrade: { reason: "clientViews" }, messageKey: null }],
+      [rule("PLUS_REQUIRED", '{"feature":"clientViews"}'), { upgrade: { reason: "clientViews" }, messageKey: "portfolioShare.menu" }],
       [rule("SHARE_LIMIT", '{"limit":20}'), { limit: 20, upgrade: null, messageKey: "portfolioShare.limit" }],
       [rule("WATCHLIST_GROUP_LIMIT", "not json"), { feature: null, limit: null, upgrade: null, messageKey: "site.watchlist.groupLimit" }],
-      [rule("FREE_COMPARISON_WEEK_LIMIT"), { upgrade: { reason: "comparison", tier: "plus" }, messageKey: "subscriptions.access.weeklyPairLimit" }],
+      [rule("FREE_COMPARISON_WEEK_LIMIT"), { upgrade: { reason: "comparison" }, messageKey: "subscriptions.access.weeklyPairLimit" }],
       [rule("REFERRAL_OWN_CODE"), { upgrade: null, messageKey: "referral.error.own" }],
     ] as const;
     for (const [source, expected] of cases) {

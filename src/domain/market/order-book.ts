@@ -71,8 +71,8 @@ export const availableOrderCount = (level: OrderBookLevel) =>
   level.orderCount !== undefined && level.orderCount > 0 ? level.orderCount : undefined;
 
 /** Levels per side a Free account sees; undefined shows the full book. */
-export const orderBookDepthLimit = (unlocksPro: boolean): number | undefined =>
-  unlocksPro ? undefined : FREE_PLAN_LIMITS.orderBookLevels;
+export const orderBookDepthLimit = (unlocksPlus: boolean): number | undefined =>
+  unlocksPlus ? undefined : FREE_PLAN_LIMITS.orderBookLevels;
 
 /** One row of the book: the bid and ask at the same rank. */
 export interface OrderBookPair {

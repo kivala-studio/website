@@ -71,7 +71,6 @@ export function decodeAccessJSON(value: unknown): SubscriptionAccess | null {
   if (!isRecord(value) || typeof value.isPlus !== "boolean" || typeof value.enforcementEnabled !== "boolean") return null;
   return decodeSubscriptionAccess({
     is_plus: value.isPlus,
-    is_pro: value.isPro,
     enforcement_enabled: value.enforcementEnabled,
     week_start: value.weekStart,
     resets_at: value.resetsAt,

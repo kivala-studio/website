@@ -56,7 +56,7 @@ export async function demoGroups(watchlist: readonly string[]): Promise<Watchlis
 
 const saveGroups = (groups: readonly WatchlistGroup[]) => save(GROUPS_COOKIE, JSON.stringify(groups));
 
-/** Plus and Pro start with one active rule on their first instrument and one paused on the second. */
+/** Plus accounts start with one active rule on their first instrument and one paused on the second. */
 export async function demoRules(account: DemoAccount, watchlist: readonly string[]): Promise<AlertRule[]> {
   const rows = await readJSON(RULES_COOKIE);
   if (rows === undefined) {

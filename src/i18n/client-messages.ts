@@ -55,7 +55,6 @@ export const AREA_KEYS = {
     "market.index",
     "subscriptions.paywall",
     "subscriptions.management.plusTitle",
-    "subscriptions.management.proTitle",
     "simulation.entry.prompt",
     "watchlist.accessibility",
     "watchlist.addSheet",
