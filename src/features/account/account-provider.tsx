@@ -143,7 +143,7 @@ export function AccountProvider({ initial, children }: { initial: AccountInitial
       },
     });
     const preferences = new PreferencesStore(accountPreferencesRepository(initial.userID), appErrors);
-    const portfolio = new PortfolioStore(accountPortfolioRepository(initial.userID), appErrors);
+    const portfolio = new PortfolioStore(accountPortfolioRepository(initial.userID), appErrors, (next) => requestUpgrade(next));
     return { userID: initial.userID, access, watchlist, alerts, activity, preferences, portfolio, requestUpgrade };
   });
 

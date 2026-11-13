@@ -2901,6 +2901,11 @@
     },
     "settings": {
       "notificationLimits": "Até cinco avisos opcionais por dia. Entre as 20h e as 8h, o radar fica em silêncio."
+    },
+    "portfolio": {
+      "copyLink": "Copiar link",
+      "linkCopied": "Link copiado",
+      "remindersInApps": "Os lembretes estão nas aplicações para iPhone e Android."
     }
   }
 }

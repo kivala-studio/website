@@ -9,8 +9,12 @@ export const DEMO_REVOKED_SHARE_TOKEN = "demoRevokedToken-0123456789abcde";
 
 const id = (symbol: string) => recordedSnapshot.securities.find((row) => row.symbol === symbol)!.id;
 
-export function demoSharedPortfolio(token: string): unknown {
-  if (token !== DEMO_SHARE_TOKEN) return null;
+export async function demoSharedPortfolio(token: string): Promise<unknown> {
+  if (token !== DEMO_SHARE_TOKEN) {
+    // A link created in this browser with the demo Pro account.
+    const { demoCreatedSharedPortfolio } = await import("@/data/demo/portfolio");
+    return demoCreatedSharedPortfolio(token);
+  }
   return {
     portfolio: null,
     transactions: [

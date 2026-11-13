@@ -1,7 +1,8 @@
 import Decimal from "decimal.js";
 import { describe, expect, it } from "vitest";
 
-import { ErrorCoordinator } from "@/domain/errors";
+import { AppError, ErrorCoordinator, type UpgradeReason } from "@/domain/errors";
+import { parseServerRule } from "@/domain/errors/rules";
 import type { PortfolioTransaction } from "@/domain/portfolio";
 
 import { PortfolioStore } from "./portfolio-store";
@@ -46,7 +47,7 @@ class Ledger implements PortfolioRepository {
       held.started();
       await held.release;
     }
-    return rows;
+    return { transactions: rows, books: [], cash: [] };
   }
 
   async create(transaction: PortfolioTransaction) {
@@ -71,9 +72,19 @@ class Ledger implements PortfolioRepository {
     this.stored = this.stored.filter((item) => item.id !== id);
     return null;
   }
+
+  /** Free under enforcement: the server's `P0001 PLUS_REQUIRED`, as a server action reports it. */
+  async createBook(): Promise<null> {
+    throw new AppError("server", { operation: "portfolio.createBook", httpStatus: 400, rule: parseServerRule("P0001", "PLUS_REQUIRED", '{"feature":"portfolios"}') });
+  }
+
+  renameBook = async () => null;
+  deleteBook = async () => null;
+  createCash = async () => null;
+  deleteCash = async () => null;
 }
 
-const store = (ledger: Ledger) => new PortfolioStore(ledger, new ErrorCoordinator(), () => now);
+const store = (ledger: Ledger) => new PortfolioStore(ledger, new ErrorCoordinator(), undefined, () => now);
 const ids = (store: PortfolioStore) => store.getSnapshot().transactions.map((item) => item.id).sort();
 
 describe("PortfolioStore", () => {
@@ -146,5 +157,15 @@ describe("PortfolioStore", () => {
     await portfolio.load();
     expect(await portfolio.create({ ...purchase("bai", 2), kind: "sell" })).toBe("oversell");
     expect(await portfolio.delete(buy.id)).toBe("saved");
+  });
+
+  it("opens the plan dialog for a plan rule instead of an error", async () => {
+    const errors = new ErrorCoordinator();
+    const reasons: UpgradeReason[] = [];
+    const portfolio = new PortfolioStore(new Ledger(), errors, (reason) => reasons.push(reason), () => now);
+    expect(await portfolio.createBook({ id: "00000000-0000-4000-8000-0000000000aa", name: "Reforma" })).toBe("upgrade");
+    expect(reasons).toEqual(["portfolios"]);
+    expect(errors.current).toBeNull();
+    expect(portfolio.getSnapshot().books).toEqual([]);
   });
 });

@@ -4,11 +4,14 @@ import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 
 import { CSV_FILE_NAME, type CsvIssue, type CsvRow, decodeCsvBytes, exportCsv, parseCsv } from "@/domain/portfolio/csv";
+import { statementCsv } from "@/domain/portfolio/statement";
+import { useAccount } from "@/features/account/account-provider";
 import { Button } from "@/ui/components/buttons";
 import { Dialog } from "@/ui/components/dialog";
 import { useToast } from "@/ui/components/feedback";
 import { Menu } from "@/ui/components/menu";
 import { useFormat } from "@/ui/format";
+import { Spinner } from "@/ui/components/states";
 import { Icon } from "@/ui/icons/icon";
 
 import { Private } from "./portfolio-ui";
@@ -27,12 +30,21 @@ const ISSUE_KEYS: Record<CsvIssue, string> = {
 
 const KIND_KEYS = { buy: "common.buy", sell: "common.sell", income: "portfolio.csvTransfer.income" } as const;
 
-/** `Exportar ou importar`: the ledger as `invest-ao-carteira.csv` (iOS format), or a file read into a review. */
+/** Statements up to this size are read; larger files are refused before reading. */
+const STATEMENT_MAX_BYTES = 25 * 1024 * 1024;
+
+/**
+ * `Exportar ou importar`: the ledger as `invest-ao-carteira.csv` (iOS format), a CSV file, or a statement
+ * (PDF or image, read in this browser, Plus) turned into the same review.
+ */
 export function CsvTransfer({ model }: { model: PortfolioModel }) {
   const t = useTranslations();
   const toast = useToast();
+  const account = useAccount();
   const input = useRef<HTMLInputElement>(null);
+  const statementInput = useRef<HTMLInputElement>(null);
   const [rows, setRows] = useState<CsvRow[] | null>(null);
+  const [reading, setReading] = useState(false);
 
   const download = () => {
     const csv = exportCsv(model.transactions, [...model.instruments.values()]);
@@ -51,6 +63,30 @@ export function CsvTransfer({ model }: { model: PortfolioModel }) {
     setRows(parsed);
   };
 
+  const readStatement = async (file: File | undefined) => {
+    if (!file) return;
+    const nothing = () => toast.show({ title: t("statement.nothingFound"), message: t("statement.nothingFoundMessage") });
+    if (file.size > STATEMENT_MAX_BYTES) return nothing();
+    setReading(true);
+    try {
+      const { readStatementLines } = await import("./statement-reader");
+      const securities = [...model.instruments.values()];
+      const csv = statementCsv(await readStatementLines(file), securities);
+      const parsed = csv ? parseCsv(csv, { securities, existing: model.transactions, asOf: Date.now() }) : [];
+      if (parsed.length === 0) return nothing();
+      setRows(parsed);
+    } catch {
+      nothing();
+    } finally {
+      setReading(false);
+    }
+  };
+
+  const openStatement = () => {
+    if (account && !account.unlocksPlus) return account.requestUpgrade("statement");
+    statementInput.current?.click();
+  };
+
   return (
     <>
       <Menu
@@ -59,8 +95,25 @@ export function CsvTransfer({ model }: { model: PortfolioModel }) {
         entries={[
           ...(model.transactions.length > 0 ? [{ kind: "item" as const, label: t("portfolio.csvTransfer.export"), icon: "download" as const, onSelect: download, testID: "csv-export" }] : []),
           { kind: "item", label: t("portfolio.csvTransfer.import"), icon: "upload", onSelect: () => input.current?.click(), testID: "csv-import" },
+          { kind: "item", label: t("statement.read"), icon: "document", onSelect: openStatement, testID: "statement-read" },
         ]}
       />
+      <input
+        ref={statementInput}
+        type="file"
+        accept="application/pdf,image/*"
+        hidden
+        data-testid="statement-file"
+        onChange={(event) => {
+          void readStatement(event.target.files?.[0]);
+          event.target.value = "";
+        }}
+      />
+      {reading ? (
+        <div role="status" aria-label={t("statement.read")} className="fixed inset-0 z-50 flex items-center justify-center bg-black/30" data-testid="statement-reading">
+          <Spinner className="size-10 text-white" />
+        </div>
+      ) : null}
       <input
         ref={input}
         type="file"
@@ -83,7 +136,8 @@ function ImportReview({ rows, model, onClose }: { rows: CsvRow[]; model: Portfol
   const format = useFormat();
   const toast = useToast();
   const [saving, setSaving] = useState(false);
-  const valid = rows.flatMap((row) => (row.transaction ? [row.transaction] : []));
+  // Imported records go to the selected portfolio (the main one when combined).
+  const valid = rows.flatMap((row) => (row.transaction ? [{ ...row.transaction, portfolioId: model.writableBookId }] : []));
 
   const save = async () => {
     setSaving(true);

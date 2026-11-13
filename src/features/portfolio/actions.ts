@@ -1,8 +1,32 @@
 "use server";
 
-import { createTransaction, deleteTransaction, updateTransaction } from "@/data/account/portfolio";
+import {
+  createBook,
+  createCash,
+  createShare,
+  createTransaction,
+  deleteBook,
+  deleteCash,
+  deleteTransaction,
+  renameBook,
+  revokeShare,
+  updateTransaction,
+} from "@/data/account/portfolio";
 import { type AccountSession, isUUID } from "@/data/account/session";
-import { demoCreateTransaction, demoDeleteTransaction, demoUpdateTransaction } from "@/data/demo/portfolio";
+import {
+  demoCreateBook,
+  demoCreateCash,
+  demoCreateShare,
+  demoCreateTransaction,
+  demoDeleteBook,
+  demoDeleteCash,
+  demoDeleteTransaction,
+  demoRenameBook,
+  demoRevokeShare,
+  demoUpdateTransaction,
+} from "@/data/demo/portfolio";
+import { type PortfolioBook, bookName } from "@/domain/portfolio/books";
+import { type CashMovementWire, decodeCashMovement } from "@/domain/portfolio/cash";
 import { type LedgerRefusal, type TransactionWire, decodeTransaction, ledgerRefusal } from "@/domain/portfolio/records";
 import { type AccountResult, accountWrite, invalidArgument } from "@/features/account/write";
 
@@ -48,5 +72,80 @@ export async function deletePortfolioTransaction(expectedUserID: string, id: str
     if (!isUUID(id)) throw invalidArgument();
     if (session.kind === "demo") await demoDeleteTransaction(id, now);
     else await deleteTransaction(session.client, session.userID, id);
+  });
+}
+
+// MARK: Named portfolios, cash and share links
+
+/** Writes whose refusal is a value, not an error: a duplicate portfolio name (`23505`). */
+export async function createPortfolioBook(expectedUserID: string, book: PortfolioBook): Promise<AccountResult<"duplicate" | null>> {
+  return accountWrite(expectedUserID, "portfolio.createBook", async (session) => {
+    const name = bookName(book.name);
+    if (!isUUID(book.id) || !name) throw invalidArgument();
+    return duplicateAsValue(() => (session.kind === "demo" ? demoCreateBook(session.account, { id: book.id, name }) : createBook(session.client, session.userID, { id: book.id, name })));
+  });
+}
+
+export async function renamePortfolioBook(expectedUserID: string, book: PortfolioBook): Promise<AccountResult<"duplicate" | null>> {
+  return accountWrite(expectedUserID, "portfolio.renameBook", async (session) => {
+    const name = bookName(book.name);
+    if (!isUUID(book.id) || !name) throw invalidArgument();
+    return duplicateAsValue(() => (session.kind === "demo" ? demoRenameBook({ id: book.id, name }) : renameBook(session.client, session.userID, { id: book.id, name })));
+  });
+}
+
+export async function deletePortfolioBook(expectedUserID: string, id: string): Promise<AccountResult<null>> {
+  return accountWrite(expectedUserID, "portfolio.deleteBook", async (session) => {
+    if (!isUUID(id)) throw invalidArgument();
+    if (session.kind === "demo") await demoDeleteBook(id);
+    else await deleteBook(session.client, session.userID, id);
+    return null;
+  });
+}
+
+async function duplicateAsValue(run: () => Promise<void>): Promise<"duplicate" | null> {
+  try {
+    await run();
+    return null;
+  } catch (error) {
+    if (typeof error === "object" && error !== null && (error as { code?: unknown }).code === "23505") return "duplicate";
+    throw error;
+  }
+}
+
+export async function createCashMovement(expectedUserID: string, wire: CashMovementWire): Promise<AccountResult<null>> {
+  return accountWrite(expectedUserID, "portfolio.createCash", async (session) => {
+    const movement = decodeCashMovement(wire);
+    if (!movement) throw invalidArgument();
+    if (session.kind === "demo") await demoCreateCash(session.account, movement, Date.now());
+    else await createCash(session.client, session.userID, movement);
+    return null;
+  });
+}
+
+export async function deleteCashMovement(expectedUserID: string, id: string): Promise<AccountResult<null>> {
+  return accountWrite(expectedUserID, "portfolio.deleteCash", async (session) => {
+    if (!isUUID(id)) throw invalidArgument();
+    if (session.kind === "demo") await demoDeleteCash(id);
+    else await deleteCash(session.client, session.userID, id);
+    return null;
+  });
+}
+
+/** The new link's token, returned once and never stored here. */
+export async function createPortfolioShare(expectedUserID: string, portfolioId: string | null, label: string): Promise<AccountResult<string>> {
+  return accountWrite(expectedUserID, "portfolio.createShare", async (session) => {
+    const trimmed = label.trim();
+    if ((portfolioId !== null && !isUUID(portfolioId)) || trimmed.length === 0 || [...trimmed].length > 40) throw invalidArgument();
+    return session.kind === "demo" ? demoCreateShare(session.account, portfolioId, trimmed, Date.now()) : createShare(session.client, portfolioId, trimmed);
+  });
+}
+
+export async function revokePortfolioShare(expectedUserID: string, id: string): Promise<AccountResult<null>> {
+  return accountWrite(expectedUserID, "portfolio.revokeShare", async (session) => {
+    if (!isUUID(id)) throw invalidArgument();
+    if (session.kind === "demo") await demoRevokeShare(id);
+    else await revokeShare(session.client, session.userID, id);
+    return null;
   });
 }

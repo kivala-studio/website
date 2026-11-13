@@ -45,3 +45,6 @@ next-env.d.ts
 /playwright-report/
 /test-results/
 /.lighthouseci/
+
+# statement reader files copied from node_modules (scripts/statement-assets.mjs)
+/public/statement/
