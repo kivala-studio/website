@@ -5,9 +5,11 @@ import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 
 import { type ActivityCategory, type ActivityFilter, type ActivityItem, activityDays, filterOf, isVisible } from "@/domain/activity/activity";
 import { activityText } from "@/domain/activity/copy";
+import { mergeActivityCentre } from "@/domain/intelligence/activity";
 import type { Translate } from "@/domain/format";
 import { DAY_MS, civilDate } from "@/domain/market/zone";
 import { useAccountStores } from "@/features/account/account-provider";
+import { useLocalActivity } from "@/features/intelligence/activity-rows";
 import { PrivacyModeButton, usePrivacyMode } from "@/features/privacy/privacy-mode";
 import { Link, useRouter } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
@@ -49,14 +51,24 @@ export function ActivityCenter({ symbols, renderedAt }: { symbols: Readonly<Reco
   const [filter, setFilter] = useState<ActivityFilter>("movements");
   const [unavailable, setUnavailable] = useState(false);
   const now = state.loadedAt ?? renderedAt;
+  const local = useLocalActivity(now);
+  const items = useMemo(
+    () => (state.status === "loaded" ? mergeActivityCentre(state.items, local.rows) : state.items),
+    [state.status, state.items, local.rows],
+  );
+  /** Server rows send receipts; the weekly reading's rows are read on this device. */
+  const markRead = (ids: readonly string[], opened = false) => {
+    local.markRead(local.rows.filter((row) => ids.includes(row.id)));
+    return store.markRead(ids, opened);
+  };
 
   useEffect(() => {
     void store.load({ quiet: store.getSnapshot().status === "loaded" });
   }, [store]);
 
-  const days = useMemo(() => activityDays(state.items, filter, now), [state.items, filter, now]);
-  const unread = state.items.some((item) => !item.read && filterOf(item.category) === filter && isVisible(item, now));
-  const anything = state.items.some((item) => isVisible(item, now));
+  const days = useMemo(() => activityDays(items, filter, now), [items, filter, now]);
+  const unread = items.some((item) => !item.read && filterOf(item.category) === filter && isVisible(item, now));
+  const anything = items.some((item) => isVisible(item, now));
 
   const href = (item: ActivityItem): string | null | undefined => {
     const { destination } = item;
@@ -71,6 +83,8 @@ export function ActivityCenter({ symbols, renderedAt }: { symbols: Readonly<Reco
         return `/wrap/${destination.period}`;
       case "portfolio":
         return "/carteira";
+      case "watchlist":
+        return "/lista";
       case "unusualDigest":
         return "/atividade-invulgar";
       case "none":
@@ -97,7 +111,10 @@ export function ActivityCenter({ symbols, renderedAt }: { symbols: Readonly<Reco
             kind="secondary"
             className="w-auto"
             disabled={!unread}
-            onClick={() => void store.markAllRead(filter)}
+            onClick={() => {
+              local.markRead(local.rows.filter((row) => !row.read && filterOf(row.category) === filter && isVisible(row, now)));
+              void store.markAllRead(filter);
+            }}
             data-testid="mark-all-read"
           >
             {t("notifications.button.markAllRead")}
@@ -154,7 +171,12 @@ export function ActivityCenter({ symbols, renderedAt }: { symbols: Readonly<Reco
               <div className="flex flex-col gap-4 rounded-large bg-card-background px-4 py-3 lg:panel">
                 {day.groups.map((group) => (
                   <div key={group.category} className="flex flex-col">
-                    <span className={cn("inline-flex min-h-7 items-center gap-1.5 self-start rounded-full px-2.5 text-caption font-semibold", CATEGORY[group.category].tint)}>
+                    <span
+                      className={cn(
+                        "inline-flex min-h-7 items-center gap-1.5 self-start rounded-full px-2.5 text-caption font-semibold",
+                        CATEGORY[group.category].tint,
+                      )}
+                    >
                       <Icon name={CATEGORY[group.category].icon} scale="s" />
                       <span className="text-primary-text">{CATEGORY[group.category].key ? t(CATEGORY[group.category].key as never) : "Watchlist"}</span>
                     </span>
@@ -168,12 +190,12 @@ export function ActivityCenter({ symbols, renderedAt }: { symbols: Readonly<Reco
                           time={format.time(item.occurredAt)}
                           stateLabel={t(item.read ? "common.read" : "common.unread")}
                           markLabel={t("common.markAsRead")}
-                          onOpen={() => void store.markRead([item.id], true)}
+                          onOpen={() => void markRead([item.id], true)}
                           onUnavailable={() => {
-                            void store.markRead([item.id], true);
+                            void markRead([item.id], true);
                             setUnavailable(true);
                           }}
-                          onMark={() => void store.markRead([item.id])}
+                          onMark={() => void markRead([item.id])}
                         />
                       ))}
                     </ul>
@@ -269,7 +291,9 @@ function ActivityRow({
       ) : (
         <div className={body}>{content}</div>
       )}
-      {!item.read ? <IconButton icon="check" label={markLabel} onClick={onMark} className="bg-transparent text-secondary-text" data-testid="mark-read" /> : null}
+      {!item.read ? (
+        <IconButton icon="check" label={markLabel} onClick={onMark} className="bg-transparent text-secondary-text" data-testid="mark-read" />
+      ) : null}
     </li>
   );
 }

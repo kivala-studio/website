@@ -21,7 +21,8 @@ const UUID = /^[0-9a-f-]{36}$/i;
 export const demoRule = (message: string, details: Record<string, unknown>) =>
   Object.assign(new Error(message), { code: "P0001", message, details: JSON.stringify(details), hint: null, status: 400 });
 
-const sqlError = (code: string, message: string) => Object.assign(new Error(message), { code, message, details: null, hint: null, status: code === "23505" ? 409 : 400 });
+const sqlError = (code: string, message: string) =>
+  Object.assign(new Error(message), { code, message, details: null, hint: null, status: code === "23505" ? 409 : 400 });
 
 async function readJSON(name: string): Promise<unknown[] | undefined> {
   const value = (await cookies()).get(name)?.value;
@@ -62,8 +63,22 @@ export async function demoRules(account: DemoAccount, watchlist: readonly string
   if (rows === undefined) {
     if (account.tier === "free" || watchlist.length < 2) return [];
     return [
-      { id: "d5e10000-0000-4000-8000-000000000001", securityID: watchlist[0], kind: "price_above", threshold: new Decimal(100_000), isEnabled: true, createdAt: Date.parse("2026-11-02T09:00:00Z") },
-      { id: "d5e10000-0000-4000-8000-000000000002", securityID: watchlist[1], kind: "percent_change_below", threshold: new Decimal(-5), isEnabled: false, createdAt: Date.parse("2026-11-01T09:00:00Z") },
+      {
+        id: "d5e10000-0000-4000-8000-000000000001",
+        securityID: watchlist[0],
+        kind: "price_above",
+        threshold: new Decimal(100_000),
+        isEnabled: true,
+        createdAt: Date.parse("2026-11-02T09:00:00Z"),
+      },
+      {
+        id: "d5e10000-0000-4000-8000-000000000002",
+        securityID: watchlist[1],
+        kind: "percent_change_below",
+        threshold: new Decimal(-5),
+        isEnabled: false,
+        createdAt: Date.parse("2026-11-01T09:00:00Z"),
+      },
     ];
   }
   return rows.map(decodeAlertRule).filter((rule): rule is AlertRule => rule !== null);

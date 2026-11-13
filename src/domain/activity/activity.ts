@@ -7,7 +7,8 @@ import { DAY_MS, type EpochMs, civilDate, parseInstant, startOfDay } from "../ma
 /*
  * The Activity centre (iOS `ActivityPolicy`, `ActivityCategory`, `ActivityPresentation`): server-composed
  * account notifications and explicit alert deliveries, one row per event. Everything here is JSON-safe so a
- * route can hand items to the browser. Local insights (W14) and the Weekly Wrap card (W15) are not part of it.
+ * route can hand items to the browser. Local insights (W14) join through `src/domain/intelligence/activity.ts`; the
+ * Weekly Wrap card (W15) is not part of it.
  */
 
 /** The server keeps 28 days; nothing older is requested or shown. */
@@ -27,6 +28,8 @@ export type ActivityDestination =
   | { readonly kind: "article"; readonly articleID: string; readonly slug: string | null }
   | { readonly kind: "wrap"; readonly period: string }
   | { readonly kind: "portfolio" }
+  /** A local watchlist reading (W14); its rows open the watchlist. */
+  | { readonly kind: "watchlist" }
   | { readonly kind: "unusualDigest" }
   | { readonly kind: "none" };
 
@@ -315,7 +318,7 @@ export function activityDays(items: readonly ActivityItem[], filter: ActivityFil
  */
 export const isMasked = (item: ActivityItem, privacyMode: boolean) => privacyMode && item.copy.kind !== "unavailable" && item.privacy !== "public_market";
 
-const DESTINATIONS = ["instrument", "article", "wrap", "portfolio", "unusualDigest", "none"];
+const DESTINATIONS = ["instrument", "article", "wrap", "portfolio", "watchlist", "unusualDigest", "none"];
 
 /** The browser's check of a route's items: anything malformed is dropped. */
 export function decodeActivityItem(value: unknown): ActivityItem | null {

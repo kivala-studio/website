@@ -10,6 +10,7 @@ import { type BenchmarkQuote, type BenchmarkQuoteWire, fromQuoteWire } from "@/d
 import { orderWhileHidden } from "@/domain/privacy/privacy";
 import { CHART_HEIGHT, PriceChart } from "@/features/chart/price-chart";
 import { RANGE_OF } from "@/features/chart/ranges";
+import { PortfolioInsights } from "@/features/intelligence/portfolio-insights";
 import type { CatalogueRow } from "@/features/market/browse/price-cell";
 import { PrivacyModeButton, usePrivacyMode } from "@/features/privacy/privacy-mode";
 import { Link } from "@/i18n/navigation";
@@ -35,7 +36,15 @@ export const PORTFOLIO_PATH = "/carteira";
 const chartPoints = (points: readonly ValuePoint[]): PricePoint[] => points.map((point) => ({ date: tradingDateNoon(point.day)!, value: point.value }));
 
 /** `/carteira` (iOS `PortfolioView`): skeleton, error, empty state or the dashboard, valued at current quotes. */
-export function PortfolioView({ rows, renderedAt, quotes: wires }: { rows: readonly CatalogueRow[]; renderedAt: number; quotes: readonly BenchmarkQuoteWire[] | null }) {
+export function PortfolioView({
+  rows,
+  renderedAt,
+  quotes: wires,
+}: {
+  rows: readonly CatalogueRow[];
+  renderedAt: number;
+  quotes: readonly BenchmarkQuoteWire[] | null;
+}) {
   const quotes = useMemo(() => wires?.map(fromQuoteWire) ?? null, [wires]);
   const t = useTranslations();
   const model = usePortfolio(rows, renderedAt);
@@ -148,6 +157,7 @@ function Dashboard({ model, quotes, onRecord }: { model: PortfolioModel; quotes:
       </div>
       <div className="flex flex-col gap-4">
         <SectionTabs label={t("common.portfolio")} titles={TABS.map((key) => t(key))} selected={tab} onSelect={setTab} idPrefix="portfolio" />
+        <PortfolioInsights transactions={model.transactions} section={tab as 0 | 1 | 2} />
         <div role="tabpanel" id={`portfolio-panel-${tab}`} aria-labelledby={`portfolio-tab-${tab}`}>
           {tab === 0 ? <Holdings model={model} /> : tab === 1 ? <Allocation model={model} /> : <SummaryTab model={model} points={points} quotes={quotes} />}
         </div>
@@ -197,7 +207,9 @@ function Summary({ model, change, hasHistory }: { model: PortfolioModel; change:
           {summary.missingPriceCount > 0 ? (
             <p className="flex items-center gap-1 text-secondary text-warning">
               <Icon name="warning" />
-              {summary.missingPriceCount === 1 ? t("portfolio.summary.missingQuoteOne") : t("portfolio.summary.missingQuotesCount", { arg1: format.count(summary.missingPriceCount) })}
+              {summary.missingPriceCount === 1
+                ? t("portfolio.summary.missingQuoteOne")
+                : t("portfolio.summary.missingQuotesCount", { arg1: format.count(summary.missingPriceCount) })}
             </p>
           ) : null}
         </>
@@ -259,7 +271,13 @@ function PrivateTrend({ points }: { points: readonly PricePoint[] }) {
   }, [points]);
   return (
     <figure className="flex flex-col gap-2" data-testid="portfolio-private-trend">
-      <svg role="img" aria-label={t("portfolio.privateTrend.valuesHiddenLabel")} viewBox={`0 0 100 ${CHART_HEIGHT}`} preserveAspectRatio="none" className="h-55 w-full">
+      <svg
+        role="img"
+        aria-label={t("portfolio.privateTrend.valuesHiddenLabel")}
+        viewBox={`0 0 100 ${CHART_HEIGHT}`}
+        preserveAspectRatio="none"
+        className="h-55 w-full"
+      >
         <path d={path} fill="none" strokeWidth={2} vectorEffect="non-scaling-stroke" className="stroke-accent" />
       </svg>
       <figcaption className="flex justify-between text-caption text-secondary-text">
@@ -307,7 +325,9 @@ function Holdings({ model }: { model: PortfolioModel }) {
                   <>
                     <Private className="text-body font-semibold text-primary-text">{format.currency(valuation.currentValue)}</Private>
                     {valuation.returnPercentage ? (
-                      <Private className={cn("text-secondary tabular-nums", toneOf(valuation.returnPercentage))}>{format.percent(valuation.returnPercentage)}</Private>
+                      <Private className={cn("text-secondary tabular-nums", toneOf(valuation.returnPercentage))}>
+                        {format.percent(valuation.returnPercentage)}
+                      </Private>
                     ) : null}
                   </>
                 ) : (
@@ -338,7 +358,12 @@ function Allocation({ model }: { model: PortfolioModel }) {
   const top = model.allocations.slice(0, 5);
   const rest = model.allocations.slice(5);
   const rows = [
-    ...top.map((item) => ({ key: item.securityId, title: model.instruments.get(item.securityId)?.symbol ?? "—", subtitle: model.instruments.get(item.securityId)?.name ?? "", ...item })),
+    ...top.map((item) => ({
+      key: item.securityId,
+      title: model.instruments.get(item.securityId)?.symbol ?? "—",
+      subtitle: model.instruments.get(item.securityId)?.name ?? "",
+      ...item,
+    })),
     ...(rest.length
       ? [
           {
@@ -365,7 +390,12 @@ function Allocation({ model }: { model: PortfolioModel }) {
               <span className="text-caption text-secondary-text">{format.currency(row.currentValue)}</span>
             </span>
           </div>
-          <progress max={100} value={row.percentage.toNumber()} aria-label={t("portfolio.allocationRow.portfolioWeight")} className="h-1.5 w-full accent-accent" />
+          <progress
+            max={100}
+            value={row.percentage.toNumber()}
+            aria-label={t("portfolio.allocationRow.portfolioWeight")}
+            className="h-1.5 w-full accent-accent"
+          />
         </li>
       ))}
     </ul>
@@ -380,7 +410,11 @@ function SummaryTab({ model, points, quotes }: { model: PortfolioModel; points: 
   const none = valueState === "unavailable" || valueState === "pending";
   const tiles = [
     { title: t("common.investedAmount"), value: format.currency(summary.investedAmount), tone: "text-primary-text" },
-    { title: t(partial ? "common.partialValue" : none ? "common.valueUnavailable" : "common.currentValue"), value: none ? "—" : format.currency(summary.currentValue), tone: "text-primary-text" },
+    {
+      title: t(partial ? "common.partialValue" : none ? "common.valueUnavailable" : "common.currentValue"),
+      value: none ? "—" : format.currency(summary.currentValue),
+      tone: "text-primary-text",
+    },
     {
       title: t(partial ? "portfolio.metrics.partialGainLoss" : "portfolio.metrics.unrealizedGainLoss"),
       value: none ? "—" : format.currency(summary.unrealizedProfitLoss, { signed: true }),

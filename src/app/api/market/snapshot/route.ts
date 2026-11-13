@@ -1,4 +1,5 @@
 import { publicEnv } from "@/config/public-env";
+import { demoClockFromHeader } from "@/data/demo/clock";
 import { createSnapshotProxy } from "@/data/market/snapshot-proxy";
 
 const proxy =
@@ -16,7 +17,8 @@ async function demoResponse(request: Request): Promise<Response> {
     .find(([name]) => name === DEMO_SCENARIO_COOKIE)?.[1];
   const requested = new URL(request.url).searchParams.get("scenario") ?? cookie;
   const scenario = isDemoScenario(requested) ? requested : DEFAULT_DEMO_SCENARIO;
-  const bundle = demoSnapshot(scenario, Date.now());
+  const clock = demoClockFromHeader(request.headers.get("cookie"));
+  const bundle = demoSnapshot(scenario, clock ?? Date.now(), clock !== undefined);
   const generatedAt = String(bundle.generated_at);
   return Response.json(bundle, {
     headers: { "cache-control": "no-store", etag: `W/"demo-${scenario}-${generatedAt}"`, "x-investao-generated-at": generatedAt },

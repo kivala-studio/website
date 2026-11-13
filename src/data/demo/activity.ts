@@ -76,7 +76,17 @@ function demoRows(account: DemoAccount, watchlist: readonly string[], requestNow
     category: "daily_close",
     close_on: civilDate(now - DAY_MS),
     composition: composition("Fecho da BODIVA", "3 em alta e 2 em baixa. Maior variação: BAIAAAAA +4,50%."),
-    facts: { eventFamily: "daily_close", advancers: 3, decliners: 2, unchanged: 2, topSymbol: symbolOf(first), topChangePercent: 4.5, watchedAdvancers: 1, watchedDecliners: 0, watchedCount: 2 },
+    facts: {
+      eventFamily: "daily_close",
+      advancers: 3,
+      decliners: 2,
+      unchanged: 2,
+      topSymbol: symbolOf(first),
+      topChangePercent: 4.5,
+      watchedAdvancers: 1,
+      watchedDecliners: 0,
+      watchedCount: 2,
+    },
   });
   add(6, yesterday + HOUR_MS, {
     category: "market_listing",
@@ -94,7 +104,9 @@ function demoRows(account: DemoAccount, watchlist: readonly string[], requestNow
       composition: composition(`${symbolOf(security)} levou um abanão`, `${symbolOf(security)}: ${index % 2 ? "-" : "+"}${change}% face ao último fecho.`),
     });
   }
-  return rows.sort((a, b) => (a.created_at === b.created_at ? String(b.id).localeCompare(String(a.id)) : String(b.created_at).localeCompare(String(a.created_at))));
+  return rows.sort((a, b) =>
+    a.created_at === b.created_at ? String(b.id).localeCompare(String(a.id)) : String(b.created_at).localeCompare(String(a.created_at)),
+  );
 }
 
 async function readIDs(): Promise<Set<string>> {
@@ -103,23 +115,24 @@ async function readIDs(): Promise<Set<string>> {
 }
 
 /** Rows older than two days start read, so the bell reflects the recent ones. */
-const isRead = (row: Row, read: ReadonlySet<string>, now: number) =>
-  read.has(String(row.id)) || now - Date.parse(String(row.created_at)) > 2 * DAY_MS;
+const isRead = (row: Row, read: ReadonlySet<string>, now: number) => read.has(String(row.id)) || now - Date.parse(String(row.created_at)) > 2 * DAY_MS;
 
 export async function demoNotificationPage(account: DemoAccount, watchlist: readonly string[], cursor: ActivityCursor | null, now: number) {
   const read = await readIDs();
   const all = demoRows(account, watchlist, now);
   // The RPC's keyset: rows strictly before the cursor's (created_at, id).
-  const before = (row: Row) =>
-    !cursor || String(row.created_at) < cursor.createdAt || (row.created_at === cursor.createdAt && String(row.id) < cursor.id);
+  const before = (row: Row) => !cursor || String(row.created_at) < cursor.createdAt || (row.created_at === cursor.createdAt && String(row.id) < cursor.id);
   const rows = all
     .filter(before)
-    .slice(0, ACTIVITY_PAGE_SIZE).map((row) => ({ ...row, read_at: isRead(row, read, now) ? row.created_at : null }));
+    .slice(0, ACTIVITY_PAGE_SIZE)
+    .map((row) => ({ ...row, read_at: isRead(row, read, now) ? row.created_at : null }));
   const slugs = new Map(demoNewsRows(now).map((article) => [String(article.id), String(article.slug)]));
   const items = rows
     .map((row) => decodeAccountNotification(row, account.id))
     .filter((item): item is ActivityItem => item !== null)
-    .map((item) => (item.destination.kind === "article" ? { ...item, destination: { ...item.destination, slug: slugs.get(item.destination.articleID) ?? null } } : item));
+    .map((item) =>
+      item.destination.kind === "article" ? { ...item, destination: { ...item.destination, slug: slugs.get(item.destination.articleID) ?? null } } : item,
+    );
   return { items, cursor: rows.length < ACTIVITY_PAGE_SIZE ? null : nextCursor(rows) };
 }
 

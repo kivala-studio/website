@@ -16,13 +16,13 @@ import { DEMO_COOKIES } from "./tiers";
 
 /*
  * Demo mode's ledger, in a cookie of the same browser. `demo-portfolio-scenario` picks the starting
- * ledger: `full` (default), `partial` (one holding without a current quote), `empty`, or `invalid`
- * (an oversell). Every write applies the server's rules (contract §5.1) and refuses with its errors.
+ * ledger: `full` (default), `partial` (one holding without a current quote), `empty`, `invalid`
+ * (an oversell), or `shares` (`full` without the bond, so the weekly reading has every fact). Every write applies the server's rules (contract §5.1) and refuses with its errors.
  */
 const LEDGER_COOKIE = DEMO_COOKIES[9];
 export const DEMO_PORTFOLIO_SCENARIO_COOKIE = DEMO_COOKIES[10];
 const [BOOKS_COOKIE, CASH_COOKIE, SHARES_COOKIE] = DEMO_COOKIES.slice(11);
-export const DEMO_PORTFOLIO_SCENARIOS = ["full", "partial", "empty", "invalid"] as const;
+export const DEMO_PORTFOLIO_SCENARIOS = ["full", "partial", "empty", "invalid", "shares"] as const;
 type Scenario = (typeof DEMO_PORTFOLIO_SCENARIOS)[number];
 
 /** A cookie holds about 4 KB: the demo keeps at most this many records. */
@@ -31,7 +31,10 @@ const LIMIT = 24;
 const SECURITIES = new Map(
   recordedSnapshot.securities.map((security) => [
     security.id,
-    { kind: classifySecurityKind({ type: security.security_type ?? "", name: security.name ?? undefined, symbol: security.symbol }), currency: security.currency ?? "AOA" },
+    {
+      kind: classifySecurityKind({ type: security.security_type ?? "", name: security.name ?? undefined, symbol: security.symbol }),
+      currency: security.currency ?? "AOA",
+    },
   ]),
 );
 
@@ -41,7 +44,15 @@ const BDVA = "51399e7d-8108-434a-b852-c6646a3e9579";
 const BAI_BOND = "59c632cb-0072-4f56-95c8-650709d59615";
 const UNQUOTED_BOND = "89b56ea1-2462-4375-8c36-9967ef56cb8b";
 
-const row = (n: number, securityId: string, kind: TransactionWire["kind"], quantity: string, unitPrice: string, fees: string, tradedOn: string): TransactionWire => ({
+const row = (
+  n: number,
+  securityId: string,
+  kind: TransactionWire["kind"],
+  quantity: string,
+  unitPrice: string,
+  fees: string,
+  tradedOn: string,
+): TransactionWire => ({
   id: `d5e20000-0000-4000-8000-${String(n).padStart(12, "0")}`,
   securityId,
   kind,
@@ -72,6 +83,8 @@ function seeded(scenario: Scenario): TransactionWire[] {
       return [];
     case "invalid":
       return [...FULL, row(7, BDVA, "sell", "5", "100000", "0", "2026-10-01")];
+    case "shares":
+      return FULL.filter((item) => item.securityId !== BAI_BOND);
   }
 }
 
@@ -88,7 +101,17 @@ async function read(): Promise<Stored> {
       if (typeof parsed.r === "number" && Array.isArray(parsed.t)) {
         const rows = parsed.t.map((item) => {
           const [id, securityId, kind, quantity, unitPrice, fees, tradedOn, createdAt, portfolioId] = Array.isArray(item) ? item : [];
-          return decodeTransaction({ id, securityId, kind: { b: "buy", s: "sell", i: "income" }[kind as string], quantity, unitPrice, fees, tradedOn, createdAt, portfolioId: portfolioId || null });
+          return decodeTransaction({
+            id,
+            securityId,
+            kind: { b: "buy", s: "sell", i: "income" }[kind as string],
+            quantity,
+            unitPrice,
+            fees,
+            tradedOn,
+            createdAt,
+            portfolioId: portfolioId || null,
+          });
         });
         if (rows.every((item) => item !== null)) return { revision: parsed.r, rows: rows as TransactionWire[] };
       }
@@ -102,7 +125,17 @@ async function read(): Promise<Stored> {
 
 async function save(stored: Stored): Promise<void> {
   if (stored.rows.length > LIMIT) throw sqlError("54000", "Demo ledger is full");
-  const compact = stored.rows.map((item) => [item.id, item.securityId, item.kind[0], item.quantity, item.unitPrice, item.fees, item.tradedOn, item.createdAt, item.portfolioId ?? 0]);
+  const compact = stored.rows.map((item) => [
+    item.id,
+    item.securityId,
+    item.kind[0],
+    item.quantity,
+    item.unitPrice,
+    item.fees,
+    item.tradedOn,
+    item.createdAt,
+    item.portfolioId ?? 0,
+  ]);
   (await cookies()).set(LEDGER_COOKIE, JSON.stringify({ r: stored.revision + 1, t: compact }), COOKIE_OPTIONS);
 }
 
@@ -116,9 +149,11 @@ function check(before: readonly TransactionWire[], after: readonly TransactionWi
   if (changed) {
     const issues = recordIssues(fromWire(changed), SECURITIES.get(changed.securityId), now);
     if (issues.includes("futureDate")) throw sqlError("22007", "portfolio transaction date cannot be in the future");
-    if (issues.some((issue) => issue === "unsupported" || issue === "wholeQuantity" || issue === "overflow")) throw sqlError("23514", "Unsupported portfolio instrument or quantity");
+    if (issues.some((issue) => issue === "unsupported" || issue === "wholeQuantity" || issue === "overflow"))
+      throw sqlError("23514", "Unsupported portfolio instrument or quantity");
     const constraint = issues.includes("taxExceedsGross") || (changed.kind === "income" && issues.includes("quantity")) ? "income_shape" : "check";
-    if (issues.length > 0) throw sqlError("23514", `new row for relation "portfolio_transactions" violates check constraint "portfolio_transactions_${constraint}"`);
+    if (issues.length > 0)
+      throw sqlError("23514", `new row for relation "portfolio_transactions" violates check constraint "portfolio_transactions_${constraint}"`);
   }
   const ledger = (rows: readonly TransactionWire[]): PortfolioTransaction[] => rows.map(fromWire);
   if (!permitsChange(ledger(before), ledger(after), now)) throw sqlError("23514", "Portfolio sale exceeds holdings");
@@ -138,7 +173,8 @@ export async function demoUpdateTransaction(transaction: TransactionWire, now: n
   const stored = await read();
   const previous = stored.rows.find((item) => item.id === transaction.id);
   if (!previous) return;
-  if (previous.securityId !== transaction.securityId || previous.portfolioId !== transaction.portfolioId) throw sqlError("23514", "Portfolio transaction identity cannot change");
+  if (previous.securityId !== transaction.securityId || previous.portfolioId !== transaction.portfolioId)
+    throw sqlError("23514", "Portfolio transaction identity cannot change");
   const updated = { ...transaction, createdAt: previous.createdAt };
   const rows = stored.rows.map((item) => (item.id === transaction.id ? updated : item));
   check(stored.rows, rows, updated, now);
@@ -189,7 +225,10 @@ export async function demoCreateBook(account: DemoAccount, book: PortfolioBook):
 export async function demoRenameBook(book: PortfolioBook): Promise<void> {
   const books = await demoBooks();
   if (hasBookNamed(books, book.name, book.id)) throw sqlError("23505", 'duplicate key value violates unique constraint "portfolios_user_name_key"');
-  await writeList(BOOKS_COOKIE, books.map((item) => (item.id === book.id ? book : item)));
+  await writeList(
+    BOOKS_COOKIE,
+    books.map((item) => (item.id === book.id ? book : item)),
+  );
 }
 
 /** Cascades like the server: the portfolio's records, cash movements and share links go with it. */
@@ -198,9 +237,18 @@ export async function demoDeleteBook(id: string): Promise<void> {
   if (!books.some((book) => book.id === id)) return;
   const stored = await read();
   await save({ revision: stored.revision, rows: stored.rows.filter((row) => row.portfolioId !== id) });
-  await writeList(CASH_COOKIE, (await demoCash()).filter((movement) => movement.portfolioId !== id));
-  await writeList(SHARES_COOKIE, (await readShares()).filter((share) => share.portfolioId !== id));
-  await writeList(BOOKS_COOKIE, books.filter((book) => book.id !== id));
+  await writeList(
+    CASH_COOKIE,
+    (await demoCash()).filter((movement) => movement.portfolioId !== id),
+  );
+  await writeList(
+    SHARES_COOKIE,
+    (await readShares()).filter((share) => share.portfolioId !== id),
+  );
+  await writeList(
+    BOOKS_COOKIE,
+    books.filter((book) => book.id !== id),
+  );
 }
 
 export const demoCash = () => readList(CASH_COOKIE, decodeCashMovement);
@@ -216,7 +264,10 @@ export async function demoCreateCash(account: DemoAccount, movement: CashMovemen
 }
 
 export async function demoDeleteCash(id: string): Promise<void> {
-  await writeList(CASH_COOKIE, (await demoCash()).filter((movement) => movement.id !== id));
+  await writeList(
+    CASH_COOKIE,
+    (await demoCash()).filter((movement) => movement.id !== id),
+  );
 }
 
 type DemoShare = { id: string; label: string; createdAt: string; portfolioId: string | null; hash: string };
@@ -248,12 +299,18 @@ export async function demoCreateShare(account: DemoAccount, portfolioId: string 
   const shares = await readShares();
   if (shares.length >= SHARE_LIMIT) throw demoRule("SHARE_LIMIT", { limit: SHARE_LIMIT });
   const token = randomBytes(24).toString("base64url");
-  await writeList(SHARES_COOKIE, [...shares, { id: crypto.randomUUID(), label: trimmed, createdAt: new Date(now).toISOString(), portfolioId, hash: tokenHash(token) }]);
+  await writeList(SHARES_COOKIE, [
+    ...shares,
+    { id: crypto.randomUUID(), label: trimmed, createdAt: new Date(now).toISOString(), portfolioId, hash: tokenHash(token) },
+  ]);
   return token;
 }
 
 export async function demoRevokeShare(id: string): Promise<void> {
-  await writeList(SHARES_COOKIE, (await readShares()).filter((share) => share.id !== id));
+  await writeList(
+    SHARES_COOKIE,
+    (await readShares()).filter((share) => share.id !== id),
+  );
 }
 
 /** `get_shared_portfolio` for a link made in this browser: null when unknown, revoked, or the owner is no longer Plus. */
@@ -266,6 +323,15 @@ export async function demoCreatedSharedPortfolio(token: string): Promise<unknown
     portfolio: name,
     transactions: rows
       .filter((row) => (row.portfolioId ?? null) === share.portfolioId)
-      .map((row) => ({ id: row.id, security_id: row.securityId, transaction_kind: row.kind, quantity: row.quantity, unit_price: row.unitPrice, fees: row.fees, traded_on: row.tradedOn, created_at: row.createdAt })),
+      .map((row) => ({
+        id: row.id,
+        security_id: row.securityId,
+        transaction_kind: row.kind,
+        quantity: row.quantity,
+        unit_price: row.unitPrice,
+        fees: row.fees,
+        traded_on: row.tradedOn,
+        created_at: row.createdAt,
+      })),
   };
 }

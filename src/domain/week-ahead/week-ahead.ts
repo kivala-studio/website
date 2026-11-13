@@ -1,5 +1,8 @@
 import { MarketCalendar, type Period } from "@/domain/market/calendar";
 import { type EpochMs, DAY_MS, MINUTE_MS, addDays, civilDate, dayStart, parseInstant, weekday } from "@/domain/market/zone";
+import { type ContentExposureSnapshot, type PersonalizationCandidate, exposureSnapshot, personalizationContext } from "@/domain/personalisation/candidate";
+import { evaluatePersonalization } from "@/domain/personalisation/engine";
+import { type UserInterestProfile, interestProfile } from "@/domain/personalisation/profile";
 
 /*
  * Semana à frente (iOS `WeekAheadPolicy`, `MarketEvent`, `SupabaseMarketEventRepository`): dates already announced
@@ -169,14 +172,7 @@ const publicationInstant = (date: PublicationDate) => (date.kind === "day" ? (da
 
 /** iOS `MarketEventValidator`: unsafe, future-dated or stale provenance withholds the event. */
 export function hasValidProvenance(event: MarketEvent, now: EpochMs): boolean {
-  if (
-    event.id === "" ||
-    event.title.trim() === "" ||
-    !isValidTiming(event.timing) ||
-    !finite(now) ||
-    !finite(event.updatedAt) ||
-    event.updatedAt > now
-  ) {
+  if (event.id === "" || event.title.trim() === "" || !isValidTiming(event.timing) || !finite(now) || !finite(event.updatedAt) || event.updatedAt > now) {
     return false;
   }
   const sourcesValid =
@@ -190,8 +186,7 @@ export function hasValidProvenance(event: MarketEvent, now: EpochMs): boolean {
         finite(source.retrievedAt) &&
         source.retrievedAt <= now &&
         event.updatedAt <= source.retrievedAt &&
-        (source.publishedAt === undefined ||
-          (finite(publicationInstant(source.publishedAt)) && publicationInstant(source.publishedAt) <= source.retrievedAt)),
+        (source.publishedAt === undefined || (finite(publicationInstant(source.publishedAt)) && publicationInstant(source.publishedAt) <= source.retrievedAt)),
     );
   if (!sourcesValid) return false;
   if (!event.sources.every((source) => now - source.retrievedAt < MAXIMUM_EVENT_AGE)) return false;
@@ -247,7 +242,6 @@ export function currentVersions(events: readonly MarketEvent[]): MarketEvent[] {
 // MARK: Selection
 
 export type Relationship = "portfolio" | "watchlist" | "market";
-const RELATIONSHIP_RANK: Record<Relationship, number> = { portfolio: 0, watchlist: 1, market: 2 };
 
 export interface WeekSecurity {
   readonly id: string;
@@ -265,6 +259,9 @@ export interface WeekContext {
   readonly hidesPersonalValues: boolean;
   /** Days of the week the verified calendar shows without a session. */
   readonly closedDays?: ReadonlySet<EventDay>;
+  /** The interest profile and exposure the shared personalisation engine ranks with (holdings and watchlist are replaced). */
+  readonly profile?: UserInterestProfile;
+  readonly exposure?: ContentExposureSnapshot;
 }
 
 export interface WeekItem {
@@ -297,18 +294,22 @@ const selectionOf = (ranked: WeekItem[], days: WeekDay[], expiresAt: EpochMs): W
   watchlistCount: ranked.filter((item) => item.relationship === "watchlist").length,
 });
 
-/**
- * Ordering (product §2.4, `docs/week-ahead-phase7.md`): portfolio, watchlist, market; market-wide first; confirmed
- * before tentative; chronological; id. Browsing behaviour never takes part.
- */
-function compareItems(a: WeekItem, b: WeekItem): number {
-  return (
-    RELATIONSHIP_RANK[a.relationship] - RELATIONSHIP_RANK[b.relationship] ||
-    Number(b.event.importance === "marketWide") - Number(a.event.importance === "marketWide") ||
-    Number(a.event.status !== "confirmed") - Number(b.event.status !== "confirmed") ||
-    timingStart(a.event.timing) - timingStart(b.event.timing) ||
-    byID(a, b)
-  );
+/** iOS `WeekAheadPolicy.candidate`: the event as the shared personalisation engine ranks it. */
+export function weekCandidate(event: MarketEvent, expiresAt: EpochMs): PersonalizationCandidate {
+  return {
+    id: event.id,
+    factKeys: new Set([`event:${semanticKey(event)}`]),
+    topicKeys: new Set([`schedule:${event.issuer?.id ?? event.id}`]),
+    assets: new Set(event.relatedSecurityIDs),
+    issuers: new Set(event.issuer ? [event.issuer.id] : []),
+    family: event.kind,
+    category: "events",
+    observedAt: timingStart(event.timing),
+    expiresAt,
+    significance: event.importance === "marketWide" ? "material" : event.status === "confirmed" ? "noteworthy" : "routine",
+    isMarketWide: event.importance === "marketWide",
+    isUpcoming: true,
+  };
 }
 
 /** The week's events for this viewer. `previous` is the batch seen before, for the date-correction badge. */
@@ -353,7 +354,23 @@ export function selectWeek(batch: EventBatch, context: WeekContext, previous: re
     items.push({ id: event.id, event: { ...event, relatedSecurityIDs: assets }, relationship, isDateCorrection });
   }
 
-  const ranked = items.sort(compareItems);
+  // Ordering is the shared engine's (iOS `WeekAheadPolicy.select`): relationship weight, significance, then the
+  // earliest date; nothing is dropped below a threshold on this surface.
+  const profile = { ...(context.profile ?? interestProfile()), holdingIDs: held, watchedIDs: watched };
+  const evaluation = evaluatePersonalization(
+    items.map((item) => weekCandidate(item.event, expiresAt)),
+    personalizationContext({
+      surface: "weekAhead",
+      now: context.now,
+      profile,
+      exposure: context.exposure ?? exposureSnapshot(),
+      hidesPersonalValues: context.hidesPersonalValues,
+    }),
+    items.length,
+  );
+  const byItemID = new Map<string, WeekItem>();
+  for (const item of items) if (!byItemID.has(item.id)) byItemID.set(item.id, item);
+  const ranked = evaluation.selected.map((decision) => byItemID.get(decision.candidate.id)).filter((item): item is WeekItem => item !== undefined);
   const order = new Map(ranked.map((item, index) => [item.id, index]));
   const grouped = new Map<EventDay, WeekItem[]>();
   for (const item of ranked) {

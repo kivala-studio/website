@@ -66,7 +66,12 @@ export async function saveDemoWatchlist(ids: readonly string[]): Promise<void> {
  * The access document: Free's active three are the first three rows; its movement instrument is the first
  * active row with automatic alerts on (`automatic` defaults to the first row).
  */
-export function demoAccess(account: DemoAccount, watchlist: readonly string[], pair: readonly string[] | null, automatic?: ReadonlySet<string>): SubscriptionAccess {
+export function demoAccess(
+  account: DemoAccount,
+  watchlist: readonly string[],
+  pair: readonly string[] | null,
+  automatic?: ReadonlySet<string>,
+): SubscriptionAccess {
   const active = account.tier === "free" ? watchlist.slice(0, 3) : [...watchlist];
   return {
     isPlus: account.tier !== "free",
