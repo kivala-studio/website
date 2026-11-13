@@ -1964,6 +1964,7 @@
       "dateInFuture": "A data do registo não pode estar no futuro.",
       "quantityPositive": "Introduz uma quantidade superior a zero.",
       "quantityWholeNumber": "A quantidade deste instrumento deve ser um número inteiro.",
+      "saleExceedsHoldings": "A venda excede a quantidade que tinhas nessa data.",
       "taxExceedsGross": "O imposto retido não pode exceder o valor bruto.",
       "unitPricePositive": "Introduz um preço por unidade superior a zero."
     }

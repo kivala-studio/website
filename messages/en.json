@@ -1964,6 +1964,7 @@
       "dateInFuture": "The record date cannot be in the future.",
       "quantityPositive": "Enter a quantity greater than zero.",
       "quantityWholeNumber": "The quantity for this instrument must be a whole number.",
+      "saleExceedsHoldings": "This sale exceeds the quantity you held on that date.",
       "taxExceedsGross": "Withheld tax can''t exceed the gross amount.",
       "unitPricePositive": "Enter a unit price greater than zero."
     }
