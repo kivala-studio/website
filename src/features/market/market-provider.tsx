@@ -7,6 +7,7 @@ import { browserConnectivity, observeConnectivity } from "@/data/market/connecti
 import { routeHistorySource } from "@/data/market/history-wire";
 import { listenToQuoteAnnouncements } from "@/data/market/realtime";
 import { SupabaseMarketRepository, type SnapshotSource } from "@/data/market/repository";
+import { demoMarketUpdates } from "@/data/market/demo/updates";
 import { routeSnapshotSource } from "@/data/market/route-source";
 import { MarketStore, type MarketStoreState } from "@/data/market/store";
 import { ErrorPresenter, appErrors } from "@/features/errors/error-presenter";
@@ -28,6 +29,10 @@ function offlineAfterFirstLoad(source: SnapshotSource): SnapshotSource {
   };
 }
 
+/** The demo scenario the snapshot route also reads (`DEMO_SCENARIO_COOKIE`; that module carries the recorded snapshot). */
+const cookieScenario = () =>
+  typeof document === "undefined" ? undefined : document.cookie.split("; ").find((item) => item.startsWith("demo-scenario="))?.slice("demo-scenario=".length);
+
 let tabStore: MarketStore | undefined;
 
 /** One market store per browser tab, created on first use. */
@@ -40,6 +45,7 @@ function marketStoreForTab(scenario: string | undefined): MarketStore {
     snapshot: demo && scenario === "offline" ? offlineAfterFirstLoad(source) : source,
     supabase: demo ? undefined : loadClient,
     history: routeHistorySource,
+    updates: demo && (scenario ?? cookieScenario()) === "updates" ? demoMarketUpdates(Date.now()) : undefined,
   });
   const store = new MarketStore({ repository, errors: appErrors });
   // Server rendering gets an idle store per request: it never loads, and it is never shared between visitors.

@@ -17,6 +17,7 @@ import {
 import { useAccount } from "@/features/account/account-provider";
 import { type CatalogueRow, PriceCell } from "@/features/market/browse/price-cell";
 import { useMarketState, useMarketStore } from "@/features/market/market-provider";
+import { HomeMarketUpdates } from "@/features/news/market-information";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
 import { Button, ButtonLink, IconButton } from "@/ui/components/buttons";
@@ -110,8 +111,11 @@ export function HomeView({
             </div>
           )}
           <div className="max-lg:order-5">{news}</div>
-          {recaps ? <div className="max-lg:order-6">{recaps}</div> : null}
-          <div className="max-lg:order-7">{simulator}</div>
+          <div className="empty:hidden max-lg:order-6">
+            <HomeMarketUpdates />
+          </div>
+          {recaps ? <div className="max-lg:order-7">{recaps}</div> : null}
+          <div className="max-lg:order-8">{simulator}</div>
         </div>
       </div>
     </div>

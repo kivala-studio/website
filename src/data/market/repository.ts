@@ -7,6 +7,7 @@ import {
   type MarketClientControl,
   type MarketIndex,
   type MarketSnapshot,
+  type MarketUpdate,
   type PricePoint,
   SnapshotRoute,
   acceptSnapshotBundle,
@@ -71,6 +72,8 @@ export class SupabaseMarketRepository implements MarketRepository {
       history?: HistorySource;
       now?: () => EpochMs;
       route?: SnapshotRoute;
+      /** Demo only: market information attached to every snapshot (the live backend sends none). */
+      updates?: readonly MarketUpdate[];
     },
   ) {
     this.now = options.now ?? Date.now;
@@ -86,7 +89,7 @@ export class SupabaseMarketRepository implements MarketRepository {
       // Without direct reads (demo mode) the snapshot is the only route, also after a server failure.
       if (!this.options.supabase || this.route.usesSnapshot(this.now())) {
         try {
-          return await this.fromSnapshot(signal);
+          return this.withUpdates(await this.fromSnapshot(signal));
         } catch (error) {
           if (isCancellation(error) || signal?.aborted) throw new CancellationError();
           if (SnapshotRoute.isServerFailure(error)) {
@@ -96,10 +99,14 @@ export class SupabaseMarketRepository implements MarketRepository {
           if (!this.options.supabase || !fallsThrough(error)) throw error;
         }
       }
-      return await this.fromDirectReads(signal);
+      return this.withUpdates(await this.fromDirectReads(signal));
     } catch (error) {
       throw boundaryError(error, "supabase.fetchLightSnapshot");
     }
+  }
+
+  private withUpdates(snapshot: MarketSnapshot): MarketSnapshot {
+    return this.options.updates ? { ...snapshot, updates: this.options.updates } : snapshot;
   }
 
   async fetchTradingCalendar(signal?: AbortSignal): Promise<MarketCalendar | undefined> {

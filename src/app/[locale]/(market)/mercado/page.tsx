@@ -9,6 +9,7 @@ import { civilDate } from "@/domain/market/zone";
 import { catalogueRows } from "@/features/market/browse/catalogue";
 import { MarketBrowser } from "@/features/market/browse/market-browser";
 import { IndexInfo, Movers, SessionFacts, SessionStatus } from "@/features/market/browse/market-overview";
+import { MarketInformationSummary } from "@/features/news/market-information";
 import { siteMetadata } from "@/features/site/metadata";
 import { INDEXABLE_PAGES } from "@/features/site/site";
 import { Link } from "@/i18n/navigation";
@@ -82,6 +83,8 @@ export default async function MarketPage() {
         </Panel>
 
         <Movers rows={rows} />
+
+        <MarketInformationSummary />
 
         <nav aria-label={t("common.market")} className="flex flex-col gap-3 sm:flex-row lg:flex-col lg:gap-0 lg:panel lg:overflow-hidden">
           {links.map((link) => (

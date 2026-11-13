@@ -37,7 +37,7 @@ export const AREA_KEYS = {
     "home.movers",
     "legacy.titulo",
     "legacy.titulos",
-    "news.information.categoryLabel",
+    "news.information",
   ],
   /** Every signed-in page (the app shell): search, Home, the instrument's account panels and plan reasons. */
   app: [
@@ -56,6 +56,7 @@ export const AREA_KEYS = {
     "subscriptions.paywall",
     "subscriptions.management.plusTitle",
     "simulation.entry.prompt",
+    "news.information.rowOpenHint",
     "watchlist.accessibility",
     "watchlist.addSheet",
     "watchlist.emptyState",
@@ -117,6 +118,9 @@ export const AREA_KEYS = {
   ],
   news: ["news.feed", "news.kind", "news.publications", "news.row", "news.store"],
   learn: ["learn.read"],
+  simulation: ["simulation", "legacy.introduzaUmaTaxaSuperiorA100", "legacy.limitesValoresAte1BiliaoKz"],
+  unusualActivity: ["unusualActivity", "notification.unusual.trade", "notification.unusual.order", "legacy.notificationUnusualTradeFundUnit"],
+  weekAhead: ["weekAhead", "legacy.eventoAnunciado", "legacy.eventosAnunciados", "legacy.eventoRelacionado", "legacy.eventosRelacionados"],
   share: ["portfolio.summary"],
   auth: ["authentication.signIn"],
   setup: [

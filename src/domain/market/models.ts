@@ -1,6 +1,7 @@
 import Decimal from "decimal.js";
 
 import type { DataQualityReport } from "./quality";
+import type { MarketUpdate } from "./updates";
 import type { EpochMs } from "./zone";
 
 export const SECURITY_KINDS = ["corporateBond", "equity", "fund", "other", "treasuryBond"] as const;
@@ -199,6 +200,8 @@ export interface MarketSnapshot {
   /** Message keys of sections that could not be loaded. */
   readonly unavailableSections?: readonly MarketMessageKey[];
   readonly marketContextValidUntil?: EpochMs;
+  /** Market information (iOS `MarketUpdate`). No live source carries any yet; only demo mode fills it. */
+  readonly updates?: readonly MarketUpdate[];
 }
 
 export type MarketSnapshotInit = Partial<MarketSnapshot> & Pick<MarketSnapshot, "securities">;
