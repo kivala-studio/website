@@ -18,4 +18,7 @@ export const DEMO_COOKIES = [
   "demo-notification-preferences",
   "demo-portfolio",
   "demo-portfolio-scenario",
+  "demo-portfolio-books",
+  "demo-portfolio-cash",
+  "demo-portfolio-shares",
 ] as const;

@@ -25,6 +25,8 @@ export type TransactionWire = {
   fees: string;
   tradedOn: CivilDate;
   createdAt: string;
+  /** null is the main portfolio. */
+  portfolioId: string | null;
 };
 
 const CIVIL = /^\d{4}-\d{2}-\d{2}$/;
@@ -54,9 +56,11 @@ export function decodeTransaction(value: unknown): TransactionWire | null {
   const fees = decimalText(row.fees ?? 0);
   const tradedOn = text(row.traded_on ?? row.tradedOn);
   const createdAt = text(row.created_at ?? row.createdAt);
+  const portfolioId = row.portfolio_id ?? row.portfolioId ?? null;
+  if (portfolioId !== null && (typeof portfolioId !== "string" || !UUID.test(portfolioId))) return null;
   if (!id || !UUID.test(id) || !securityId || !kind || !(TRANSACTION_KINDS as readonly string[]).includes(kind)) return null;
   if (!quantity || !unitPrice || !fees || !tradedOn || !isCivilDate(tradedOn) || !createdAt || Number.isNaN(Date.parse(createdAt))) return null;
-  return { id: id.toLowerCase(), securityId: securityId.toLowerCase(), kind: kind as PortfolioTransactionKind, quantity, unitPrice, fees, tradedOn, createdAt };
+  return { id: id.toLowerCase(), securityId: securityId.toLowerCase(), kind: kind as PortfolioTransactionKind, quantity, unitPrice, fees, tradedOn, createdAt, portfolioId: portfolioId?.toLowerCase() ?? null };
 }
 
 export const fromWire = (wire: TransactionWire): PortfolioTransaction => ({
@@ -68,6 +72,7 @@ export const fromWire = (wire: TransactionWire): PortfolioTransaction => ({
   fees: new Decimal(wire.fees),
   tradedOn: wire.tradedOn,
   createdAt: wire.createdAt,
+  portfolioId: wire.portfolioId,
 });
 
 export const toWire = (transaction: PortfolioTransaction): TransactionWire => ({
@@ -79,6 +84,7 @@ export const toWire = (transaction: PortfolioTransaction): TransactionWire => ({
   fees: transaction.fees.toFixed(),
   tradedOn: transaction.tradedOn,
   createdAt: transaction.createdAt,
+  portfolioId: transaction.portfolioId ?? null,
 });
 
 /** Ledger order: trade day, then creation time, then id (contract §5.1). */

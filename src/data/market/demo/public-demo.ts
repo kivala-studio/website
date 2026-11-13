@@ -119,3 +119,34 @@ export function demoNewsRows(now: EpochMs): Row[] {
   }
   return rows;
 }
+
+/** Demo `market_rates`: the four benchmark rates, published yesterday and a month before. */
+export function demoBenchmarkRateRows(now: EpochMs): Row[] {
+  const day = (offset: number) => civilDate(now - offset * DAY_MS);
+  const rates: [string, number, number][] = [
+    ["Inflação Homóloga", 18.42, 19.1],
+    ["Taxa Básica do BNA", 19.5, 19.5],
+    ["Taxa LUIBOR Overnight", 21.84, 22.3],
+    ["BTs - 364 Dias", 16.75, 17],
+  ];
+  return rates.flatMap(([name, latest, previous]) => [
+    { rate_name: name, value: latest, trading_date: day(1) },
+    { rate_name: name, value: previous, trading_date: day(31) },
+  ]);
+}
+
+const BAI_ISSUER = "7398e912-aaf8-430f-aaae-883931c9cd84";
+const BCGA_ISSUER = "d328c0e2-e944-4a83-ae68-40eede151c06";
+
+/**
+ * Demo `issuer_dividends`, against the demo ledger: BAI paid on 20 June 2026 (recorded in the ledger) and
+ * pays again 45 days from today; BCGA paid 30 days ago (not recorded).
+ */
+export function demoDividendRows(now: EpochMs): Row[] {
+  const day = (offset: number) => civilDate(now + offset * DAY_MS);
+  return [
+    { issuer_id: BAI_ISSUER, amount_per_share: "2500", ex_dividend_date: "2026-06-10", record_date: "2026-06-12", payment_date: "2026-06-20" },
+    { issuer_id: BCGA_ISSUER, amount_per_share: "350", ex_dividend_date: day(-40), record_date: day(-38), payment_date: day(-30) },
+    { issuer_id: BAI_ISSUER, amount_per_share: "2750", ex_dividend_date: day(20), record_date: day(22), payment_date: day(45) },
+  ];
+}

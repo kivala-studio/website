@@ -2901,6 +2901,11 @@
     },
     "settings": {
       "notificationLimits": "Up to five optional notifications a day. From 8 pm to 8 am, the radar stays silent."
+    },
+    "portfolio": {
+      "copyLink": "Copy link",
+      "linkCopied": "Link copied",
+      "remindersInApps": "Reminders are in the iPhone and Android apps."
     }
   }
 }

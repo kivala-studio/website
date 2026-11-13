@@ -3,7 +3,9 @@ import "server-only";
 import { unstable_cache } from "next/cache";
 
 import { publicEnv } from "@/config/public-env";
-import { demoHistoryRows, demoNewsRows } from "@/data/market/demo/public-demo";
+import { demoBenchmarkRateRows, demoDividendRows, demoHistoryRows, demoNewsRows } from "@/data/market/demo/public-demo";
+import { BENCHMARK_RATES, type BenchmarkQuote, latestBenchmarkQuotes } from "@/domain/portfolio/benchmark";
+import { type IssuerDividend, addCivilDays, decodeIssuerDividend, INCOME_WINDOW_DAYS } from "@/domain/portfolio/income-calendar";
 import { recordedSnapshot } from "@/data/market/demo/scenarios";
 import { DAY_MS, civilDate, tradingDateNoon } from "@/domain/market/zone";
 import { type NewsArticle, decodeNewsArticle, decodeNewsArticles } from "@/domain/news/article";
@@ -15,7 +17,9 @@ import {
   PUBLIC_HISTORY_DAYS,
   publicCatalogue,
   publicPulse,
+  readBenchmarkRateRows,
   readCatalogueRows,
+  readDividendRows,
   readPublicArticle,
   readPublicDividend,
   readPublicHistoryRows,
@@ -36,6 +40,7 @@ export const PUBLIC_REVALIDATE = {
   pulse: 3600,
   issuer: 86_400,
   news: 60,
+  rates: 3600,
 } as const;
 
 const demo = publicEnv.dataMode === "demo";
@@ -81,7 +86,26 @@ const article = unstable_cache((slug: string) => readPublicArticle(anonymousSupa
   tags: ["public-news"],
 });
 
+const rateRows = unstable_cache(() => readBenchmarkRateRows(anonymousSupabase(), BENCHMARK_RATES.map((rate) => rate.name)), ["public-benchmark-rates-v1"], {
+  revalidate: PUBLIC_REVALIDATE.rates,
+});
+const dividendRows = unstable_cache((since: string) => readDividendRows(anonymousSupabase(), since), ["public-dividends-v1"], {
+  revalidate: PUBLIC_REVALIDATE.issuer,
+});
+
 const luandaDay = (now: number) => civilDate(now);
+
+/** The latest value of each benchmark rate, in picker order. */
+export async function getBenchmarkQuotes(now = Date.now()): Promise<BenchmarkQuote[]> {
+  return latestBenchmarkQuotes(demo ? demoBenchmarkRateRows(now) : await rateRows());
+}
+
+/** Dividends of every issuer paid within the income calendar's window back from today. */
+export async function getRecentDividends(now = Date.now()): Promise<IssuerDividend[]> {
+  const since = addCivilDays(luandaDay(now), -INCOME_WINDOW_DAYS);
+  const rows = demo ? demoDividendRows(now).filter((row) => String(row.payment_date) >= since) : await dividendRows(since);
+  return rows.flatMap((row) => decodeIssuerDividend(row) ?? []);
+}
 
 export async function getPublicCatalogue(now = Date.now()) {
   const rows: CatalogueRows = demo

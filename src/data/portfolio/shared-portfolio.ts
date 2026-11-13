@@ -60,7 +60,7 @@ export async function fetchSharedPortfolio(token: string): Promise<SharedPortfol
   if (!isShareToken(token)) return null;
   if (publicEnv.dataMode === "demo") {
     const { demoSharedPortfolio } = await import("./demo-shares");
-    return decodeSharedPortfolio(demoSharedPortfolio(token));
+    return decodeSharedPortfolio(await demoSharedPortfolio(token));
   }
   const { url, key } = supabaseConfig();
   const response = await fetch(`${url}/rest/v1/rpc/get_shared_portfolio`, {

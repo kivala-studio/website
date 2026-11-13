@@ -42,6 +42,21 @@ function decodeTerms(raw: string | null): BondTerms | undefined {
     return undefined;
   }
 }
+
+/** Saved terms of these bonds, by security id (iOS `BondTermsStore`), for the income calendar's coupons. */
+export function useSavedBondTerms(bonds: readonly { id: string; symbol: string }[]): Record<string, BondTerms> {
+  const raw = useSyncExternalStore(subscribe, () => JSON.stringify(bonds.map((bond) => readTerms(bond.symbol))), () => "[]");
+  return useMemo(() => {
+    const values = JSON.parse(raw) as (string | null)[];
+    return Object.fromEntries(
+      bonds.flatMap((bond, index) => {
+        const terms = decodeTerms(values[index] ?? null);
+        return terms ? [[bond.id, terms]] : [];
+      }),
+    );
+  }, [raw, bonds]);
+}
+
 function saveTerms(symbol: string, terms: BondTerms) {
   try {
     window.localStorage.setItem(termsKey(symbol), JSON.stringify({ couponRate: terms.couponRate.toString(), frequency: terms.frequency }));

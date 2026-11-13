@@ -36,7 +36,11 @@ export type UpgradeReason =
   | "priceExport"
   | "liquidity"
   | "orderBookDepth"
-  | "clientViews";
+  | "clientViews"
+  | "benchmark"
+  | "report"
+  | "income"
+  | "statement";
 
 export type Tier = "plus" | "pro";
 
@@ -54,10 +58,14 @@ export const UPGRADE_REASON_KEYS: Record<UpgradeReason, ErrorMessageKey> = {
   liquidity: "subscriptions.paywall.liquidityReason",
   orderBookDepth: "common.orderBook",
   clientViews: "portfolioShare.menu",
+  benchmark: "subscriptions.paywall.benchmarkReason",
+  report: "subscriptions.paywall.reportReason",
+  income: "subscriptions.paywall.incomeReason",
+  statement: "subscriptions.paywall.statementReason",
 };
 
-/** iOS `UpgradeReason.tier`. */
-export const upgradeTier = (reason: UpgradeReason): Tier => (reason === "orderBookDepth" || reason === "clientViews" ? "pro" : "plus");
+/** iOS `UpgradeReason.tier`. Read-only links come with Plus since the backend folded Pro into it. */
+export const upgradeTier = (reason: UpgradeReason): Tier => (reason === "orderBookDepth" ? "pro" : "plus");
 
 export type ServerRule = {
   readonly code: ServerRuleCode;
@@ -76,6 +84,7 @@ const PLUS_FEATURES: Record<string, UpgradeReason> = {
   alert_rules: "alerts",
   portfolios: "portfolios",
   cash: "cash",
+  clientViews: "clientViews",
 };
 
 const RULES: Record<Exclude<ServerRuleCode, "PLUS_REQUIRED">, { upgrade?: UpgradeReason; messageKey: ErrorMessageKey | null }> = {
@@ -84,7 +93,7 @@ const RULES: Record<Exclude<ServerRuleCode, "PLUS_REQUIRED">, { upgrade?: Upgrad
   FREE_COMPARISON_SIZE_LIMIT: { upgrade: "comparison", messageKey: "subscriptions.access.comparisonSizeLimit" },
   FREE_COMPARISON_WEEK_LIMIT: { upgrade: "comparison", messageKey: "subscriptions.access.weeklyPairLimit" },
   COMPARISON_DATA_UNAVAILABLE: { messageKey: "subscriptions.access.insufficientData" },
-  // The paywall reason is the only Pro copy; there is no inline message.
+  // Raised by backends before Pro was folded into Plus; the paywall reason is the only copy.
   PRO_REQUIRED: { upgrade: "clientViews", messageKey: null },
   WATCHLIST_GROUP_LIMIT: { messageKey: "site.watchlist.groupLimit" },
   PORTFOLIO_LIMIT: { messageKey: null },
@@ -132,7 +141,7 @@ export function parseServerRule(code: unknown, message: unknown, details: unknow
     code: ruleCode,
     feature,
     limit,
-    upgrade: upgrade ? { reason: upgrade, tier: upgrade === "clientViews" ? "pro" : "plus" } : null,
+    upgrade: upgrade ? { reason: upgrade, tier: upgradeTier(upgrade) } : null,
     messageKey,
   };
 }

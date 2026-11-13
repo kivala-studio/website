@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 
 import { type PricePoint, TIME_RANGE_LINE_WIDTH, tradingDateNoon } from "@/domain/market";
 import type { ValuePoint } from "@/domain/portfolio";
+import { type BenchmarkQuote, type BenchmarkQuoteWire, fromQuoteWire } from "@/domain/portfolio/benchmark";
 import { orderWhileHidden } from "@/domain/privacy/privacy";
 import { CHART_HEIGHT, PriceChart } from "@/features/chart/price-chart";
 import { RANGE_OF } from "@/features/chart/ranges";
@@ -21,9 +22,11 @@ import { ErrorState, InstrumentRowSkeleton, Skeleton } from "@/ui/components/sta
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
 
+import { BookMenu, useSelectionTitle } from "./book-menu";
 import { CsvTransfer } from "./csv-transfer";
 import { Private, toneOf, useQuantityText } from "./portfolio-ui";
 import { type EditorRequest, TransactionEditor } from "./transaction-editor";
+import { BenchmarkSection, CashSection, ResultsSection } from "./summary-sections";
 import { type PortfolioModel, usePortfolio } from "./use-portfolio";
 
 const RANGES: readonly RangeName[] = ["oneWeek", "oneMonth", "threeMonths", "sixMonths", "oneYear", "all"];
@@ -32,9 +35,11 @@ export const PORTFOLIO_PATH = "/carteira";
 const chartPoints = (points: readonly ValuePoint[]): PricePoint[] => points.map((point) => ({ date: tradingDateNoon(point.day)!, value: point.value }));
 
 /** `/carteira` (iOS `PortfolioView`): skeleton, error, empty state or the dashboard, valued at current quotes. */
-export function PortfolioView({ rows, renderedAt }: { rows: readonly CatalogueRow[]; renderedAt: number }) {
+export function PortfolioView({ rows, renderedAt, quotes: wires }: { rows: readonly CatalogueRow[]; renderedAt: number; quotes: readonly BenchmarkQuoteWire[] | null }) {
+  const quotes = useMemo(() => wires?.map(fromQuoteWire) ?? null, [wires]);
   const t = useTranslations();
   const model = usePortfolio(rows, renderedAt);
+  const title = useSelectionTitle(model);
   const [editor, setEditor] = useState<EditorRequest | null>(null);
   const loaded = model.status === "loaded";
   const open = model.valid ? model.positions : [];
@@ -42,9 +47,13 @@ export function PortfolioView({ rows, renderedAt }: { rows: readonly CatalogueRo
   return (
     <div className="flex flex-col gap-8" data-testid="portfolio">
       <header className="flex flex-wrap items-center gap-3">
-        <h1 className="min-w-0 flex-1 text-display text-primary-text">{t("common.portfolio")}</h1>
-        <div className="flex items-center gap-2">
+        {/* Phones: the actions on top, the title on its own line below (iOS large title). */}
+        <h1 className="min-w-0 flex-1 basis-full truncate text-display text-primary-text sm:basis-0" data-testid="portfolio-title">
+          {title}
+        </h1>
+        <div className="order-first ml-auto flex items-center gap-2 sm:order-none">
           <PrivacyModeButton />
+          {loaded ? <BookMenu model={model} /> : null}
           {loaded ? <CsvTransfer model={model} /> : null}
           {loaded && model.transactions.length > 0 ? (
             <ButtonLink kind="secondary" icon="history" href={`${PORTFOLIO_PATH}/registos`} data-testid="records-link">
@@ -66,7 +75,7 @@ export function PortfolioView({ rows, renderedAt }: { rows: readonly CatalogueRo
       ) : open.length === 0 ? (
         <EmptyPortfolio onRecord={() => setEditor({ mode: "new" })} />
       ) : (
-        <Dashboard model={model} onRecord={() => setEditor({ mode: "new" })} />
+        <Dashboard model={model} quotes={quotes} onRecord={() => setEditor({ mode: "new" })} />
       )}
 
       <TransactionEditor request={editor} model={model} onClose={() => setEditor(null)} />
@@ -117,7 +126,7 @@ function EmptyPortfolio({ onRecord }: { onRecord: () => void }) {
 
 const TABS = ["portfolio.dashboard.positionsTab", "common.allocation", "portfolio.dashboard.summaryTab"] as const;
 
-function Dashboard({ model, onRecord }: { model: PortfolioModel; onRecord: () => void }) {
+function Dashboard({ model, quotes, onRecord }: { model: PortfolioModel; quotes: readonly BenchmarkQuote[] | null; onRecord: () => void }) {
   const t = useTranslations();
   const [range, setRange] = useState<RangeName>("oneMonth");
   const [tab, setTab] = useState(0);
@@ -140,7 +149,7 @@ function Dashboard({ model, onRecord }: { model: PortfolioModel; onRecord: () =>
       <div className="flex flex-col gap-4">
         <SectionTabs label={t("common.portfolio")} titles={TABS.map((key) => t(key))} selected={tab} onSelect={setTab} idPrefix="portfolio" />
         <div role="tabpanel" id={`portfolio-panel-${tab}`} aria-labelledby={`portfolio-tab-${tab}`}>
-          {tab === 0 ? <Holdings model={model} /> : tab === 1 ? <Allocation model={model} /> : <SummaryTab model={model} />}
+          {tab === 0 ? <Holdings model={model} /> : tab === 1 ? <Allocation model={model} /> : <SummaryTab model={model} points={points} quotes={quotes} />}
         </div>
         {model.valueState === "partial" ? <p className="text-secondary text-warning">{t("portfolio.dashboard.partialValuesNotice")}</p> : null}
       </div>
@@ -363,10 +372,10 @@ function Allocation({ model }: { model: PortfolioModel }) {
   );
 }
 
-function SummaryTab({ model }: { model: PortfolioModel }) {
+function SummaryTab({ model, points, quotes }: { model: PortfolioModel; points: readonly ValuePoint[]; quotes: readonly BenchmarkQuote[] | null }) {
   const t = useTranslations();
   const format = useFormat();
-  const { summary, valueState, results } = model;
+  const { summary, valueState } = model;
   const partial = valueState === "partial";
   const none = valueState === "unavailable" || valueState === "pending";
   const tiles = [
@@ -383,9 +392,11 @@ function SummaryTab({ model }: { model: PortfolioModel }) {
       tone: none ? "text-secondary-text" : toneOf(summary.returnPercentage),
     },
   ];
-  const years = results.years.filter((year) => !year.realizedProfitLoss.isZero() || !year.netIncome.isZero());
   return (
     <div className="flex flex-col gap-6 py-2">
+      <ButtonLink kind="secondary" icon="calendar" href={`${PORTFOLIO_PATH}/rendimentos`} data-testid="income-link">
+        {t("income.title")}
+      </ButtonLink>
       <dl className="grid grid-cols-2 gap-3" data-testid="portfolio-metrics">
         {tiles.map((tile) => (
           <div key={tile.title} className="flex flex-col gap-1 rounded-medium bg-elevated-background p-4">
@@ -396,43 +407,9 @@ function SummaryTab({ model }: { model: PortfolioModel }) {
           </div>
         ))}
       </dl>
-      {years.length > 0 ? (
-        <section className="flex flex-col gap-2" aria-labelledby="results-by-year">
-          <h3 id="results-by-year" className="text-section text-primary-text">
-            {t("portfolio.results.byYear")}
-          </h3>
-          <table className="w-full text-secondary">
-            <thead className="text-caption text-secondary-text">
-              <tr>
-                <th scope="col" className="py-2 text-left font-normal">
-                  {t("common.date")}
-                </th>
-                <th scope="col" className="py-2 text-right font-normal">
-                  {t("common.realizedGain")}
-                </th>
-                <th scope="col" className="py-2 text-right font-normal">
-                  {t("common.netIncome")}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {years.map((year) => (
-                <tr key={year.year} className="border-t border-separator">
-                  <th scope="row" className="py-2 text-left font-semibold text-primary-text">
-                    {year.year}
-                  </th>
-                  <td className={cn("py-2 text-right tabular-nums", toneOf(year.realizedProfitLoss))}>
-                    <Private>{format.currency(year.realizedProfitLoss, { signed: true })}</Private>
-                  </td>
-                  <td className="py-2 text-right tabular-nums text-primary-text">
-                    <Private>{format.currency(year.netIncome)}</Private>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-      ) : null}
+      <CashSection model={model} />
+      <BenchmarkSection model={model} points={points} quotes={quotes} />
+      <ResultsSection model={model} />
       <ButtonLink kind="secondary" icon="calculator" href="/simulador">
         {t("common.simulateInvestment")}
       </ButtonLink>

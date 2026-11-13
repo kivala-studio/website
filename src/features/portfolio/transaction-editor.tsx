@@ -25,7 +25,7 @@ import type { PortfolioInstrument, PortfolioModel } from "./use-portfolio";
 /** What opened the editor: a new purchase (starts with the picker), a record for a known instrument, or an edit. */
 export type EditorRequest =
   | { mode: "new" }
-  | { mode: "add"; kind: PortfolioTransactionKind; securityId: string }
+  | { mode: "add"; kind: PortfolioTransactionKind; securityId: string; prefill?: { price: Decimal; date: string } }
   | { mode: "edit"; record: PortfolioTransaction };
 
 const TITLES = {
@@ -63,19 +63,22 @@ function EditorSheet({ request, model, onClose }: { request: EditorRequest; mode
   const t = useTranslations();
   const format = useFormat();
   const record = request.mode === "edit" ? request.record : undefined;
+  const prefill = request.mode === "add" ? request.prefill : undefined;
   const kind: PortfolioTransactionKind = record?.kind ?? (request.mode === "add" ? request.kind : "buy");
   const [id] = useState(() => record?.id ?? crypto.randomUUID());
   const [createdAt] = useState(() => record?.createdAt ?? new Date().toISOString());
+  // A record keeps its portfolio; a new one goes to the selected portfolio (the main one when combined).
+  const [portfolioId] = useState(() => (record ? (record.portfolioId ?? null) : model.writableBookId));
   const [securityId, setSecurityId] = useState<string | undefined>(record?.securityId ?? (request.mode === "add" ? request.securityId : undefined));
   const today = luandaCivilDate(model.asOf);
   const initial = useMemo(
     () => ({
       quantity: kind === "income" ? "1" : draft(record?.quantity, "1"),
-      price: draft(record?.unitPrice, ""),
+      price: draft(record?.unitPrice ?? prefill?.price, ""),
       fees: draft(record?.fees, ""),
-      date: record?.tradedOn ?? today,
+      date: record?.tradedOn ?? prefill?.date ?? today,
     }),
-    [kind, record, today],
+    [kind, record, prefill, today],
   );
   const [values, setValues] = useState(initial);
   const [attempted, setAttempted] = useState(false);
@@ -101,8 +104,9 @@ function EditorSheet({ request, model, onClose }: { request: EditorRequest; mode
       fees: fees ?? new Decimal(Number.NaN),
       tradedOn: values.date,
       createdAt,
+      portfolioId,
     };
-  }, [securityId, kind, values, id, createdAt]);
+  }, [securityId, kind, values, id, createdAt, portfolioId]);
 
   const issues = transaction && instrument ? recordIssues(transaction, instrument, model.asOf) : [];
   const messages = new Map<Field, string>();

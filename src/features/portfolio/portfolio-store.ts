@@ -1,5 +1,7 @@
-import { type ErrorCoordinator, isCancellation } from "@/domain/errors";
+import { type ErrorCoordinator, type UpgradeReason, isCancellation, mapError } from "@/domain/errors";
 import type { PortfolioTransaction } from "@/domain/portfolio";
+import type { PortfolioBook } from "@/domain/portfolio/books";
+import { type CashMovement, newestCashFirst } from "@/domain/portfolio/cash";
 import { type LedgerRefusal, newestFirst, permitsChange } from "@/domain/portfolio/records";
 
 import type { PortfolioRepository } from "./repository";
@@ -11,21 +13,29 @@ export type PortfolioStatus = "idle" | "loading" | "loaded" | "failed";
 
 export interface PortfolioSnapshot {
   readonly status: PortfolioStatus;
-  /** Newest first. */
+  /** Newest first, every portfolio. */
   readonly transactions: readonly PortfolioTransaction[];
+  /** Named portfolios, oldest first. */
+  readonly books: readonly PortfolioBook[];
+  /** Newest first, every portfolio. */
+  readonly cash: readonly CashMovement[];
   readonly loadedAt: number | null;
 }
 
 /** `saved`, a §5.1 rule the server (or the same check here) refused, or a failure already shown. */
 export type SaveResult = "saved" | LedgerRefusal | "failed";
 
+/** `saved`, a name another portfolio already has, a plan rule (the plan dialog is open), or a failure already shown. */
+export type BookResult = "saved" | "duplicate" | "upgrade" | "failed";
+
 /**
- * The account's ledger (iOS `PortfolioStore`). Writes are confirmed before they show: each one waits for
- * the server, then updates the list. A read that started before a write, or before `suspend`/`reset`,
- * is discarded, so it can never bring back what the write replaced.
+ * The account's ledger, named portfolios and cash (iOS `PortfolioStore`). Writes are confirmed before they
+ * show: each one waits for the server, then updates the lists. A read that started before a write, or
+ * before `suspend`/`reset`, is discarded, so it can never bring back what the write replaced. A plan rule
+ * opens the plan dialog instead of an error.
  */
 export class PortfolioStore {
-  private state: PortfolioSnapshot = { status: "idle", transactions: [], loadedAt: null };
+  private state: PortfolioSnapshot = { status: "idle", transactions: [], books: [], cash: [], loadedAt: null };
   private readonly listeners = new Set<() => void>();
   private generation = 0;
   /** Bumped by `reset` only: a write in flight for the previous account changes nothing. */
@@ -36,6 +46,7 @@ export class PortfolioStore {
   constructor(
     private readonly repository: PortfolioRepository,
     private readonly errors: ErrorCoordinator,
+    private readonly upgrade: (reason: UpgradeReason) => void = () => {},
     private readonly now: () => number = Date.now,
   ) {}
 
@@ -51,7 +62,7 @@ export class PortfolioStore {
     for (const listener of this.listeners) listener();
   }
 
-  /** Reads the whole ledger. `quiet` keeps a loaded ledger on screen and shows no error for it. */
+  /** Reads everything. `quiet` keeps a loaded ledger on screen and shows no error for it. */
   load({ quiet = false, signal }: { quiet?: boolean; signal?: AbortSignal } = {}): Promise<void> {
     if (this.loading) return this.loading;
     const task = this.read(this.generation, quiet, signal).finally(() => {
@@ -66,11 +77,11 @@ export class PortfolioStore {
     for (;;) {
       const writes = this.writes;
       try {
-        const transactions = await this.repository.read(signal);
+        const { transactions, books, cash } = await this.repository.read(signal);
         if (token !== this.generation || signal?.aborted) return;
         // A write landed meanwhile: this answer may predate it.
         if (writes !== this.writes) continue;
-        this.set({ status: "loaded", transactions: [...transactions].sort(newestFirst), loadedAt: this.now() });
+        this.set({ status: "loaded", transactions: [...transactions].sort(newestFirst), books, cash: [...cash].sort(newestCashFirst), loadedAt: this.now() });
       } catch (error) {
         if (token !== this.generation) return;
         if (signal?.aborted || isCancellation(error)) {
@@ -101,22 +112,24 @@ export class PortfolioStore {
     this.account += 1;
     this.writes += 1;
     this.loading = null;
-    this.set({ status: "idle", transactions: [], loadedAt: null });
+    this.set({ status: "idle", transactions: [], books: [], cash: [], loadedAt: null });
   }
+
+  // MARK: Ledger
 
   create(transaction: PortfolioTransaction): Promise<SaveResult> {
     const next = [...this.state.transactions.filter((item) => item.id !== transaction.id), transaction];
-    return this.write("portfolio.create", next, () => this.repository.create(transaction), () => this.replace(transaction));
+    return this.ledgerWrite("portfolio.create", next, () => this.repository.create(transaction), () => this.replace(transaction));
   }
 
   update(transaction: PortfolioTransaction): Promise<SaveResult> {
     const next = this.state.transactions.map((item) => (item.id === transaction.id ? transaction : item));
-    return this.write("portfolio.update", next, () => this.repository.update(transaction), () => this.replace(transaction));
+    return this.ledgerWrite("portfolio.update", next, () => this.repository.update(transaction), () => this.replace(transaction));
   }
 
   delete(id: string): Promise<SaveResult> {
     const next = this.state.transactions.filter((item) => item.id !== id);
-    return this.write("portfolio.delete", next, () => this.repository.delete(id), () =>
+    return this.ledgerWrite("portfolio.delete", next, () => this.repository.delete(id), () =>
       this.set({ transactions: this.state.transactions.filter((item) => item.id !== id) }),
     );
   }
@@ -143,23 +156,82 @@ export class PortfolioStore {
     this.set({ transactions: [...this.state.transactions.filter((item) => item.id !== transaction.id), transaction].sort(newestFirst) });
   }
 
-  private async write(operation: string, next: readonly PortfolioTransaction[], send: () => Promise<LedgerRefusal | null>, apply: () => void): Promise<SaveResult> {
+  private async ledgerWrite(operation: string, next: readonly PortfolioTransaction[], send: () => Promise<LedgerRefusal | null>, apply: () => void): Promise<SaveResult> {
     // The same check as the server: a change that would make a valid ledger invalid is not sent.
     if (!permitsChange(this.state.transactions, next, this.now())) return "oversell";
+    const result = await this.write(operation, send, (refusal) => {
+      if (refusal) return refusal;
+      apply();
+      return "saved" as const;
+    });
+    return result === "upgrade" ? "failed" : result;
+  }
+
+  // MARK: Named portfolios
+
+  createBook(book: PortfolioBook): Promise<BookResult> {
+    return this.write("portfolio.createBook", () => this.repository.createBook(book), (refusal) => {
+      if (refusal) return refusal;
+      this.set({ books: [...this.state.books.filter((item) => item.id !== book.id), book] });
+      return "saved";
+    });
+  }
+
+  renameBook(book: PortfolioBook): Promise<BookResult> {
+    return this.write("portfolio.renameBook", () => this.repository.renameBook(book), (refusal) => {
+      if (refusal) return refusal;
+      this.set({ books: this.state.books.map((item) => (item.id === book.id ? book : item)) });
+      return "saved";
+    });
+  }
+
+  /** The server removes the portfolio's records and cash with it; so does the list here. */
+  deleteBook(id: string): Promise<BookResult> {
+    return this.write("portfolio.deleteBook", () => this.repository.deleteBook(id), () => {
+      this.set({
+        books: this.state.books.filter((item) => item.id !== id),
+        transactions: this.state.transactions.filter((item) => item.portfolioId !== id),
+        cash: this.state.cash.filter((item) => item.portfolioId !== id),
+      });
+      return "saved";
+    });
+  }
+
+  // MARK: Cash
+
+  createCash(movement: CashMovement): Promise<BookResult> {
+    return this.write("portfolio.createCash", () => this.repository.createCash(movement), () => {
+      this.set({ cash: [...this.state.cash.filter((item) => item.id !== movement.id), movement].sort(newestCashFirst) });
+      return "saved";
+    });
+  }
+
+  deleteCash(id: string): Promise<BookResult> {
+    return this.write("portfolio.deleteCash", () => this.repository.deleteCash(id), () => {
+      this.set({ cash: this.state.cash.filter((item) => item.id !== id) });
+      return "saved";
+    });
+  }
+
+  /** Sends one write for this account; a plan rule opens the plan dialog, any other error is shown. */
+  private async write<T, R>(operation: string, send: () => Promise<T>, apply: (value: T) => R): Promise<R | "upgrade" | "failed"> {
     const token = this.account;
     this.writes += 1;
     try {
-      const refusal = await send();
+      const value = await send();
       if (token !== this.account) return "failed";
       this.writes += 1;
-      if (refusal) return refusal;
       this.errors.resolve(operation);
-      apply();
-      return "saved";
+      return apply(value);
     } catch (error) {
       if (token !== this.account || isCancellation(error)) return "failed";
-      this.errors.present(error, operation);
-      return "failed";
+      const upgrade = mapError(error, operation)?.rule?.upgrade;
+      if (!upgrade) {
+        this.errors.present(error, operation);
+        return "failed";
+      }
+      this.upgrade(upgrade.reason);
+      return "upgrade";
     }
   }
 }

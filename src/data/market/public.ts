@@ -235,3 +235,27 @@ export async function readPublicArticle(client: SupabaseClient, slug: string, no
   ) as Row[];
   return rows[0];
 }
+
+/** The latest rows of the benchmark rates (contract: `market_rates` is public), newest first. */
+export async function readBenchmarkRateRows(client: SupabaseClient, names: readonly string[]): Promise<Row[]> {
+  return unwrap(
+    await client
+      .from("market_rates")
+      .select("rate_name,value,trading_date")
+      .in("rate_name", [...names])
+      .order("trading_date", { ascending: false })
+      .limit(names.length * 5),
+  ) as Row[];
+}
+
+/** Every issuer's dividends paid on or after `since` (a Luanda civil day), oldest first. */
+export async function readDividendRows(client: SupabaseClient, since: string): Promise<Row[]> {
+  return unwrap(
+    await client
+      .from("issuer_dividends")
+      .select("issuer_id,amount_per_share,ex_dividend_date,record_date,payment_date")
+      .gte("payment_date", since)
+      .order("payment_date")
+      .limit(500),
+  ) as Row[];
+}

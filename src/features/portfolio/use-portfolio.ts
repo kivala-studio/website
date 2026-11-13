@@ -14,12 +14,15 @@ import {
   validateLedger,
   valuePositions,
 } from "@/domain/portfolio";
+import { type PortfolioSelection, isSinglePortfolio, resolveSelection, selectionIncludes, writableBookId } from "@/domain/portfolio/books";
+import { cashSummary } from "@/domain/portfolio/cash";
 import { priceScalesOf } from "@/domain/portfolio/records";
 import { useAccountStores } from "@/features/account/account-provider";
 import type { CatalogueRow } from "@/features/market/browse/price-cell";
 import { useMarketState, useMarketStore } from "@/features/market/market-provider";
 
 import { PORTFOLIO_REFRESH_MS } from "./portfolio-store";
+import { setPortfolioSelection, useStoredSelection } from "./selection";
 
 /** What the portfolio pages know about an instrument: the catalogue's identity, then the live snapshot. */
 export type PortfolioInstrument = {
@@ -67,7 +70,12 @@ export function usePortfolio(rows: readonly CatalogueRow[], renderedAt: number) 
   const live = market.load.kind === "loaded" ? market.load.snapshot : undefined;
   const at = market.assessedAt;
   const asOf = at ?? renderedAt;
-  const transactions = snapshot.transactions;
+  const { books } = snapshot;
+  const stored = useStoredSelection();
+  const selection: PortfolioSelection = resolveSelection(stored, books);
+  // Everything on the portfolio pages follows the selection.
+  const transactions = useMemo(() => snapshot.transactions.filter((item) => selectionIncludes(selection, item.portfolioId)), [snapshot.transactions, selection]);
+  const cash = useMemo(() => snapshot.cash.filter((item) => selectionIncludes(selection, item.portfolioId)), [snapshot.cash, selection]);
 
   const instruments = useMemo(() => {
     const map = new Map<string, PortfolioInstrument>();
@@ -92,6 +100,7 @@ export function usePortfolio(rows: readonly CatalogueRow[], renderedAt: number) 
   const summary = useMemo(() => portfolioSummary(valuations), [valuations]);
   const allocations = useMemo(() => portfolioAllocations(valuations), [valuations]);
   const priced = valuations.length - summary.missingPriceCount;
+  const cashTotals = useMemo(() => cashSummary(cash, transactions, priceScales), [cash, transactions, priceScales]);
   const valueState: ValueState = prices === undefined ? "pending" : priced === 0 ? "unavailable" : summary.missingPriceCount > 0 ? "partial" : "full";
 
   // Daily closes of every instrument the ledger ever held, for the value chart.
@@ -120,8 +129,17 @@ export function usePortfolio(rows: readonly CatalogueRow[], renderedAt: number) 
     store,
     status: snapshot.status,
     transactions,
+    books,
+    selection,
+    select: setPortfolioSelection,
+    /** The named portfolio new records and cash go to; null is the main one. */
+    writableBookId: writableBookId(selection),
+    singlePortfolio: isSinglePortfolio(selection, books),
+    cash,
+    cashSummary: cashTotals,
     instruments,
     securities,
+    priceScales,
     asOf,
     valid: ledger.valid,
     positions: ledger.positions,
