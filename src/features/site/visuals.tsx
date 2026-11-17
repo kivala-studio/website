@@ -4,20 +4,15 @@ import type { ReactNode } from "react";
 import { preload } from "react-dom";
 
 import { cn } from "@/ui/cn";
+import { type ButtonKind, buttonClass } from "@/ui/components/button-styles";
 
 import { APP_STORE_URL } from "./site";
 
-/** The App Store is the only store until the Android app exists. */
-export function StoreButton({ className }: { className?: string }) {
+/** The App Store is the only store until the Android app exists. A pill like `ButtonLink`, primary by default. */
+export function StoreButton({ kind = "primary", className }: { kind?: ButtonKind; className?: string }) {
   const t = useTranslations("site.store");
   return (
-    <a
-      href={APP_STORE_URL}
-      className={cn(
-        "motion-press inline-flex min-h-14 items-center justify-center rounded-full bg-accent px-6 py-4 text-center text-body font-semibold text-on-accent",
-        className,
-      )}
-    >
+    <a href={APP_STORE_URL} className={buttonClass(kind, className)}>
       {t("download")}
     </a>
   );
@@ -33,7 +28,7 @@ export function PhoneFigure({ children, className }: { children: ReactNode; clas
       <div className="w-full rounded-[2.5rem] border border-card-outline bg-elevated-background p-2">
         {children}
       </div>
-      <figcaption className="text-micro font-medium uppercase text-tertiary-text">{t("illustrativeExample")}</figcaption>
+      <figcaption className="text-micro font-medium uppercase text-secondary-text">{t("illustrativeExample")}</figcaption>
     </figure>
   );
 }

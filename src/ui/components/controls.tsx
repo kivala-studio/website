@@ -237,6 +237,7 @@ export function SearchField({
   onKeyDown,
   controls,
   hint,
+  className,
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -249,12 +250,14 @@ export function SearchField({
   controls?: string;
   /** A keyboard shortcut chip shown while the field is empty (`/`). */
   hint?: string;
+  /** Size or surface overrides for the field box (a taller hero field). */
+  className?: string;
 }) {
   const t = useTranslations("designSystem.search");
   const input = useRef<HTMLInputElement>(null);
   const prompt = placeholder ?? t("prompt");
   return (
-    <div className={cn(FIELD, "focus-within:border-accent focus-within:outline-2 focus-within:outline-accent/30")}>
+    <div className={cn(FIELD, "focus-within:border-accent focus-within:outline-2 focus-within:outline-accent/30", className)}>
       <Icon name="search" />
       <input
         ref={input}

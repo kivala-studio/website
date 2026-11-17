@@ -2851,7 +2851,12 @@
       "instrumentAlt": "Ecrã de um instrumento na app: preço, variação e gráfico de um mês.",
       "comparisonAlt": "Comparação de dois instrumentos no mesmo gráfico de desempenho.",
       "alertsAlt": "Alertas de um instrumento: preço acima de um valor e movimentos automáticos.",
-      "portfolioAlt": "Carteira de exemplo com valor, registo manual e evolução."
+      "portfolioAlt": "Carteira de exemplo com valor, registo manual e evolução.",
+      "heroSubtitle": "Acompanha a bolsa de Angola num só sítio.",
+      "allInOneTitle": "Tudo o que precisas para seguir a bolsa",
+      "instrumentsLine": "Ações, obrigações, fundos e Tesouro, com o último fecho verificado.",
+      "alertsLine": "Guarda instrumentos e recebe um aviso quando o preço chega ao teu valor.",
+      "portfolioLine": "Regista compras, vendas e rendimentos e acompanha o valor estimado."
     },
     "legal": {
       "draft": "Rascunho. O texto final está a ser preparado.",

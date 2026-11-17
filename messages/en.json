@@ -2851,7 +2851,12 @@
       "instrumentAlt": "An instrument screen in the app: price, change and a one-month chart.",
       "comparisonAlt": "Two instruments compared on the same performance chart.",
       "alertsAlt": "Alerts for an instrument: price above a value and automatic movements.",
-      "portfolioAlt": "Example portfolio with its value, manual record and trend."
+      "portfolioAlt": "Example portfolio with its value, manual record and trend.",
+      "heroSubtitle": "Follow Angola''s stock exchange in one place.",
+      "allInOneTitle": "Everything you need to follow the market",
+      "instrumentsLine": "Stocks, bonds, funds and Treasury, with the last verified close.",
+      "alertsLine": "Save instruments and get notified when the price reaches your level.",
+      "portfolioLine": "Record purchases, sales and income and track the estimated value."
     },
     "legal": {
       "draft": "Draft. The final text is being prepared.",
