@@ -154,7 +154,9 @@ export function SessionFacts() {
 const MOVER_LIMIT = 5;
 type MoverTab = "gains" | "declines" | "volume";
 
-function MoverRow({ security, row, at }: { security: MarketSecurity; row: CatalogueRow | undefined; at: number }) {
+/** A movers row: the price (or, on the Volume tab, the session volume) and the change badge. */
+function MoverRow({ security, row, at, volume }: { security: MarketSecurity; row: CatalogueRow | undefined; at: number; volume: boolean }) {
+  const format = useFormat();
   return (
     <li className="border-b border-hairline last:border-b-0">
       <Link
@@ -166,7 +168,11 @@ function MoverRow({ security, row, at }: { security: MarketSecurity; row: Catalo
           <SecurityLogo symbol={security.symbol} logoUrl={row?.logoURL ?? security.logoURL} brandColor={row?.bond ? "violet" : "blue"} size="s" />
         </span>
         <span className="min-w-0 flex-1 truncate font-display font-medium text-primary-text">{security.symbol}</span>
-        <PriceCell row={row} security={security} at={at} inlineChange="hidden!" compact />
+        {volume ? (
+          <span className="font-display text-secondary font-semibold whitespace-nowrap text-primary-text">{format.count(security.volume)}</span>
+        ) : (
+          <PriceCell row={row} security={security} at={at} inlineChange="hidden!" compact />
+        )}
         <span className="flex min-w-18 shrink-0 justify-end">
           <ChangeCell row={row} security={security} at={at} />
         </span>
@@ -234,7 +240,7 @@ export function MarketMovers({ rows }: { rows: CatalogueRow[] }) {
       ) : (
         <ul className="flex flex-col">
           {items.map((security) => (
-            <MoverRow key={security.id} security={security} row={byID.get(security.id)} at={loaded!.at} />
+            <MoverRow key={security.id} security={security} row={byID.get(security.id)} at={loaded!.at} volume={tab === "volume"} />
           ))}
         </ul>
       )}

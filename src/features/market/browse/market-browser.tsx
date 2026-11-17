@@ -117,10 +117,12 @@ export function MarketBrowser({ rows, renderedAt, links = [] }: { rows: Catalogu
         </form>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex min-h-11 items-center gap-2">
         <p className="flex-1 text-caption text-tertiary-text" aria-live="polite" data-testid="market-count">
           {`${results.length} ${results.length === 1 ? t("legacy.titulo") : t("legacy.titulos")}`}
         </p>
+        {/* From 768 px every column header is a sort link, so the menu and the direction button are for narrower lists. */}
+        <div className="flex shrink-0 items-center gap-2 md:hidden">
           <details className="relative shrink-0">
             <summary
               aria-label={t("markets.accessibility.sortBy", { arg1: translate(MARKET_SORT_LABEL_KEYS[query.sortKey]) })}
@@ -160,6 +162,7 @@ export function MarketBrowser({ rows, renderedAt, links = [] }: { rows: Catalogu
           >
             <Icon name={query.direction === "ascending" ? "arrow-up" : "arrow-down"} scale="s" className="text-accent" />
           </Link>
+        </div>
       </div>
 
       {results.length === 0 ? (
