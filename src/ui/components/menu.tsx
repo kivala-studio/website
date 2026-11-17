@@ -26,6 +26,8 @@ export function Menu({
   trigger,
   align = "end",
   testID,
+  className,
+  triggerClassName,
 }: {
   /** The trigger's accessible name. */
   label: string;
@@ -35,6 +37,9 @@ export function Menu({
   trigger?: ReactNode;
   align?: "start" | "end";
   testID?: string;
+  className?: string;
+  /** Replaces the trigger's own look (a pill or a rail tile instead of the plain icon or grey capsule). */
+  triggerClassName?: string;
 }) {
   const [open, setOpen] = useState(false);
   const button = useRef<HTMLButtonElement>(null);
@@ -86,7 +91,7 @@ export function Menu({
   };
 
   return (
-    <div className="relative inline-flex shrink-0">
+    <div className={cn("relative inline-flex shrink-0", className)}>
       <button
         ref={button}
         type="button"
@@ -106,10 +111,13 @@ export function Menu({
             show("last");
           }
         }}
-        className={cn(
-          "motion-press inline-flex min-h-11 items-center justify-center rounded-full text-primary-text",
-          trigger ? "gap-2 bg-action-surface px-4 text-secondary font-semibold" : "size-11 text-secondary-text hover:bg-action-surface hover:text-primary-text",
-        )}
+        className={
+          triggerClassName ??
+          cn(
+            "motion-press inline-flex min-h-11 items-center justify-center rounded-full text-primary-text",
+            trigger ? "gap-2 bg-action-surface px-4 text-secondary font-semibold" : "size-11 text-secondary-text hover:bg-action-surface hover:text-primary-text",
+          )
+        }
       >
         {trigger ?? <Icon name={icon} />}
       </button>

@@ -84,7 +84,8 @@ export function TableCell({ numeric = false, className, ...props }: TdHTMLAttrib
 /**
  * The row header: a 32 px round logo, the name and a muted "• SYMBOL". With `href` the whole row is the link
  * (the row is `relative`; the link's overlay covers it and carries the focus ring). `stackOnPhone` puts the symbol
- * under the name below 640 px, where a narrow name column would otherwise truncate the name to nothing.
+ * under the name below 640 px, where a narrow name column would otherwise truncate the name to nothing. `detail`
+ * is a caption line under the name (what a hidden column shows on phones, a full name under a symbol).
  */
 export function TableNameCell({
   logo,
@@ -93,14 +94,16 @@ export function TableNameCell({
   href,
   linkProps,
   stackOnPhone = false,
+  detail,
   className,
 }: {
-  logo: ReactNode;
+  logo?: ReactNode;
   name: ReactNode;
   symbol?: string;
   href?: ComponentProps<typeof Link>["href"];
   linkProps?: Omit<ComponentProps<typeof Link>, "href" | "className" | "children">;
   stackOnPhone?: boolean;
+  detail?: ReactNode;
   className?: string;
 }) {
   const label = (
@@ -117,7 +120,16 @@ export function TableNameCell({
   const content = (
     <>
       {logo}
-      {stackOnPhone ? <span className="flex min-w-0 flex-col sm:flex-row sm:items-center sm:gap-3">{label}</span> : label}
+      {detail ? (
+        <span className="flex min-w-0 flex-col">
+          <span className="flex min-w-0 items-center gap-2">{label}</span>
+          <span className="flex min-w-0 flex-col font-sans text-caption text-secondary-text">{detail}</span>
+        </span>
+      ) : stackOnPhone ? (
+        <span className="flex min-w-0 flex-col sm:flex-row sm:items-center sm:gap-3">{label}</span>
+      ) : (
+        label
+      )}
     </>
   );
   const layout = "flex min-h-11 min-w-0 items-center gap-3";

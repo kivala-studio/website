@@ -9,7 +9,6 @@ import { useAccount } from "@/features/account/account-provider";
 import { Button } from "@/ui/components/buttons";
 import { Dialog } from "@/ui/components/dialog";
 import { useToast } from "@/ui/components/feedback";
-import { Menu } from "@/ui/components/menu";
 import { useFormat } from "@/ui/format";
 import { Spinner } from "@/ui/components/states";
 import { Icon } from "@/ui/icons/icon";
@@ -34,7 +33,7 @@ const KIND_KEYS = { buy: "common.buy", sell: "common.sell", income: "portfolio.c
 const STATEMENT_MAX_BYTES = 25 * 1024 * 1024;
 
 /**
- * `Exportar ou importar`: the ledger as `invest-ao-carteira.csv` (iOS format), a CSV file, or a statement
+ * `Importar CSV` · `Exportar CSV` · `Ler extrato` as action pills: the ledger as `invest-ao-carteira.csv` (iOS format), a CSV file, or a statement
  * (PDF or image, read in this browser, Plus) turned into the same review.
  */
 export function CsvTransfer({ model }: { model: PortfolioModel }) {
@@ -89,15 +88,17 @@ export function CsvTransfer({ model }: { model: PortfolioModel }) {
 
   return (
     <>
-      <Menu
-        label={t("portfolio.csvTransfer.exportOrImport")}
-        testID="csv-menu"
-        entries={[
-          ...(model.transactions.length > 0 ? [{ kind: "item" as const, label: t("portfolio.csvTransfer.export"), icon: "download" as const, onSelect: download, testID: "csv-export" }] : []),
-          { kind: "item", label: t("portfolio.csvTransfer.import"), icon: "upload", onSelect: () => input.current?.click(), testID: "csv-import" },
-          { kind: "item", label: t("statement.read"), icon: "document", onSelect: openStatement, testID: "statement-read" },
-        ]}
-      />
+      <Button kind="secondary" size="compact" icon="upload" onClick={() => input.current?.click()} data-testid="csv-import">
+        {t("portfolio.csvTransfer.import")}
+      </Button>
+      {model.transactions.length > 0 ? (
+        <Button kind="secondary" size="compact" icon="download" onClick={download} data-testid="csv-export">
+          {t("portfolio.csvTransfer.export")}
+        </Button>
+      ) : null}
+      <Button kind="secondary" size="compact" icon="document" onClick={openStatement} data-testid="statement-read">
+        {t("statement.read")}
+      </Button>
       <input
         ref={statementInput}
         type="file"

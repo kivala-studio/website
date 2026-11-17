@@ -11,6 +11,7 @@ import { Button } from "@/ui/components/buttons";
 import { Dialog } from "@/ui/components/dialog";
 import { HiddenValue } from "@/ui/components/feedback";
 import { Menu } from "@/ui/components/menu";
+import { DataTable, TableCell, TableHead, TableHeaderCell, TableRow } from "@/ui/components/table";
 import { Link } from "@/i18n/navigation";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
@@ -92,23 +93,79 @@ export function useRecordDetail() {
   };
 }
 
-/** One record: symbol, date, the masked detail line and an options menu (edit, delete with confirmation). */
-export function RecordRow({
-  record,
+/**
+ * The records table (CoinStats "Transactions"): instrument, date, kind, quantity, price and fees, with an
+ * options menu per row. Below 768 px the row keeps the date and the masked detail line under the instrument.
+ */
+export function RecordsTable({
+  records,
   instrument,
   showSymbol = true,
+  onEdit,
+  onDelete,
+  testID,
+}: {
+  records: readonly PortfolioTransaction[];
+  instrument: (securityId: string) => PortfolioInstrument | undefined;
+  showSymbol?: boolean;
+  onEdit: (record: PortfolioTransaction) => void;
+  onDelete: (record: PortfolioTransaction) => Promise<SaveResult>;
+  testID?: string;
+}) {
+  const t = useTranslations();
+  return (
+    <DataTable data-testid={testID}>
+      <TableHead>
+        <TableHeaderCell>{showSymbol ? t("common.instrument") : t("common.date")}</TableHeaderCell>
+        {showSymbol ? <TableHeaderCell className="max-md:hidden">{t("common.date")}</TableHeaderCell> : null}
+        <TableHeaderCell className="max-md:hidden">{t("assetDetails.marketInfo.type")}</TableHeaderCell>
+        <TableHeaderCell align="right" className="max-md:hidden">
+          {t("common.quantity")}
+        </TableHeaderCell>
+        <TableHeaderCell align="right" className="max-md:hidden">
+          {t("common.price")}
+        </TableHeaderCell>
+        <TableHeaderCell align="right" className="max-lg:hidden">
+          {t("portfolio.form.fees")}
+        </TableHeaderCell>
+        <TableHeaderCell align="right">
+          <span className="sr-only">{t("portfolio.purchaseRow.options")}</span>
+        </TableHeaderCell>
+      </TableHead>
+      <tbody>
+        {records.map((record) => (
+          <RecordRow
+            key={record.id}
+            record={record}
+            instrument={instrument(record.securityId)}
+            showSymbol={showSymbol}
+            onEdit={() => onEdit(record)}
+            onDelete={() => onDelete(record)}
+          />
+        ))}
+      </tbody>
+    </DataTable>
+  );
+}
+
+/** One record: its columns, the masked detail line on phones, an options menu (edit, delete with confirmation). */
+function RecordRow({
+  record,
+  instrument,
+  showSymbol,
   onEdit,
   onDelete,
 }: {
   record: PortfolioTransaction;
   instrument: PortfolioInstrument | undefined;
-  showSymbol?: boolean;
+  showSymbol: boolean;
   onEdit: () => void;
   onDelete: () => Promise<SaveResult>;
 }) {
   const t = useTranslations();
   const format = useFormat();
   const detail = useRecordDetail();
+  const quantityText = useQuantityText();
   const [confirming, setConfirming] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [refused, setRefused] = useState(false);
@@ -119,83 +176,94 @@ export function RecordRow({
     if (result === "saved") setConfirming(false);
     else if (result !== "failed") setRefused(true);
   };
+  const date = format.civilDate(record.tradedOn);
+  const income = record.kind === "income";
   return (
-    <li
-      className="flex min-h-16 items-center gap-3 border-b border-separator py-3 last:border-b-0"
-      data-testid="record-row"
-    >
-      <span className="flex min-w-0 flex-1 flex-col gap-1">
-        {showSymbol ? (
-          <span className="text-body font-semibold text-primary-text">
-            {instrument?.symbol ?? t("common.instrumentUnavailable")}
-          </span>
-        ) : null}
-        <span className="text-caption text-secondary-text">
-          {format.civilDate(record.tradedOn)}
+    <TableRow data-testid="record-row">
+      <TableCell>
+        <span className="flex min-w-0 flex-col gap-0.5 py-2">
+          <span className="font-medium text-primary-text">{showSymbol ? (instrument?.symbol ?? t("common.instrumentUnavailable")) : date}</span>
+          {showSymbol ? <span className="font-sans text-caption text-secondary-text md:hidden">{date}</span> : null}
+          <Private className="font-sans text-caption text-secondary-text md:hidden">{detail(record, instrument)}</Private>
         </span>
-        <Private className="text-secondary text-primary-text">
-          {detail(record, instrument)}
+      </TableCell>
+      {showSymbol ? <TableCell className="whitespace-nowrap max-md:hidden">{date}</TableCell> : null}
+      <TableCell className="max-md:hidden">{t(KIND_KEYS[record.kind])}</TableCell>
+      <TableCell numeric className="max-md:hidden">
+        {income ? <span className="text-tertiary-text">—</span> : <Private>{quantityText(record.quantity, instrument)}</Private>}
+      </TableCell>
+      <TableCell numeric className="max-md:hidden">
+        <Private>
+          {income ? format.currency(record.unitPrice, { digits: 2 }) : format.securityPrice(record.unitPrice, { bond: instrument?.bond ?? false })}
         </Private>
-      </span>
-      <Menu
-        label={t("portfolio.purchaseRow.options")}
-        entries={[
-          {
-            kind: "item",
-            label: t("portfolio.purchaseRow.editRecord"),
-            icon: "edit",
-            onSelect: onEdit,
-          },
-          {
-            kind: "item",
-            label: t("common.deleteRecord"),
-            icon: "trash",
-            destructive: true,
-            onSelect: () => (setRefused(false), setConfirming(true)),
-          },
-        ]}
-      />
-      {confirming ? (
-        <Dialog
-          variant="dialog"
-          open
-          onClose={() => setConfirming(false)}
-          title={t("portfolio.purchaseRow.deleteTitle")}
-          footer={
-            <div className="flex w-full flex-col gap-2 sm:flex-row-reverse">
-              <Button
-                kind="destructive"
-                className="w-full"
-                loading={deleting}
-                onClick={remove}
-                data-testid="confirm-delete"
+      </TableCell>
+      <TableCell numeric className="max-lg:hidden">
+        {record.fees.gt(0) ? <Private>{format.currency(record.fees, { digits: 2 })}</Private> : <span className="text-tertiary-text">—</span>}
+      </TableCell>
+      <TableCell numeric className="w-14">
+        <Menu
+          label={t("portfolio.purchaseRow.options")}
+          entries={[
+            {
+              kind: "item",
+              label: t("portfolio.purchaseRow.editRecord"),
+              icon: "edit",
+              onSelect: onEdit,
+            },
+            {
+              kind: "item",
+              label: t("common.deleteRecord"),
+              icon: "trash",
+              destructive: true,
+              onSelect: () => (setRefused(false), setConfirming(true)),
+            },
+          ]}
+        />
+        {confirming ? (
+          // The dialog is a child of the cell: reset what the numeric cell would hand down to it.
+          <div className="contents text-left font-sans font-normal whitespace-normal">
+            <Dialog
+              variant="dialog"
+              open
+              onClose={() => setConfirming(false)}
+              title={t("portfolio.purchaseRow.deleteTitle")}
+              footer={
+                <div className="flex w-full flex-col gap-2 sm:flex-row-reverse">
+                  <Button
+                    kind="destructive"
+                    className="w-full"
+                    loading={deleting}
+                    onClick={remove}
+                    data-testid="confirm-delete"
+                  >
+                    {t("common.deleteRecord")}
+                  </Button>
+                  <Button
+                    kind="secondary"
+                    className="w-full"
+                    onClick={() => setConfirming(false)}
+                  >
+                    {t("common.cancel")}
+                  </Button>
+                </div>
+              }
+            >
+              <p
+                className={cn(
+                  "text-body",
+                  refused ? "text-negative" : "text-primary-text",
+                )}
+                role={refused ? "alert" : undefined}
               >
-                {t("common.deleteRecord")}
-              </Button>
-              <Button
-                kind="secondary"
-                className="w-full"
-                onClick={() => setConfirming(false)}
-              >
-                {t("common.cancel")}
-              </Button>
-            </div>
-          }
-        >
-          <p
-            className={cn(
-              "text-body",
-              refused ? "text-negative" : "text-primary-text",
-            )}
-            role={refused ? "alert" : undefined}
-          >
-            {refused
-              ? t("portfolio.csvTransfer.invalidPortfolio")
-              : t("portfolio.purchaseRow.deleteMessage")}
-          </p>
-        </Dialog>
-      ) : null}
-    </li>
+                {refused
+                  ? t("portfolio.csvTransfer.invalidPortfolio")
+                  : t("portfolio.purchaseRow.deleteMessage")}
+              </p>
+            </Dialog>
+          </div>
+        ) : null}
+      </TableCell>
+    </TableRow>
   );
 }
 

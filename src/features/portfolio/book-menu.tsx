@@ -5,7 +5,7 @@ import { useId, useState } from "react";
 
 import { BOOK_NAME_MAX, COMBINED, MAIN, type PortfolioBook, bookName, hasBookNamed } from "@/domain/portfolio/books";
 import { useAccount } from "@/features/account/account-provider";
-import { Button, IconButton } from "@/ui/components/buttons";
+import { Button, IconButton, buttonClass } from "@/ui/components/buttons";
 import { Dialog } from "@/ui/components/dialog";
 import { Menu, type MenuEntry } from "@/ui/components/menu";
 import { Icon } from "@/ui/icons/icon";
@@ -24,36 +24,25 @@ export function useSelectionTitle(model: Pick<PortfolioModel, "books" | "selecti
 
 type Naming = { mode: "new" } | { mode: "rename"; book: PortfolioBook };
 
-/** iOS `PortfolioBookMenu`: switch portfolio, create one, manage them, share the selected one (all Plus). */
+/**
+ * iOS `PortfolioBookMenu`, split for the web: the `Carteiras` pill creates and manages named portfolios (Plus);
+ * switching lives in the area's rail (`PortfolioRail`), sharing in `ShareButton`.
+ */
 export function BookMenu({ model }: { model: PortfolioModel }) {
   const t = useTranslations();
   const account = useAccount();
   const [naming, setNaming] = useState<Naming | null>(null);
   const [managing, setManaging] = useState(false);
-  const [sharing, setSharing] = useState(false);
-  const { books, selection } = model;
+  const { books } = model;
 
   const create = () => {
     if (account && !account.unlocksPlus) return account.requestUpgrade("portfolios");
     setNaming({ mode: "new" });
   };
-  const share = () => {
-    if (account && !account.unlocksPlus) return account.requestUpgrade("clientViews");
-    setSharing(true);
-  };
 
   const entries: MenuEntry[] = [
-    ...(books.length > 0
-      ? [
-          { kind: "check" as const, label: t("portfolioBooks.combined"), checked: selection === COMBINED, onToggle: () => model.select(COMBINED) },
-          { kind: "check" as const, label: t("portfolioBooks.main"), checked: selection === MAIN, onToggle: () => model.select(MAIN) },
-          ...books.map((book) => ({ kind: "check" as const, label: book.name, checked: selection === book.id, onToggle: () => model.select(book.id) })),
-          { kind: "separator" as const },
-        ]
-      : []),
     { kind: "item", label: t("portfolioBooks.new"), icon: "add", onSelect: create, testID: "book-new" },
     ...(books.length > 0 ? [{ kind: "item" as const, label: t("portfolioBooks.manage"), icon: "edit" as const, onSelect: () => setManaging(true), testID: "book-manage" }] : []),
-    ...(model.singlePortfolio ? [{ kind: "item" as const, label: t("portfolioShare.menu"), icon: "share" as const, onSelect: share, testID: "book-share" }] : []),
   ];
 
   const save = async (name: string): Promise<"duplicate" | null> => {
@@ -69,7 +58,18 @@ export function BookMenu({ model }: { model: PortfolioModel }) {
 
   return (
     <>
-      <Menu label={t("portfolioBooks.title")} icon="portfolio" entries={entries} testID="book-menu" />
+      <Menu
+        label={t("portfolioBooks.title")}
+        entries={entries}
+        testID="book-menu"
+        triggerClassName={buttonClass("secondary", undefined, "compact")}
+        trigger={
+          <>
+            <Icon name="wallet" />
+            {t("portfolioBooks.title")}
+          </>
+        }
+      />
       {naming ? <BookNameDialog naming={naming} books={books} onClose={() => setNaming(null)} onSave={save} /> : null}
       {managing ? (
         <ManageBooksDialog
@@ -81,6 +81,25 @@ export function BookMenu({ model }: { model: PortfolioModel }) {
           }}
         />
       ) : null}
+    </>
+  );
+}
+
+/** `Partilhar só de leitura` for the selected portfolio (Plus); not on the combined view. */
+export function ShareButton({ model }: { model: PortfolioModel }) {
+  const t = useTranslations();
+  const account = useAccount();
+  const [sharing, setSharing] = useState(false);
+  if (!model.singlePortfolio) return null;
+  const share = () => {
+    if (account && !account.unlocksPlus) return account.requestUpgrade("clientViews");
+    setSharing(true);
+  };
+  return (
+    <>
+      <Button kind="secondary" size="compact" icon="share" onClick={share} data-testid="book-share">
+        {t("portfolioShare.menu")}
+      </Button>
       {sharing ? <ShareDialog model={model} onClose={() => setSharing(false)} /> : null}
     </>
   );

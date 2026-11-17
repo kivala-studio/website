@@ -4,8 +4,7 @@ import { isUUID } from "@/data/account/session";
 import { requestTime } from "@/data/clock";
 import { catalogueRows } from "@/features/market/browse/catalogue";
 import { PositionView } from "@/features/portfolio/position-view";
-import { SIGNED_IN_PAGE, signedInMetadata } from "@/features/shell/placeholder-page";
-import { cn } from "@/ui/cn";
+import { signedInMetadata } from "@/features/shell/placeholder-page";
 
 export const generateMetadata = signedInMetadata("portfolio.positionDetail.title");
 
@@ -16,7 +15,7 @@ export default async function PositionPage({ params }: { params: Promise<{ id: s
   const now = requestTime();
   const rows = await catalogueRows(now);
   return (
-    <main id="main" className={cn(SIGNED_IN_PAGE, "flex flex-col gap-4")}>
+    <main id="main" className="flex min-w-0 flex-col gap-4">
       <PositionView securityId={id.toLowerCase()} rows={rows ?? []} renderedAt={now} />
     </main>
   );

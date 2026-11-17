@@ -13,7 +13,17 @@ import { type PortfolioSection, type PortfolioTile, portfolioTiles } from "./pre
 import { useIntelligence, usePortfolioReading } from "./reading";
 import { useTranslate } from "./watchlist-insights";
 
-/** The weekly reading above the selected tab (iOS `PortfolioInsightTiles`): at most two tiles, none in privacy mode. */
+/*
+ * The web dashboard shows every iOS tab at once (positions, allocation, summary), so each section keeps only its
+ * own tiles: the weekly fallback that iOS repeats on the other tabs appears once, with the positions.
+ */
+const SECTION_TILES: Record<PortfolioSection, readonly PortfolioTile["id"][]> = {
+  0: ["weekly", "breadth"],
+  1: ["largest", "sector", "issuer"],
+  2: ["strongest", "weakest"],
+};
+
+/** The weekly reading for one dashboard section (iOS `PortfolioInsightTiles`): at most two tiles, none in privacy mode. */
 export function PortfolioInsights({ transactions, section }: { transactions: readonly PortfolioTransaction[]; section: PortfolioSection }) {
   const t = useTranslate();
   const format = useFormat();
@@ -21,7 +31,7 @@ export function PortfolioInsights({ transactions, section }: { transactions: rea
   const intelligence = useIntelligence();
   const reading = usePortfolioReading(transactions);
   const [open, setOpen] = useState<PortfolioTile | null>(null);
-  const tiles = portfolioTiles(reading.insights, section, hides, format, t);
+  const tiles = portfolioTiles(reading.insights, section, hides, format, t).filter((tile) => SECTION_TILES[section].includes(tile.id));
   if (!intelligence || hides || (tiles.length === 0 && !open)) return null;
   const show = (tile: PortfolioTile) => {
     setOpen(tile);
@@ -29,7 +39,7 @@ export function PortfolioInsights({ transactions, section }: { transactions: rea
   };
 
   return (
-    <section aria-label={t("common.weeklyReview")} className="flex flex-col gap-2" data-testid="portfolio-reading">
+    <section aria-label={t("common.weeklyReview")} className="flex flex-col gap-2" data-testid="portfolio-reading" data-section={section}>
       {reading.savedAt !== null ? (
         <p className="text-caption text-secondary-text">{t("intelligence.cachedInsight.savedNotice", { arg1: format.timestamp(reading.savedAt) })}</p>
       ) : null}
@@ -41,7 +51,7 @@ export function PortfolioInsights({ transactions, section }: { transactions: rea
             onClick={() => show(tile)}
             data-testid="portfolio-insight"
             data-tile={tile.id}
-            className="flex min-h-11 flex-col items-start gap-1 rounded-large border-[length:var(--card-outline-width)] border-card-outline bg-card-background p-4 text-left"
+            className="flex min-h-11 flex-col items-start gap-1 rounded-medium border border-hairline px-4 py-3 text-left transition-colors hover:bg-app-background/70"
           >
             <span className="text-caption text-secondary-text">{tile.title}</span>
             <span className="text-headline text-primary-text tabular-nums">{tile.value}</span>
