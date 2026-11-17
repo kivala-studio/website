@@ -5,12 +5,11 @@ import { getPublicNews, searchPublicNews } from "@/data/market/public-cache";
 import { NEWS_PAGE_SIZE } from "@/data/news/feed-store";
 import type { NewsArticle } from "@/domain/news/article";
 import { NewsFeed } from "@/features/news/news-feed";
-import { PAGE_WIDTH } from "@/features/site/chrome";
 import { siteMetadata } from "@/features/site/metadata";
 import { INDEXABLE_PAGES } from "@/features/site/site";
 import { AreaMessages } from "@/i18n/area-messages";
 import { cn } from "@/ui/cn";
-import { PageHeading } from "@/ui/components/layout";
+import { PAGE_CONTAINER, PageHeading } from "@/ui/components/layout";
 import { ErrorState } from "@/ui/components/states";
 
 export const generateMetadata = siteMetadata({ path: INDEXABLE_PAGES.news, image: "news" }, (t) => ({
@@ -34,7 +33,7 @@ export default async function NewsPage({ searchParams }: Props) {
   ]);
 
   return (
-    <main id="main" className={cn(PAGE_WIDTH, "pt-6 pb-16")}>
+    <main id="main" className={cn(PAGE_CONTAINER, "pt-6 pb-16")}>
       <div className="mx-auto flex max-w-3xl flex-col gap-8">
         <PageHeading title={t("common.news")} />
         {feed ? (

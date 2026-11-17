@@ -108,7 +108,7 @@ export function Menu({
         }}
         className={cn(
           "motion-press inline-flex min-h-11 items-center justify-center rounded-full text-primary-text",
-          trigger ? "gap-2 bg-action-surface px-4 text-secondary font-semibold" : "size-11 text-secondary-text hover:text-primary-text",
+          trigger ? "gap-2 bg-action-surface px-4 text-secondary font-semibold" : "size-11 text-secondary-text hover:bg-action-surface hover:text-primary-text",
         )}
       >
         {trigger ?? <Icon name={icon} />}
@@ -121,7 +121,7 @@ export function Menu({
           aria-label={label}
           onKeyDown={onMenuKey}
           className={cn(
-            "panel absolute top-full z-40 mt-1 flex max-h-[min(24rem,70dvh)] min-w-60 flex-col overflow-y-auto bg-card-background p-1",
+            "absolute top-full z-40 mt-1 flex max-h-[min(24rem,70dvh)] min-w-60 flex-col overflow-y-auto rounded-medium border border-card-border bg-card-background p-1 shadow-panel",
             align === "end" ? "right-0" : "left-0",
           )}
         >

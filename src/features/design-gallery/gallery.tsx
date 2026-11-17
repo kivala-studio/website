@@ -4,13 +4,25 @@ import { useTranslations } from "next-intl";
 import { type ReactNode, useState } from "react";
 
 import { AmountField } from "@/ui/components/amount-field";
-import { ActionTile, Button, IconButton } from "@/ui/components/buttons";
-import { SearchField, SectionTabs, SegmentedControl, ThemeSwitch, type TimeRange, TimeRangePicker } from "@/ui/components/controls";
+import { ActionTile, Button, ButtonLink, IconButton } from "@/ui/components/buttons";
+import {
+  NavTabs,
+  SearchField,
+  SectionTabs,
+  SegmentedControl,
+  ThemeMenu,
+  ThemeSwitch,
+  type TimeRange,
+  TimeRangePicker,
+} from "@/ui/components/controls";
 import { Dialog } from "@/ui/components/dialog";
 import { OfflineBanner, SensitiveValue, ToastHost, useToast } from "@/ui/components/feedback";
 import { ChangeBadge, FinancialValue, MarketMetric, MarketStatusIndicator } from "@/ui/components/financial";
-import { Card, PageHeading, Panel, SectionHeader, StatStrip } from "@/ui/components/layout";
+import { Card, PAGE_CONTAINER, PageHeading, Panel, SectionHeader, StatStrip } from "@/ui/components/layout";
 import { AssetRow, FeatureRow, SecurityLogo } from "@/ui/components/rows";
+import { SectionRail } from "@/ui/components/section-rail";
+import { DataTable, TableCell, TableHead, TableHeaderCell, TableNameCell, TableRow } from "@/ui/components/table";
+import { TopBar } from "@/ui/components/top-bar";
 import {
   ChartShimmer,
   EmptyState,
@@ -23,6 +35,7 @@ import {
 import { ICON_PACK, type IconName } from "@/ui/icons/icon-pack";
 import { Icon } from "@/ui/icons/icon";
 import type { Theme } from "@/ui/theme/theme";
+import { cn } from "@/ui/cn";
 
 import { FormatCheck } from "./format-check";
 
@@ -34,9 +47,16 @@ const SWATCHES = [
   "bg-accent", "bg-on-accent", "bg-positive", "bg-negative", "bg-warning", "bg-separator", "bg-chart-grid",
   "bg-card-outline", "bg-control-outline", "bg-comparison-orange", "bg-comparison-purple",
 ];
+const SAMPLE_ROWS = [
+  { symbol: "BAIAAAAA", name: "Banco Angolano de Investimentos", price: "65000", change: "2.14", color: "blue" },
+  { symbol: "BFAAAAAA", name: "Banco de Fomento Angola", price: "72500", change: "-0.62", color: "green" },
+  { symbol: "ENSAAAAA", name: "ENSA Seguros de Angola", price: "21000", change: "0", color: "violet" },
+] as const;
 const TYPE_ROLES = [
   "text-headline", "text-display", "text-price", "text-section", "text-body", "text-secondary", "text-caption",
   "text-micro font-bold uppercase",
+  "font-display text-display",
+  "font-display text-body",
 ];
 
 function Story({ name, children }: { name: string; children: ReactNode }) {
@@ -90,7 +110,7 @@ export function DesignGallery({ initialTheme }: { initialTheme: Theme }) {
 
   return (
     <ToastHost>
-      <main className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-5 py-8">
+      <main className={cn(PAGE_CONTAINER, "flex flex-col gap-8 py-8")}>
         <PageHeading title={t("designSystem.gallery.title")} eyebrow={t("designSystem.gallery.previewBadge")} />
         <ThemeSwitch initial={initialTheme} />
 
@@ -108,7 +128,7 @@ export function DesignGallery({ initialTheme }: { initialTheme: Theme }) {
         <Story name="Type">
           {TYPE_ROLES.map((role) => (
             <p key={role} className={`${role} text-primary-text`}>
-              {role.split(" ")[0].slice(5)} 1 234 567,89 · 0 111 888,00
+              {role.replace(" font-bold uppercase", "").replaceAll("text-", "")} 1 234 567,89 · 0 111 888,00
             </p>
           ))}
         </Story>
@@ -131,10 +151,40 @@ export function DesignGallery({ initialTheme }: { initialTheme: Theme }) {
             {t("designSystem.gallery.openActivity")}
           </Button>
           <Button kind="destructive" icon="trash">{t("common.close")}</Button>
+          <div className="flex flex-wrap items-center gap-3">
+            <Button size="compact">{t("designSystem.gallery.viewPortfolio")}</Button>
+            <Button size="compact" kind="secondary" icon="refresh">{t("common.tryAgain")}</Button>
+            <ButtonLink size="compact" kind="outline" href="/dev/design">{t("common.viewAll")}</ButtonLink>
+          </div>
           <div className="flex gap-3">
             <IconButton icon="share" label="share" />
             <IconButton icon="more" label="more" />
             <IconButton icon="close" label={t("common.close")} />
+            <IconButton icon="settings" label={t("common.theme")} variant="plain" />
+            <IconButton icon="notification" label={t("common.notifications")} variant="plain" />
+          </div>
+        </Story>
+
+        <Story name="Top bar">
+          <div className="overflow-hidden rounded-large border border-hairline">
+            <TopBar
+              home={{ href: "/dev/design", label: t("site.header.homeLabel") }}
+              logo={<span className="font-display text-section font-semibold">{t("common.appName")}</span>}
+              navLabel={t("site.header.navLabel")}
+              mobileNav="row"
+              nav={[
+                { href: "/dev/design", label: t("common.home") },
+                { href: "/mercado", label: t("common.explore") },
+                { href: "/carteira", label: t("common.portfolio") },
+              ]}
+              search={<span className="hidden w-full lg:block"><SearchField value={query} onChange={setQuery} placeholder={t("common.search")} hint="/" /></span>}
+              actions={
+                <>
+                  <ThemeMenu initial={initialTheme} />
+                  <ButtonLink href="/dev/design" size="compact" className="ml-1">{t("onboarding.navigation.signIn")}</ButtonLink>
+                </>
+              }
+            />
           </div>
         </Story>
 
@@ -162,6 +212,45 @@ export function DesignGallery({ initialTheme }: { initialTheme: Theme }) {
           </Card>
           <Card surface="elevated" compact>
             <SectionHeader title={t("designSystem.gallery.surface")} />
+          </Card>
+          <Card
+            title={t("designSystem.gallery.valuesHeader")}
+            titleId="gallery-card"
+            action={<ButtonLink size="compact" kind="outline" href="/dev/design">{t("common.viewAll")}</ButtonLink>}
+          >
+            <p className="text-body text-secondary-text">{t("designSystem.gallery.sampleInsightMessage")}</p>
+          </Card>
+        </Story>
+
+        <Story name="Data table">
+          <Card title={t("common.market")} titleId="gallery-table" flush action={<ButtonLink size="compact" kind="outline" href="/dev/design">{t("common.viewAll")}</ButtonLink>}>
+            <div className="overflow-x-auto">
+              <DataTable className="min-w-[32rem]">
+                <TableHead>
+                  <TableHeaderCell>{t("common.instrument")}</TableHeaderCell>
+                  <TableHeaderCell align="right">{t("common.price")}</TableHeaderCell>
+                  <TableHeaderCell align="right">{t("common.change")}</TableHeaderCell>
+                </TableHead>
+                <tbody>
+                  {SAMPLE_ROWS.map((row) => (
+                    <TableRow key={row.symbol}>
+                      <TableNameCell
+                        logo={<SecurityLogo symbol={row.symbol} brandColor={row.color} size="s" />}
+                        name={row.name}
+                        symbol={row.symbol}
+                        href="/dev/design"
+                      />
+                      <TableCell numeric>
+                        <FinancialValue value={row.price} digits={0} />
+                      </TableCell>
+                      <TableCell numeric>
+                        <ChangeBadge value={row.change} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </tbody>
+              </DataTable>
+            </div>
           </Card>
         </Story>
 
@@ -192,7 +281,33 @@ export function DesignGallery({ initialTheme }: { initialTheme: Theme }) {
             options={[{ value: "price", title: "Kz" }, { value: "percent", title: "%" }]}
           />
           <TimeRangePicker label={t("components.chart.priceAccessibility")} value={range} onChange={setRange} isEnabled={(value) => value !== "all"} />
-          <SearchField value={query} onChange={setQuery} />
+          <NavTabs
+            label={t("common.portfolio")}
+            items={[
+              { href: "/dev/design", title: t("legacy.resumo") },
+              { href: "/carteira/registos", title: t("common.records") },
+              { href: "/carteira/rendimentos", title: t("income.title") },
+            ]}
+          />
+          <SearchField value={query} onChange={setQuery} hint="/" />
+        </Story>
+
+        <Story name="Section rail">
+          <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-6">
+            <SectionRail
+              label={t("common.portfolio")}
+              items={[
+                { href: "/dev/design", label: t("legacy.resumo"), icon: "portfolio" },
+                { href: "/carteira/posicoes", label: t("portfolio.dashboard.positionsTab"), icon: "chart" },
+                { href: "/carteira/registos", label: t("common.records"), icon: "history" },
+                { href: "/carteira/rendimentos", label: t("income.title"), icon: "dividend" },
+                { href: "/simulador", label: t("common.simulateInvestment"), icon: "calculator" },
+              ]}
+            />
+            <Card className="min-h-40">
+              <SectionHeader title={t("legacy.resumo")} />
+            </Card>
+          </div>
         </Story>
 
         <Story name="Values and change">

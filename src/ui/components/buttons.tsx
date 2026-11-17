@@ -9,27 +9,40 @@ import { cn } from "../cn";
 import { Icon, type IconName } from "../icons/icon";
 import { Spinner } from "./states";
 
-type Kind = "primary" | "secondary" | "destructive";
+type Kind = "primary" | "secondary" | "outline" | "destructive";
 
+/** Pill fills: accent for the main action, a grey fill for the rest, a hairline outline for quiet actions. */
 const KIND: Record<Kind, string> = {
-  primary: "bg-accent text-on-accent",
+  primary: "bg-accent text-on-accent hover:brightness-110",
   secondary:
-    "bg-action-surface text-primary-text border-[length:var(--control-outline-width)] border-control-outline",
+    "bg-action-surface text-primary-text border-[length:var(--control-outline-width)] border-control-outline desk:border-0 hover:bg-track",
+  outline: "border border-field-border bg-transparent text-primary-text hover:bg-action-surface",
   destructive: "bg-negative/12 text-negative",
 };
 
+// Phones keep the iOS 56 px capsule; desk is the web pill: 44 px (the target floor), 14 px medium text.
 const BASE =
-  "motion-press inline-flex w-full min-h-14 items-center justify-center gap-2 rounded-full px-5 py-4 text-center text-body font-semibold desk:min-h-11 desk:px-4 desk:py-2 disabled:opacity-42 aria-disabled:opacity-42";
+  "motion-press inline-flex w-full min-h-14 items-center justify-center gap-2 rounded-full px-5 py-4 text-center text-body font-semibold transition-[background-color,filter] desk:min-h-11 desk:px-5 desk:py-2 desk:text-secondary desk:font-medium disabled:opacity-42 aria-disabled:opacity-42";
+
+// Compact pills keep 44 px everywhere and size to their title (card header actions, toolbars, the top bar).
+const COMPACT = "inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full px-4 text-secondary font-medium whitespace-nowrap transition-[background-color,filter] motion-press disabled:opacity-42 aria-disabled:opacity-42";
+
+type Size = "regular" | "compact";
+
+/** Class names of a pill button, for links and summaries styled as one. */
+export const buttonClass = (kind: Kind = "primary", className?: string, size: Size = "regular") =>
+  cn(size === "compact" ? COMPACT : BASE, KIND[kind], className);
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   kind?: Kind;
+  size?: Size;
   icon?: IconName;
   /** Keeps the title, blocks repeat presses and announces progress. */
   loading?: boolean;
 };
 
-/** Full-width capsule button (iOS InvestButtonStyle + ActionButton). */
-export function Button({ kind = "primary", icon, loading = false, className, children, onClick, ...props }: ButtonProps) {
+/** Full-width pill button (iOS InvestButtonStyle + ActionButton); `className="w-auto"` sizes it to its title. */
+export function Button({ kind = "primary", size, icon, loading = false, className, children, onClick, ...props }: ButtonProps) {
   const t = useTranslations("components.button");
   return (
     <button
@@ -41,7 +54,7 @@ export function Button({ kind = "primary", icon, loading = false, className, chi
         if (loading) return event.preventDefault();
         onClick?.(event);
       }}
-      className={cn(BASE, KIND[kind], className)}
+      className={buttonClass(kind, className, size)}
     >
       {loading ? <Spinner /> : icon ? <Icon name={icon} /> : null}
       <span>{children}</span>
@@ -50,30 +63,41 @@ export function Button({ kind = "primary", icon, loading = false, className, chi
   );
 }
 
-export function ButtonLink({ kind = "primary", icon, className, children, ...props }: ComponentProps<typeof Link> & { kind?: Kind; icon?: IconName }) {
+export function ButtonLink({
+  kind = "primary",
+  size,
+  icon,
+  className,
+  children,
+  ...props
+}: ComponentProps<typeof Link> & { kind?: Kind; size?: Size; icon?: IconName }) {
   return (
-    <Link {...props} className={cn(BASE, KIND[kind], className)}>
+    <Link {...props} className={buttonClass(kind, className, size)}>
       {icon ? <Icon name={icon} /> : null}
       <span>{children}</span>
     </Link>
   );
 }
 
-type IconButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & { icon: IconName; label: string };
+type IconButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
+  icon: IconName;
+  label: string;
+  /** `filled` sits on a grey disc; `plain` is a bare icon with a hover disc (top bar, toolbars). */
+  variant?: "filled" | "plain";
+};
 
-/** Circular 48 px icon-only button; the label is required. */
-export function IconButton({ icon, label, className, ...props }: IconButtonProps) {
+/** Circular icon-only class names (48 px on phones, 44 px on desk), for links styled as an icon button. */
+export const iconButtonClass = (variant: "filled" | "plain" = "filled", className?: string) =>
+  cn(
+    "motion-press relative inline-flex size-12 shrink-0 items-center justify-center rounded-full text-primary-text transition-colors desk:size-11 disabled:opacity-42",
+    variant === "filled" ? "bg-action-surface hover:bg-track" : "hover:bg-action-surface",
+    className,
+  );
+
+/** Circular icon-only button; the label is required. */
+export function IconButton({ icon, label, variant = "filled", className, ...props }: IconButtonProps) {
   return (
-    <button
-      type="button"
-      aria-label={label}
-      title={label}
-      {...props}
-      className={cn(
-        "motion-press inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-action-surface desk:size-11 text-primary-text disabled:opacity-42",
-        className,
-      )}
-    >
+    <button type="button" aria-label={label} title={label} {...props} className={iconButtonClass(variant, className)}>
       <Icon name={icon} />
     </button>
   );

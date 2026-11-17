@@ -2,11 +2,13 @@ import { useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
-import { ThemeSwitch } from "@/ui/components/controls";
+import { ButtonLink } from "@/ui/components/buttons";
+import { ThemeMenu, ThemeSwitch } from "@/ui/components/controls";
+import { PAGE_CONTAINER } from "@/ui/components/layout";
+import { TopBar } from "@/ui/components/top-bar";
 import type { Theme } from "@/ui/theme/theme";
 
 import { LanguageSwitch } from "./language-switch";
-import { SectionLink } from "./section-link";
 import { INDEXABLE_PAGES, SIGN_IN_PATH } from "./site";
 
 /** The palanca-negra mark. A template image used as a mask, so it takes the current text colour in both themes. */
@@ -22,74 +24,113 @@ export function PalancaMark({ className }: { className?: string }) {
   );
 }
 
-export const PAGE_WIDTH = "mx-auto w-full max-w-6xl px-4 sm:px-6";
-// Site links do not prefetch: the pages are light, and on mobile prefetches compete with the first paint.
-const NAV_LINK = "inline-flex min-h-11 items-center rounded-small px-3 text-secondary font-semibold";
-
-export function SiteHeader() {
+/** Mark and wordmark for the top bar; the wordmark gives way on narrow phones (the link keeps its name). */
+export function BrandLockup() {
   const t = useTranslations();
-  const sections = [
-    { href: INDEXABLE_PAGES.market, title: t("common.market") },
-    { href: INDEXABLE_PAGES.news, title: t("common.news") },
-    { href: INDEXABLE_PAGES.learn, title: t("learn.title") },
-  ];
   return (
-    <header className={cn(PAGE_WIDTH, "flex flex-wrap items-center justify-between gap-x-2 py-3")}>
-      <Link href="/" prefetch={false} aria-label={t("site.header.homeLabel")} className="-ml-1 inline-flex min-h-11 items-center gap-2 rounded-small px-1 text-primary-text">
-        <PalancaMark className="size-8" />
-        <span className="text-body font-semibold tracking-wide">{t("common.appName")}</span>
-      </Link>
-      {/* Below `md` the sections take a row of their own under the logo. */}
-      <nav aria-label={t("site.header.navLabel")} className="order-last -ml-3 w-full md:order-none md:ml-4 md:w-auto md:flex-1">
-        <ul className="flex flex-wrap">
-          {sections.map((section) => (
-            <li key={section.href}>
-              <SectionLink href={section.href} className={NAV_LINK}>
-                {section.title}
-              </SectionLink>
-            </li>
-          ))}
-        </ul>
-      </nav>
-      <div className="-mr-3 flex items-center">
-        <LanguageSwitch className={cn(NAV_LINK, "text-secondary-text")} />
-        <Link href={SIGN_IN_PATH} prefetch={false} className={cn(NAV_LINK, "text-accent")}>
-          {t("onboarding.navigation.signIn")}
-        </Link>
-      </div>
-    </header>
+    <>
+      <PalancaMark className="size-8" />
+      <span className="hidden font-display text-[1.1875rem] font-semibold tracking-tight min-[25rem]:inline">{t("common.appName")}</span>
+    </>
   );
 }
 
+/** The language link styled as a round top-bar control. */
+export const LANGUAGE_CONTROL =
+  "inline-flex size-11 shrink-0 items-center justify-center rounded-full font-display text-secondary font-semibold text-secondary-text transition-colors hover:bg-action-surface hover:text-primary-text";
+
+/** Public top bar: sections as pills, then the language, the theme and sign-in. Visitors get no search (it needs the app's market store). */
+export function SiteHeader({ theme }: { theme: Theme }) {
+  const t = useTranslations();
+  return (
+    <TopBar
+      home={{ href: "/", label: t("site.header.homeLabel") }}
+      logo={<BrandLockup />}
+      navLabel={t("site.header.navLabel")}
+      mobileNav="row"
+      nav={[
+        { href: INDEXABLE_PAGES.market, label: t("common.market") },
+        { href: INDEXABLE_PAGES.news, label: t("common.news") },
+        { href: INDEXABLE_PAGES.learn, label: t("learn.title") },
+      ]}
+      actions={
+        <>
+          <LanguageSwitch className={LANGUAGE_CONTROL} />
+          <ThemeMenu initial={theme} />
+          <ButtonLink href={SIGN_IN_PATH} prefetch={false} size="compact" className="ml-1">
+            {t("onboarding.navigation.signIn")}
+          </ButtonLink>
+        </>
+      }
+    />
+  );
+}
+
+const FOOTER_LINK =
+  "inline-flex min-h-11 items-center text-secondary text-secondary-text transition-colors hover:text-primary-text desk:min-h-9";
+
+/** Link columns, the standing disclaimers, then the theme and the language. */
 export function SiteFooter({ theme }: { theme: Theme }) {
   const t = useTranslations();
-  const links = [
-    { href: INDEXABLE_PAGES.policy, title: t("common.privacyPolicy") },
-    { href: INDEXABLE_PAGES.terms, title: t("site.legal.termsTitle") },
-    { href: INDEXABLE_PAGES.support, title: t("site.legal.supportTitle") },
-    { href: INDEXABLE_PAGES.deletion, title: t("common.deleteAccount") },
+  const columns = [
+    {
+      title: t("site.footer.product"),
+      links: [
+        { href: INDEXABLE_PAGES.market, title: t("common.market") },
+        { href: INDEXABLE_PAGES.news, title: t("common.news") },
+        { href: INDEXABLE_PAGES.learn, title: t("learn.title") },
+        { href: "/simulador", title: t("common.simulateInvestment") },
+      ],
+    },
+    {
+      title: t("common.account"),
+      links: [
+        { href: SIGN_IN_PATH, title: t("onboarding.navigation.signIn") },
+        { href: INDEXABLE_PAGES.deletion, title: t("common.deleteAccount") },
+      ],
+    },
+    {
+      title: t("site.footer.legal"),
+      links: [
+        { href: INDEXABLE_PAGES.policy, title: t("common.privacyPolicy") },
+        { href: INDEXABLE_PAGES.terms, title: t("site.legal.termsTitle") },
+        { href: INDEXABLE_PAGES.support, title: t("site.legal.supportTitle") },
+      ],
+    },
   ];
   return (
-    <footer className="mt-auto border-t border-separator">
-      <div className={cn(PAGE_WIDTH, "flex flex-col gap-8 py-10")}>
-        <nav aria-label={t("site.footer.label")}>
-          <ul className="-ml-3 flex flex-wrap gap-x-2">
-            {links.map((link) => (
-              <li key={link.href}>
-                <Link href={link.href} prefetch={false} className={cn(NAV_LINK, "text-primary-text")}>
-                  {link.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
+    <footer className="mt-auto pt-10">
+      <div className={cn(PAGE_CONTAINER, "flex flex-col gap-10 border-t border-hairline py-12")}>
+        <nav aria-label={t("site.footer.label")} className="grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-[minmax(0,2fr)_repeat(3,minmax(0,1fr))]">
+          <Link href="/" prefetch={false} aria-label={t("site.header.homeLabel")} className="col-span-2 inline-flex min-h-11 items-center gap-2 self-start justify-self-start rounded-small text-primary-text md:col-span-1">
+            <PalancaMark className="size-8" />
+            <span className="font-display text-[1.1875rem] font-semibold tracking-tight">{t("common.appName")}</span>
+          </Link>
+          {columns.map((column) => (
+            <div key={column.title} className="flex flex-col gap-1">
+              <h2 className="text-secondary font-semibold text-primary-text">{column.title}</h2>
+              <ul className="flex flex-col">
+                {column.links.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} prefetch={false} className={FOOTER_LINK}>
+                      {link.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </nav>
         <div className="flex max-w-3xl flex-col gap-2 text-caption text-secondary-text">
           <p>{t("site.footer.independence")}</p>
           <p>{t("settings.marketData.disclaimer")}</p>
           <p>{t("onboarding.caption.simulationDisclaimer")}</p>
         </div>
-        <div className="w-full max-w-xs">
-          <ThemeSwitch initial={theme} />
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="w-full max-w-xs">
+            <ThemeSwitch initial={theme} />
+          </div>
+          <LanguageSwitch className={cn(LANGUAGE_CONTROL, "bg-action-surface")} />
         </div>
       </div>
     </footer>

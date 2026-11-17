@@ -6,11 +6,12 @@ import type { StaticImageData } from "next/image";
 import alerts from "@/features/site/assets/alerts.webp";
 import comparison from "@/features/site/assets/comparison.webp";
 import instrument from "@/features/site/assets/instrument.webp";
-import { PAGE_WIDTH, PalancaMark } from "@/features/site/chrome";
+import { PalancaMark } from "@/features/site/chrome";
 import { pageMetadata } from "@/features/site/metadata";
 import { OrganizationData } from "@/features/site/structured-data";
 import { PhoneFigure, PortfolioIllustration, Screenshot, StoreButton } from "@/features/site/visuals";
 import { cn } from "@/ui/cn";
+import { PAGE_CONTAINER } from "@/ui/components/layout";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const locale = (await params).locale as Locale;
@@ -38,7 +39,7 @@ export default function HomePage() {
   return (
     <main id="main">
       <OrganizationData />
-      <section className={cn(PAGE_WIDTH, "grid items-center gap-12 pt-6 pb-16 md:grid-cols-[minmax(0,1fr)_18rem] md:gap-16 md:pt-12 md:pb-24 lg:grid-cols-[minmax(0,1fr)_20rem]")}>
+      <section className={cn(PAGE_CONTAINER, "grid items-center gap-12 pt-6 pb-16 md:grid-cols-[minmax(0,1fr)_18rem] md:gap-16 md:pt-12 md:pb-24 lg:grid-cols-[minmax(0,1fr)_20rem]")}>
         <div className="flex max-w-xl flex-col items-start gap-6">
           <h1 className="text-display text-primary-text sm:text-headline lg:text-[3.25rem] lg:leading-[1.05] lg:tracking-[-0.03em]">{t("common.yourMarketUpClose")}</h1>
           <p className="text-body text-secondary-text sm:text-price sm:font-normal">{t("site.meta.homeDescription")}</p>
@@ -51,7 +52,7 @@ export default function HomePage() {
 
       {THEMES.map(({ key, visual }, index) => (
         <section key={key} aria-labelledby={`theme-${key}`} className="border-t border-separator">
-          <div className={cn(PAGE_WIDTH, "grid items-center gap-10 py-16 md:grid-cols-2 md:gap-16 md:py-24")}>
+          <div className={cn(PAGE_CONTAINER, "grid items-center gap-10 py-16 md:grid-cols-2 md:gap-16 md:py-24")}>
             <div className={cn("flex max-w-md flex-col gap-4", index % 2 === 1 && "md:order-2 md:justify-self-start")}>
               <h2 id={`theme-${key}`} className="text-display text-primary-text">
                 {t(`onboarding.page.${key}Title`)}
@@ -70,7 +71,7 @@ export default function HomePage() {
       ))}
 
       <section aria-labelledby="download" className="border-t border-separator">
-        <div className={cn(PAGE_WIDTH, "flex flex-col items-center gap-6 py-16 text-center md:py-24")}>
+        <div className={cn(PAGE_CONTAINER, "flex flex-col items-center gap-6 py-16 text-center md:py-24")}>
           <PalancaMark className="size-16 text-primary-text" />
           <h2 id="download" className="text-display text-primary-text">
             {t("site.meta.homeTitle")}

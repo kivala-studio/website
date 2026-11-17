@@ -2840,6 +2840,8 @@
     },
     "footer": {
       "label": "invest.ao",
+      "product": "Product",
+      "legal": "Legal",
       "independence": "invest.ao is independent and not affiliated with BODIVA. It does not let you buy or sell securities and does not give financial advice."
     },
     "store": {

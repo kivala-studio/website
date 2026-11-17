@@ -12,13 +12,12 @@ import { catalogueRows } from "@/features/market/browse/catalogue";
 import { RelatedInstruments } from "@/features/news/related-instruments";
 import { ArticleMetadata } from "@/features/news/article-metadata";
 import { NewsMarkdown } from "@/features/news/markdown";
-import { PAGE_WIDTH } from "@/features/site/chrome";
 import { pageMetadata } from "@/features/site/metadata";
 import { JsonLd } from "@/features/site/structured-data";
 import { getPathname } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
 import { cn } from "@/ui/cn";
-import { SectionHeader } from "@/ui/components/layout";
+import { PAGE_CONTAINER, SectionHeader } from "@/ui/components/layout";
 import { ErrorState } from "@/ui/components/states";
 import { Icon } from "@/ui/icons/icon";
 
@@ -49,7 +48,7 @@ export default async function ArticlePage({ params }: Props) {
   if (found === undefined) notFound();
   if (found === null) {
     return (
-      <main id="main" className={cn(PAGE_WIDTH, "pt-6 pb-16")}>
+      <main id="main" className={cn(PAGE_CONTAINER, "pt-6 pb-16")}>
         <ErrorState title={t("news.article.unavailableTitle")} message={t("news.article.loadFailed")} />
       </main>
     );
@@ -64,7 +63,7 @@ export default async function ArticlePage({ params }: Props) {
   const url = `${serverEnv.siteUrl}${getPathname({ locale: locale as AppLocale, href: `/noticias/${found.slug}` })}`;
 
   return (
-    <main id="main" className={cn(PAGE_WIDTH, "pt-6 pb-16")}>
+    <main id="main" className={cn(PAGE_CONTAINER, "pt-6 pb-16")}>
       <JsonLd
         data={{
           "@context": "https://schema.org",

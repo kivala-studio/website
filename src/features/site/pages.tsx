@@ -2,16 +2,15 @@ import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 
 import { cn } from "@/ui/cn";
-import { PageHeading } from "@/ui/components/layout";
+import { PAGE_CONTAINER, PageHeading } from "@/ui/components/layout";
 import { Icon } from "@/ui/icons/icon";
 
-import { PAGE_WIDTH } from "./chrome";
 import { SUPPORT_EMAIL } from "./site";
 
 /** Single-column reading page: legal, support, account deletion, invites. */
 export function ReadingPage({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <main id="main" className={cn(PAGE_WIDTH, "pt-6 pb-16")}>
+    <main id="main" className={cn(PAGE_CONTAINER, "pt-6 pb-16")}>
       <div className="flex max-w-3xl flex-col gap-8">
         <PageHeading title={title} />
         {children}

@@ -6,26 +6,20 @@ import { useAccountStores } from "@/features/account/account-provider";
 
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
+import { iconButtonClass } from "@/ui/components/buttons";
+import { TopBar } from "@/ui/components/top-bar";
 import { Icon, type IconName } from "@/ui/icons/icon";
 
-import { isCurrentTab } from "./destinations";
+import { isCurrentTab, SEARCH_TAB } from "./destinations";
 
 type Item = { href: string; label: string; icon: IconName };
 
-/** The tabs; the current one is marked `aria-current="page"`, which screen readers announce. */
-export function ShellNav({ items, label, variant }: { items: readonly Item[]; label: string; variant: "sidebar" | "bar" }) {
+/** The phone tab bar (iOS tab bar) below 1024 px; the current tab is marked `aria-current="page"`. */
+export function ShellNav({ items, label }: { items: readonly Item[]; label: string }) {
   const pathname = usePathname();
-  const bar = variant === "bar";
   return (
-    <nav
-      aria-label={label}
-      className={cn(
-        bar
-          ? "fixed inset-x-0 bottom-0 z-20 border-t border-separator bg-app-background pb-[env(safe-area-inset-bottom)] lg:hidden"
-          : "flex flex-col",
-      )}
-    >
-      <ul className={cn(bar ? "mx-auto grid max-w-xl grid-cols-5" : "flex flex-col gap-1")}>
+    <nav aria-label={label} className="fixed inset-x-0 bottom-0 z-20 border-t border-separator bg-app-background pb-[env(safe-area-inset-bottom)] lg:hidden">
+      <ul className="mx-auto grid max-w-xl grid-cols-5">
         {items.map((item) => {
           const current = isCurrentTab(item.href, pathname);
           return (
@@ -34,15 +28,12 @@ export function ShellNav({ items, label, variant }: { items: readonly Item[]; la
                 href={item.href}
                 aria-current={current ? "page" : undefined}
                 className={cn(
-                  "flex min-h-11 items-center rounded-medium font-medium",
-                  bar
-                    ? "min-h-16 flex-col justify-center gap-1 px-1 text-micro tracking-normal"
-                    : "gap-3 px-3 py-2 text-body desk:py-1.5",
-                  current ? (bar ? "text-accent" : "bg-selected-tab-background text-primary-text") : "text-secondary-text",
+                  "flex min-h-16 flex-col items-center justify-center gap-1 rounded-medium px-1 text-micro font-medium tracking-normal",
+                  current ? "text-accent" : "text-secondary-text",
                 )}
               >
-                <Icon name={item.icon} scale={bar ? "l" : "m"} className={cn(current && "text-accent")} />
-                <span className={cn(bar && "max-w-full truncate")}>{item.label}</span>
+                <Icon name={item.icon} scale="l" className={cn(current && "text-accent")} />
+                <span className="max-w-full truncate">{item.label}</span>
               </Link>
             </li>
           );
@@ -52,7 +43,11 @@ export function ShellNav({ items, label, variant }: { items: readonly Item[]; la
   );
 }
 
-type HeaderProps = {
+type TopBarProps = {
+  tabs: readonly Item[];
+  navLabel: string;
+  homeLabel: string;
+  logo: ReactNode;
   initials: string;
   profileLabel: string;
   unusualLabel: string;
@@ -65,13 +60,12 @@ type HeaderProps = {
 
 const NO_SUBSCRIPTION = () => () => {};
 
-const HEADER_LINK = "relative inline-flex size-11 shrink-0 items-center justify-center rounded-full text-primary-text";
-
 /**
- * Profile initials (to the profile page), unusual activity and the bell, which shows a dot when there is something
- * unread. From 1024 px it is the web top bar: the search field first, the profile last.
+ * The app's top bar: the tabs as pills (the search tab is the field here), the search palette, unusual activity,
+ * the bell (a dot when something is unread) and the profile initials. Below 1024 px it keeps the logo, a search
+ * button and the icons; the tabs move to the bottom bar.
  */
-export function ShellHeader({ initials, profileLabel, unusualLabel, activityLabel, activityStates, hasUnread: initial, search }: HeaderProps) {
+export function ShellTopBar({ tabs, navLabel, homeLabel, logo, initials, profileLabel, unusualLabel, activityLabel, activityStates, hasUnread: initial, search }: TopBarProps) {
   const pathname = usePathname();
   const activity = useAccountStores()?.activity;
   const hasUnread = useSyncExternalStore(
@@ -81,23 +75,32 @@ export function ShellHeader({ initials, profileLabel, unusualLabel, activityLabe
   );
   const current = (href: string) => (isCurrentTab(href, pathname) ? ("page" as const) : undefined);
   return (
-    <header className="sticky top-0 z-10 flex items-center gap-2 bg-app-background px-4 py-2 sm:px-6 lg:min-h-14 lg:gap-3 lg:border-b lg:border-hairline lg:bg-elevated-background">
-      {/* The initials are decorative: the link is named by the profile label. */}
-      <Link href="/definicoes" aria-current={current("/definicoes")} className={cn(HEADER_LINK, "bg-action-surface text-secondary font-semibold lg:order-last")}>
-        <span aria-hidden>{initials}</span>
-        <span className="sr-only">{profileLabel}</span>
-      </Link>
-      <div className="flex min-w-0 flex-1">{search}</div>
-      <div className="flex items-center gap-1">
-        <Link href="/atividade-invulgar" aria-current={current("/atividade-invulgar")} className={HEADER_LINK}>
-          <Icon name="chart" label={unusualLabel} scale="l" />
-        </Link>
-        <Link href="/atividade" aria-current={current("/atividade")} className={HEADER_LINK}>
-          <Icon name="notification" scale="l" />
-          <span className="sr-only">{`${activityLabel}, ${hasUnread ? activityStates.new : activityStates.none}`}</span>
-          {hasUnread ? <span aria-hidden className="absolute top-2 right-2 size-2.5 rounded-full bg-negative ring-2 ring-app-background" /> : null}
-        </Link>
-      </div>
-    </header>
+    <TopBar
+      home={{ href: "/inicio", label: homeLabel }}
+      logo={logo}
+      nav={tabs.filter((tab) => tab.href !== SEARCH_TAB).map(({ href, label }) => ({ href, label }))}
+      navLabel={navLabel}
+      mobileNav="none"
+      search={search}
+      actions={
+        <>
+          <Link href="/atividade-invulgar" aria-current={current("/atividade-invulgar")} className={iconButtonClass("plain", "aria-[current=page]:bg-action-surface")}>
+            <Icon name="chart" label={unusualLabel} scale="l" />
+          </Link>
+          <Link href="/atividade" aria-current={current("/atividade")} className={iconButtonClass("plain", "aria-[current=page]:bg-action-surface")}>
+            <Icon name="notification" scale="l" />
+            <span className="sr-only">{`${activityLabel}, ${hasUnread ? activityStates.new : activityStates.none}`}</span>
+            {hasUnread ? <span aria-hidden className="absolute top-2 right-2 size-2.5 rounded-full bg-negative ring-2 ring-elevated-background" /> : null}
+          </Link>
+          {/* The initials are decorative: the link is named by the profile label. */}
+          <Link href="/definicoes" aria-current={current("/definicoes")} className="group ml-1 inline-flex size-11 shrink-0 items-center justify-center rounded-full">
+            <span aria-hidden className="inline-flex size-9 items-center justify-center rounded-full bg-accent-soft font-display text-secondary font-semibold text-accent ring-accent group-hover:ring-2 group-aria-[current=page]:ring-2">
+              {initials}
+            </span>
+            <span className="sr-only">{profileLabel}</span>
+          </Link>
+        </>
+      }
+    />
   );
 }

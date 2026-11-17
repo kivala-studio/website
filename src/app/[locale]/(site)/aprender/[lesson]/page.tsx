@@ -6,11 +6,11 @@ import { use } from "react";
 
 import { LESSON_SECTIONS, lessonBySlug } from "@/features/learn/lessons";
 import { MarkRead } from "@/features/learn/read-state";
-import { PAGE_WIDTH } from "@/features/site/chrome";
 import { pageMetadata } from "@/features/site/metadata";
 import { Link } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
 import { cn } from "@/ui/cn";
+import { PAGE_CONTAINER } from "@/ui/components/layout";
 import { Icon } from "@/ui/icons/icon";
 
 type Props = { params: Promise<{ locale: string; lesson: string }> };
@@ -35,7 +35,7 @@ export default function LessonPage({ params }: Props) {
   if (!lesson) notFound();
   const t = useTranslations();
   return (
-    <main id="main" className={cn(PAGE_WIDTH, "pt-4 pb-16")}>
+    <main id="main" className={cn(PAGE_CONTAINER, "pt-4 pb-16")}>
       <MarkRead id={lesson.id} />
       <article className="flex max-w-170 flex-col gap-6">
         <Link

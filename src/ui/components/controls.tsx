@@ -1,11 +1,14 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { type KeyboardEvent, useRef, useState } from "react";
+import { type KeyboardEvent, type ReactNode, useRef, useSyncExternalStore } from "react";
+
+import { Link, usePathname } from "@/i18n/navigation";
 
 import { cn } from "../cn";
-import { Icon } from "../icons/icon";
-import { THEME_COOKIE, type Theme, THEMES } from "../theme/theme";
+import { Icon, type IconName } from "../icons/icon";
+import { parseTheme, THEME_COOKIE, type Theme, THEMES } from "../theme/theme";
+import { Menu } from "./menu";
 
 /** Arrow, Home and End keys move between options and select them (WAI-ARIA tabs and radio groups). */
 function useRovingKeys(
@@ -32,7 +35,13 @@ function useRovingKeys(
   return { refs, onKeyDown };
 }
 
-/** Text tabs; the selected tab has weight and an accent underline. */
+/** The page-level tab look (CoinStats): text tabs on a hairline, the current one bold with a 2 px accent underline. */
+const TAB_LIST = "flex gap-6 overflow-x-auto border-b border-hairline [scrollbar-width:none]";
+const TAB = "relative inline-flex min-h-12 shrink-0 items-center font-display text-body desk:min-h-11";
+const TAB_CURRENT = "font-semibold text-primary-text after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:rounded-full after:bg-accent";
+const TAB_OTHER = "font-medium text-secondary-text hover:text-primary-text";
+
+/** Text tabs that switch panels in place (WAI-ARIA tabs); the selected tab has weight and an accent underline. */
 export function SectionTabs({
   titles,
   selected,
@@ -49,7 +58,7 @@ export function SectionTabs({
 }) {
   const { refs, onKeyDown } = useRovingKeys(titles.length, selected, onSelect);
   return (
-    <div role="tablist" aria-label={label} onKeyDown={onKeyDown} className="flex gap-6 overflow-x-auto border-b border-separator [scrollbar-width:none]">
+    <div role="tablist" aria-label={label} onKeyDown={onKeyDown} className={TAB_LIST}>
       {titles.map((title, index) => (
         <button
           key={title}
@@ -61,17 +70,51 @@ export function SectionTabs({
           aria-selected={index === selected}
           tabIndex={index === selected ? 0 : -1}
           onClick={() => onSelect(index)}
-          className={cn(
-            "relative min-h-12 shrink-0 text-body desk:min-h-11",
-            index === selected
-              ? "font-semibold text-primary-text after:absolute after:inset-x-0 after:bottom-0 after:h-[3px] after:rounded-full after:bg-accent"
-              : "text-secondary-text",
-          )}
+          className={cn(TAB, index === selected ? TAB_CURRENT : TAB_OTHER)}
         >
           {title}
         </button>
       ))}
     </div>
+  );
+}
+
+/** Whether `href` is the current page or a section above it (`/carteira` on `/carteira/registos`). */
+export function useLinkCurrent(): (href: string, exact?: boolean) => "page" | "true" | undefined {
+  const pathname = usePathname();
+  return (href, exact = false) =>
+    pathname === href ? "page" : !exact && href !== "/" && pathname.startsWith(`${href}/`) ? "true" : undefined;
+}
+
+/**
+ * Text tabs that are links to sibling pages (page-level sections). The current one carries `aria-current`;
+ * `exact` items are current only on their own path (a section's overview).
+ */
+export function NavTabs({
+  items,
+  label,
+  className,
+}: {
+  items: readonly { href: string; title: string; exact?: boolean }[];
+  label: string;
+  className?: string;
+}) {
+  const current = useLinkCurrent();
+  return (
+    <nav aria-label={label} className={className}>
+      <ul className={TAB_LIST}>
+        {items.map((item) => {
+          const state = current(item.href, item.exact);
+          return (
+            <li key={item.href} className="flex shrink-0">
+              <Link href={item.href} aria-current={state} className={cn(TAB, state ? TAB_CURRENT : TAB_OTHER)}>
+                {item.title}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
   );
 }
 
@@ -104,7 +147,7 @@ export function OptionGroup<T extends string>({
       onKeyDown={onKeyDown}
       className={cn(
         "flex gap-1 p-1",
-        variant === "segmented" ? "rounded-medium bg-elevated-background" : "overflow-x-auto [scrollbar-width:none]",
+        variant === "segmented" ? "rounded-medium bg-track" : "overflow-x-auto [scrollbar-width:none]",
       )}
     >
       {options.map((option, index) => {
@@ -121,9 +164,10 @@ export function OptionGroup<T extends string>({
             tabIndex={isSelected ? 0 : -1}
             onClick={() => !option.disabled && !isSelected && onChange(option.value)}
             className={cn(
-              "min-h-11 rounded-small px-2 transition-colors duration-200 motion-reduce:transition-none aria-disabled:opacity-42",
-              variant === "segmented" ? "flex-1 text-secondary font-semibold" : "min-w-11 shrink-0 text-caption font-semibold",
-              isSelected ? "bg-accent-soft text-accent" : "text-secondary-text",
+              "min-h-11 px-2 transition-colors duration-200 motion-reduce:transition-none aria-disabled:opacity-42",
+              variant === "segmented"
+                ? cn("flex-1 rounded-small text-secondary font-semibold desk:rounded-[0.5rem] desk:font-medium", isSelected ? "bg-raised text-primary-text shadow-raised" : "text-secondary-text hover:text-primary-text")
+                : cn("min-w-11 shrink-0 rounded-full text-caption font-semibold", isSelected ? "bg-accent-soft text-accent" : "text-secondary-text hover:text-primary-text"),
             )}
           >
             {option.title}
@@ -170,7 +214,20 @@ export function TimeRangePicker({
   return <OptionGroup options={options} value={value} onChange={onChange} label={label} variant="ranges" />;
 }
 
-/** Rounded search field with a clear button. */
+/** The search field look: 44 px, 12 px corners, a hairline border, the magnifier first. Shared with the palette button. */
+export const FIELD =
+  "flex min-h-12 items-center gap-2 rounded-medium border border-field-border bg-card-background pl-4 pr-1 text-secondary-text desk:min-h-11 desk:pl-3";
+
+/** The keyboard hint chip at the end of a search field (`/`). */
+export function KeyHint({ children }: { children: ReactNode }) {
+  return (
+    <kbd aria-hidden className="mr-1.5 inline-flex h-6 min-w-6 items-center justify-center rounded-[0.375rem] bg-action-surface px-1.5 font-sans text-caption font-medium text-secondary-text">
+      {children}
+    </kbd>
+  );
+}
+
+/** Search field with a clear button. */
 export function SearchField({
   value,
   onChange,
@@ -179,6 +236,7 @@ export function SearchField({
   autoFocus,
   onKeyDown,
   controls,
+  hint,
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -189,12 +247,14 @@ export function SearchField({
   onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
   /** Id of the results this field filters. */
   controls?: string;
+  /** A keyboard shortcut chip shown while the field is empty (`/`). */
+  hint?: string;
 }) {
   const t = useTranslations("designSystem.search");
   const input = useRef<HTMLInputElement>(null);
   const prompt = placeholder ?? t("prompt");
   return (
-    <div className="flex min-h-12 items-center gap-2 rounded-medium bg-elevated-background pl-4 pr-1 desk:min-h-11 desk:pl-3 text-secondary-text focus-within:outline-2 focus-within:outline-accent">
+    <div className={cn(FIELD, "focus-within:border-accent focus-within:outline-2 focus-within:outline-accent/30")}>
       <Icon name="search" />
       <input
         ref={input}
@@ -224,25 +284,58 @@ export function SearchField({
         >
           <Icon name="close" scale="s" />
         </button>
+      ) : hint ? (
+        <KeyHint>{hint}</KeyHint>
       ) : null}
     </div>
   );
 }
 
-/** Sistema / Claro / Escuro. Saved in a cookie so the server renders the right theme on the next load. */
+/** The chosen theme, shared by every theme control on the page. Saved in a cookie so the server renders it next time. */
+const THEME_EVENT = "investao:theme";
+const subscribeTheme = (listener: () => void) => {
+  window.addEventListener(THEME_EVENT, listener);
+  return () => window.removeEventListener(THEME_EVENT, listener);
+};
+
+function useTheme(initial: Theme): [Theme, (next: Theme) => void] {
+  const theme = useSyncExternalStore(subscribeTheme, () => parseTheme(document.documentElement.dataset.theme), () => initial);
+  const set = (next: Theme) => {
+    document.documentElement.dataset.theme = next;
+    document.cookie = `${THEME_COOKIE}=${next}; path=/; max-age=31536000; samesite=lax`;
+    window.dispatchEvent(new Event(THEME_EVENT));
+  };
+  return [theme, set];
+}
+
+/** Sistema / Claro / Escuro as a segmented control. */
 export function ThemeSwitch({ initial }: { initial: Theme }) {
   const t = useTranslations();
-  const [theme, setTheme] = useState(initial);
+  const [theme, setTheme] = useTheme(initial);
   return (
     <SegmentedControl
-        label={t("common.theme")}
-        value={theme}
-        onChange={(next) => {
-          setTheme(next);
-          document.documentElement.dataset.theme = next;
-          document.cookie = `${THEME_COOKIE}=${next}; path=/; max-age=31536000; samesite=lax`;
-        }}
+      label={t("common.theme")}
+      value={theme}
+      onChange={setTheme}
       options={THEMES.map((value) => ({ value, title: t(`designSystem.appearance.${value}`) }))}
+    />
+  );
+}
+
+/** The same choice as a compact icon menu (top bar). */
+export function ThemeMenu({ initial, icon = "settings" }: { initial: Theme; icon?: IconName }) {
+  const t = useTranslations();
+  const [theme, setTheme] = useTheme(initial);
+  return (
+    <Menu
+      label={t("common.theme")}
+      icon={icon}
+      entries={THEMES.map((value) => ({
+        kind: "check" as const,
+        label: t(`designSystem.appearance.${value}`),
+        checked: theme === value,
+        onToggle: () => setTheme(value),
+      }))}
     />
   );
 }

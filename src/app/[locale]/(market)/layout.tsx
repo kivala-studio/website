@@ -16,7 +16,7 @@ export default async function MarketAreaLayout({ children }: Readonly<{ children
   const theme = parseTheme((await cookies()).get(THEME_COOKIE)?.value);
   return (
     <>
-      <SiteHeader />
+      <SiteHeader theme={theme} />
       {children}
       <SiteFooter theme={theme} />
     </>
