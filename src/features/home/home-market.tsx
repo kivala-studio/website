@@ -4,27 +4,19 @@ import { useTranslations } from "next-intl";
 import { type ReactNode, useMemo, useState } from "react";
 
 import type { MarketStoreState } from "@/data/market/store";
-import {
-  type MarketSecurity,
-  type MarketSnapshot,
-  hasUsableQuote,
-  hasUsableStatistics,
-  kindLabelKey,
-  marketMovers,
-  securityDisplayName,
-  visibleOutsideSearch,
-} from "@/domain/market";
+import { type MarketSecurity, type MarketSnapshot, hasUsableQuote, hasUsableStatistics, marketMovers, visibleOutsideSearch } from "@/domain/market";
 import { useAccount } from "@/features/account/account-provider";
-import { type CatalogueRow, PriceCell } from "@/features/market/browse/price-cell";
+import { CompactRow } from "@/features/market/browse/market-overview";
+import { type CatalogueRow, PriceCell, rowFigure } from "@/features/market/browse/price-cell";
 import { useMarketState, useMarketStore } from "@/features/market/market-provider";
 import { HomeMarketUpdates } from "@/features/news/market-information";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
 import { Button, ButtonLink, IconButton } from "@/ui/components/buttons";
-import { OptionGroup } from "@/ui/components/controls";
+import { SegmentedControl } from "@/ui/components/controls";
 import { ChangeBadge, MarketStatusIndicator } from "@/ui/components/financial";
-import { Card, SectionHeader } from "@/ui/components/layout";
-import { SecurityLogo } from "@/ui/components/rows";
+import { Card, Panel } from "@/ui/components/layout";
+import { SeeAll } from "@/ui/components/see-all";
 import { ErrorState, InstrumentRowSkeleton, Skeleton } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
@@ -81,7 +73,7 @@ export function HomeView({
         />
       </div>
       <div
-        className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:gap-x-6"
+        className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start"
         aria-busy={state.load.kind === "loading" || undefined}
       >
         <div className="contents lg:flex lg:min-w-0 lg:flex-col lg:gap-6">
@@ -107,7 +99,7 @@ export function HomeView({
             </div>
           )}
         </div>
-        <div className="contents lg:flex lg:flex-col lg:gap-4">
+        <div className="contents lg:flex lg:flex-col lg:gap-6">
           {failed ? null : (
             <div className="max-lg:order-2">
               <WatchlistRail loaded={loaded} rows={byID} />
@@ -147,11 +139,13 @@ function OverviewCard({ loaded, stale }: { loaded: Loaded | undefined; stale: bo
   const visible = visibleOutsideSearch(snapshot.securities, at);
   const verifiedCloses = visible.filter((security) => security.closingPrice !== undefined).length;
   return (
-    <Card className="flex flex-col gap-5" data-testid="home-overview">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-section text-primary-text">{t("home.overview.header")}</h2>
-        <MarketStatusIndicator status={snapshot.status} />
-      </div>
+    <Card
+      title={t("home.overview.header")}
+      titleId="home-overview-title"
+      action={<MarketStatusIndicator status={snapshot.status} />}
+      bodyClassName="flex flex-col gap-5"
+      data-testid="home-overview"
+    >
       {hasIndex ? (
         <div className="flex items-end justify-between gap-4">
           <div className="flex min-w-0 flex-col gap-1">
@@ -162,7 +156,7 @@ function OverviewCard({ loaded, stale }: { loaded: Loaded | undefined; stale: bo
               </span>
               {index.percentageChange ? <ChangeBadge value={index.percentageChange} /> : null}
             </span>
-            <span className="text-caption text-tertiary-text">{t("market.index.closesOn", { arg1: format.date(index.tradingDate!) })}</span>
+            <span className="text-caption text-secondary-text">{t("market.index.closesOn", { arg1: format.date(index.tradingDate!) })}</span>
           </div>
           <Sparkline values={index.history.slice(-30).map((point) => point.value.toNumber())} />
         </div>
@@ -173,7 +167,7 @@ function OverviewCard({ loaded, stale }: { loaded: Loaded | undefined; stale: bo
             <dt className="text-caption text-secondary-text">{t("home.overview.sessionVolume")}</dt>
             <dd className="flex flex-col">
               <span className="text-section text-primary-text tabular-nums">{format.count(snapshot.sessionVolume)}</span>
-              <span className="text-caption text-tertiary-text">{t("home.overview.tradedSecurities")}</span>
+              <span className="text-caption text-secondary-text">{t("home.overview.tradedSecurities")}</span>
             </dd>
           </div>
           <div className="flex flex-col gap-1">
@@ -227,24 +221,6 @@ function Sparkline({ values }: { values: number[] }) {
   );
 }
 
-function InstrumentLink({ security, row, at }: { security: MarketSecurity; row: CatalogueRow | undefined; at: number }) {
-  const t = useTranslations();
-  return (
-    <Link
-      href={`/mercado/${encodeURIComponent(security.symbol)}`}
-      prefetch={false}
-      className="flex min-h-18 items-center gap-3 rounded-small py-2 desk:min-h-12"
-    >
-      <SecurityLogo symbol={security.symbol} logoUrl={row?.logoURL ?? security.logoURL} brandColor={row?.bond ? "violet" : "blue"} />
-      <span className="flex min-w-0 flex-1 flex-col gap-1">
-        <span className="text-body font-semibold text-primary-text">{security.symbol}</span>
-        <span className="truncate text-caption text-secondary-text">{securityDisplayName(security) ?? t(kindLabelKey(security.kind) as never)}</span>
-      </span>
-      <PriceCell row={row} security={security} at={at} />
-    </Link>
-  );
-}
-
 /** Section 2: up to six watched instruments in saved order, or the way to start a list. */
 function WatchlistRail({ loaded, rows }: { loaded: Loaded | undefined; rows: Map<string, CatalogueRow> }) {
   const t = useTranslations();
@@ -255,22 +231,12 @@ function WatchlistRail({ loaded, rows }: { loaded: Loaded | undefined; rows: Map
     return ids.flatMap((id) => byID.get(id) ?? []).slice(0, RAIL_LIMIT);
   }, [ids, loaded]);
   return (
-    <section aria-labelledby="home-watchlist" className="flex flex-col gap-3 lg:panel lg:gap-1 lg:px-4 lg:py-3" data-testid="home-watchlist">
-      <SectionHeader
-        id="home-watchlist"
-        title={t("common.yourWatchlist")}
-        action={
-          ids.length > 0 ? (
-            <Link
-              href="/lista"
-              aria-label={t("home.accessibility.viewWatchlist")}
-              className="inline-flex size-11 items-center justify-center rounded-full text-accent"
-            >
-              <Icon name="arrow-right" />
-            </Link>
-          ) : null
-        }
-      />
+    <Panel
+      title={t("common.yourWatchlist")}
+      titleId="home-watchlist"
+      data-testid="home-watchlist"
+      action={ids.length > 0 ? <SeeAll href="/lista" /> : null}
+    >
       {ids.length === 0 ? (
         <Link href="/pesquisa" className="flex min-h-18 items-center gap-4 rounded-large bg-accent/10 p-4 text-accent">
           <span aria-hidden className="flex size-11 shrink-0 items-center justify-center rounded-full bg-accent text-on-accent">
@@ -288,40 +254,18 @@ function WatchlistRail({ loaded, rows }: { loaded: Loaded | undefined; rows: Map
           ))}
         </div>
       ) : (
-        <ul className="flex snap-x gap-3 overflow-x-auto pb-1 [scrollbar-width:none] lg:flex-col lg:gap-0 lg:overflow-visible">
+        <ul className="flex flex-col">
           {securities.map((security) => {
             const row = rows.get(security.id);
             return (
-              <li
-                key={security.id}
-                className="w-44 shrink-0 snap-start rounded-[1.5rem] bg-card-background p-4 lg:w-auto lg:rounded-none lg:border-b lg:border-hairline lg:bg-transparent lg:p-0 lg:last:border-b-0"
-              >
-                <RailTile security={security} row={row} at={loaded!.at} />
-              </li>
+              <CompactRow key={security.id} security={security} row={row}>
+                <RowFigures security={security} row={row} at={loaded!.at} />
+              </CompactRow>
             );
           })}
         </ul>
       )}
-    </section>
-  );
-}
-
-function RailTile({ security, row, at }: { security: MarketSecurity; row: CatalogueRow | undefined; at: number }) {
-  const t = useTranslations();
-  return (
-    <>
-      <Link href={`/mercado/${encodeURIComponent(security.symbol)}`} prefetch={false} className="flex flex-col gap-3 rounded-small lg:hidden">
-        <SecurityLogo symbol={security.symbol} logoUrl={row?.logoURL ?? security.logoURL} brandColor={row?.bond ? "violet" : "blue"} size="s" />
-        <span className="flex min-w-0 flex-col gap-0.5">
-          <span className="text-body font-semibold text-primary-text">{security.symbol}</span>
-          <span className="truncate text-caption text-secondary-text">{t(kindLabelKey(security.kind) as never)}</span>
-        </span>
-        <PriceCell row={row} security={security} at={at} className="items-start" />
-      </Link>
-      <div className="max-lg:hidden">
-        <InstrumentLink security={security} row={row} at={at} />
-      </div>
-    </>
+    </Panel>
   );
 }
 
@@ -345,12 +289,20 @@ function MovementFeed({ loaded, rows }: { loaded: Loaded | undefined; rows: Map<
   }, [loaded]);
   const items = feed?.items[tab];
   return (
-    <section aria-labelledby="home-movement" className="flex flex-col gap-3 lg:panel lg:p-4" data-testid="home-movement">
-      <SectionHeader id="home-movement" title={t("common.onTheMove")} />
-      <OptionGroup
+    <Panel
+      title={t("common.onTheMove")}
+      titleId="home-movement"
+      data-testid="home-movement"
+      action={
+        <ButtonLink href="/mercado" kind="outline" size="compact">
+          {t("home.explore.header")}
+        </ButtonLink>
+      }
+    >
+      <SegmentedControl
         label={t("common.onTheMove")}
         value={tab}
-        onChange={(value) => setTab(value as FeedTab)}
+        onChange={setTab}
         options={[
           { value: "gains", title: t("home.movers.gainsTab") },
           { value: "declines", title: t("home.movers.declinesTab") },
@@ -367,16 +319,29 @@ function MovementFeed({ loaded, rows }: { loaded: Loaded | undefined; rows: Map<
         <p className="py-3 text-secondary text-secondary-text">{t(feed!.hasQuotes ? "home.movers.emptyCategory" : "home.movers.quotesUnavailable")}</p>
       ) : (
         <ul className="flex flex-col">
-          {items.map((security, index) => (
-            <li key={security.id} className={cn("border-b border-separator last:border-b-0 lg:border-hairline", index >= 3 && "max-lg:hidden")}>
-              <InstrumentLink security={security} row={rows.get(security.id)} at={loaded!.at} />
-            </li>
-          ))}
+          {items.map((security, index) => {
+            const row = rows.get(security.id);
+            return (
+              <CompactRow key={security.id} security={security} row={row} className={cn(index >= 3 && "max-lg:hidden")}>
+                <RowFigures security={security} row={row} at={loaded!.at} />
+              </CompactRow>
+            );
+          })}
         </ul>
       )}
-      <ButtonLink href="/mercado" kind="secondary" className="self-start lg:w-auto">
-        {t("home.explore.header")}
-      </ButtonLink>
-    </section>
+    </Panel>
+  );
+}
+
+/** The movers card's figures: the price (or dated close), then the change badge, shown only beside a current price. */
+function RowFigures({ security, row, at }: { security: MarketSecurity; row: CatalogueRow | undefined; at: number }) {
+  const figure = rowFigure(row, security, at);
+  return (
+    <>
+      <PriceCell row={row} security={security} at={at} inlineChange="hidden!" compact />
+      <span className="flex min-w-18 shrink-0 justify-end">
+        {figure.kind === "current" && figure.change !== undefined ? <ChangeBadge value={figure.change} /> : <span aria-hidden className="text-tertiary-text">—</span>}
+      </span>
+    </>
   );
 }

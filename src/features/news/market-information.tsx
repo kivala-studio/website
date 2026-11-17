@@ -17,7 +17,8 @@ import { useMarketState, useMarketStore } from "@/features/market/market-provide
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
 import { Button } from "@/ui/components/buttons";
-import { Card, SectionHeader } from "@/ui/components/layout";
+import { Card, Panel, SectionHeader } from "@/ui/components/layout";
+import { SeeAll } from "@/ui/components/see-all";
 import { AssetRow } from "@/ui/components/rows";
 import { EmptyState, ErrorState, InstrumentRowSkeleton, Skeleton } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
@@ -101,28 +102,15 @@ export function HomeMarketUpdates() {
   const { updates } = useUpdates();
   if (!updates || updates.length === 0) return null;
   return (
-    <section aria-labelledby="home-market-updates" className="flex flex-col gap-2 lg:panel lg:gap-0 lg:px-4 lg:py-3" data-testid="home-market-updates">
-      <SectionHeader
-        id="home-market-updates"
-        title={t("common.market")}
-        action={
-          <Link
-            href="/mercado/informacao"
-            aria-label={t("common.marketInformation")}
-            className="inline-flex size-11 items-center justify-center rounded-full text-accent"
-          >
-            <Icon name="arrow-right" />
-          </Link>
-        }
-      />
-      <ul className="flex flex-col divide-y divide-separator">
+    <Panel title={t("common.market")} titleId="home-market-updates" data-testid="home-market-updates" action={<SeeAll href="/mercado/informacao" />}>
+      <ul className="flex flex-col divide-y divide-separator lg:divide-hairline">
         {updates.slice(0, HOME_LIMIT).map((update) => (
           <li key={update.id}>
             <UpdateRow update={update} />
           </li>
         ))}
       </ul>
-    </section>
+    </Panel>
   );
 }
 

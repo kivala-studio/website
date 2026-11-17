@@ -1,10 +1,11 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 
 import { type MarketSecurity, hasUsableQuote, hasUsableStatistics, isSameDay, marketMovers, visibleOutsideSearch } from "@/domain/market";
 import { useMarketState } from "@/features/market/market-provider";
+import { cn } from "@/ui/cn";
 import { Link } from "@/i18n/navigation";
 import { SegmentedControl } from "@/ui/components/controls";
 import { MarketStatusIndicator } from "@/ui/components/financial";
@@ -154,11 +155,13 @@ export function SessionFacts() {
 const MOVER_LIMIT = 5;
 type MoverTab = "gains" | "declines" | "volume";
 
-/** A movers row: the price (or, on the Volume tab, the session volume) and the change badge. */
-function MoverRow({ security, row, at, volume }: { security: MarketSecurity; row: CatalogueRow | undefined; at: number; volume: boolean }) {
-  const format = useFormat();
+/**
+ * A compact instrument row (the movers card, Home's lists): logo, symbol and the trailing figures, the whole row a
+ * link to the instrument.
+ */
+export function CompactRow({ security, row, children, className }: { security: MarketSecurity; row: CatalogueRow | undefined; children: ReactNode; className?: string }) {
   return (
-    <li className="border-b border-hairline last:border-b-0">
+    <li className={cn("border-b border-hairline last:border-b-0", className)}>
       <Link
         href={`/mercado/${encodeURIComponent(security.symbol)}`}
         prefetch={false}
@@ -168,16 +171,26 @@ function MoverRow({ security, row, at, volume }: { security: MarketSecurity; row
           <SecurityLogo symbol={security.symbol} logoUrl={row?.logoURL ?? security.logoURL} brandColor={row?.bond ? "violet" : "blue"} size="s" />
         </span>
         <span className="min-w-0 flex-1 truncate font-display font-medium text-primary-text">{security.symbol}</span>
-        {volume ? (
-          <span className="font-display text-secondary font-semibold whitespace-nowrap text-primary-text">{format.count(security.volume)}</span>
-        ) : (
-          <PriceCell row={row} security={security} at={at} inlineChange="hidden!" compact />
-        )}
-        <span className="flex min-w-18 shrink-0 justify-end">
-          <ChangeCell row={row} security={security} at={at} />
-        </span>
+        {children}
       </Link>
     </li>
+  );
+}
+
+/** A movers row: the price (or, on the Volume tab, the session volume) and the change badge. */
+function MoverRow({ security, row, at, volume }: { security: MarketSecurity; row: CatalogueRow | undefined; at: number; volume: boolean }) {
+  const format = useFormat();
+  return (
+    <CompactRow security={security} row={row}>
+      {volume ? (
+        <span className="font-display text-secondary font-semibold whitespace-nowrap text-primary-text">{format.count(security.volume)}</span>
+      ) : (
+        <PriceCell row={row} security={security} at={at} inlineChange="hidden!" compact />
+      )}
+      <span className="flex min-w-18 shrink-0 justify-end">
+        <ChangeCell row={row} security={security} at={at} />
+      </span>
+    </CompactRow>
   );
 }
 

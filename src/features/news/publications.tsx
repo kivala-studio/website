@@ -1,8 +1,8 @@
 import { ARTICLE_LANGUAGE, type NewsArticle } from "@/domain/news/article";
 import type { Format } from "@/domain/format";
 import { Link } from "@/i18n/navigation";
-import { SectionHeader } from "@/ui/components/layout";
-import { Icon } from "@/ui/icons/icon";
+import { Panel } from "@/ui/components/layout";
+import { SeeAll } from "@/ui/components/see-all";
 
 /** Home and market information `Notícias`: up to three publications, a link to the archive. */
 export function Publications({
@@ -23,16 +23,7 @@ export function Publications({
 }) {
   if (articles?.length === 0) return null;
   return (
-    <section aria-labelledby={id} className="flex flex-col gap-2 lg:panel lg:gap-0 lg:px-4 lg:py-3" data-testid={id}>
-      <SectionHeader
-        id={id}
-        title={title}
-        action={
-          <Link href="/noticias" aria-label={title} className="inline-flex size-11 items-center justify-center rounded-full text-accent">
-            <Icon name="arrow-right" />
-          </Link>
-        }
-      />
+    <Panel title={title} titleId={id} data-testid={id} action={<SeeAll href="/noticias" />}>
       {articles === null ? (
         <p className="text-secondary text-secondary-text">{unavailable}</p>
       ) : (
@@ -51,6 +42,6 @@ export function Publications({
           ))}
         </ul>
       )}
-    </section>
+    </Panel>
   );
 }
