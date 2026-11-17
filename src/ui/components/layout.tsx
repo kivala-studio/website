@@ -30,6 +30,7 @@ export function Card({
   action,
   flush = false,
   className,
+  bodyClassName,
   children,
   ...props
 }: Omit<HTMLAttributes<HTMLDivElement>, "title"> & {
@@ -39,6 +40,8 @@ export function Card({
   titleId?: string;
   action?: ReactNode;
   flush?: boolean;
+  /** Classes for the content under a title (e.g. `flex-1` in a card that stretches to its row). */
+  bodyClassName?: string;
 }) {
   const padding = compact ? "p-4" : "p-5 desk:p-6";
   return (
@@ -57,7 +60,7 @@ export function Card({
       {title ? (
         <>
           <CardHeader title={title} titleId={titleId} action={action} className={compact ? "px-4 pt-3" : "px-5 pt-4 desk:px-6 desk:pt-5"} />
-          <div className={cn(!flush && (compact ? "px-4 pt-2 pb-4" : "px-5 pt-3 pb-5 desk:px-6 desk:pb-6"), flush && "pt-2")}>{children}</div>
+          <div className={cn(!flush && (compact ? "px-4 pt-2 pb-4" : "px-5 pt-3 pb-5 desk:px-6 desk:pb-6"), flush && "pt-2", bodyClassName)}>{children}</div>
         </>
       ) : (
         children
@@ -129,6 +132,32 @@ export function Panel({
         {children}
       </div>
     </section>
+  );
+}
+
+/**
+ * A nested stat tile inside a card (the CoinStats summary look): a hairline box with a muted label over a value in
+ * the display face, then an optional detail line. `large` is the card's lead figure. Use inside a `<dl>`.
+ */
+export function StatTile({
+  label,
+  value,
+  detail,
+  size = "small",
+  className,
+  ...props
+}: Omit<HTMLAttributes<HTMLDivElement>, "children"> & {
+  label: ReactNode;
+  value: ReactNode;
+  detail?: ReactNode;
+  size?: "large" | "small";
+}) {
+  return (
+    <div {...props} className={cn("flex min-w-0 flex-col gap-1 rounded-medium border border-hairline px-4 py-3", className)}>
+      <dt className="flex min-h-5 items-center gap-1 text-caption text-secondary-text desk:text-secondary">{label}</dt>
+      <dd className={cn("mt-auto font-display font-semibold text-primary-text", size === "large" ? "text-[1.625rem] leading-tight tracking-tight desk:text-[1.5rem]" : "text-lg leading-snug")}>{value}</dd>
+      {detail ? <dd className="text-caption text-secondary-text">{detail}</dd> : null}
+    </div>
   );
 }
 

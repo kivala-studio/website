@@ -29,9 +29,9 @@ export const buttonClass = (kind: ButtonKind = "primary", className?: string, si
   cn(size === "compact" ? COMPACT : BASE, KIND[kind], className);
 
 /** Circular icon-only class names (48 px on phones, 44 px on desk), for links styled as an icon button. */
-export const iconButtonClass = (variant: "filled" | "plain" = "filled", className?: string) =>
+export const iconButtonClass = (variant: "filled" | "plain" | "outline" = "filled", className?: string) =>
   cn(
     "motion-press relative inline-flex size-12 shrink-0 items-center justify-center rounded-full text-primary-text transition-colors desk:size-11 disabled:opacity-42",
-    variant === "filled" ? "bg-action-surface hover:bg-track" : "hover:bg-action-surface",
+    { filled: "bg-action-surface hover:bg-track", plain: "hover:bg-action-surface", outline: "border border-field-border hover:bg-action-surface" }[variant],
     className,
   );

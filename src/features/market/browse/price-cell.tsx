@@ -42,6 +42,7 @@ export function PriceCell({
   security,
   at,
   inlineChange,
+  compact = false,
   className,
 }: {
   row: CatalogueRow | undefined;
@@ -49,6 +50,8 @@ export function PriceCell({
   at: number | undefined;
   /** Classes for the change badge under a current price, e.g. to hide it where a change column shows it. */
   inlineChange?: string;
+  /** The 14 px figure of a compact list (the movers card). */
+  compact?: boolean;
   className?: string;
 }) {
   const t = useTranslations();
@@ -59,7 +62,7 @@ export function PriceCell({
   if (figure.kind === "none") return <span className={cn("text-secondary text-secondary-text", className)}>{t("common.priceUnconfirmed")}</span>;
   return (
     <span className={cn("flex flex-col items-end gap-1", className)}>
-      <FinancialValue value={figure.price} bond={bond} code={code} className="text-body font-semibold" />
+      <FinancialValue value={figure.price} bond={bond} code={code} className={compact ? "text-secondary font-semibold" : "text-body font-semibold"} />
       {figure.kind === "close" ? (
         <span className="text-caption text-secondary-text">
           <span className="sr-only">{t(MARKET_MESSAGE_KEYS.price.lastVerifiedClose, { arg1: format.civilDate(figure.date) })}</span>

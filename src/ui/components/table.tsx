@@ -3,6 +3,7 @@ import type { ComponentProps, HTMLAttributes, ReactNode, TdHTMLAttributes, ThHTM
 import { Link } from "@/i18n/navigation";
 
 import { cn } from "../cn";
+import { Icon } from "../icons/icon";
 
 /*
  * Data table primitives (the CoinStats list look): 60 px rows divided by hairlines, no zebra, a 14 px muted header,
@@ -35,6 +36,42 @@ export function TableHeaderCell({ align = "left", className, ...props }: ThHTMLA
   return <th scope="col" {...props} className={cn(TABLE_HEADER_CELL, ALIGN[align], className)} />;
 }
 
+/**
+ * A header cell whose label is a link that sorts by its column (state in the URL, so it works without JavaScript).
+ * The sorted column carries `aria-sort`, the primary text colour and an arrow for the direction.
+ */
+export function TableSortHeader({
+  label,
+  sort,
+  href,
+  align = "left",
+  className,
+}: {
+  label: string;
+  sort: "ascending" | "descending" | undefined;
+  href: ComponentProps<typeof Link>["href"];
+  align?: Align;
+  className?: string;
+}) {
+  return (
+    <th scope="col" aria-sort={sort} className={cn(TABLE_HEADER_CELL, ALIGN[align], className)}>
+      <Link
+        href={href}
+        prefetch={false}
+        scroll={false}
+        className={cn(
+          "inline-flex min-h-11 items-center gap-1 rounded-small transition-colors hover:text-primary-text",
+          align === "right" && "flex-row-reverse",
+          sort && "font-medium text-primary-text",
+        )}
+      >
+        {label}
+        {sort ? <Icon name={sort === "ascending" ? "arrow-up" : "arrow-down"} scale="s" /> : null}
+      </Link>
+    </th>
+  );
+}
+
 export function TableRow({ className, ...props }: HTMLAttributes<HTMLTableRowElement>) {
   return <tr {...props} className={cn(TABLE_ROW, className)} />;
 }
@@ -46,7 +83,8 @@ export function TableCell({ numeric = false, className, ...props }: TdHTMLAttrib
 
 /**
  * The row header: a 32 px round logo, the name and a muted "• SYMBOL". With `href` the whole row is the link
- * (the row is `relative`; the link's overlay covers it and carries the focus ring).
+ * (the row is `relative`; the link's overlay covers it and carries the focus ring). `stackOnPhone` puts the symbol
+ * under the name below 640 px, where a narrow name column would otherwise truncate the name to nothing.
  */
 export function TableNameCell({
   logo,
@@ -54,6 +92,7 @@ export function TableNameCell({
   symbol,
   href,
   linkProps,
+  stackOnPhone = false,
   className,
 }: {
   logo: ReactNode;
@@ -61,18 +100,24 @@ export function TableNameCell({
   symbol?: string;
   href?: ComponentProps<typeof Link>["href"];
   linkProps?: Omit<ComponentProps<typeof Link>, "href" | "className" | "children">;
+  stackOnPhone?: boolean;
   className?: string;
 }) {
-  const content = (
+  const label = (
     <>
-      {logo}
       <span className="min-w-0 truncate font-display font-medium text-primary-text">{name}</span>
       {symbol ? (
-        <span className="shrink-0 font-display text-secondary-text">
-          <span aria-hidden>• </span>
+        <span className={cn("shrink-0 font-display text-secondary-text", stackOnPhone && "max-sm:truncate max-sm:text-caption")}>
+          <span aria-hidden className={cn(stackOnPhone && "max-sm:hidden")}>• </span>
           {symbol}
         </span>
       ) : null}
+    </>
+  );
+  const content = (
+    <>
+      {logo}
+      {stackOnPhone ? <span className="flex min-w-0 flex-col sm:flex-row sm:items-center sm:gap-3">{label}</span> : label}
     </>
   );
   const layout = "flex min-h-11 min-w-0 items-center gap-3";

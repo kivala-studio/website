@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { type KeyboardEvent, type ReactNode, useRef, useSyncExternalStore } from "react";
+import { type ComponentProps, type KeyboardEvent, type ReactNode, useRef, useSyncExternalStore } from "react";
 
 import { Link, usePathname } from "@/i18n/navigation";
 
@@ -36,7 +36,8 @@ function useRovingKeys(
 }
 
 /** The page-level tab look (CoinStats): text tabs on a hairline, the current one bold with a 2 px accent underline. */
-const TAB_LIST = "flex gap-6 overflow-x-auto border-b border-hairline [scrollbar-width:none]";
+const TAB_ROW = "flex gap-6";
+const TAB_LIST = cn(TAB_ROW, "overflow-x-auto border-b border-hairline [scrollbar-width:none]");
 const TAB = "relative inline-flex min-h-12 shrink-0 items-center font-display text-body desk:min-h-11";
 const TAB_CURRENT = "font-semibold text-primary-text after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:rounded-full after:bg-accent";
 const TAB_OTHER = "font-medium text-secondary-text hover:text-primary-text";
@@ -86,28 +87,42 @@ export function useLinkCurrent(): (href: string, exact?: boolean) => "page" | "t
     pathname === href ? "page" : !exact && href !== "/" && pathname.startsWith(`${href}/`) ? "true" : undefined;
 }
 
+type NavTab = {
+  href: ComponentProps<typeof Link>["href"];
+  title: string;
+  /** Current only on its own path (a section's overview). */
+  exact?: boolean;
+  /** Overrides the path match, for tabs that are filters on one page (`?categoria=…`). */
+  current?: boolean;
+};
+
 /**
- * Text tabs that are links to sibling pages (page-level sections). The current one carries `aria-current`;
- * `exact` items are current only on their own path (a section's overview).
+ * Text tabs that are links to sibling pages (page-level sections) or to filtered views of one page. The current one
+ * carries `aria-current`. `bare` drops the list's own hairline, for a tab row that draws one under more than the tabs.
  */
 export function NavTabs({
   items,
   label,
+  bare = false,
+  linkProps,
   className,
 }: {
-  items: readonly { href: string; title: string; exact?: boolean }[];
+  items: readonly NavTab[];
   label: string;
+  bare?: boolean;
+  linkProps?: Omit<ComponentProps<typeof Link>, "href" | "className" | "children" | "aria-current">;
   className?: string;
 }) {
   const current = useLinkCurrent();
   return (
     <nav aria-label={label} className={className}>
-      <ul className={TAB_LIST}>
+      <ul className={bare ? TAB_ROW : TAB_LIST}>
         {items.map((item) => {
-          const state = current(item.href, item.exact);
+          const state =
+            item.current !== undefined ? (item.current ? "true" : undefined) : typeof item.href === "string" ? current(item.href, item.exact) : undefined;
           return (
-            <li key={item.href} className="flex shrink-0">
-              <Link href={item.href} aria-current={state} className={cn(TAB, state ? TAB_CURRENT : TAB_OTHER)}>
+            <li key={item.title} className="flex shrink-0">
+              <Link {...linkProps} href={item.href} aria-current={state} className={cn(TAB, state ? TAB_CURRENT : TAB_OTHER)}>
                 {item.title}
               </Link>
             </li>

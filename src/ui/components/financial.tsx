@@ -94,12 +94,13 @@ const STATUS_DOT = {
   open: "bg-positive",
 } as const;
 
-export function MarketStatusIndicator({ status }: { status: MarketStatus }) {
+/** A status dot and its word; `value` sets it as a stat tile's figure instead of a caption. */
+export function MarketStatusIndicator({ status, size = "caption" }: { status: MarketStatus; size?: "caption" | "value" }) {
   const t = useTranslations();
   const title = t(STATUS_KEY[status]);
   return (
-    <span className="inline-flex items-center gap-2 text-caption font-medium text-secondary-text">
-      <span aria-hidden className={cn("size-[7px] rounded-full", STATUS_DOT[status])} />
+    <span className={cn("inline-flex items-center gap-2", size === "value" ? "text-primary-text" : "text-caption font-medium text-secondary-text")}>
+      <span aria-hidden className={cn("rounded-full", size === "value" ? "size-2" : "size-[7px]", STATUS_DOT[status])} />
       <span aria-hidden>{title}</span>
       <span className="sr-only">{t("common.marketStatus", { arg1: title })}</span>
     </span>

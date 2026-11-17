@@ -126,7 +126,7 @@ export function HomeMarketUpdates() {
   );
 }
 
-/** The Markets entry card (iOS `MarketInformationSummary`), only when there are updates. */
+/** The Markets entry row (iOS `MarketInformationSummary`) above the market list, only when there are updates. */
 export function MarketInformationSummary() {
   const t = useTranslations();
   const format = useFormat();
@@ -135,18 +135,18 @@ export function MarketInformationSummary() {
   return (
     <Link
       href="/mercado/informacao"
-      className="flex min-h-18 items-center gap-4 rounded-large bg-elevated-background p-4 desk:panel"
+      className="flex min-h-14 items-center gap-3 rounded-large px-4 py-3 panel transition-colors hover:bg-app-background/70 desk:px-6"
       data-testid="market-information-summary"
     >
-      <span aria-hidden className="flex size-11 shrink-0 items-center justify-center rounded-full bg-accent/12 text-accent">
-        <Icon name="news" />
+      <span aria-hidden className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent/12 text-accent">
+        <Icon name="news" scale="s" />
       </span>
-      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <span className="flex items-center gap-2 text-body font-semibold text-primary-text">
+      <span className="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-3">
+        <span className="flex shrink-0 items-center gap-2 font-display text-body font-semibold text-primary-text">
           {t("common.marketInformation")}
-          <span className="rounded-full bg-accent-soft px-2 text-caption font-semibold text-accent">{format.count(updates.length)}</span>
+          <span className="rounded-full bg-accent-soft px-2 font-sans text-caption font-semibold text-accent">{format.count(updates.length)}</span>
         </span>
-        <span className="line-clamp-2 text-secondary text-secondary-text">{updates[0].title}</span>
+        <span className="line-clamp-2 text-secondary text-secondary-text sm:line-clamp-1">{updates[0].title}</span>
       </span>
       <Icon name="chevron-right" className="text-tertiary-text" />
     </Link>
