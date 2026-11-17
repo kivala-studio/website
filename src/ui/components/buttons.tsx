@@ -61,8 +61,8 @@ export function ButtonLink({
 type IconButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
   icon: IconName;
   label: string;
-  /** `filled` sits on a grey disc; `plain` is a bare icon with a hover disc (top bar, toolbars). */
-  variant?: "filled" | "plain";
+  /** `filled` sits on a grey disc; `plain` is a bare icon with a hover disc (top bar, toolbars); `outline` a hairline ring. */
+  variant?: "filled" | "plain" | "outline";
 };
 
 /** Circular icon-only button; the label is required. */

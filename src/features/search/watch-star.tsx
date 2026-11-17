@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 
 import { useAccount } from "@/features/account/account-provider";
-import { cn } from "@/ui/cn";
+import { iconButtonClass } from "@/ui/components/button-styles";
 import { Icon } from "@/ui/icons/icon";
 
 /**
@@ -29,10 +29,11 @@ export function WatchStar({ id, symbol, variant = "row" }: { id: string; symbol:
       disabled={saving}
       onClick={() => void account.toggleWatched(id)}
       data-testid="watch-star"
-      className={cn(
-        "motion-press inline-flex size-11 shrink-0 items-center justify-center rounded-full text-accent disabled:opacity-60",
-        variant === "toolbar" && "bg-action-surface",
-      )}
+      className={
+        variant === "toolbar"
+          ? iconButtonClass("filled", "text-accent! disabled:opacity-60")
+          : "motion-press inline-flex size-11 shrink-0 items-center justify-center rounded-full text-accent disabled:opacity-60"
+      }
     >
       <Icon name="watchlist" scale="l" fill={watched ? "currentColor" : "none"} />
     </button>

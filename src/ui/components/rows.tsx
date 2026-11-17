@@ -25,6 +25,8 @@ const LOGO_SIZE = {
   s: { box: "size-8", monogram: "text-micro" },
   m: { box: "size-12 desk:size-9", monogram: "text-caption desk:text-micro" },
   l: { box: "size-16 desk:size-12", monogram: "text-secondary desk:text-caption" },
+  /** 48 px at every width (an instrument page's header). */
+  header: { box: "size-12", monogram: "text-caption" },
 } as const;
 
 /** Circular issuer logo; falls back to a coloured monogram when there is no image or it fails. */

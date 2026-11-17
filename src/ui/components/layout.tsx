@@ -161,8 +161,31 @@ export function StatTile({
   );
 }
 
-/** Label-over-value cells divided by hairlines (key statistics, session facts). */
-export function StatStrip({ items, className }: { items: readonly { title: string; value: ReactNode; tone?: string }[]; className?: string }) {
+/**
+ * Label-over-value cells divided by hairlines (key statistics, session facts). `grid` is the sidebar look (CoinStats
+ * key statistics): two columns of muted labels over values, no dividers, values wrap instead of truncating.
+ */
+export function StatStrip({
+  items,
+  variant = "strip",
+  className,
+}: {
+  items: readonly { title: string; value: ReactNode; tone?: string }[];
+  variant?: "strip" | "grid";
+  className?: string;
+}) {
+  if (variant === "grid") {
+    return (
+      <dl className={cn("grid grid-cols-2 gap-x-4 gap-y-4", className)}>
+        {items.map((item) => (
+          <div key={item.title} className="flex min-w-0 flex-col gap-0.5">
+            <dt className="text-caption text-secondary-text desk:text-secondary">{item.title}</dt>
+            <dd className={cn("font-display text-body font-semibold break-words text-primary-text", item.tone)}>{item.value}</dd>
+          </div>
+        ))}
+      </dl>
+    );
+  }
   return (
     <div className={cn("overflow-hidden", className)}>
       <dl className="-mr-px -mb-px grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(9rem,1fr))]">

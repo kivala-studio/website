@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 /**
  * Public instrument page: identity, the dated verified close, one year of daily closes, issuer
  * information and bond facts, rendered on the server. The current quote, status and session statistics
- * are added in the browser by the market store. One URL for everyone: signed-in panels join in W7.
+ * are added in the browser by the market store. One URL for everyone: signed-in visitors get more on it.
  */
 export default async function InstrumentPage({ params }: Props) {
   const { locale, symbol } = await params;
@@ -81,7 +81,7 @@ export default async function InstrumentPage({ params }: Props) {
   const url = `${serverEnv.siteUrl}${getPathname({ locale: locale as AppLocale, href: `/mercado/${encodeURIComponent(instrument.symbol)}` })}`;
 
   return (
-    <article className="flex flex-col gap-6">
+    <article>
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -106,17 +106,19 @@ export default async function InstrumentPage({ params }: Props) {
           ],
         }}
       />
-      <Link
-        href="/mercado"
-        prefetch={false}
-        className="-ml-2 inline-flex min-h-11 items-center gap-1 self-start rounded-small px-2 text-secondary font-semibold text-accent"
-      >
-        <Icon name="chevron-left" />
-        {t("common.market")}
-      </Link>
       <InstrumentView
         instrument={data}
         history={history ? encodePoints(history) : null}
+        back={
+          <Link
+            href="/mercado"
+            prefetch={false}
+            className="-ml-2 inline-flex min-h-11 items-center gap-1 self-start rounded-small px-2 text-secondary font-semibold text-accent"
+          >
+            <Icon name="chevron-left" />
+            {t("common.market")}
+          </Link>
+        }
         overview={bond ? <BondFacts instrument={instrument} issuerName={issuerName} /> : null}
         about={<AboutPanel instrument={instrument} issuerName={issuerName} data={issuerData} />}
       />

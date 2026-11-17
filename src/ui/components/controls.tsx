@@ -141,12 +141,15 @@ export function OptionGroup<T extends string>({
   onChange,
   label,
   variant = "segmented",
+  scroll = false,
 }: {
   options: readonly Option<T>[];
   value: T;
   onChange: (value: T) => void;
   label: string;
   variant?: "segmented" | "ranges";
+  /** A segmented track with many short options (time ranges): each keeps a 44 px target and the track scrolls when it runs out of width. */
+  scroll?: boolean;
 }) {
   const selected = Math.max(0, options.findIndex((option) => option.value === value));
   const { refs, onKeyDown } = useRovingKeys(
@@ -163,6 +166,7 @@ export function OptionGroup<T extends string>({
       className={cn(
         "flex gap-1 p-1",
         variant === "segmented" ? "rounded-medium bg-track" : "overflow-x-auto [scrollbar-width:none]",
+        scroll && "overflow-x-auto [scrollbar-width:none]",
       )}
     >
       {options.map((option, index) => {
@@ -181,7 +185,7 @@ export function OptionGroup<T extends string>({
             className={cn(
               "min-h-11 px-2 transition-colors duration-200 motion-reduce:transition-none aria-disabled:opacity-42",
               variant === "segmented"
-                ? cn("flex-1 rounded-small text-secondary font-semibold desk:rounded-[0.5rem] desk:font-medium", isSelected ? "bg-raised text-primary-text shadow-raised" : "text-secondary-text hover:text-primary-text")
+                ? cn("flex-1 rounded-small text-secondary font-semibold desk:rounded-[0.5rem] desk:font-medium", scroll && "min-w-11 shrink-0", isSelected ? "bg-raised text-primary-text shadow-raised" : "text-secondary-text hover:text-primary-text")
                 : cn("min-w-11 shrink-0 rounded-full text-caption font-semibold", isSelected ? "bg-accent-soft text-accent" : "text-secondary-text hover:text-primary-text"),
             )}
           >
@@ -205,19 +209,24 @@ export function SegmentedControl<T extends string>(props: {
 export const TIME_RANGES = ["oneDay", "oneWeek", "oneMonth", "threeMonths", "sixMonths", "oneYear", "all"] as const;
 export type TimeRange = (typeof TIME_RANGES)[number];
 
-/** Range chips `1D · 1S · 1M · 3M · 6M · 1A · Tudo`; disabled ranges stay visible but inert. */
+/**
+ * Range chips `1D · 1S · 1M · 3M · 6M · 1A · Tudo`; disabled ranges stay visible but inert. `segmented` puts them on
+ * a segmented track (a chart card's range control).
+ */
 export function TimeRangePicker({
   value,
   onChange,
   ranges = TIME_RANGES,
   isEnabled = () => true,
   label,
+  variant = "ranges",
 }: {
   value: TimeRange;
   onChange: (range: TimeRange) => void;
   ranges?: readonly TimeRange[];
   isEnabled?: (range: TimeRange) => boolean;
   label: string;
+  variant?: "ranges" | "segmented";
 }) {
   const t = useTranslations();
   const options = [...new Set(ranges)].map((range) => ({
@@ -226,7 +235,7 @@ export function TimeRangePicker({
     spoken: t(`components.range.${range}Accessibility`),
     disabled: !isEnabled(range),
   }));
-  return <OptionGroup options={options} value={value} onChange={onChange} label={label} variant="ranges" />;
+  return <OptionGroup options={options} value={value} onChange={onChange} label={label} variant={variant} scroll={variant === "segmented"} />;
 }
 
 /** The search field look: 44 px, 12 px corners, a hairline border, the magnifier first. Shared with the palette button. */

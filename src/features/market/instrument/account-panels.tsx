@@ -30,8 +30,8 @@ import { useAccount, useAccountStores } from "@/features/account/account-provide
 import { WatchStar } from "@/features/search/watch-star";
 import { useMarketState } from "@/features/market/market-provider";
 import { cn } from "@/ui/cn";
-import { Button } from "@/ui/components/buttons";
-import { SectionHeader } from "@/ui/components/layout";
+import { Button, iconButtonClass } from "@/ui/components/buttons";
+import { Card } from "@/ui/components/layout";
 import { SectionPlaceholder } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
@@ -145,11 +145,9 @@ function download(text: string, fileName: string) {
   setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
-const ACTION = "motion-press inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-action-surface text-primary-text disabled:opacity-42";
-
 /**
- * The instrument's account actions (iOS toolbar and bottom bar): compare, alerts, star, share and history
- * export. Nothing for visitors.
+ * The instrument's account actions (iOS toolbar and bottom bar): star, share and history export as icon buttons,
+ * then compare and alerts as pills. Nothing for visitors.
  */
 export function InstrumentActions({ instrument, security, at, points }: { instrument: InstrumentData; security?: MarketSecurity; at?: number; points?: readonly PricePoint[] }) {
   const t = useTranslations();
@@ -195,10 +193,10 @@ export function InstrumentActions({ instrument, security, at, points }: { instru
   const alertIcon = !counts || counts.enabled + counts.paused === 0 ? "notification" : "alert";
 
   return (
-    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-2" data-testid="instrument-actions">
-      <div className="flex items-center justify-center gap-2">
+    <div className="flex flex-col gap-3" data-testid="instrument-actions">
+      <div className="flex items-center gap-2">
         <WatchStar id={instrument.id} symbol={instrument.symbol} variant="toolbar" />
-        <button type="button" onClick={() => void share()} aria-label={t("assetDetails.accessibility.shareInstrument")} title={t("assetDetails.accessibility.shareInstrument")} className={ACTION}>
+        <button type="button" onClick={() => void share()} aria-label={t("assetDetails.accessibility.shareInstrument")} title={t("assetDetails.accessibility.shareInstrument")} className={iconButtonClass()}>
           <Icon name={copied ? "check" : "share"} />
         </button>
         {exportable ? (
@@ -207,18 +205,19 @@ export function InstrumentActions({ instrument, security, at, points }: { instru
             onClick={() => void exportHistory()}
             aria-label={t("assetDetails.exportHistory")}
             title={t("assetDetails.exportHistory")}
-            className={ACTION}
+            className={iconButtonClass()}
             data-testid="export-history"
           >
             <Icon name={account.unlocksPlus ? "download" : "lock"} />
           </button>
         ) : null}
       </div>
-      <div className="grid grid-cols-2 gap-3 lg:flex lg:gap-2">
-        <Button kind="secondary" icon="chart" onClick={() => setComparing(true)} disabled={!security} data-testid="compare" className="lg:w-auto">
+      {/* Side by side while both titles fit on one line, one per row otherwise (a long alert count). */}
+      <div className="flex flex-wrap gap-2">
+        <Button kind="secondary" icon="chart" onClick={() => setComparing(true)} disabled={!security} data-testid="compare" className="w-auto! flex-auto whitespace-nowrap">
           {t("common.compare")}
         </Button>
-        <Button icon={alertIcon} onClick={() => setAlertsOpen(true)} data-testid="alerts" className="lg:w-auto">
+        <Button icon={alertIcon} onClick={() => setAlertsOpen(true)} data-testid="alerts" className="w-auto! flex-auto whitespace-nowrap">
           {alertLabel}
         </Button>
       </div>
@@ -251,14 +250,19 @@ export function OrderBookPanel({ instrument, security, at, active }: { instrumen
   );
   if (!account) return null;
   const title = t("common.orderBook");
-  if (book.data === undefined) return <SectionPlaceholder title={title} failed={book.failed} onRetry={book.reload} />;
+  if (book.data === undefined) {
+    return (
+      <Card>
+        <SectionPlaceholder title={title} failed={book.failed} onRetry={book.reload} />
+      </Card>
+    );
+  }
   const levels = security && at !== undefined ? availableOrderBook({ ...security, ...book.data }, at) : undefined;
   if (!levels || levels.length === 0) {
     return (
-      <section aria-labelledby="order-book" className="flex flex-col gap-3" data-testid="order-book">
-        <SectionHeader id="order-book" title={title} />
+      <Card title={title} titleId="order-book" data-testid="order-book">
         <p className="text-secondary text-secondary-text">{t("assetDetails.orders.emptyMessage")}</p>
-      </section>
+      </Card>
     );
   }
   const layout = orderBookLayout(levels, orderBookDepthLimit(account.unlocksPlus));
@@ -271,13 +275,16 @@ export function OrderBookPanel({ instrument, security, at, active }: { instrumen
     return (
       <span
         className={cn("relative flex min-h-16 flex-col justify-center gap-0.5 overflow-hidden px-3 py-2", side === "bid" ? "items-end text-right" : "items-start text-left")}
-        aria-label={t("assetDetails.accessibility.level", {
-          arg1: t(side === "bid" ? "common.buy" : "common.sell"),
-          arg2: format.count(level.level),
-          arg3: money(level.price),
-          arg4: format.quantity(level.quantity),
-        })}
       >
+        {/* A plain span cannot carry aria-label; the spoken level is its own text. */}
+        <span className="sr-only">
+          {t("assetDetails.accessibility.level", {
+            arg1: t(side === "bid" ? "common.buy" : "common.sell"),
+            arg2: format.count(level.level),
+            arg3: money(level.price),
+            arg4: format.quantity(level.quantity),
+          })}
+        </span>
         <span aria-hidden className={cn("absolute inset-y-1", side === "bid" ? "right-0 bg-positive/12" : "left-0 bg-negative/12")} style={{ width: `${scale}%` }} />
         <span aria-hidden className={cn("relative text-body font-semibold tabular-nums", side === "bid" ? "text-positive" : "text-negative")}>{money(level.price)}</span>
         <span aria-hidden className="relative text-caption text-secondary-text tabular-nums">
@@ -288,11 +295,8 @@ export function OrderBookPanel({ instrument, security, at, active }: { instrumen
     );
   };
   return (
-    <section aria-labelledby="order-book" className="flex flex-col gap-4" data-testid="order-book">
-      <div className="flex flex-col gap-1">
-        <SectionHeader id="order-book" title={title} />
-        <p className="text-caption text-secondary-text">{t("assetDetails.orderBook.subtitle")}</p>
-      </div>
+    <Card title={title} titleId="order-book" bodyClassName="flex flex-col gap-4 pt-0!" data-testid="order-book">
+      <p className="text-caption text-secondary-text">{t("assetDetails.orderBook.subtitle")}</p>
       {layout.spread ? (
         <p className="flex items-baseline justify-between gap-3 border-b border-separator pb-3">
           <span className="text-secondary text-secondary-text">{t("common.bidAskSpread")}</span>
@@ -323,7 +327,7 @@ export function OrderBookPanel({ instrument, security, at, active }: { instrumen
       ) : null}
       <p className="text-caption text-secondary-text">{t("assetDetails.orderBook.barsNote")}</p>
       {layout.hasUnknownCounts ? <p className="text-caption text-secondary-text">{t("assetDetails.orderBook.countsNote")}</p> : null}
-    </section>
+    </Card>
   );
 }
 
@@ -350,8 +354,7 @@ export function LiquiditySection({ instrument, points }: { instrument: Instrumen
   );
   if (!account) return null;
   return (
-    <section aria-labelledby="liquidity" className="flex flex-col gap-3" data-testid="liquidity">
-      <SectionHeader id="liquidity" title={t("liquidity.title")} />
+    <Card title={t("liquidity.title")} titleId="liquidity" bodyClassName="flex flex-col" data-testid="liquidity">
       {!account.unlocksPlus ? (
         <Button kind="secondary" icon="lock" className="self-start" onClick={() => account.requestUpgrade("liquidity")}>
           {t("liquidity.unlock")}
@@ -372,6 +375,6 @@ export function LiquiditySection({ instrument, points }: { instrument: Instrumen
       ) : (
         <p className="text-secondary text-secondary-text">{t("assetDetails.chart.notEnoughData")}</p>
       )}
-    </section>
+    </Card>
   );
 }

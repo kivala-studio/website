@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import type { PublicDividend, PublicFinancialReport, PublicInstrument, PublicIssuer } from "@/data/market/public";
 import { bodivaMaturityDate } from "@/domain/market";
 import { civilDate } from "@/domain/market/zone";
-import { SectionHeader } from "@/ui/components/layout";
+import { Card } from "@/ui/components/layout";
 import { SectionPlaceholder } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
@@ -13,7 +13,7 @@ import { BondYieldRows } from "./bond-yield-dialog";
 import { DividendYield } from "./instrument-view";
 
 /*
- * Server-rendered sections of the instrument page (iOS `BondFactsSection`, `AssetAboutSection`,
+ * Server-rendered cards of the instrument page's content column (iOS `BondFactsSection`, `AssetAboutSection`,
  * `AssetIssuerInformationSection`). They hold only catalogue and issuer data, never a price.
  */
 
@@ -34,8 +34,7 @@ export function BondFacts({ instrument, issuerName }: { instrument: PublicInstru
   const format = useFormat();
   const maturity = bodivaMaturityDate(instrument.symbol);
   return (
-    <section aria-labelledby="bond-facts" className="flex flex-col gap-2">
-      <SectionHeader id="bond-facts" title={t("assetDetails.bondFacts.header")} />
+    <Card title={t("assetDetails.bondFacts.header")} titleId="bond-facts" bodyClassName="flex flex-col gap-2">
       <dl className="flex flex-col">
         <Row title={t("common.issuer")}>{issuerName}</Row>
         {instrument.isin ? <Row title={t("assetDetails.bondFacts.isin")}>{instrument.isin}</Row> : null}
@@ -52,7 +51,7 @@ export function BondFacts({ instrument, issuerName }: { instrument: PublicInstru
         <BondYieldRows id={instrument.id} symbol={instrument.symbol} />
       </dl>
       <p className="text-caption text-secondary-text">{t("assetDetails.bondFacts.quoteDisclaimer")}</p>
-    </section>
+    </Card>
   );
 }
 
@@ -68,10 +67,9 @@ export function AboutPanel({ instrument, issuerName, data }: { instrument: Publi
   const showsIssuer = instrument.kind === "equity" || instrument.kind === "corporateBond" || instrument.kind === "fund";
   return (
     <>
-      <section aria-labelledby="about" className="flex flex-col gap-3">
-        <SectionHeader id="about" title={t("common.about")} />
+      <Card title={t("common.about")} titleId="about">
         <p className="text-body text-secondary-text">{summary}</p>
-      </section>
+      </Card>
       {showsIssuer ? <IssuerInformation instrument={instrument} data={data} /> : null}
     </>
   );
@@ -86,10 +84,11 @@ function IssuerInformation({ instrument, data }: { instrument: PublicInstrument;
   return (
     <>
       {issuer === null ? (
-        <SectionPlaceholder title={t("common.issuer")} failed />
+        <Card>
+          <SectionPlaceholder title={t("common.issuer")} failed />
+        </Card>
       ) : (
-        <section aria-labelledby="issuer" className="flex flex-col gap-3">
-          <SectionHeader id="issuer" title={instrument.kind === "fund" ? t("assetDetails.issuer.fundManager") : t("common.company")} />
+        <Card title={instrument.kind === "fund" ? t("assetDetails.issuer.fundManager") : t("common.company")} titleId="issuer" bodyClassName="flex flex-col gap-3">
           {issuer?.description ? <p className="text-body text-secondary-text">{issuer.description}</p> : null}
           {issuer && (issuer.sector || issuer.headquarters || issuer.websiteURL) ? (
             <dl className="flex flex-col">
@@ -111,11 +110,10 @@ function IssuerInformation({ instrument, data }: { instrument: PublicInstrument;
               ) : null}
             </dl>
           ) : null}
-        </section>
+        </Card>
       )}
 
-      <section aria-labelledby="dividends" className="flex flex-col gap-2">
-        <SectionHeader id="dividends" title={t("common.dividends")} />
+      <Card title={t("common.dividends")} titleId="dividends">
         {dividend === null ? (
           <p className="text-caption text-secondary-text">{t("components.placeholder.loadFailed")}</p>
         ) : dividend?.amountPerShare ? (
@@ -136,10 +134,9 @@ function IssuerInformation({ instrument, data }: { instrument: PublicInstrument;
         ) : (
           <p className="py-2 text-secondary text-secondary-text">{t("assetDetails.issuer.noDividends")}</p>
         )}
-      </section>
+      </Card>
 
-      <section aria-labelledby="reports" className="flex flex-col gap-2">
-        <SectionHeader id="reports" title={t("common.financialReports")} />
+      <Card title={t("common.financialReports")} titleId="reports">
         {reports === null ? (
           <p className="text-caption text-secondary-text">{t("components.placeholder.loadFailed")}</p>
         ) : reports.length > 0 ? (
@@ -169,7 +166,7 @@ function IssuerInformation({ instrument, data }: { instrument: PublicInstrument;
         ) : (
           <p className="py-2 text-secondary text-secondary-text">{t("assetDetails.issuer.noReports")}</p>
         )}
-      </section>
+      </Card>
     </>
   );
 }
