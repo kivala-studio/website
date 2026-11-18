@@ -42,6 +42,8 @@ test("home renders with the app icon, no CSP violations and no serious axe issue
   await expect(page.locator('link[rel="icon"][type="image/svg+xml"]')).toHaveCount(1);
   expect(violations).toEqual([]);
 
+  // The hero fades in over 0.85 s after load; axe would sample its contrast mid-fade.
+  await page.emulateMedia({ reducedMotion: "reduce" });
   const { violations: axe } = await new AxeBuilder({ page }).analyze();
   expect(axe.filter((violation) => ["serious", "critical"].includes(violation.impact ?? ""))).toEqual([]);
 });
