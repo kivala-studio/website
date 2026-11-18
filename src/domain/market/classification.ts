@@ -58,6 +58,12 @@ export const visibleOutsideSearch = (securities: readonly MarketSecurity[], now:
 
 const differsFromSymbol = (text: string, symbol: string) => text !== "" && text.toLowerCase() !== symbol.toLowerCase();
 
+/** A name worth showing beside its symbol: trimmed, and `undefined` when it is empty or only repeats the symbol. */
+export function nameBeyondSymbol(name: string | null | undefined, symbol: string): string | undefined {
+  const trimmed = name?.trim() ?? "";
+  return differsFromSymbol(trimmed, symbol) ? trimmed : undefined;
+}
+
 /** The instrument or issuer name when it says more than the symbol; `undefined` → use `kindLabelKey`. */
 export function securityDisplayName(security: MarketSecurity): string | undefined {
   const name = security.name.trim();

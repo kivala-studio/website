@@ -9,7 +9,9 @@ import { type WeekItem, MILESTONE_TITLE_KEYS, dayInstant, isFreshBatch, isReplay
 import { useAccount } from "@/features/account/account-provider";
 import { readAccountRoute } from "@/features/account/results";
 import { PrivacyModeButton, usePrivacyMode } from "@/features/privacy/privacy-mode";
+import { cn } from "@/ui/cn";
 import { Button } from "@/ui/components/buttons";
+import { Card, READING_COLUMN } from "@/ui/components/layout";
 import { EmptyState, ErrorState, LoadingState } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
@@ -71,7 +73,7 @@ export function WeekAheadView({ renderedAt }: { renderedAt: number }) {
   };
 
   return (
-    <div className="flex max-w-3xl flex-col gap-8" data-testid="week-ahead">
+    <div className={cn(READING_COLUMN, "gap-6")} data-testid="week-ahead">
       <header className="flex flex-col gap-3">
         <div className="flex items-start justify-between gap-3">
           <h1 className="text-display text-primary-text">{t("weekAhead.summary.title")}</h1>
@@ -100,26 +102,20 @@ export function WeekAheadView({ renderedAt }: { renderedAt: number }) {
           ) : (
             <>
               {selection.days.map((day) => (
-                <section key={day.id} aria-labelledby={`week-day-${day.id}`} className="flex flex-col gap-2" data-testid="week-ahead-day">
-                  <h2 id={`week-day-${day.id}`} className="text-section text-primary-text">
-                    {dayTitle(day.id)}
-                  </h2>
+                <Card key={day.id} title={dayTitle(day.id)} titleId={`week-day-${day.id}`} bodyClassName="flex flex-col pt-1! pb-1!" data-testid="week-ahead-day">
                   {day.hasVerifiedClosure ? <p className="text-caption text-secondary-text">{t("weekAhead.list.noSession")}</p> : null}
                   <ul className="flex flex-col">
                     {day.items.map((item) => (
                       <EventRow key={item.id} item={item} text={text} />
                     ))}
                   </ul>
-                </section>
+                </Card>
               ))}
-              <section aria-labelledby="week-about" className="flex flex-col gap-2 text-caption text-secondary-text">
-                <h2 id="week-about" className="text-section text-primary-text">
-                  {t("weekAhead.about.title")}
-                </h2>
+              <Card title={t("weekAhead.about.title")} titleId="week-about" bodyClassName="flex flex-col gap-2 text-caption text-secondary-text">
                 <p>{t("weekAhead.about.announcedDates")}</p>
                 <p>{t("weekAhead.about.portfolioLink")}</p>
                 <p>{t("weekAhead.about.coverage")}</p>
-              </section>
+              </Card>
             </>
           )}
         </>
@@ -147,8 +143,8 @@ function EventRow({ item, text }: { item: WeekItem; text: ReturnType<typeof week
   const dividend = event.metadata?.kind === "dividend" ? event.metadata : undefined;
   const title = dividend && event.issuer ? `${t(MILESTONE_TITLE_KEYS[dividend.milestone] as never)} · ${event.issuer.name}` : event.title;
   return (
-    <li className="flex flex-col gap-1.5 border-b border-separator py-3 last:border-b-0" data-testid="week-ahead-event" data-relationship={item.relationship}>
-      <p className="text-body font-semibold text-primary-text">{title}</p>
+    <li className="flex flex-col gap-1.5 border-b border-hairline py-4 last:border-b-0" data-testid="week-ahead-event" data-relationship={item.relationship}>
+      <p className="font-display text-body font-semibold text-primary-text">{title}</p>
       <p className="text-caption text-secondary-text">{text.timing(event)}</p>
       <p className="flex items-center gap-1.5 text-caption text-secondary-text">
         <Icon name={event.status === "tentative" ? "history" : "calendar"} />

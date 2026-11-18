@@ -22,7 +22,9 @@ import { useAccountStores } from "@/features/account/account-provider";
 import { PrivacyModeButton, usePrivacyMode } from "@/features/privacy/privacy-mode";
 import { cn } from "@/ui/cn";
 import { AmountField } from "@/ui/components/amount-field";
+import { chipClass } from "@/ui/components/button-styles";
 import { Button, IconButton } from "@/ui/components/buttons";
+import { INPUT } from "@/ui/components/field-styles";
 import { OptionGroup } from "@/ui/components/controls";
 import { Dialog } from "@/ui/components/dialog";
 import { HiddenValue } from "@/ui/components/feedback";
@@ -177,7 +179,7 @@ function AlertList({ target, onEdit }: { target: AlertTarget; onEdit: (rule: Ale
 
       <section aria-labelledby="alert-rules" className="flex flex-col gap-2">
         <div className="flex items-center justify-between gap-2">
-          <h3 id="alert-rules" className="text-headline text-primary-text">
+          <h3 id="alert-rules" className="text-section text-primary-text">
             {t("alerts.list.title")}
           </h3>
           {rules.length > 0 ? <PrivacyModeButton className="-my-2" /> : null}
@@ -229,7 +231,7 @@ function AlertList({ target, onEdit }: { target: AlertTarget; onEdit: (rule: Ale
 
       {watched ? (
         <section aria-labelledby="alert-movements" className="flex flex-col gap-2">
-          <h3 id="alert-movements" className="text-headline text-primary-text">
+          <h3 id="alert-movements" className="text-section text-primary-text">
             {t("common.automaticMovements")}
           </h3>
           <SwitchRow
@@ -297,7 +299,7 @@ function AlertEditor({ rule, target, onDone }: { rule: AlertRule | null; target:
             id={kindID}
             value={kind}
             onChange={(event) => choose(event.target.value as AlertKind)}
-            className="min-h-11 w-full appearance-none rounded-medium bg-elevated-background py-2 pr-10 pl-3 text-body text-primary-text"
+            className={cn(INPUT, "appearance-none pr-10")}
             data-testid="alert-kind"
           >
             {ALERT_KINDS.map((value) => (
@@ -315,20 +317,17 @@ function AlertEditor({ rule, target, onDone }: { rule: AlertRule | null; target:
           {translate(SENTENCE[kind])}
         </label>
         {hasThreshold(kind) ? (
-          <div className="flex min-h-11 items-center gap-2 rounded-medium bg-elevated-background px-3 focus-within:outline-2 focus-within:outline-accent">
-            {kind === "percent_change_below" ? <span aria-hidden className="text-body text-secondary-text">−</span> : null}
-            <AmountField
-              id={valueID}
-              value={text}
-              onValueChange={setText}
-              inputMode="decimal"
-              aria-invalid={text !== "" && !valid}
-              data-autofocus
-              data-testid="alert-value"
-              className="min-h-11 flex-1 bg-transparent text-body text-primary-text outline-none"
-            />
-            <span className="text-body text-secondary-text">{unit(kind, target, translate, format)}</span>
-          </div>
+          <AmountField
+            id={valueID}
+            value={text}
+            onValueChange={setText}
+            inputMode="decimal"
+            aria-invalid={text !== "" && !valid}
+            data-autofocus
+            data-testid="alert-value"
+            prefix={kind === "percent_change_below" ? "−" : undefined}
+            suffix={unit(kind, target, translate, format)}
+          />
         ) : null}
         {distance ? (
           <p className="text-secondary text-secondary-text" aria-live="polite">
@@ -350,7 +349,7 @@ function AlertEditor({ rule, target, onDone }: { rule: AlertRule | null; target:
                   setKind(shortcut.kind);
                   setText(formatAmountForInput(shortcut.threshold));
                 }}
-                className={cn("motion-press min-h-11 min-w-16 rounded-full bg-action-surface px-3 text-secondary font-semibold text-primary-text")}
+                className={chipClass(false, "min-w-16 px-3")}
               >
                 {format.percent(step, { digits: 0 })}
               </button>

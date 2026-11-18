@@ -17,6 +17,7 @@ import { usePrivacyMode } from "@/features/privacy/privacy-mode";
 import { cn } from "@/ui/cn";
 import { AmountField } from "@/ui/components/amount-field";
 import { Button } from "@/ui/components/buttons";
+import { INPUT } from "@/ui/components/field-styles";
 import { SegmentedControl } from "@/ui/components/controls";
 import { Dialog } from "@/ui/components/dialog";
 import { HiddenValue } from "@/ui/components/feedback";
@@ -142,18 +143,7 @@ function CashEditor({ model, onClose }: { model: PortfolioModel; onClose: () => 
           <label htmlFor={ids.amount} className="text-secondary text-primary-text">
             {t("cash.amount")}
           </label>
-          <div className="flex min-h-12 items-center gap-2 rounded-medium bg-elevated-background px-3 focus-within:outline-2 focus-within:outline-accent desk:min-h-11">
-            <AmountField
-              id={ids.amount}
-              value={amountText}
-              onValueChange={setAmountText}
-              inputMode="decimal"
-              data-autofocus
-              data-testid="cash-amount"
-              className="min-w-0 flex-1 bg-transparent text-body text-primary-text outline-none"
-            />
-            <span className="text-body text-secondary-text">Kz</span>
-          </div>
+          <AmountField id={ids.amount} value={amountText} onValueChange={setAmountText} inputMode="decimal" data-autofocus data-testid="cash-amount" suffix="Kz" />
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor={ids.date} className="text-secondary text-primary-text">
@@ -167,7 +157,7 @@ function CashEditor({ model, onClose }: { model: PortfolioModel; onClose: () => 
             value={date}
             onChange={(event) => setDate(event.target.value)}
             data-testid="cash-date"
-            className="min-h-12 rounded-medium bg-elevated-background px-3 text-body text-primary-text desk:min-h-11"
+            className={INPUT}
           />
         </div>
         <button type="submit" hidden />

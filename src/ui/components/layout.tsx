@@ -5,6 +5,21 @@ import { cn } from "../cn";
 /** The page column for site and app pages: 1200 px at most, centred, 16 px gutters on phones and 24 px from 640 px. */
 export const PAGE_CONTAINER = "mx-auto w-full max-w-300 px-4 sm:px-6";
 
+/** A narrow reading column inside the page container (lists, settings, articles, legal text): 768 px, centred. */
+export const READING_COLUMN = "mx-auto flex w-full max-w-3xl flex-col";
+
+/**
+ * A page that is one message and its actions (sign-in, not found, maintenance): a card centred on the canvas with
+ * 32 px insets from 640 px. Put the page's `h1` inside.
+ */
+export function MessageCard({ className, children, ...props }: HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div {...props} className={cn("panel mx-auto flex w-full max-w-md flex-col gap-6 p-6 sm:p-8", className)}>
+      {children}
+    </div>
+  );
+}
+
 /** A card's title row: the section title (22 px on desk) and an optional action on the right (a "Ver tudo" pill). */
 export function CardHeader({ title, titleId, action, className }: { title: ReactNode; titleId?: string; action?: ReactNode; className?: string }) {
   return (

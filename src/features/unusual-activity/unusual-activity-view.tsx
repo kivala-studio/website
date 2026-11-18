@@ -15,6 +15,7 @@ import { Link } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
 import { Button, IconButton } from "@/ui/components/buttons";
 import { Dialog } from "@/ui/components/dialog";
+import { Card, READING_COLUMN } from "@/ui/components/layout";
 import { SecurityLogo } from "@/ui/components/rows";
 import { EmptyState, ErrorState, LoadingState, SectionPlaceholder } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
@@ -59,7 +60,7 @@ export function UnusualActivityView({ rows }: { rows: readonly CatalogueRow[] })
     list.length === 0 ? null : (
       <section aria-labelledby={title ? id : undefined} className="flex flex-col">
         {title ? (
-          <h2 id={id} className="pt-2 pb-1 text-secondary font-semibold text-secondary-text">
+          <h2 id={id} className="pt-3 pb-1 font-sans text-secondary font-semibold text-secondary-text">
             {title}
           </h2>
         ) : null}
@@ -79,7 +80,7 @@ export function UnusualActivityView({ rows }: { rows: readonly CatalogueRow[] })
     );
 
   return (
-    <div className="flex w-full max-w-3xl flex-col gap-4">
+    <div className={cn(READING_COLUMN, "gap-4")}>
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex min-w-0 flex-1 basis-full flex-col gap-1 sm:basis-0">
           <h1 className="text-display text-primary-text">{t("unusualActivity.title")}</h1>
@@ -87,7 +88,9 @@ export function UnusualActivityView({ rows }: { rows: readonly CatalogueRow[] })
         </div>
         <div className="order-first ml-auto flex items-center gap-2 sm:order-none">
           <IconButton icon="refresh" label={t("common.refresh")} disabled={refreshing} onClick={refresh} data-testid="unusual-refresh" />
-          {account ? <IconButton icon="notification" label={t("unusualActivity.settings.notifications")} onClick={() => setSettings(true)} data-testid="unusual-settings" /> : null}
+          {account ? (
+            <IconButton icon="notification" label={t("unusualActivity.settings.notifications")} onClick={() => setSettings(true)} data-testid="unusual-settings" />
+          ) : null}
         </div>
       </div>
 
@@ -105,7 +108,7 @@ export function UnusualActivityView({ rows }: { rows: readonly CatalogueRow[] })
       ) : groups.length === 0 ? (
         <EmptyState icon="chart" title={t("unusualActivity.empty")} message={t("unusualActivity.disclaimer")} />
       ) : (
-        <div className="flex flex-col gap-2 rounded-large bg-card-background px-4 py-2 lg:panel" data-testid="unusual-activity">
+        <Card className="flex flex-col gap-2 py-2!" data-testid="unusual-activity">
           {followed.length > 0 ? (
             <>
               {section(t("common.watchlist"), followed, "unusual-followed")}
@@ -114,7 +117,7 @@ export function UnusualActivityView({ rows }: { rows: readonly CatalogueRow[] })
           ) : (
             section(null, others, "unusual-market")
           )}
-        </div>
+        </Card>
       )}
       {load.status === "loaded" && groups.length > 0 ? <p className="text-caption text-tertiary-text">{t("unusualActivity.disclaimer")}</p> : null}
 

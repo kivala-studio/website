@@ -18,9 +18,11 @@ import { useAccount } from "@/features/account/account-provider";
 import { useMarketState, useMarketStore } from "@/features/market/market-provider";
 import { cn } from "@/ui/cn";
 import { AmountField } from "@/ui/components/amount-field";
+import { chipClass } from "@/ui/components/button-styles";
 import { Button, IconButton } from "@/ui/components/buttons";
 import { SearchField } from "@/ui/components/controls";
 import { Dialog } from "@/ui/components/dialog";
+import { INPUT_BARE, INPUT_BOX } from "@/ui/components/field-styles";
 import { ChangeBadge } from "@/ui/components/financial";
 import { Card } from "@/ui/components/layout";
 import { SecurityLogo } from "@/ui/components/rows";
@@ -140,7 +142,7 @@ function Calculator({
   return (
     // Phones follow iOS (projection, controls, details); wide screens keep the controls beside both halves.
     <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:grid-rows-[auto_1fr] lg:items-start lg:gap-x-8">
-      <section className="flex flex-col gap-6 lg:col-start-1" aria-labelledby="simulation-headline">
+      <Card role="region" aria-labelledby="simulation-headline" className="flex flex-col gap-6 lg:col-start-1">
         <InstrumentHeader security={security} onPick={() => setPicking(true)} error={instrumentError ? t(instrumentError as never) : null} />
         <Headline result={result} scrub={scrub} horizonMonths={result?.input.durationMonths} money={money} />
         {result ? (
@@ -156,8 +158,8 @@ function Calculator({
             })}
           />
         ) : null}
-      </section>
-      <Card className="flex flex-col divide-y divide-separator py-0! lg:sticky lg:top-24 lg:col-start-2 lg:row-span-2 lg:row-start-1" data-testid="simulation-controls">
+      </Card>
+      <Card className="flex flex-col divide-y divide-hairline py-0! lg:sticky lg:top-24 lg:col-start-2 lg:row-span-2 lg:row-start-1" data-testid="simulation-controls">
         {SIMULATION_FIELDS.map((field) => (
           <ScenarioRow
             key={field}
@@ -297,7 +299,7 @@ function Position({ result, symbol, money }: { result: SimulationResult; symbol:
     [t("simulation.result.uninvestedBalance"), result.uninvestedCash ? money(result.uninvestedCash) : "—"],
   ] as const;
   return (
-    <dl className="flex flex-col divide-y divide-separator" data-testid="simulation-position">
+    <dl className="flex flex-col divide-y divide-hairline rounded-large border-[length:var(--card-outline-width)] border-card-outline bg-card-background px-5 py-1 desk:panel desk:px-6" data-testid="simulation-position">
       {rows.map(([title, value]) => (
         <div key={title} className="flex min-h-11 items-center justify-between gap-4 py-2">
           <dt className="text-secondary text-secondary-text">{title}</dt>
@@ -349,12 +351,12 @@ function QuoteFootnote({
 function Methodology() {
   const t = useTranslations();
   return (
-    <details className="group rounded-large bg-card-background px-5 desk:panel" data-testid="simulation-methodology">
-      <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 text-body font-semibold text-primary-text">
+    <details className="group rounded-large border-[length:var(--card-outline-width)] border-card-outline bg-card-background px-5 desk:panel desk:px-6" data-testid="simulation-methodology">
+      <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 font-display text-body font-semibold text-primary-text [&::-webkit-details-marker]:hidden">
         {t("simulation.methodology.title")}
         <Icon name="chevron-down" className="size-4 text-secondary-text transition-transform group-open:rotate-180 motion-reduce:transition-none" />
       </summary>
-      <div className="flex flex-col gap-3 pb-5 text-secondary text-secondary-text">
+      <div className="flex flex-col gap-3 pb-5 text-secondary text-secondary-text desk:pb-6">
         <p>{t("simulation.methodology.quoteAndPrice")}</p>
         <p>{t("simulation.methodology.contributions")}</p>
         <p>{t("simulation.methodology.finalValue")}</p>
@@ -418,11 +420,11 @@ function ScenarioRow({
         <label htmlFor={id} className="text-body font-semibold text-primary-text">
           {t(TITLES[field] as never)}
         </label>
-        <div className="w-full sm:w-56">
+        <div className="w-full sm:w-48">
           {amount ? (
             <AmountField {...input} value={value} onValueChange={onChange} onBlur={onBlur} suffix="Kz" />
           ) : (
-            <span className="flex min-h-12 items-center gap-2 rounded-medium bg-elevated-background px-4 focus-within:outline-2 focus-within:outline-accent">
+            <span className={INPUT_BOX}>
               <input
                 {...input}
                 type="text"
@@ -432,7 +434,7 @@ function ScenarioRow({
                 value={value}
                 onChange={(event) => onChange(event.target.value)}
                 onBlur={onBlur}
-                className={cn("min-w-0 flex-1 bg-transparent py-3 outline-none", input.className)}
+                className={cn(INPUT_BARE, input.className)}
               />
               <span className="text-body text-secondary-text">{field === "durationMonths" ? t("simulation.controls.monthsUnit") : "%"}</span>
             </span>
@@ -451,10 +453,7 @@ function ScenarioRow({
                 onChange(presetValue(preset));
                 onBlur();
               }}
-              className={cn(
-                "min-h-11 min-w-11 shrink-0 rounded-full px-4 text-secondary font-semibold transition-colors motion-reduce:transition-none",
-                selected ? "bg-accent-soft text-accent" : "bg-elevated-background text-secondary-text",
-              )}
+              className={chipClass(selected)}
             >
               {presetLabel(preset)}
             </button>

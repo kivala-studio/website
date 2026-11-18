@@ -6,6 +6,7 @@ import { useId, useState } from "react";
 import { BOOK_NAME_MAX, COMBINED, MAIN, type PortfolioBook, bookName, hasBookNamed } from "@/domain/portfolio/books";
 import { useAccount } from "@/features/account/account-provider";
 import { Button, IconButton, buttonClass } from "@/ui/components/buttons";
+import { INPUT } from "@/ui/components/field-styles";
 import { Dialog } from "@/ui/components/dialog";
 import { Menu, type MenuEntry } from "@/ui/components/menu";
 import { Icon } from "@/ui/icons/icon";
@@ -172,7 +173,7 @@ function BookNameDialog({
           aria-invalid={duplicate}
           aria-describedby={duplicate ? `${id}-error` : undefined}
           data-testid="book-name"
-          className="min-h-11 w-full rounded-medium bg-elevated-background px-3 text-body text-primary-text outline-none focus:outline-2 focus:outline-accent"
+          className={INPUT}
         />
         {duplicate ? (
           <p id={`${id}-error`} role="alert" className="text-secondary text-negative">

@@ -80,6 +80,42 @@ export function SectionTabs({
   );
 }
 
+/**
+ * Text tabs that filter one list in place without panels of their own (category filters): toggle buttons with
+ * `aria-pressed` in a labelled group, in the underline tab look.
+ */
+export function FilterTabs<T extends string>({
+  options,
+  value,
+  onChange,
+  label,
+  testID,
+}: {
+  options: readonly { value: T; title: string }[];
+  value: T;
+  onChange: (value: T) => void;
+  label: string;
+  /** Test id on each button. */
+  testID?: string;
+}) {
+  return (
+    <div role="group" aria-label={label} className={TAB_LIST}>
+      {options.map((option) => (
+        <button
+          key={option.value}
+          type="button"
+          aria-pressed={option.value === value}
+          onClick={() => onChange(option.value)}
+          className={cn(TAB, option.value === value ? TAB_CURRENT : TAB_OTHER)}
+          data-testid={testID}
+        >
+          {option.title}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 /** Whether `href` is the current page or a section above it (`/carteira` on `/carteira/registos`). */
 export function useLinkCurrent(): (href: string, exact?: boolean) => "page" | "true" | undefined {
   const pathname = usePathname();

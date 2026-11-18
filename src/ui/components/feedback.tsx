@@ -77,7 +77,7 @@ export function ToastHost({ children }: { children: ReactNode }) {
       {children}
       <div aria-live="polite" className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-2">
         {toast ? (
-          <div key={toast.id} className="motion-toast pointer-events-auto flex w-full max-w-140 items-start gap-3 rounded-large bg-elevated-background py-4 pl-4 pr-1 shadow-lg">
+          <div key={toast.id} className="motion-toast pointer-events-auto flex w-full max-w-140 items-start gap-3 rounded-card border border-card-border bg-card-background py-4 pr-2 pl-5 shadow-lg">
             <div className="flex min-w-0 flex-1 flex-col gap-1">
               <p className="line-clamp-2 text-secondary font-semibold text-primary-text">{toast.title}</p>
               <p className="line-clamp-3 text-secondary text-secondary-text">{toast.message}</p>
@@ -106,7 +106,7 @@ export function ToastHost({ children }: { children: ReactNode }) {
               aria-label={t("dismiss")}
               disabled={retrying}
               onClick={dismiss}
-              className="flex size-11 shrink-0 items-center justify-center text-caption text-secondary-text"
+              className="flex size-11 shrink-0 items-center justify-center rounded-full text-caption text-secondary-text hover:bg-action-surface"
             >
               <Icon name="close" />
             </button>
@@ -136,7 +136,7 @@ export function OfflineBanner({ forceVisible = false }: { forceVisible?: boolean
   const online = useOnline();
   if (online && !forceVisible) return null;
   return (
-    <div role="status" className="flex items-start gap-3 bg-elevated-background px-4 py-3">
+    <div role="status" className="flex items-start gap-3 rounded-card border border-card-border bg-card-background px-5 py-3">
       <Icon name="offline" className="mt-0.5 text-warning" />
       <div className="flex flex-col gap-1">
         <p className="text-secondary font-semibold text-primary-text">{t("common.noInternet")}</p>

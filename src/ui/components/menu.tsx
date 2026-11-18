@@ -12,7 +12,7 @@ export type MenuEntry =
   | { kind: "separator" };
 
 const ENTRY =
-  "flex min-h-11 w-full items-center gap-3 rounded-small px-3 text-left text-body text-primary-text outline-none focus-visible:bg-elevated-background hover:bg-elevated-background aria-disabled:opacity-42";
+  "flex min-h-11 w-full items-center gap-3 rounded-small px-3 text-left text-body text-primary-text outline-none focus-visible:bg-action-surface hover:bg-action-surface aria-disabled:opacity-42";
 
 /**
  * A menu button (WAI-ARIA menu): Enter, Space or the arrows open it on the first or last item; arrows, Home
@@ -217,7 +217,7 @@ export function SwitchRow({
         aria-hidden
         className={cn(
           "relative h-7 w-12 shrink-0 rounded-full transition-colors duration-200 motion-reduce:transition-none",
-          checked ? "bg-positive" : "bg-elevated-background ring-1 ring-hairline",
+          checked ? "bg-positive" : "bg-track ring-1 ring-field-border",
         )}
       >
         <span

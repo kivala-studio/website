@@ -35,3 +35,14 @@ export const iconButtonClass = (variant: "filled" | "plain" | "outline" = "fille
     { filled: "bg-action-surface hover:bg-track", plain: "hover:bg-action-surface", outline: "border border-field-border hover:bg-action-surface" }[variant],
     className,
   );
+
+/**
+ * A choice chip (presets, filters inside a form): a hairline pill, the chosen one in the soft accent fill. Pair it
+ * with `aria-pressed`.
+ */
+export const chipClass = (selected: boolean, className?: string) =>
+  cn(
+    "motion-press inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center gap-1 rounded-full border px-4 text-secondary font-medium whitespace-nowrap transition-colors motion-reduce:transition-none disabled:opacity-42 aria-disabled:opacity-42",
+    selected ? "border-transparent bg-accent-soft text-accent" : "border-field-border text-primary-text hover:bg-action-surface",
+    className,
+  );

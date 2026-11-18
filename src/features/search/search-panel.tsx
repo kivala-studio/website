@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { type KeyboardEvent, useId, useMemo, useState, useSyncExternalStore } from "react";
+import { type KeyboardEvent, type ReactNode, useId, useMemo, useState, useSyncExternalStore } from "react";
 
 import {
   MARKET_CATEGORY_LABEL_KEYS,
@@ -25,8 +25,9 @@ import { marketQueryParams, MARKET_DEFAULT_QUERY } from "@/features/market/brows
 import { useMarketState } from "@/features/market/market-provider";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
+import { buttonClass } from "@/ui/components/button-styles";
 import { SearchField } from "@/ui/components/controls";
-import { SectionHeader } from "@/ui/components/layout";
+import { Card } from "@/ui/components/layout";
 import { SecurityLogo } from "@/ui/components/rows";
 import { EmptyState } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
@@ -118,17 +119,61 @@ function useSearchable(rows: readonly CatalogueRow[]) {
 }
 
 /**
+ * A group of result rows: a titled card on the search page; in the command palette, a small muted label over the
+ * rows (a popup of cards in a card would nest surfaces).
+ */
+function ResultGroup({
+  id,
+  title,
+  action,
+  note,
+  surface,
+  children,
+}: {
+  id: string;
+  title: string;
+  action?: ReactNode;
+  note?: string;
+  surface: "page" | "dialog";
+  children: ReactNode;
+}) {
+  if (surface === "page") {
+    return (
+      <Card title={title} titleId={id} action={action} flush>
+        {note ? <p className="px-5 text-caption text-secondary-text desk:px-6">{note}</p> : null}
+        <ul className="flex flex-col px-5 pb-2 desk:px-6">{children}</ul>
+      </Card>
+    );
+  }
+  return (
+    <section aria-labelledby={id} className="flex flex-col">
+      <div className="flex min-h-11 items-center justify-between gap-3">
+        <h3 id={id} className="font-sans text-caption font-semibold text-secondary-text">
+          {title}
+        </h3>
+        {action}
+      </div>
+      {note ? <p className="text-caption text-secondary-text">{note}</p> : null}
+      <ul className="flex flex-col">{children}</ul>
+    </section>
+  );
+}
+
+/**
  * Find an instrument fast (iOS `SearchView`): categories with their real counts, recents, highest volume, and
- * results grouped by kind with a star on each row. Used by the search page and the command palette.
+ * results grouped by kind with a star on each row. Used by the search page (`surface="page"`: groups as cards) and
+ * the command palette.
  */
 export function SearchPanel({
   rows,
   renderedAt,
   autoFocus = false,
+  surface = "dialog",
 }: {
   rows: readonly CatalogueRow[];
   renderedAt: number;
   autoFocus?: boolean;
+  surface?: "page" | "dialog";
 }) {
   const t = useTranslations();
   const format = useFormat();
@@ -176,17 +221,17 @@ export function SearchPanel({
   const row = (security: MarketSecurity) => {
     const catalogueRow = byID.get(security.id);
     return (
-      <li key={security.id} className="flex items-center gap-1 border-b border-separator last:border-b-0">
+      <li key={security.id} className="flex items-center gap-1 border-b border-hairline last:border-b-0">
         <Link
           href={`/mercado/${encodeURIComponent(security.symbol)}`}
           prefetch={false}
           onClick={() => recents.record(security.id)}
-          className="flex min-h-16 min-w-0 flex-1 items-center gap-3 rounded-small py-2"
+          className="flex min-h-15 min-w-0 flex-1 items-center gap-3 rounded-small py-2"
           data-testid="search-result"
         >
-          <SecurityLogo symbol={security.symbol} logoUrl={catalogueRow?.logoURL ?? security.logoURL} brandColor={catalogueRow?.bond ? "violet" : "blue"} />
-          <span className="flex min-w-0 flex-1 flex-col gap-1">
-            <span className="text-body font-semibold text-primary-text">{security.symbol}</span>
+          <SecurityLogo symbol={security.symbol} logoUrl={catalogueRow?.logoURL ?? security.logoURL} brandColor={catalogueRow?.bond ? "violet" : "blue"} size="s" />
+          <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+            <span className="font-display text-body font-medium text-primary-text">{security.symbol}</span>
             <span className="truncate text-caption text-secondary-text">{securityDisplayName(security) ?? translate(kindLabelKey(security.kind))}</span>
           </span>
           <PriceCell row={catalogueRow} security={loaded ? security : undefined} at={assessedAt} />
@@ -198,20 +243,19 @@ export function SearchPanel({
 
   const searching = query.trim() !== "";
   return (
-    <div className="flex flex-col gap-8">
+    <div className={cn("flex flex-col", surface === "page" ? "gap-6" : "gap-5")}>
       <form role="search" onSubmit={(event) => event.preventDefault()}>
         <SearchField value={query} onChange={setQuery} placeholder={t("search.field.prompt")} autoFocus={autoFocus} onKeyDown={onKeyDown} controls={resultsID} />
       </form>
-      <div id={resultsID} className="flex flex-col gap-8" aria-live="polite" aria-busy={!loaded && searching ? true : undefined}>
+      <div id={resultsID} className={cn("flex flex-col", surface === "page" ? "gap-6" : "gap-5")} aria-live="polite" aria-busy={!loaded && searching ? true : undefined}>
         {searching ? (
           groups.length === 0 ? (
             <EmptyState icon="search" title={t("search.emptyState.noResults", { arg1: query.trim() })} />
           ) : (
             groups.map((group) => (
-              <section key={group.kind} aria-labelledby={`${resultsID}-${group.kind}`} className="flex flex-col gap-1">
-                <SectionHeader id={`${resultsID}-${group.kind}`} title={translate(kindLabelKey(group.kind))} />
-                <ul className="flex flex-col">{group.items.map(row)}</ul>
-              </section>
+              <ResultGroup key={group.kind} id={`${resultsID}-${group.kind}`} title={translate(kindLabelKey(group.kind))} surface={surface}>
+                {group.items.map(row)}
+              </ResultGroup>
             ))
           )
         ) : (
@@ -224,35 +268,33 @@ export function SearchPanel({
                     <Link
                       href={{ pathname: "/mercado", query: marketQueryParams({ ...MARKET_DEFAULT_QUERY, category }) }}
                       prefetch={false}
-                      className={cn("flex min-h-24 flex-col justify-between gap-3 rounded-large p-4", CATEGORY_TONE[category])}
+                      className={cn("flex min-h-24 flex-col justify-between gap-3 rounded-card p-4 transition-[filter] hover:brightness-95 desk:px-5", CATEGORY_TONE[category])}
                     >
-                      <span className="text-body font-semibold">{translate(MARKET_CATEGORY_LABEL_KEYS[category])}</span>
-                      <span className="text-section text-primary-text">{format.count(count)}</span>
+                      <span className="font-display text-body font-semibold">{translate(MARKET_CATEGORY_LABEL_KEYS[category])}</span>
+                      <span className="font-display text-section text-primary-text">{format.count(count)}</span>
                     </Link>
                   </li>
                 );
               })}
             </ul>
             {recentSecurities.length > 0 ? (
-              <section aria-labelledby={`${resultsID}-recents`} className="flex flex-col gap-1">
-                <SectionHeader
-                  id={`${resultsID}-recents`}
-                  title={t("search.header.recents")}
-                  action={
-                    <button type="button" onClick={recents.clear} className="inline-flex min-h-11 items-center rounded-small px-2 text-secondary font-semibold text-accent">
-                      {t("search.header.clear")}
-                    </button>
-                  }
-                />
-                <ul className="flex flex-col">{recentSecurities.map(row)}</ul>
-              </section>
+              <ResultGroup
+                id={`${resultsID}-recents`}
+                title={t("search.header.recents")}
+                surface={surface}
+                action={
+                  <button type="button" onClick={recents.clear} className={buttonClass("outline", undefined, "compact")}>
+                    {t("search.header.clear")}
+                  </button>
+                }
+              >
+                {recentSecurities.map(row)}
+              </ResultGroup>
             ) : null}
             {highestVolume.length > 0 ? (
-              <section aria-labelledby={`${resultsID}-volume`} className="flex flex-col gap-1">
-                <SectionHeader id={`${resultsID}-volume`} title={t("search.header.highestVolume")} />
-                <p className="text-caption text-secondary-text">{t("search.header.volumeNote")}</p>
-                <ul className="flex flex-col">{highestVolume.map(row)}</ul>
-              </section>
+              <ResultGroup id={`${resultsID}-volume`} title={t("search.header.highestVolume")} note={t("search.header.volumeNote")} surface={surface}>
+                {highestVolume.map(row)}
+              </ResultGroup>
             ) : null}
           </>
         )}
