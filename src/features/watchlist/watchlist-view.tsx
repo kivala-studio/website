@@ -336,14 +336,15 @@ export function WatchlistView({ rows, renderedAt }: { rows: readonly CatalogueRo
           <DataTable className="table-fixed">
             <TableHead>
               <TableHeaderCell>{t("common.instrument")}</TableHeaderCell>
-              <TableHeaderCell align="right" className="w-36 sm:w-44">
+              {/* Below 360 px the price and actions columns tighten so an eight-letter symbol stays whole. */}
+              <TableHeaderCell align="right" className="w-31 max-[22.5rem]:px-1.5 min-[22.5rem]:w-36 sm:w-44">
                 {t("common.price")}
               </TableHeaderCell>
               <TableHeaderCell align="right" className="hidden w-32 sm:table-cell">
                 {t("common.change")}
               </TableHeaderCell>
               {/* The row actions have no column title. */}
-              <td className="w-14 sm:w-30" />
+              <td className="w-11 min-[22.5rem]:w-14 sm:w-30" />
             </TableHead>
             <tbody>
               {visible.map((id) => {
@@ -382,14 +383,14 @@ export function WatchlistView({ rows, renderedAt }: { rows: readonly CatalogueRo
                     className={cn(dragging === id && "opacity-50", over === id && dragging !== id && "bg-accent-soft")}
                   >
                     <WatchlistName id={id} security={security} row={row} paused={paused.has(id)} handle={!group} />
-                    <TableCell numeric>
+                    <TableCell numeric className="max-[22.5rem]:px-1.5">
                       <PriceCell row={row} security={security} at={at} inlineChange="sm:hidden" />
                     </TableCell>
                     <TableCell numeric className="hidden sm:table-cell">
                       <ChangeCell row={row} security={security} at={at} />
                     </TableCell>
                     {/* Above the row link's overlay, so the actions stay clickable. */}
-                    <TableCell className="relative z-10 pl-1 last:pr-2 desk:last:pr-4">
+                    <TableCell className="relative z-10 pl-1 last:pr-2 desk:last:pr-4 max-[22.5rem]:px-0!">
                       <span className="flex items-center justify-end gap-1">
                         <IconButton
                           icon={count > 0 ? "alert" : "notification"}
@@ -465,6 +466,7 @@ function WatchlistName({ id, security, row, paused, handle }: { id: string; secu
       href={`/mercado/${encodeURIComponent(symbol)}`}
       linkProps={{ "data-security": id } as object}
       stackOnPhone
+      className="max-[22.5rem]:pr-1.5"
       detail={
         paused ? (
           <span className="self-start rounded-full bg-action-surface px-2 py-0.5 text-caption text-secondary-text" data-testid="paused-badge">
