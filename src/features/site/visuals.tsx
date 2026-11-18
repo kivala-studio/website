@@ -39,7 +39,8 @@ function ProductFigure({ label, children }: { label: string; children: ReactNode
   return (
     <figure className="flex w-full flex-col items-center gap-3">
       <div role="img" aria-label={label} className="feature-stage w-full overflow-hidden rounded-card border border-card-border px-4 py-8 [--lean:0px] sm:p-10 sm:[--lean:1.5rem] lg:px-12 lg:py-14 lg:[--lean:2rem]">
-        <div aria-hidden className="flex flex-col select-none">
+        {/* Sample values never "arrive": no value roll, which a layout change (a badge hidden below 400 px and shown again) would replay. */}
+        <div aria-hidden className="flex flex-col select-none [&_.motion-value]:animate-none">
           {children}
         </div>
       </div>
