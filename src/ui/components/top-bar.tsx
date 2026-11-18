@@ -1,10 +1,12 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { type ReactNode, useEffect, useId, useRef, useState } from "react";
 
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 
 import { cn } from "../cn";
+import { Icon } from "../icons/icon";
+import { iconButtonClass } from "./button-styles";
 import { useLinkCurrent } from "./controls";
 
 export type TopBarLink = { href: string; label: string };
@@ -12,11 +14,22 @@ export type TopBarLink = { href: string; label: string };
 /** A pill link of the top bar; the current section has the soft grey pill. */
 export const TOP_BAR_PILL = "inline-flex min-h-11 shrink-0 items-center rounded-full px-4 font-display text-secondary font-medium whitespace-nowrap transition-colors";
 
+/** A link row of the top bar's menu: the pill's look at row size. */
+const MENU_ROW = "flex min-h-12 items-center rounded-full px-4 font-display text-section transition-colors";
+
+type MobileNav =
+  /** Below 1024 px the navigation is left to the bottom tab bar (the app). */
+  | { mobileNav: "none"; menu?: never; wideActions?: never }
+  /**
+   * Below 1024 px the navigation and `menu.content` (the theme, the language) move into a menu behind a button
+   * at the end of the bar (the public site). `wideActions` show only from 1024 px, before `actions`.
+   */
+  | { mobileNav: "menu"; menu: { label: string; content: ReactNode }; wideActions?: ReactNode };
+
 /**
  * The one top bar of the site and the app: full width, 64 px, sticky, on the elevated surface with a hairline
- * shadow. Logo, pill navigation, then the search and the actions on the right. Below 1024 px the navigation
- * either takes a horizontally scrollable row of its own (`mobileNav="row"`, the public site) or is left to the
- * bottom tab bar (`"none"`, the app).
+ * shadow. Logo, pill navigation, then the search and the actions on the right. Below 1024 px the navigation either
+ * moves into a menu (`mobileNav="menu"`, the public site) or is left to the bottom tab bar (`"none"`, the app).
  */
 export function TopBar({
   home,
@@ -24,6 +37,8 @@ export function TopBar({
   nav,
   navLabel,
   mobileNav,
+  menu,
+  wideActions,
   search,
   actions,
 }: {
@@ -31,10 +46,9 @@ export function TopBar({
   logo: ReactNode;
   nav: readonly TopBarLink[];
   navLabel: string;
-  mobileNav: "row" | "none";
   search?: ReactNode;
   actions: ReactNode;
-}) {
+} & MobileNav) {
   const current = useLinkCurrent();
   return (
     <header className="sticky top-0 z-30 bg-elevated-background shadow-bar">
@@ -47,15 +61,7 @@ export function TopBar({
         >
           {logo}
         </Link>
-        <nav
-          aria-label={navLabel}
-          className={cn(
-            mobileNav === "row"
-              ? "order-last -mx-4 basis-[calc(100%+2rem)] overflow-x-auto px-3 pb-2 [scrollbar-width:none] sm:-mx-6 sm:basis-[calc(100%+3rem)] sm:px-5 lg:order-none lg:mx-0 lg:basis-auto lg:overflow-visible lg:px-0 lg:pb-0"
-              : "hidden lg:block",
-            "lg:ml-4",
-          )}
-        >
+        <nav aria-label={navLabel} className="hidden lg:block lg:ml-4">
           <ul className="flex gap-1">
             {nav.map((link) => {
               const state = current(link.href);
@@ -76,9 +82,148 @@ export function TopBar({
         </nav>
         <div className="flex min-w-0 flex-1 items-center justify-end gap-1 py-2.5 sm:gap-2">
           {search ? <div className="flex min-w-0 justify-end lg:w-72 xl:w-80">{search}</div> : null}
-          <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">{actions}</div>
+          <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
+            {wideActions ? <div className="hidden lg:contents">{wideActions}</div> : null}
+            {actions}
+            {mobileNav === "menu" ? <TopBarMenu label={menu.label} nav={nav} navLabel={navLabel} content={menu.content} /> : null}
+          </div>
         </div>
       </div>
     </header>
+  );
+}
+
+/** Where the menu gives way to the bar's own navigation (`lg:`). */
+const WIDE = "(min-width: 64rem)";
+
+/**
+ * The menu button and its panel, below 1024 px: a disclosure (not a WAI-ARIA menu: it holds links and a segmented
+ * control). The panel drops from under the bar, full width, over a dimmed page that doesn't scroll. Escape or a tap
+ * on the dimmed page closes it and returns focus to the button; following a link, a tap elsewhere on the bar, moving
+ * focus out of the bar or widening the window past 1024 px closes it too. Without JavaScript the footer has the
+ * same links and controls.
+ */
+function TopBarMenu({ label, nav, navLabel, content }: { label: string; nav: readonly TopBarLink[]; navLabel: string; content: ReactNode }) {
+  const current = useLinkCurrent();
+  const pathname = usePathname();
+  const id = useId();
+  const button = useRef<HTMLButtonElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
+  /** `closing` keeps the panel on screen while it animates out. */
+  const [phase, setPhase] = useState<"closed" | "open" | "closing">("closed");
+  const open = phase === "open";
+
+  // A new page closes the menu (links inside it, back and forward).
+  const [seenPath, setSeenPath] = useState(pathname);
+  if (seenPath !== pathname) {
+    setSeenPath(pathname);
+    setPhase("closed");
+  }
+
+  const close = (returnFocus = false) => {
+    setPhase((now) => (now === "open" ? "closing" : now));
+    if (returnFocus) button.current?.focus();
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    const root = document.documentElement;
+    root.classList.add("overflow-hidden");
+    const bar = button.current?.closest("header");
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      setPhase("closing");
+      button.current?.focus();
+    };
+    const onPointer = (event: PointerEvent) => {
+      const target = event.target as Node;
+      if (!panel.current?.contains(target) && !button.current?.contains(target)) setPhase("closing");
+    };
+    const onFocus = (event: FocusEvent) => {
+      if (!bar?.contains(event.target as Node)) setPhase("closing");
+    };
+    const wide = window.matchMedia(WIDE);
+    const onWide = () => wide.matches && setPhase("closed");
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onPointer);
+    document.addEventListener("focusin", onFocus);
+    wide.addEventListener("change", onWide);
+    return () => {
+      root.classList.remove("overflow-hidden");
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onPointer);
+      document.removeEventListener("focusin", onFocus);
+      wide.removeEventListener("change", onWide);
+    };
+  }, [open]);
+
+  // The exit animation ends the closing phase; the timer covers a browser that runs no animation.
+  useEffect(() => {
+    if (phase !== "closing") return;
+    const timer = window.setTimeout(() => setPhase("closed"), 400);
+    return () => window.clearTimeout(timer);
+  }, [phase]);
+
+  return (
+    <>
+      <button
+        ref={button}
+        type="button"
+        aria-label={label}
+        aria-expanded={open}
+        aria-controls={phase === "closed" ? undefined : id}
+        onClick={() => (open ? close() : setPhase("open"))}
+        className={iconButtonClass("plain", "-mr-2 lg:hidden")}
+      >
+        <Icon name={open ? "close" : "menu"} scale="l" />
+      </button>
+      {phase === "closed" ? null : (
+        <div className="absolute inset-x-0 top-full lg:hidden">
+          <div
+            ref={panel}
+            id={id}
+            onClick={(event) => {
+              if ((event.target as Element).closest("a")) close();
+            }}
+            onAnimationEnd={(event) => {
+              if (event.target === event.currentTarget && phase === "closing") setPhase("closed");
+            }}
+            className={cn(
+              "max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain border-t border-hairline bg-elevated-background px-4 pt-3 pb-5 shadow-bar sm:px-6",
+              open ? "motion-drop-in" : "motion-drop-out",
+            )}
+          >
+            <nav aria-label={navLabel}>
+              <ul className="flex flex-col gap-1">
+                {nav.map((link) => {
+                  const state = current(link.href);
+                  return (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        prefetch={false}
+                        aria-current={state}
+                        className={cn(MENU_ROW, state ? "bg-action-surface font-semibold text-primary-text" : "font-medium text-primary-text hover:bg-action-surface")}
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+            <div className="mt-3 border-t border-hairline pt-4">{content}</div>
+          </div>
+          {/* The dimmed page: from the panel's edge down, so the bar stays as it is. Not focusable; a tap closes. */}
+          <div
+            aria-hidden
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={() => close(true)}
+            className={cn("h-dvh bg-black/40", open ? "motion-dim-in" : "motion-dim-out")}
+          />
+        </div>
+      )}
+    </>
   );
 }

@@ -38,16 +38,30 @@ Every page's `<main id="main">` uses one of these. Market pages get theirs from 
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ ◆ invest.ao   (Mercado) Notícias Aprender          [ search ]   ◐ ⚙ (Entrar) │  64 px, sticky, z-30
 └──────────────────────────────────────────────────────────────────────────┘
+
+Public site below 1024 px, menu open:
+┌──────────────────────────────────┐
+│ ◆ invest.ao   (Iniciar sessão) ✕ │  the bar: one 64 px row
+├──────────────────────────────────┤  hairline
+│ (Mercado                       ) │  48 px font-display rows, current one on the grey pill
+│  Notícias                        │
+│  Aprender                        │
+│ ──────────────────────────────── │  hairline
+│ (Sistema|Claro|Escuro)      (EN) │  SiteControls
+└──────────────────────────────────┘
+░░░░░░░ page dimmed (black/40) ░░░░░░
 ```
 
 One bar for the site and the app: full width, 64 px, `sticky top-0 z-30`, `bg-elevated-background shadow-bar`. Logo, pill navigation (the current section is the grey `action-surface` pill with `aria-current`), then search and actions on the right.
 
 | Mode | Who | Below 1024 px | From 1024 px |
 |---|---|---|---|
-| `mobileNav="row"` | Public site (`SiteHeader` in `src/features/site/chrome.tsx`) | The pills take a horizontally scrollable row under the logo row | Pills beside the logo |
+| `mobileNav="menu"` | Public site (`SiteHeader` in `src/features/site/chrome.tsx`) | One row: logo, the sign-in pill and a menu button. The menu holds the sections, then `menu.content` (theme and language) | Pills beside the logo; `wideActions` before `actions`; no menu button |
 | `mobileNav="none"` | Signed-in app (`ShellTopBar` in `src/features/shell/shell-nav.tsx`) | No pills; the bottom tab bar has the tabs | Pills beside the logo; the search tab becomes the palette field |
 
-Site actions: language, `ThemeMenu`, the compact "Iniciar sessão" pill (links to `/entrar`). App actions: unusual activity and activity (plain icon links with `aria-current`, an unread dot), the profile initials. The wordmark hides below 400 px (the link keeps its name).
+Site actions: from 1024 px the language, `ThemeMenu` and the compact "Iniciar sessão" pill (links to `/entrar`); below 1024 px only the pill stays in the bar, and the theme (`ThemeSwitch`) and language sit in the menu as `SiteControls`. App actions: unusual activity and activity (plain icon links with `aria-current`, an unread dot), the profile initials. The wordmark shows from 360 px in the public bar and from 400 px in the app's (the link keeps its name).
+
+The menu is a disclosure, not a WAI-ARIA menu: a 48 px icon button (`menu`, `close` while open) with `aria-expanded` and `aria-controls`, then a panel that drops from under the bar (`motion-drop-in`, full width, the bar's gutters, scrolls on its own if the window is short) over the dimmed page (`motion-dim-in`). While it is open the page doesn't scroll. Escape or a tap on the dimmed page closes it and returns focus to the button; following a link, tapping elsewhere on the bar, tabbing out of the bar or widening the window past 1024 px closes it too. Without JavaScript the footer carries the same links and controls.
 
 ### Bottom tab bar (`ShellNav`)
 
@@ -243,7 +257,7 @@ Tables never scroll sideways in product pages; columns fold instead.
 
 ## Sticky rules
 
-- The top bar is the only sticky element on phones (with the fixed bottom tab bar in the app).
+- The top bar is the only sticky element on phones (with the fixed bottom tab bar in the app). The public bar's menu opens under it and locks the page's scroll while it is open.
 - Columns stick from 1024 px only: flush under the bar with `lg:top-16` (the instrument sidebar), or 16 px below it with `lg:top-20` (`SectionRail`).
 - A sticky column that can be taller than the window gets a window height and its own scroll: `lg:h-[calc(100dvh-4rem)] lg:overflow-y-auto lg:overscroll-contain`.
 - Sticky columns (`SectionRail`, the instrument sidebar) sit in their own grid track, so nothing scrolls under them and they need no background. Anything content scrolls under, like the top bar, is opaque.

@@ -24,13 +24,16 @@ export function PalancaMark({ className }: { className?: string }) {
   );
 }
 
+/** Where the wordmark appears: from 360 px in the public bar (logo, sign-in, menu), from 400 px in the app's fuller bar. */
+const WORDMARK_FROM = { 360: "min-[22.5rem]:inline", 400: "min-[25rem]:inline" } as const;
+
 /** Mark and wordmark for the top bar; the wordmark gives way on narrow phones (the link keeps its name). */
-export function BrandLockup() {
+export function BrandLockup({ wordmarkFrom = 400 }: { wordmarkFrom?: keyof typeof WORDMARK_FROM }) {
   const t = useTranslations();
   return (
     <>
       <PalancaMark className="size-8" />
-      <span className="hidden font-display text-[1.1875rem] font-semibold tracking-tight min-[25rem]:inline">{t("common.appName")}</span>
+      <span className={cn("hidden font-display text-[1.1875rem] font-semibold tracking-tight", WORDMARK_FROM[wordmarkFrom])}>{t("common.appName")}</span>
     </>
   );
 }
@@ -39,28 +42,47 @@ export function BrandLockup() {
 export const LANGUAGE_CONTROL =
   "inline-flex size-11 shrink-0 items-center justify-center rounded-full font-display text-secondary font-semibold text-secondary-text transition-colors hover:bg-action-surface hover:text-primary-text";
 
-/** Public top bar: sections as pills, then the language, the theme and sign-in. Visitors get no search (it needs the app's market store). */
+/** The theme and the language on one row: in the footer and in the public top bar's menu. */
+export function SiteControls({ theme, className }: { theme: Theme; className?: string }) {
+  return (
+    <div className={cn("flex items-center gap-2", className)}>
+      <div className="min-w-0 flex-1">
+        <ThemeSwitch initial={theme} />
+      </div>
+      <LanguageSwitch className={cn(LANGUAGE_CONTROL, "bg-action-surface")} />
+    </div>
+  );
+}
+
+/**
+ * Public top bar: sections as pills, then the language, the theme and sign-in. Below 1024 px the sections, the theme
+ * and the language move into the menu; sign-in stays in the bar. Visitors get no search (it needs the app's market
+ * store).
+ */
 export function SiteHeader({ theme }: { theme: Theme }) {
   const t = useTranslations();
   return (
     <TopBar
       home={{ href: "/", label: t("site.header.homeLabel") }}
-      logo={<BrandLockup />}
+      logo={<BrandLockup wordmarkFrom={360} />}
       navLabel={t("site.header.navLabel")}
-      mobileNav="row"
+      mobileNav="menu"
+      menu={{ label: t("site.header.menuLabel"), content: <SiteControls theme={theme} /> }}
       nav={[
         { href: INDEXABLE_PAGES.market, label: t("common.market") },
         { href: INDEXABLE_PAGES.news, label: t("common.news") },
         { href: INDEXABLE_PAGES.learn, label: t("learn.title") },
       ]}
-      actions={
+      wideActions={
         <>
           <LanguageSwitch className={LANGUAGE_CONTROL} />
           <ThemeMenu initial={theme} />
-          <ButtonLink href={SIGN_IN_PATH} prefetch={false} size="compact" className="ml-1">
-            {t("onboarding.navigation.signIn")}
-          </ButtonLink>
         </>
+      }
+      actions={
+        <ButtonLink href={SIGN_IN_PATH} prefetch={false} size="compact" className="ml-1">
+          {t("onboarding.navigation.signIn")}
+        </ButtonLink>
       }
     />
   );
@@ -112,12 +134,7 @@ export function SiteFooter({ theme, year }: { theme: Theme; year: string }) {
               <PalancaMark className="size-8" />
               <span className="font-display text-[1.1875rem] font-semibold tracking-tight">{t("common.appName")}</span>
             </Link>
-            <div className="flex w-full max-w-sm items-center gap-2">
-              <div className="min-w-0 flex-1">
-                <ThemeSwitch initial={theme} />
-              </div>
-              <LanguageSwitch className={cn(LANGUAGE_CONTROL, "bg-action-surface")} />
-            </div>
+            <SiteControls theme={theme} className="w-full max-w-sm" />
           </div>
           <nav aria-label={t("site.footer.label")} className="grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-3">
             {columns.map((column) => (

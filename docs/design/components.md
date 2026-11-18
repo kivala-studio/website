@@ -30,7 +30,7 @@ The web card surface: `border: 1px solid var(--card-border)`, `rounded-card` (22
 
 | Prop | Type | Default | |
 |---|---|---|---|
-| `name` | `IconName` | | One of the 56 icons in `ICON_PACK` |
+| `name` | `IconName` | | One of the 57 icons in `ICON_PACK` |
 | `scale` | `"s" \| "m" \| "l"` | `"m"` | 0.783 em, 1 em, 1.29 em: follows the surrounding font size |
 | `label` | `string` | | Accessible name; without it the icon is `aria-hidden` |
 | … | SVG attributes | | `className` sets colour (`text-accent`) and size (`text-[1.25rem]`) |
@@ -40,7 +40,7 @@ The web card surface: `border: 1px solid var(--card-border)`, `rounded-card` (22
 <Icon name="chart" label={t("unusualActivity.title")} />
 ```
 
-The pack is generated from `design/icon-pack/masters.json` by `npm run icons`; never edit `icon-pack.ts`. 24 × 24 grid, 2 px round strokes, `currentColor`. Icons are decorative by default: the control around them carries the name.
+The pack is generated from `design/icon-pack/masters.json` (the iOS masters plus the web-only `menu`) by `npm run icons`; never edit `icon-pack.ts`. 24 × 24 grid, 2 px round strokes, `currentColor`. Icons are decorative by default: the control around them carries the name.
 
 ## Layout and surfaces (`@/ui/components/layout`)
 
@@ -160,11 +160,13 @@ The one top bar. Use it through `SiteHeader` (`@/features/site/chrome`) or `Shel
 | `logo` | `ReactNode` | `<BrandLockup />` |
 | `nav` | `{ href: string; label: string }[]` | Pill links; the current one (path match) gets `aria-current` and the grey pill |
 | `navLabel` | `string` | The `<nav>` name |
-| `mobileNav` | `"row" \| "none"` | Below 1024 px: a scrolling row of pills, or nothing (the bottom tab bar has them) |
+| `mobileNav` | `"menu" \| "none"` | Below 1024 px: the links move into a menu behind a button at the end of the bar, or nothing (the bottom tab bar has them) |
+| `menu` | `{ label: string; content: ReactNode }` | With `"menu"` (required): the button's accessible name (`site.header.menuLabel`) and what follows the links in the menu, under a hairline (`<SiteControls />`) |
+| `wideActions` | `ReactNode` | With `"menu"`: actions shown only from 1024 px, before `actions` (the language, `ThemeMenu`); below that they belong in `menu.content` |
 | `search` | `ReactNode` | From 1024 px a 288–320 px slot |
-| `actions` | `ReactNode` | Icon buttons and one compact pill, right-aligned |
+| `actions` | `ReactNode` | Icon buttons and one compact pill, right-aligned, at every width |
 
-`TOP_BAR_PILL` is the pill link's class string. Actions are 44 px: `IconButton variant="plain"`, `iconButtonClass("plain")` on links, `LANGUAGE_CONTROL`, `ThemeMenu`, a `size="compact"` pill.
+`TOP_BAR_PILL` is the pill link's class string. Actions are 44 px: `IconButton variant="plain"`, `iconButtonClass("plain")` on links, `LANGUAGE_CONTROL`, `ThemeMenu`, a `size="compact"` pill. The menu button is `iconButtonClass("plain")` (48 px on phones).
 
 ### `ShellNav` (`@/features/shell/shell-nav`)
 
@@ -219,7 +221,7 @@ All three share one look: text tabs in the display face on a hairline, the curre
 
 ### Site chrome (`@/features/site/chrome`)
 
-`SiteHeader({ theme })`, `SiteFooter({ theme, year })` (`year`: the request's Luanda year from the layout; see [layout.md](layout.md#footer-sitefooter)), `BrandLockup()` (mark + wordmark, the wordmark hidden below 400 px), `PalancaMark({ className })` (the mark as a mask in `currentColor`), `LANGUAGE_CONTROL` (class string of the round language link).
+`SiteHeader({ theme })`, `SiteFooter({ theme, year })` (`year`: the request's Luanda year from the layout; see [layout.md](layout.md#footer-sitefooter)), `SiteControls({ theme, className? })` (`ThemeSwitch` and the language link on one row: the footer and the header's menu), `BrandLockup({ wordmarkFrom? })` (mark + wordmark; the wordmark shows from `400` px by default, from `360` in the public bar), `PalancaMark({ className })` (the mark as a mask in `currentColor`), `LANGUAGE_CONTROL` (class string of the round language link).
 
 ## Buttons and choices
 
