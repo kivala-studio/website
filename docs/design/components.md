@@ -523,10 +523,10 @@ Landing-only building blocks; reuse them for new marketing sections, not for app
 | Export | |
 |---|---|
 | `HOME_SECTION`, `HOME_HEADING` | Section spacing (`py-16 md:py-24`) and the large centred section title (40 px from 1024 px) |
-| `HERO_TITLE` | The hero `h1`: display face, fluid 36 → 68 px, −0.02em (−0.025em from 640 px), balanced |
+| `HERO_TITLE` | The hero `h1`: display face, balanced, −0.02em (−0.025em from 640 px). Phones: fluid 38 → 44 px (42 px at 390, two lines), leading 1.08; from 640 px fluid 47 → 68 px, leading 1.04 |
 | `CLOSING_TITLE` | The closing line's `h2`: the same face and tracking, fluid 34 → 56 px (between `HOME_HEADING` and `HERO_TITLE`) |
 | `HeroBackdrop` | `{ edge? }`: decorative accent glow (`hero-glow`) over a fine grid (`hero-grid`); first child of a `relative isolate overflow-hidden` block. `edge="bottom"` mirrors it so the light rises from the block's bottom edge (the landing's close, onto the footer hairline) |
-| `HeroFigures` | `{ items: { value; label }[], className? }`: a `<dl>` of counts (display face) beside their labels; only real catalogue counts |
+| `HeroFigures` | `{ total?, items: { value; label }[], className? }`: a `<dl>` of real catalogue counts (display face). Phones: `items` only, as an even row of equal columns between hairlines, each 22 px count above its caption label (11 px at 360 px and below); `total` is hidden. From 640 px: one inline strip, `total` first, each count beside its label |
 | `Showcase` | Centres the product under the hero (max 1024 px) on an accent halo (`showcase-halo`) behind and around it, in a translucent bezel from 640 px |
 | `MarketPreview` (`@/features/site/home-client`) | `{ tabs, label }`: one flush card with `SectionTabs` on top, a table of dated verified closes per kind and that kind's "Ver tudo" pill in the footer |
 | `Bento` | The "all in one" grid: a `<figure>` with a `<ul>` of `BentoCard`s (6 columns from 1024 px, 2 from 768 px, 1 on phones) and one "Exemplo ilustrativo" caption for the whole grid |

@@ -73,30 +73,32 @@ export default async function HomePage() {
 
       <div className="relative isolate overflow-hidden">
         <HeroBackdrop />
-        <section className={cn(PAGE_CONTAINER, "flex flex-col items-center gap-6 pt-10 pb-10 text-center sm:gap-8 md:pt-20 md:pb-14 lg:pt-24")}>
+        {/* Phones (below 640 px): three groups with room between them, one action (the top bar already signs in). */}
+        <section className={cn(PAGE_CONTAINER, "flex flex-col items-center gap-8 pt-12 pb-12 text-center sm:pt-10 sm:pb-10 md:pt-20 md:pb-14 lg:pt-24")}>
           <div className="flex max-w-4xl flex-col items-center gap-4 sm:gap-5">
             <h1 className={cn(HERO_TITLE, "motion-entrance-lift")}>{t("common.yourMarketUpClose")}</h1>
-            <p className="max-w-xl motion-entrance entrance-delay-70 text-body text-balance text-secondary-text sm:text-[1.1875rem] sm:leading-normal">{t("site.home.heroSubtitle")}</p>
+            <p className="max-w-xl motion-entrance entrance-delay-70 text-body text-balance text-secondary-text max-sm:max-w-80 max-sm:leading-[1.45] sm:text-[1.1875rem] sm:leading-normal">
+              {t("site.home.heroSubtitle")}
+            </p>
           </div>
-          <div className="flex w-full max-w-xl motion-entrance entrance-delay-140 flex-col items-center gap-4">
+          <div className="flex w-full max-w-xl motion-entrance entrance-delay-140 flex-col items-center gap-3 sm:gap-4">
             <HeroSearch
               action={getPathname({ locale, href: INDEXABLE_PAGES.market })}
               hidden={{ categoria: marketQueryParams({ ...MARKET_DEFAULT_QUERY, category: "all" }).categoria }}
             />
             <div className="flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row">
-              <ButtonLink href={SIGN_IN_PATH} prefetch={false} className="sm:w-auto! sm:min-w-48">
+              <ButtonLink href={SIGN_IN_PATH} prefetch={false} className="max-sm:hidden sm:w-auto! sm:min-w-48">
                 {signIn}
               </ButtonLink>
-              <StoreButton kind="secondary" className="sm:w-auto!" />
+              <StoreButton className="sm:hidden" />
+              <StoreButton kind="secondary" className="max-sm:hidden sm:w-auto!" />
             </div>
           </div>
           {market ? (
             <HeroFigures
-              className="motion-entrance entrance-delay-210"
-              items={[
-                { value: format.count(market.total), label: t("common.instruments") },
-                ...market.categories.map(({ category, count }) => ({ value: format.count(count), label: translate(MARKET_CATEGORY_LABEL_KEYS[category]) })),
-              ]}
+              className="motion-entrance entrance-delay-210 max-sm:mt-2"
+              total={{ value: format.count(market.total), label: t("common.instruments") }}
+              items={market.categories.map(({ category, count }) => ({ value: format.count(count), label: translate(MARKET_CATEGORY_LABEL_KEYS[category]) }))}
             />
           ) : null}
         </section>
