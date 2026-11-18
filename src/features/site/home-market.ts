@@ -15,8 +15,8 @@ export type PreviewRow = { row: CatalogueRow; name?: string };
 export type HomeMarket = {
   /** Visible instruments across every kind. */
   total: number;
-  /** Kinds with at least one visible instrument, each with its first rows. */
-  categories: { category: HomeCategory; rows: PreviewRow[] }[];
+  /** Kinds with at least one visible instrument, each with its visible count and first rows. */
+  categories: { category: HomeCategory; count: number; rows: PreviewRow[] }[];
 };
 
 /**
@@ -37,7 +37,7 @@ export async function homeMarket(now: number): Promise<HomeMarket | null> {
       name: securityDisplayName(security),
     }));
     const preview = [...visible.filter(({ row }) => row.close), ...visible.filter(({ row }) => !row.close)].slice(0, PREVIEW_ROWS);
-    return { category, rows: preview };
+    return { category, count: visible.length, rows: preview };
   }).filter(({ rows: preview }) => preview.length > 0);
   return { total: applyDiscoveryQuery(securities, { category: "all" }, now).length, categories };
 }

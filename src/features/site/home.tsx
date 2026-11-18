@@ -5,11 +5,11 @@ import { cn } from "@/ui/cn";
 import { PAGE_CONTAINER } from "@/ui/components/layout";
 import { Icon, type IconName } from "@/ui/icons/icon";
 
-import { PalancaMark } from "./chrome";
+import { IllustrativeCaption } from "./visuals";
 
 /*
- * Landing page building blocks (the CoinStats landing structure): a centred hero on faint rings, entry tiles,
- * centred section headings, alternating feature rows and a closing band. Server components only.
+ * Landing page building blocks: a centred hero on a glow and grid with its coverage figures and the market showcase,
+ * centred section headings, the bento, alternating feature rows and a closing band. Server components only.
  */
 
 /** Section spacing on the canvas. */
@@ -18,110 +18,141 @@ export const HOME_SECTION = cn(PAGE_CONTAINER, "py-16 md:py-24");
 /** Large section heading in the display face (CoinStats' 40 px section titles on desk). */
 export const HOME_HEADING = "text-display text-primary-text text-balance lg:text-[2.5rem] lg:leading-[1.15] lg:tracking-[-0.02em]";
 
-/** Faint concentric rings and a soft accent glow behind the hero. Decorative. */
-export function HeroRings() {
+/** The hero title: fluid from 36 px on phones to 68 px on wide screens, tracking −0.02em (−0.025em from 640 px). */
+export const HERO_TITLE =
+  "font-display text-[clamp(2.25rem,1.2rem+4.4vw,4.25rem)] leading-[1.04] font-semibold tracking-[-0.02em] sm:tracking-[-0.025em] text-balance text-primary-text";
+
+/** The closing line: display face, fluid from 34 px on phones to 56 px, between `HOME_HEADING` and `HERO_TITLE`. */
+export const CLOSING_TITLE =
+  "font-display text-[clamp(2.125rem,1.4rem+2.8vw,3.5rem)] leading-[1.06] font-semibold tracking-[-0.02em] sm:tracking-[-0.025em] text-balance text-primary-text";
+
+/**
+ * The hero backdrop: an accent glow from the top over a fine grid that fades out towards the edges; `edge="bottom"`
+ * mirrors it so the light rises from the block's bottom edge (the page's close, onto the footer's hairline).
+ * Decorative; place it first inside a `relative isolate overflow-hidden` block.
+ */
+export function HeroBackdrop({ edge = "top" }: { edge?: "top" | "bottom" }) {
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 flex justify-center overflow-hidden [mask-image:linear-gradient(to_bottom,black_55%,transparent)]">
-      <div className="relative aspect-square w-[64rem] max-w-none shrink-0 -translate-y-[18%]">
-        <div className="absolute inset-[22%] rounded-full bg-[radial-gradient(closest-side,var(--accent-soft),transparent)] opacity-80" />
-        <svg viewBox="0 0 200 200" className="absolute inset-0 size-full fill-none stroke-hairline" focusable="false">
-          <circle cx="100" cy="100" r="44" strokeWidth="0.25" />
-          <circle cx="100" cy="100" r="62" strokeWidth="0.25" strokeDasharray="0.6 1.4" />
-          <circle cx="100" cy="100" r="80" strokeWidth="0.25" />
-          <circle cx="100" cy="100" r="98" strokeWidth="0.25" strokeDasharray="0.6 1.4" />
-        </svg>
+    <div aria-hidden className={cn("pointer-events-none absolute inset-0 -z-10", edge === "bottom" && "-scale-y-100")}>
+      <div className="hero-grid absolute inset-0" />
+      <div className="hero-glow absolute inset-x-0 top-0 h-[26rem] sm:h-[40rem]" />
+    </div>
+  );
+}
+
+/** Coverage figures under the hero actions: each count in the display face beside its label. */
+export function HeroFigures({ items, className }: { items: { value: string; label: string }[]; className?: string }) {
+  return (
+    <dl className={cn("flex flex-wrap items-baseline justify-center gap-x-4 gap-y-1.5 sm:gap-x-8", className)}>
+      {items.map((item) => (
+        <div key={item.label} className="flex flex-row-reverse items-baseline gap-1.5">
+          <dt className="text-caption text-secondary-text sm:text-secondary">{item.label}</dt>
+          <dd className="font-display text-secondary font-semibold text-primary-text sm:text-body">{item.value}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+/**
+ * The product showcase under the hero: a translucent bezel around the product (from 640 px), on an accent halo. The halo is
+ * decorative; the content is the product.
+ */
+export function Showcase({ children }: { children: ReactNode }) {
+  return (
+    <div className="relative mx-auto w-full max-w-5xl">
+      <div
+        aria-hidden
+        className="showcase-halo pointer-events-none absolute -inset-x-[15%] -top-32 -z-10 h-[34rem] sm:-inset-x-[18%]"
+      />
+      <div className="sm:rounded-[calc(var(--radius-card)+0.5rem)] sm:border sm:border-card-border sm:bg-[color-mix(in_srgb,var(--card-background)_45%,transparent)] sm:p-2 sm:backdrop-blur-md">
+        {children}
       </div>
     </div>
   );
 }
 
-/** A square entry tile: icon on a soft accent disc, the label and a "Ver tudo →" cue. The whole tile is the link; size it with `ENTRY_TILE_ITEM`. */
-export function EntryTile({ href, icon, title, cue }: { href: { pathname: string; query: Record<string, string> }; icon: IconName; title: string; cue: string }) {
+/**
+ * The "all in one" bento: product areas the feature rows do not cover, one card each, under one "Exemplo ilustrativo"
+ * caption. Six columns from 1024 px, two from 768 px, one on phones.
+ */
+export function Bento({ children }: { children: ReactNode }) {
   return (
-    <Link
-      href={href}
-      prefetch={false}
-      className="panel motion-press flex min-h-32 w-full flex-col items-center justify-center gap-2 p-3 sm:aspect-square text-center transition-colors hover:border-field-border focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-    >
-      <span className="mb-1 flex size-14 items-center justify-center rounded-full bg-accent-soft text-[1.625rem] text-accent">
-        <Icon name={icon} />
-      </span>
-      <span className="font-display text-secondary font-medium text-primary-text">{title}</span>
-      <span className="inline-flex items-center gap-1 font-display text-caption font-semibold text-primary-text">
-        {cue}
-        <Icon name="arrow-right" scale="s" />
-      </span>
-    </Link>
+    <figure className="flex flex-col items-center gap-3">
+      <ul className="grid w-full grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2 lg:grid-cols-6 lg:gap-5">{children}</ul>
+      <IllustrativeCaption />
+    </figure>
   );
 }
 
-/** The list item around an entry tile: two per row on phones, a fixed square from 640 px. */
-export const ENTRY_TILE_ITEM = "w-[calc(50%-0.375rem)] sm:w-34 lg:w-36";
-
-/** One fact in the "all in one" list: icon disc, bold title, one short line. */
-export function FactItem({ icon, title, children }: { icon: IconName; title: string; children: ReactNode }) {
+/**
+ * One bento card, a whole-card link: the title, then the miniature in a frame that bleeds off the bottom edge (and the
+ * right one with `bleed="corner"`) under a fade. `wide` spans four of six columns (the whole row at 768 px); `wash` adds
+ * the soft accent light. The miniature is decorative: the link's name is the title. A scroll-reveal target.
+ */
+export function BentoCard({
+  href,
+  title,
+  wide = false,
+  wash = false,
+  bleed = "bottom",
+  children,
+}: {
+  href: string;
+  title: string;
+  wide?: boolean;
+  wash?: boolean;
+  bleed?: "bottom" | "corner";
+  children: ReactNode;
+}) {
   return (
-    <li className="flex flex-col gap-2">
-      <h3 className="flex items-center gap-3 font-display text-section text-primary-text">
-        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
-          <Icon name={icon} />
-        </span>
-        {title}
-      </h3>
-      <p className="max-w-sm text-body text-secondary-text">{children}</p>
+    <li data-reveal className={cn("flex min-w-0", wide ? "md:col-span-2 lg:col-span-4" : "lg:col-span-2")}>
+      <Link
+        href={href}
+        prefetch={false}
+        className="group motion-press flex w-full rounded-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      >
+        <div className="panel relative isolate flex w-full flex-col overflow-hidden transition-[border-color,translate] duration-200 ease-out group-hover:border-field-border motion-safe:group-hover:-translate-y-0.5 motion-reduce:transition-none">
+          {wash ? <div aria-hidden className="bento-wash absolute inset-0 -z-10" /> : null}
+          <h3 className="flex items-center justify-between gap-3 px-5 pt-5 font-display text-section text-primary-text desk:px-6 desk:pt-6">
+            {title}
+            <Icon name="chevron-right" className="shrink-0 text-[1.125rem] text-tertiary-text transition-[translate,color] duration-200 group-hover:text-primary-text motion-safe:group-hover:translate-x-0.5" />
+          </h3>
+          <div
+            aria-hidden
+            className={cn(
+              "mt-5 h-56 overflow-hidden select-none mask-b-from-70%",
+              bleed === "corner" ? "ml-5 desk:ml-6" : "mx-5 desk:mx-6",
+            )}
+          >
+            <div
+              className={cn(
+                "flex h-full flex-col rounded-t-[1.125rem] border border-b-0 border-card-border bg-app-background p-2.5 *:grow",
+                bleed === "corner" && "rounded-tr-none border-r-0 pr-0 *:rounded-r-none *:border-r-0",
+              )}
+            >
+              {children}
+            </div>
+          </div>
+        </div>
+      </Link>
     </li>
   );
 }
 
-const NODES: { icon: IconName; position: string }[] = [
-  { icon: "trend-up", position: "left-[6%] top-[12%]" },
-  { icon: "bond", position: "left-[6%] bottom-[12%]" },
-  { icon: "dividend", position: "right-[6%] top-[12%]" },
-  { icon: "shield-check", position: "right-[6%] bottom-[12%]" },
-];
-
 /**
- * The "all in one" diagram: the four kinds of instrument wired into one portfolio ring with the palanca at its centre.
- * Decorative; the list beside it says the same in words.
+ * The feature rows' column: one gap between rows, and the same space against the bento above and Plus below
+ * (4rem on phones, 6rem from 768 px).
  */
-export function HubDiagram({ className }: { className?: string }) {
-  return (
-    <div aria-hidden className={cn("@container relative mx-auto aspect-[4/3] w-full max-w-[32rem]", className)}>
-      <svg viewBox="0 0 400 300" className="absolute inset-0 size-full fill-none stroke-hairline" focusable="false">
-        {/* Circuit lines from each node to the ring. */}
-        <path d="M58 64 H120 Q140 64 140 84 V120 Q140 140 160 140" strokeWidth="2" />
-        <path d="M58 236 H120 Q140 236 140 216 V180 Q140 160 160 160" strokeWidth="2" />
-        <path d="M342 64 H280 Q260 64 260 84 V120 Q260 140 240 140" strokeWidth="2" />
-        <path d="M342 236 H280 Q260 236 260 216 V180 Q260 160 240 160" strokeWidth="2" />
-        {/* Allocation ring: four arcs. */}
-        <g transform="rotate(-90 200 150)" strokeWidth="18">
-          <circle cx="200" cy="150" r="52" className="stroke-accent" strokeDasharray="130 197" />
-          <circle cx="200" cy="150" r="52" className="stroke-accent/55" strokeDasharray="0 132 82 113" />
-          <circle cx="200" cy="150" r="52" className="stroke-accent/30" strokeDasharray="0 216 56 55" />
-          <circle cx="200" cy="150" r="52" className="stroke-accent-soft" strokeDasharray="0 274 51 2" />
-        </g>
-      </svg>
-      <span className="absolute top-1/2 left-1/2 flex size-[16%] -translate-x-1/2 -translate-y-1/2 items-center justify-center text-primary-text">
-        <PalancaMark className="size-full" />
-      </span>
-      {NODES.map((node) => (
-        <span
-          key={node.icon}
-          className={cn(
-            "panel absolute flex size-[14%] items-center justify-center rounded-[28%] text-[7cqw] text-accent",
-            node.position,
-          )}
-        >
-          <Icon name={node.icon} />
-        </span>
-      ))}
-    </div>
-  );
+export function FeatureRows({ children }: { children: ReactNode }) {
+  return <div className={cn(PAGE_CONTAINER, "flex flex-col gap-16 pt-8 md:gap-24 md:pt-14")}>{children}</div>;
 }
 
 /**
- * A feature row: the product visual (a piece of the web product on a soft stage) on one side; icon, heading, message and a pill on the other.
- * `flip` puts the visual on the right from 768 px.
+ * A feature row: the icon in an accent squircle, the heading, the message and a pill, then the product visual (a piece
+ * of the web product on a tinted stage). Stacked, text first, below 1024 px; from there two columns, the visual taking
+ * 7 of 12, on the left unless `flip`, its floating card leaning towards the text. A scroll-reveal group: the text eases
+ * in, then the visual.
  */
 export function FeatureRow({
   id,
@@ -141,16 +172,26 @@ export function FeatureRow({
   flip?: boolean;
 }) {
   return (
-    <section aria-labelledby={id} className={cn(PAGE_CONTAINER, "grid items-center gap-8 py-12 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-16 md:py-16")}>
-      <div className={cn("flex min-w-0 justify-center", flip && "md:order-2")}>{visual}</div>
-      <div className="flex max-w-md flex-col items-start gap-4">
-        <Icon name={icon} className="text-[2rem] text-accent" />
-        <h2 id={id} className={HOME_HEADING}>
+    <section
+      aria-labelledby={id}
+      data-flip={flip || undefined}
+      data-reveal="stagger"
+      className={cn(
+        "group/feature grid items-center gap-10 lg:gap-16",
+        flip ? "lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]" : "lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]",
+      )}
+    >
+      <div className={cn("flex min-w-0 flex-col items-start", !flip && "lg:order-last")}>
+        <span className="mb-6 flex size-12 items-center justify-center rounded-medium bg-accent-soft text-accent">
+          <Icon name={icon} className="text-[1.5rem]" />
+        </span>
+        <h2 id={id} className={cn(HOME_HEADING, "max-w-lg")}>
           {title}
         </h2>
-        <p className="text-body text-secondary-text">{message}</p>
-        <div className="mt-2 w-full sm:w-auto">{action}</div>
+        <p className="mt-4 max-w-md text-body text-secondary-text lg:text-[1.125rem] lg:leading-normal">{message}</p>
+        <div className="mt-8 w-full sm:w-auto">{action}</div>
       </div>
+      <div className="flex min-w-0 justify-center">{visual}</div>
     </section>
   );
 }

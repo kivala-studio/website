@@ -64,3 +64,85 @@
   .motion-press:active:not(:disabled) { transform: none; }
   .motion-pulse, .motion-shimmer { animation: none; }
 }
+
+/*
+ * Landing motion: the hero's entrance on load and the scroll reveal below it. One calm ease-out curve for both.
+ * Everything ends on the element's natural state (`backwards` fill, no lasting animated values).
+ */
+@theme {
+  --ease-reveal: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes entrance-rise {
+  from { opacity: 0; transform: translateY(0.75rem); }
+}
+@keyframes entrance-lift {
+  from { transform: translateY(0.5rem); }
+}
+/* A wipe from the left rather than a dash offset: the charts' strokes are non-scaling, which dash lengths ignore. */
+@keyframes line-draw {
+  from { clip-path: inset(-25% 100% -25% -25%); }
+  to { clip-path: inset(-25% -25% -25% -25%); }
+}
+
+/* A hero part fading and rising in once on load; `entrance-delay-<ms>` stages the parts. */
+@utility motion-entrance {
+  animation: entrance-rise 0.55s var(--ease-reveal) backwards;
+  animation-delay: var(--entrance-delay, 0ms);
+}
+/* The hero title: a rise with no fade and no delay, so the largest paint is the first one. */
+@utility motion-entrance-lift {
+  animation: entrance-lift 0.5s var(--ease-reveal) backwards;
+}
+@utility entrance-delay-* {
+  --entrance-delay: calc(--value(integer) * 1ms);
+}
+
+/*
+ * Scroll reveal (`Reveal`, `src/features/site/reveal.tsx`). The markup only marks targets: `data-reveal` eases the
+ * element in, `data-reveal="stagger"` eases its children in one after another. The start state exists only on a
+ * screen that allows motion, and only once the script has set `data-reveal-state="pending"` on a target that was
+ * still below the fold; without the script, before it runs, in print and with reduced motion, nothing is hidden.
+ * A focused target shows at once. Inside a target, `reveal-line` draws a chart line from the left and
+ * `reveal-after` fades in once the line is drawn.
+ */
+@media screen and (prefers-reduced-motion: no-preference) {
+  [data-reveal-state="pending"]:not([data-reveal="stagger"], :focus-within),
+  [data-reveal="stagger"][data-reveal-state="pending"]:not(:focus-within) > * {
+    opacity: 0;
+    transform: translateY(0.875rem);
+  }
+  [data-reveal-state="shown"]:not([data-reveal="stagger"]),
+  [data-reveal="stagger"][data-reveal-state="shown"] > * {
+    --reveal-delay: calc(var(--reveal-step, 0ms) + var(--reveal-order, 0ms));
+    transition:
+      opacity 0.55s var(--ease-reveal) var(--reveal-delay),
+      transform 0.55s var(--ease-reveal) var(--reveal-delay);
+  }
+  /* Targets that enter together (bento cards on one row) follow each other by 60 ms… */
+  [data-reveal-step="1"] { --reveal-step: 60ms; }
+  [data-reveal-step="2"] { --reveal-step: 120ms; }
+  [data-reveal-step="3"] { --reveal-step: 180ms; }
+  [data-reveal-step="4"] { --reveal-step: 240ms; }
+  [data-reveal-step="5"] { --reveal-step: 300ms; }
+  /* …and a group's children by 100 ms. */
+  [data-reveal="stagger"] > :nth-child(2) { --reveal-order: 100ms; }
+  [data-reveal="stagger"] > :nth-child(3) { --reveal-order: 200ms; }
+
+  [data-reveal-state="pending"]:not(:focus-within) .reveal-line {
+    clip-path: inset(-25% 100% -25% -25%);
+  }
+  [data-reveal-state="pending"]:not(:focus-within) .reveal-after {
+    opacity: 0;
+  }
+  [data-reveal-state="shown"] .reveal-line {
+    animation: line-draw 1s var(--ease-reveal) 0.35s backwards;
+  }
+  [data-reveal-state="shown"] .reveal-after {
+    animation: fade-in 0.4s ease-out 1.05s backwards;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-entrance, .motion-entrance-lift { animation: none; }
+}

@@ -32,7 +32,7 @@ Transcribed from iOS `SemanticColors.swift`; `src/ui/theme/tokens.test.ts` keeps
 | `selected-tab-background` | `#e2eafa` | `#303238` | | iOS selected tab fill (gallery only today) |
 | `widget-background` | `#f2f3f5` | `#090b0f` | | iOS widget background (gallery only today) |
 | `action-surface` | `#e5e9ef` | `#171e2b` | | Secondary pill, filled icon button, the current top-bar pill, hover fill of plain controls, skeletons |
-| `accent-soft` | `#e2eafa` | `#192d4b` | | Selected chip, icon discs, the profile initials, the landing glow |
+| `accent-soft` | `#e2eafa` | `#192d4b` | | Selected chip, icon discs, the profile initials, the landing glow, the feature rows' icon squircles and stage tint |
 | `comparison-orange` | `#a34e00` | `#ff9400` | | The movements category tint in the activity centre |
 | `comparison-purple` | `#7935b5` | `#ad52e0` | | The portfolio category tint in the activity centre |
 
@@ -58,6 +58,7 @@ No iOS counterpart. They draw the web card system.
 | `--raised-shadow` | `shadow-raised` | `0 1px 2px rgb(24 34 49 / 0.1), 0 1px 1px rgb(24 34 49 / 0.04)` | `none` | | With `bg-raised` |
 | `--bar-shadow` | `shadow-bar` | `0 1px 0 rgb(24 34 49 / 0.08)` | `0 1px 0 #232933` | | The top bar's bottom edge |
 | `--focus-glow` | `shadow-focus` | `0 0 0 3px` accent at 18 % | accent at 30 % | accent at 45 % | A focused text field |
+| `--hero-glow` | `hero-glow`, `showcase-halo`, `bento-wash`, `feature-stage` | accent at 11 % | accent at 22 % | | Peak of the landing's accent light. The utilities (`globals.css`; `bento-wash` lights the largest bento card and the Plus panel from the top right; `feature-stage` is the feature visuals' stage: `accent-soft` at 38 % over the canvas, the light from the top and a fine grid fading out before its lower half) are radial gradients with eased stops that end transparent inside their box; `hero-grid` is the fine grid that fades out before the edges; `HeroBackdrop edge="bottom"` mirrors glow and grid for the landing's close |
 
 ### Gain and loss
 
@@ -92,7 +93,7 @@ Each role is one utility that sets size, line height and, where listed, weight a
 | `text-caption` | 12 px | 12 px | 400 | 1.33 | Labels, dates under prices, footnotes |
 | `text-micro` | 11 px | 11 px | 400 | 1.2, 0.06em | Tab-bar labels, uppercase captions (`uppercase`) |
 
-Pages that need a larger marketing size use arbitrary values on top of a role: the landing hero (`lg:text-[3rem]`) and `HOME_HEADING` (`lg:text-[2.5rem]`). The lead figure of a card or a sidebar uses 26–28 px (`text-[1.625rem]`, `text-[1.75rem]`); see Known gaps in [layout.md](layout.md#known-gaps).
+Pages that need a larger marketing size use arbitrary values on top of a role: the landing hero (`HERO_TITLE`, fluid `clamp(2.25rem, 1.2rem + 4.4vw, 4.25rem)`, −0.02em, −0.025em from 640 px), the closing line (`CLOSING_TITLE`, fluid `clamp(2.125rem, 1.4rem + 2.8vw, 3.5rem)`, same tracking) and `HOME_HEADING` (`lg:text-[2.5rem]`). The lead figure of a card or a sidebar uses 26–28 px (`text-[1.625rem]`, `text-[1.75rem]`); see Known gaps in [layout.md](layout.md#known-gaps).
 
 Weights in use: 400 (text), 500 (`font-medium`: desk pills, idle tabs, table names), 600 (`font-semibold`: values, titles, current tab), 700 (`font-bold`: monograms, uppercase eyebrows).
 
@@ -140,6 +141,9 @@ Tailwind's 4 px step (`1` = 4 px … `10` = 40 px, iOS `space4`…`space40`). St
 | Table first and last cell | 16 px | 24 px (`desk:`) |
 | Dialog | header `pt-4 pr-3 pl-5`, body `px-5 py-4` | header `desk:pt-5 desk:pr-4 desk:pl-6`, body `desk:px-6 desk:pb-6` |
 | Landing sections (`HOME_SECTION`) | `py-16` | `md:py-24` |
+| Landing feature rows (`FeatureRows`) | `gap-16 pt-8` (64 px between rows and from the bento) | `md:gap-24 md:pt-14` (96 px) |
+| Landing close (Plus, the closing line, the footer) | `HOME_SECTION` for Plus, then `pb-16` under the closing pills | `md:pb-24`: 96 px from Plus to the closing line and from the pills to the footer hairline |
+| Footer (`SiteFooter`) | `pt-8 pb-8`, `gap-8`; no top margin (the page's bottom padding is the gap) | `md:pt-12 md:pb-10`, `md:gap-10` |
 
 ## Motion
 
@@ -153,8 +157,13 @@ Utilities in `src/ui/theme/motion.css`. Every one has a `prefers-reduced-motion`
 | `motion-press` | On `:active`: opacity 0.76, scale 0.98, 160 ms | opacity only | Pills, icon buttons, chips, tiles |
 | `motion-pulse` | Opacity 0.9 ↔ 0.5, 0.9 s | none | `Skeleton` |
 | `motion-shimmer` | A light band across, 1.6 s | none | `ChartShimmer` |
+| `motion-entrance` | Once on load: fade in and rise 0.75rem, 550 ms `ease-reveal`, after `entrance-delay-<ms>` (`backwards` fill: nothing stays applied) | none | The landing hero's subtitle, search and pills, figures and showcase (70, 140, 210, 280 ms) |
+| `motion-entrance-lift` | Once on load: rise 0.5rem with no fade and no delay, 500 ms | none | The landing `h1` (no fade, so the largest paint is the first) |
+| Scroll reveal (`data-reveal`) | Once as it enters the viewport: fade in and rise 0.875rem, 550 ms `ease-reveal`; targets entering together 60 ms apart, a `data-reveal="stagger"` group's children 100 ms apart; `reveal-line` wipes a chart line in from the left, `reveal-after` fades the area and dot in after it | nothing hidden, no movement | Landing sections below the hero (`Reveal`, see [components.md](components.md#landing-pieces-featuressitehome-featuressitevisuals)) |
 
-Colour and border changes use `transition-colors` or `transition-[border-color,box-shadow]` with `motion-reduce:transition-none`. Spinners use `animate-spin motion-reduce:animate-none`.
+`--ease-reveal` (`cubic-bezier(0.22, 1, 0.36, 1)`, `ease-reveal` in Tailwind) is the calm ease-out for entrances. The reveal's start state exists only on a screen that allows motion, after the `Reveal` script has marked a target still below the fold (`data-reveal-state="pending"`); without JavaScript, before hydration, in print, with reduced motion and for a focused target, every section is simply there. Motion moves `transform` and `opacity` only, so it never shifts layout.
+
+Hover feedback lives behind Tailwind's `hover:` (pointer devices only): a lift of 2–4 px with `motion-safe:`, or a border or fill change. Colour and border changes use `transition-colors` or `transition-[border-color,box-shadow]` with `motion-reduce:transition-none`. Spinners use `animate-spin motion-reduce:animate-none`.
 
 ## Dark mode and increased contrast
 

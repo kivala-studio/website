@@ -59,14 +59,16 @@ Every data block has all four.
 
 ## Illustrative visuals
 
-The landing's product visuals (`InstrumentVisual`, `WatchlistVisual`, `PortfolioVisual`):
+The landing's product visuals (`InstrumentVisual`, `WatchlistVisual`, `PortfolioVisual`, `PlusVisual`) and the bento miniatures (`SimulatorMiniature` and the others in `BentoCard`):
 
-- One accessible name per figure (`role="img"` + `aria-label` from the catalogue); everything inside is `aria-hidden`, not selectable and has no controls.
-- Captioned "Exemplo ilustrativo" under the stage.
-- Sample values only: the iOS onboarding's sample instrument and round invented figures. Never market data, never a live or current price.
-- Built from the real primitives (`StatTile`, `ChangeBadge`, `SecurityLogo`, the segmented track) so they match the product.
+- One accessible name per figure (`role="img"` + `aria-label` from the catalogue) or per bento card (its title, the link's name); everything inside is `aria-hidden`, not selectable and has no controls, and no motion beyond the landing's one-time scroll reveal (the chart line wipes in, then its area and dot fade in): the feature visuals switch off `ChangeBadge`'s value roll (`[&_.motion-value]:animate-none`), since sample values never change and a badge hidden on narrow screens would replay it when shown again.
+- Captioned "Exemplo ilustrativo" (`IllustrativeCaption`): under each visual's stage, and once under the whole bento grid, never per card.
+- Sample values only: the iOS onboarding's sample instruments (BAI, BFA) and round invented figures; sample text is catalogue wording with sample arguments. Never market data, never a live or current price.
+- Built from the real primitives (`StatTile`, `ChangeBadge`, `SecurityLogo`, chips, the segmented track) so they match the product.
+- Composed, not pasted: on the feature rows the main card fills the stage and the floating card overlaps it without covering text (it sits over a chart's faded area or the main card's padding), so no strip of the stage is left empty and nothing is cut mid-content.
+- No inline `style` attributes (the page is checked for them): a dot placed on a chart takes static position classes (`left-full top-[18.333%]`).
 
-Decorative backgrounds and diagrams (`HeroRings`, `HubDiagram`) are `aria-hidden`; the text beside them says the same thing.
+Decorative backgrounds (`HeroBackdrop` at either edge, the `Showcase` halo, `bento-wash` in the largest bento card and the Plus panel) are `aria-hidden`; the `feature-stage` light and grid are backgrounds of the figure itself.
 
 ## Icons
 
@@ -80,7 +82,7 @@ Decorative backgrounds and diagrams (`HeroRings`, `HubDiagram`) are `aria-hidden
 
 - A card that previews a longer list puts `SeeAll` in its header `action`: the outline compact pill "Ver tudo", linking to the full list.
 - One per card. Other header actions use the same outline compact pill (`ButtonLink kind="outline" size="compact"`).
-- Under a preview table on the landing, the link is a centred outline pill under the card.
+- Under a preview table on the landing, the link is a centred outline pill in the card's footer.
 
 ## Page-level actions
 

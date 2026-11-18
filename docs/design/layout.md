@@ -7,9 +7,9 @@ Tailwind's defaults plus one custom variant (`src/app/globals.css`):
 | Prefix | From | Used for |
 |---|---|---|
 | `max-[20rem]:` … `min-[26rem]:` | 320–416 px | Narrow-phone fixes: hide a logo, a wordmark or a column (see [Tables on phones](#tables-on-phones)) |
-| `sm:` | 640 px | 24 px gutters, wider table columns, two entry tiles per row become fixed squares |
-| `md:` | 768 px | Two-column landing rows, two summary cards per row, the side sheet, every table header sorts |
-| `lg:` | 1024 px | **Page layout**: top-bar navigation, no bottom tab bar, sidebars, rails, sticky columns, `Panel` becomes a card |
+| `sm:` | 640 px | 24 px gutters, wider table columns, the landing showcase gets its bezel |
+| `md:` | 768 px | Two summary cards per row, the side sheet, every table header sorts |
+| `lg:` | 1024 px | **Page layout**: top-bar navigation, no bottom tab bar, sidebars, rails, sticky columns, `Panel` becomes a card, two-column landing feature rows |
 | `xl:` | 1280 px | Three summary cards on `/mercado`, two card columns on the portfolio dashboard, the widest table columns |
 | `desk:` | 1024 px **and** `pointer: fine` | **Web scale**: type, radii, pill and field heights, card padding |
 
@@ -55,7 +55,17 @@ Signed-in app only, below 1024 px: `fixed inset-x-0 bottom-0 z-20`, five tabs in
 
 ### Footer (`SiteFooter`)
 
-Public pages only (the app has none): a hairline, the logo and three link columns (two per row on phones, `2fr + 3 × 1fr` from 768 px), the standing disclaimers as captions, then `ThemeSwitch` and the language link.
+```
+──────────────────────────────────────────────────────────────── hairline
+◆ invest.ao                       Produto      Conta        Legal       one 44 px row (36 on desk)
+(Sistema|Claro|Escuro) (EN)       Mercado      Iniciar …    Política …
+                                  …            …            …
+──────────────────────────────────────────────────────────────── hairline
+disclaimers (captions, tertiary, ≤ 672 px)
+© 2026 invest.ao
+```
+
+Public pages only (the app has none). `SiteFooter({ theme, year })`: under a hairline, the brand block (the home link, then `ThemeSwitch` and the language link on one row) and the `nav` of three link columns; the logo row and the column headings share one height, so the columns start on the logo's line. From 1024 px the brand block takes 2 of 5 columns beside the links; at 768 px the logo and the controls share a row above three link columns; on phones everything stacks, the links in two columns. Then, under a second hairline, the standing disclaimers in `tertiary-text` captions and "© year invest.ao" (`common.appName`; `year` is the request's Luanda year, `civilDate(requestTime())`, passed by the layouts). The footer has no top margin of its own: the page's bottom padding is the gap above it.
 
 ## Page templates
 
@@ -64,28 +74,51 @@ Pick the template, then read the file it names.
 ### 1. Marketing landing — `src/app/[locale]/(site)/page.tsx`, `src/features/site/home.tsx`
 
 ```
-            ◌ rings ◌
-      Title (centred, display → 48 px)
-          one line of subtitle
-   [tile] [tile] [tile] [tile]          entry tiles: panel squares
+  ░ glow + fine grid ░                  HeroBackdrop, behind the hero and the showcase
+      Title (centred, 36 → 68 px)       HERO_TITLE, fluid
+          subtitle (≤ 576 px)
         [ search ············ ]
      (Entrar)  (Descarregar)
-─────────────────────────────────────
- tabs ▔▔▔                               MarketPreview: SectionTabs + flush table card
- ┌ table card ────────────────────┐
- └────────────────────────────────┘
-            (Ver tudo)
-─────────────────────────────────────
+  164 Instrumentos · 8 Ações · …        HeroFigures: catalogue counts, absent without a catalogue
+   ░ halo ░
+ ╭ bezel ─────────────────────────╮     Showcase (max 1024 px; bezel from 640 px)
+ │┌ panel ───────────────────────┐│     MarketPreview: one flush card
+ ││ Ações Obrigações … ▔▔▔        ││       SectionTabs on top
+ ││ table                        ││       table of dated verified closes
+ ││          (Ver tudo)          ││       the kind's outline pill in the footer
+ │└──────────────────────────────┘│
+ ╰────────────────────────────────╯
    Section title (centred)
- facts list        │  diagram
-─────────────────────────────────────
- visual stage │ icon, title, line, (pill)   FeatureRow, alternating with `flip`
+┌ Simular ──────────── ›┐┌ Ativid. ›┐  Bento: BentoCard links, 6 columns from 1024 px
+│╭──────────────────────││╭────────╮│    (4 + 2, then 2 + 2 + 2), 2 at 768 px, 1 on phones;
+││ miniature ░ fade ░   │││ mini ░ ││    title, then a miniature that bleeds off the
+┌ Notícias ›┐┌ Aprender ›┐┌ Semana ›┐    bottom (and right, `bleed="corner"`) under a fade
+│╭─────────╮││╭─────────╮││╭───────╮│
+       EXEMPLO ILUSTRATIVO              one caption for the grid
+ ░ stage ░──────────╮  ▣              FeatureRows: 6rem apart (4rem on phones)
+ │┌ main card ─────┐ │  Title           FeatureRow: visual 7/12 from 1024 px,
+ ││ value, chart ● │ │  message         alternating with `flip`; stacked below,
+ │└────┌ float ────┴┐│  (pill)          text first
+ │     └────────────┘│
+ ╰───────────────────╯
+   EXEMPLO ILUSTRATIVO
  ...
- ┌ panel: Plus ───────────────────┐
- ┌ panel: closing band ───────────┐
+ ┌ panel: Plus (accent edge, wash) ──────────────┐
+ │ invest.ao Plus     ┌ notice ──────┐           │  the Plus panel: text 5/12, PlusVisual 7/12
+ │ ✓ ✓ ✓              └┌ Comparar ─────────────┐ │  from 1024 px; stacked below
+ │ (App Store)         │ range · two lines     │ │
+ │                     │ BAI ━ +12 % · BFA ━ … │ │
+ ╰────────────────────────────────────────────────╯
+              ▣                          closing line on the canvas (no card):
+     O teu mercado, de perto.            CLOSING_TITLE, the app mark tile, two pills
+      (App Store) (Iniciar sessão)
+  ░ grid + glow, rising from below ░     HeroBackdrop edge="bottom"
+──────────────────────────────────────── footer hairline
 ```
 
-Sections on the canvas with `HOME_SECTION` spacing, centred `HOME_HEADING` titles. Cards (`panel`) hold the entry tiles, the table, the visuals, Plus and the closing band. Prices are the server's dated verified closes.
+The hero and the market preview share one backdrop, so the table rises out of the hero: its tab row is above the fold at 1440 × 900, and on phones the title, subtitle, search and both pills fit the first screen. Sections below sit on the canvas with `HOME_SECTION` spacing, centred `HOME_HEADING` titles. The bento follows the showcase directly, with no rule between them, and shows the areas the feature rows do not (simulator, unusual activity, news, lessons, week ahead). Cards (`panel`) hold the table, the bento, the visuals and Plus. The three feature rows sit in `FeatureRows`, which keeps one gap between rows and the same space against the bento and Plus (64 px on phones, 96 px from 768 px). Each row puts the icon squircle, heading, message and pill beside the visual from 1024 px (visual 7 of 12 columns, text vertically centred) and stacks them, text first, below; the visual's floating card leans out towards the text. Plus is the page's one premium moment: a `panel` with an `accent` edge at 25 %, the `bento-wash` light from its top right and a faint accent line along its top, holding the heading, the three benefits, the App Store pill and `PlusVisual`. The page then closes the way it opens: Plus and the closing line share one block over `HeroBackdrop edge="bottom"`, the hero's glow and grid mirrored so the light rises onto the footer's hairline; the closing line is the hero's own (`common.yourMarketUpClose`) in `CLOSING_TITLE`, under the app mark in an accent tile, with the App Store and sign-in pills (the outline pill gets a card fill so it holds on the glow). Gaps stay 64 px on phones and 96 px from 768 px down to the footer. Prices are the server's dated verified closes; the figures are the catalogue's visible counts.
+
+Motion is restrained: the hero comes in once on load (the title rises with no fade, then the subtitle, search and pills, figures and showcase fade and rise, 70 ms apart, done by about 0.85 s); below it, the bento heading and cards, each feature row (text, then visual), the Plus panel and the closing band ease in once as they enter the viewport, and the feature charts draw from the left. No parallax, no scroll-linked effects, nothing hidden without JavaScript or with reduced motion (see [theme.md](theme.md#motion)).
 
 ### 2. List / table page — `src/app/[locale]/(market)/mercado/page.tsx`, `src/features/market/browse/market-browser.tsx`
 

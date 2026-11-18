@@ -2,50 +2,108 @@
 
 import { useTranslations } from "next-intl";
 
-import { ENTRY_TILE_ITEM, EntryTile, FactItem } from "@/features/site/home";
-import { InstrumentVisual, PortfolioVisual, StoreButton } from "@/features/site/visuals";
+import { Bento, BentoCard, CLOSING_TITLE, FeatureRow, HERO_TITLE, HeroBackdrop, HeroFigures } from "@/features/site/home";
+import {
+  InstrumentVisual,
+  LearnMiniature,
+  NewsMiniature,
+  PlusVisual,
+  PortfolioVisual,
+  SimulatorMiniature,
+  StoreButton,
+  UnusualActivityMiniature,
+  WatchlistVisual,
+  WeekAheadMiniature,
+} from "@/features/site/visuals";
+import { ButtonLink } from "@/ui/components/buttons";
 
 import { GallerySection, SPECIMEN_GRID, Specimen } from "./specimen";
 
-const MARKET = { pathname: "/mercado", query: {} };
+/** Sample counts; the landing reads them from the catalogue. */
+const FIGURES = [
+  { value: "24", key: "common.instruments" },
+  { value: "6", key: "common.stocks" },
+  { value: "18", key: "common.bonds" },
+] as const;
 
 export function Landing() {
   const t = useTranslations();
   return (
     <GallerySection id="landing" title="Landing pieces">
-      <Specimen name="EntryTile · ENTRY_TILE_ITEM">
-        <ul className="flex flex-wrap gap-3">
-          <li className={ENTRY_TILE_ITEM}>
-            <EntryTile href={MARKET} icon="trend-up" title={t("common.stocks")} cue={t("common.viewAll")} />
-          </li>
-          <li className={ENTRY_TILE_ITEM}>
-            <EntryTile href={MARKET} icon="bond" title={t("common.bonds")} cue={t("common.viewAll")} />
-          </li>
-        </ul>
+      <Specimen name="HeroBackdrop · HERO_TITLE · HeroFigures">
+        <div className="relative isolate flex w-full flex-col items-center gap-6 overflow-hidden rounded-card px-4 py-12 text-center">
+          <HeroBackdrop />
+          <p className={HERO_TITLE}>{t("common.yourMarketUpClose")}</p>
+          <HeroFigures items={FIGURES.map((item) => ({ value: item.value, label: t(item.key) }))} />
+        </div>
+      </Specimen>
+
+      <Specimen name="FeatureRow · InstrumentVisual (stage, caption)">
+        <div className="w-full">
+          <FeatureRow
+            id="gallery-feature-row"
+            icon="markets"
+            title={t("onboarding.page.marketTitle")}
+            message={t("onboarding.page.marketMessage")}
+            action={
+              <ButtonLink href="/mercado" prefetch={false} className="sm:w-auto!">
+                {t("common.explore")}
+              </ButtonLink>
+            }
+            visual={<InstrumentVisual label={t("site.home.instrumentAlt")} />}
+          />
+        </div>
       </Specimen>
 
       <div className={SPECIMEN_GRID}>
-        <Specimen name="InstrumentVisual (stage, caption)">
-          <InstrumentVisual label={t("site.home.instrumentAlt")} />
+        <Specimen name="WatchlistVisual">
+          <WatchlistVisual label={t("site.home.alertsAlt")} />
         </Specimen>
         <Specimen name="PortfolioVisual">
           <PortfolioVisual label={t("site.home.portfolioAlt")} />
         </Specimen>
       </div>
 
-      <div className={SPECIMEN_GRID}>
-        <Specimen name="FactItem">
-          <ul className="flex flex-col gap-8">
-            <FactItem icon="alert" title={t("onboarding.preview.priceAlerts")}>
-              {t("site.home.alertsLine")}
-            </FactItem>
-          </ul>
-        </Specimen>
-        <Specimen name="StoreButton">
+      <Specimen name="Bento · BentoCard (wide, wash, bleed corner) · miniatures">
+        <div className="w-full">
+          <Bento>
+            <BentoCard href="/simulador" title={t("common.simulateInvestment")} wide wash bleed="corner">
+              <SimulatorMiniature />
+            </BentoCard>
+            <BentoCard href="/atividade-invulgar" title={t("unusualActivity.title")}>
+              <UnusualActivityMiniature />
+            </BentoCard>
+            <BentoCard href="/noticias" title={t("common.news")}>
+              <NewsMiniature />
+            </BentoCard>
+            <BentoCard href="/aprender" title={t("learn.title")}>
+              <LearnMiniature />
+            </BentoCard>
+            <BentoCard href="/semana" title={t("weekAhead.header.navigationTitle")}>
+              <WeekAheadMiniature />
+            </BentoCard>
+          </Bento>
+        </div>
+      </Specimen>
+
+      <Specimen name="PlusVisual (no stage)">
+        <div className="panel w-full max-w-xl p-5 sm:p-8">
+          <PlusVisual label={t("site.home.plusAlt")} />
+        </div>
+      </Specimen>
+
+      <Specimen name="HeroBackdrop edge=bottom · CLOSING_TITLE">
+        <div className="relative isolate flex w-full flex-col items-center gap-6 overflow-hidden rounded-card px-4 pt-6 pb-16 text-center">
+          <HeroBackdrop edge="bottom" />
+          <p className={CLOSING_TITLE}>{t("common.yourMarketUpClose")}</p>
           <StoreButton className="sm:w-auto!" />
-          <StoreButton kind="secondary" className="sm:w-auto!" />
-        </Specimen>
-      </div>
+        </div>
+      </Specimen>
+
+      <Specimen name="StoreButton">
+        <StoreButton className="sm:w-auto!" />
+        <StoreButton kind="secondary" className="sm:w-auto!" />
+      </Specimen>
     </GallerySection>
   );
 }
