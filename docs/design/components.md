@@ -24,7 +24,7 @@ Pick by intent:
 
 ### `panel` (utility, `src/app/globals.css`)
 
-The web card surface: `border: 1px solid var(--card-border)`, `rounded-card` (22 px), `bg-card-background`, `shadow-panel`. Use it directly for blocks that are not `Card`s (entry tiles, landing bands, a table card that must be a card on phones too: `<Card flush className="overflow-hidden panel">`). Variants work: `lg:panel`, `desk:panel`.
+The web card surface: `border: 1px solid var(--card-border)`, `rounded-card` (22 px), `bg-card-background`, `shadow-panel`. Use it directly for blocks that are not `Card`s (landing bands, a table card that must be a card on phones too: `<Card flush className="overflow-hidden panel">`). Variants work: `lg:panel`, `desk:panel`.
 
 ### `Icon` (`@/ui/icons/icon`)
 
@@ -199,7 +199,7 @@ All three share one look: text tabs in the display face on a hairline, the curre
 
 | Component | Semantics | Props |
 |---|---|---|
-| `SectionTabs` | WAI-ARIA tabs (`tablist`/`tab`, roving focus, arrows, Home, End) | `titles: string[]`, `selected: number`, `onSelect`, `label`, `idPrefix?` (tabs control `${idPrefix}-panel-${i}`; render each panel with `role="tabpanel"`, that id and `aria-labelledby={`${idPrefix}-tab-${i}`}`) |
+| `SectionTabs` | WAI-ARIA tabs (`tablist`/`tab`, roving focus, arrows, Home, End) | `titles: string[]`, `selected: number`, `onSelect`, `label`, `idPrefix?` (tabs control `${idPrefix}-panel-${i}`; render each panel with `role="tabpanel"`, that id and `aria-labelledby={`${idPrefix}-tab-${i}`}`), `className?` (inset the row inside a flush card: `px-4 desk:px-6`) |
 | `NavTabs` | Links in a `<nav>`, the current one `aria-current` | `items: { href; title; exact?; current? }[]`, `label`, `bare?` (no hairline of its own, for a row that draws one under more than the tabs), `linkProps?`, `className?` |
 | `FilterTabs` | Toggle buttons with `aria-pressed` in a labelled `group` | `options: { value; title }[]`, `value`, `onChange`, `label`, `testID?` |
 
@@ -521,8 +521,11 @@ Landing-only building blocks; reuse them for new marketing sections, not for app
 | Export | |
 |---|---|
 | `HOME_SECTION`, `HOME_HEADING` | Section spacing (`py-16 md:py-24`) and the large centred section title (40 px from 1024 px) |
-| `HeroRings` | Decorative rings and glow behind the hero |
-| `EntryTile`, `ENTRY_TILE_ITEM` | A square `panel` link tile (icon disc, label, "Ver tudo →"); `ENTRY_TILE_ITEM` sizes its `<li>` |
+| `HERO_TITLE` | The hero `h1`: display face, fluid 36 → 68 px, −0.035em, balanced |
+| `HeroBackdrop` | Decorative accent glow over a fine masked grid; first child of a `relative isolate overflow-hidden` block |
+| `HeroFigures` | `{ items: { value; label }[] }`: a `<dl>` of counts (display face) beside their labels; only real catalogue counts |
+| `Showcase` | Centres the product under the hero (max 1024 px) on an accent halo, in a translucent bezel from 640 px |
+| `MarketPreview` (`@/features/site/home-client`) | `{ tabs, label }`: one flush card with `SectionTabs` on top, a table of dated verified closes per kind and that kind's "Ver tudo" pill in the footer |
 | `FactItem` | Icon disc, title, one line, in a `<ul>` |
 | `HubDiagram` | Decorative diagram (`aria-hidden`) |
 | `FeatureRow` | Visual on one side; icon, `h2`, message and an action on the other; `flip` swaps sides from 768 px |

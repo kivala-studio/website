@@ -36,61 +36,62 @@ export type PreviewTab = {
 };
 
 /**
- * Kind tabs over a short table of the server's rows. Prices are the dated verified closes the server sent: this page
- * is cached HTML and has no market store, so it never shows a current quote.
+ * One product window: the kind tabs on top of a short table of the server's rows, each kind's "Ver tudo" pill under
+ * its table. Prices are the dated verified closes the server sent: this page is cached HTML and has no market store,
+ * so it never shows a current quote.
  */
 export function MarketPreview({ tabs, label }: { tabs: PreviewTab[]; label: string }) {
   const t = useTranslations();
   const [selected, setSelected] = useState(0);
   const prefix = "home-market";
   return (
-    <div className="flex flex-col gap-5">
-      <SectionTabs titles={tabs.map((tab) => tab.title)} selected={selected} onSelect={setSelected} label={label} idPrefix={prefix} />
+    <Card flush className="w-full overflow-hidden panel">
+      <SectionTabs
+        titles={tabs.map((tab) => tab.title)}
+        selected={selected}
+        onSelect={setSelected}
+        label={label}
+        idPrefix={prefix}
+        className="px-4 max-sm:gap-4 desk:px-6"
+      />
       {tabs.map((tab, index) => (
-        <div
-          key={tab.title}
-          role="tabpanel"
-          id={`${prefix}-panel-${index}`}
-          aria-labelledby={`${prefix}-tab-${index}`}
-          hidden={index !== selected}
-          className="flex flex-col items-center gap-6"
-        >
-          <Card flush className="w-full overflow-hidden panel">
-            <DataTable className="table-fixed" data-testid="home-market-table">
-              <TableHead>
-                <TableHeaderCell>{t("common.instrument")}</TableHeaderCell>
-                <TableHeaderCell align="right" className="w-34 sm:w-44">
-                  {t("common.price")}
-                </TableHeaderCell>
-                <TableHeaderCell align="right" className="hidden w-28 min-[26rem]:table-cell sm:w-36">
-                  {t("common.change")}
-                </TableHeaderCell>
-              </TableHead>
-              <tbody>
-                {tab.rows.map(({ row, name }) => (
-                  <TableRow key={row.id}>
-                    <TableNameCell
-                      logo={<SecurityLogo symbol={row.symbol} logoUrl={row.logoURL} brandColor={row.bond ? "violet" : "blue"} size="s" />}
-                      name={name ?? row.symbol}
-                      symbol={name ? row.symbol : undefined}
-                      href={`/mercado/${encodeURIComponent(row.symbol)}`}
-                    />
-                    <TableCell numeric>
-                      <PriceCell row={row} security={undefined} at={undefined} />
-                    </TableCell>
-                    <TableCell numeric className="hidden min-[26rem]:table-cell">
-                      <ChangeCell row={row} security={undefined} at={undefined} />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </tbody>
-            </DataTable>
-          </Card>
-          <ButtonLink href={tab.href} prefetch={false} kind="outline" className="w-auto! px-8! desk:px-8!">
-            {t("common.viewAll")}
-          </ButtonLink>
+        <div key={tab.title} role="tabpanel" id={`${prefix}-panel-${index}`} aria-labelledby={`${prefix}-tab-${index}`} hidden={index !== selected}>
+          <DataTable className="table-fixed" data-testid="home-market-table">
+            <TableHead>
+              <TableHeaderCell>{t("common.instrument")}</TableHeaderCell>
+              <TableHeaderCell align="right" className="w-34 sm:w-44">
+                {t("common.price")}
+              </TableHeaderCell>
+              <TableHeaderCell align="right" className="hidden w-28 min-[26rem]:table-cell sm:w-36">
+                {t("common.change")}
+              </TableHeaderCell>
+            </TableHead>
+            <tbody>
+              {tab.rows.map(({ row, name }) => (
+                <TableRow key={row.id}>
+                  <TableNameCell
+                    logo={<SecurityLogo symbol={row.symbol} logoUrl={row.logoURL} brandColor={row.bond ? "violet" : "blue"} size="s" />}
+                    name={name ?? row.symbol}
+                    symbol={name ? row.symbol : undefined}
+                    href={`/mercado/${encodeURIComponent(row.symbol)}`}
+                  />
+                  <TableCell numeric>
+                    <PriceCell row={row} security={undefined} at={undefined} />
+                  </TableCell>
+                  <TableCell numeric className="hidden min-[26rem]:table-cell">
+                    <ChangeCell row={row} security={undefined} at={undefined} />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </tbody>
+          </DataTable>
+          <div className="flex justify-center border-t border-hairline p-4">
+            <ButtonLink href={tab.href} prefetch={false} kind="outline" className="w-auto! px-8! desk:px-8!">
+              {t("common.viewAll")}
+            </ButtonLink>
+          </div>
         </div>
       ))}
-    </div>
+    </Card>
   );
 }

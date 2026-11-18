@@ -7,7 +7,7 @@ Tailwind's defaults plus one custom variant (`src/app/globals.css`):
 | Prefix | From | Used for |
 |---|---|---|
 | `max-[20rem]:` … `min-[26rem]:` | 320–416 px | Narrow-phone fixes: hide a logo, a wordmark or a column (see [Tables on phones](#tables-on-phones)) |
-| `sm:` | 640 px | 24 px gutters, wider table columns, two entry tiles per row become fixed squares |
+| `sm:` | 640 px | 24 px gutters, wider table columns, the landing showcase gets its bezel |
 | `md:` | 768 px | Two-column landing rows, two summary cards per row, the side sheet, every table header sorts |
 | `lg:` | 1024 px | **Page layout**: top-bar navigation, no bottom tab bar, sidebars, rails, sticky columns, `Panel` becomes a card |
 | `xl:` | 1280 px | Three summary cards on `/mercado`, two card columns on the portfolio dashboard, the widest table columns |
@@ -64,17 +64,20 @@ Pick the template, then read the file it names.
 ### 1. Marketing landing — `src/app/[locale]/(site)/page.tsx`, `src/features/site/home.tsx`
 
 ```
-            ◌ rings ◌
-      Title (centred, display → 48 px)
-          one line of subtitle
-   [tile] [tile] [tile] [tile]          entry tiles: panel squares
+  ░ glow + fine grid ░                  HeroBackdrop, behind the hero and the showcase
+      Title (centred, 36 → 68 px)       HERO_TITLE, fluid
+          subtitle (≤ 576 px)
         [ search ············ ]
      (Entrar)  (Descarregar)
-─────────────────────────────────────
- tabs ▔▔▔                               MarketPreview: SectionTabs + flush table card
- ┌ table card ────────────────────┐
- └────────────────────────────────┘
-            (Ver tudo)
+  164 Instrumentos · 8 Ações · …        HeroFigures: catalogue counts, absent without a catalogue
+   ░ halo ░
+ ╭ bezel ─────────────────────────╮     Showcase (max 1024 px; bezel from 640 px)
+ │┌ panel ───────────────────────┐│     MarketPreview: one flush card
+ ││ Ações Obrigações … ▔▔▔        ││       SectionTabs on top
+ ││ table                        ││       table of dated verified closes
+ ││          (Ver tudo)          ││       the kind's outline pill in the footer
+ │└──────────────────────────────┘│
+ ╰────────────────────────────────╯
 ─────────────────────────────────────
    Section title (centred)
  facts list        │  diagram
@@ -85,7 +88,7 @@ Pick the template, then read the file it names.
  ┌ panel: closing band ───────────┐
 ```
 
-Sections on the canvas with `HOME_SECTION` spacing, centred `HOME_HEADING` titles. Cards (`panel`) hold the entry tiles, the table, the visuals, Plus and the closing band. Prices are the server's dated verified closes.
+The hero and the market preview share one backdrop, so the table rises out of the hero: its tab row is above the fold at 1440 × 900, and on phones the title, subtitle, search and both pills fit the first screen. Sections below sit on the canvas with `HOME_SECTION` spacing, centred `HOME_HEADING` titles. Cards (`panel`) hold the table, the visuals, Plus and the closing band. Prices are the server's dated verified closes; the figures are the catalogue's visible counts.
 
 ### 2. List / table page — `src/app/[locale]/(market)/mercado/page.tsx`, `src/features/market/browse/market-browser.tsx`
 

@@ -2,26 +2,28 @@
 
 import { useTranslations } from "next-intl";
 
-import { ENTRY_TILE_ITEM, EntryTile, FactItem } from "@/features/site/home";
+import { FactItem, HERO_TITLE, HeroBackdrop, HeroFigures } from "@/features/site/home";
 import { InstrumentVisual, PortfolioVisual, StoreButton } from "@/features/site/visuals";
 
 import { GallerySection, SPECIMEN_GRID, Specimen } from "./specimen";
 
-const MARKET = { pathname: "/mercado", query: {} };
+/** Sample counts; the landing reads them from the catalogue. */
+const FIGURES = [
+  { value: "24", key: "common.instruments" },
+  { value: "6", key: "common.stocks" },
+  { value: "18", key: "common.bonds" },
+] as const;
 
 export function Landing() {
   const t = useTranslations();
   return (
     <GallerySection id="landing" title="Landing pieces">
-      <Specimen name="EntryTile · ENTRY_TILE_ITEM">
-        <ul className="flex flex-wrap gap-3">
-          <li className={ENTRY_TILE_ITEM}>
-            <EntryTile href={MARKET} icon="trend-up" title={t("common.stocks")} cue={t("common.viewAll")} />
-          </li>
-          <li className={ENTRY_TILE_ITEM}>
-            <EntryTile href={MARKET} icon="bond" title={t("common.bonds")} cue={t("common.viewAll")} />
-          </li>
-        </ul>
+      <Specimen name="HeroBackdrop · HERO_TITLE · HeroFigures">
+        <div className="relative isolate flex w-full flex-col items-center gap-6 overflow-hidden rounded-card px-4 py-12 text-center">
+          <HeroBackdrop />
+          <p className={HERO_TITLE}>{t("common.yourMarketUpClose")}</p>
+          <HeroFigures items={FIGURES.map((item) => ({ value: item.value, label: t(item.key) }))} />
+        </div>
       </Specimen>
 
       <div className={SPECIMEN_GRID}>

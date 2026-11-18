@@ -3,12 +3,13 @@ import type { Locale } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { requestTime } from "@/data/clock";
+import { type FormatLocale, createFormat } from "@/domain/format";
 import { MARKET_CATEGORY_LABEL_KEYS, type MarketCategory } from "@/domain/market";
 import { MARKET_DEFAULT_QUERY, marketQueryParams } from "@/features/market/browse/query";
 import { PalancaMark } from "@/features/site/chrome";
-import { ENTRY_TILE_ITEM, EntryTile, FactItem, FeatureRow, HOME_HEADING, HOME_SECTION, HeroRings, HubDiagram } from "@/features/site/home";
+import { FactItem, FeatureRow, HERO_TITLE, HOME_HEADING, HOME_SECTION, HeroBackdrop, HeroFigures, HubDiagram, Showcase } from "@/features/site/home";
 import { HeroSearch, MarketPreview } from "@/features/site/home-client";
-import { HOME_CATEGORIES, type HomeCategory, homeMarket } from "@/features/site/home-market";
+import { homeMarket } from "@/features/site/home-market";
 import { pageMetadata } from "@/features/site/metadata";
 import { INDEXABLE_PAGES, SIGN_IN_PATH } from "@/features/site/site";
 import { OrganizationData } from "@/features/site/structured-data";
@@ -17,7 +18,7 @@ import { getPathname } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
 import { ButtonLink } from "@/ui/components/buttons";
 import { PAGE_CONTAINER } from "@/ui/components/layout";
-import { Icon, type IconName } from "@/ui/icons/icon";
+import { Icon } from "@/ui/icons/icon";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const locale = (await params).locale as Locale;
@@ -32,8 +33,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   });
 }
 
-const KIND_ICON: Record<HomeCategory, IconName> = { equities: "trend-up", bonds: "bond", funds: "dividend", treasury: "shield-check" };
-
 /** `/mercado` filtered to one kind (the canonical `/mercado` for the default kind). */
 const marketHref = (category: MarketCategory) => ({
   pathname: INDEXABLE_PAGES.market,
@@ -41,73 +40,69 @@ const marketHref = (category: MarketCategory) => ({
 });
 
 /**
- * The landing page, in the CoinStats landing order: hero with entry tiles, search and actions; a market preview;
- * the product in one view; three feature rows; Plus; a closing band. Market rows are the cached catalogue's dated
- * verified closes, the same server path as `/mercado`.
+ * The landing page: the hero (title, search, actions, coverage figures) with the market preview rising out of it as
+ * the showcase; the product in one view; three feature rows; Plus; a closing band. Market rows and counts come from
+ * the cached catalogue (dated verified closes), the same server path as `/mercado`.
  */
 export default async function HomePage() {
   const t = await getTranslations();
   const locale = (await getLocale()) as Locale;
   const translate = (key: string) => t(key as never);
   const market = await homeMarket(requestTime());
-  const categories = market?.categories.map(({ category }) => category) ?? HOME_CATEGORIES;
+  const format = createFormat(locale as FormatLocale, (key, values) => t(key as never, values as never));
   const signIn = t("onboarding.navigation.signIn");
 
   return (
     <main id="main">
       <OrganizationData />
 
-      <section className="relative isolate overflow-hidden">
-        <HeroRings />
-        <div className={cn(PAGE_CONTAINER, "flex flex-col items-center gap-8 pt-12 pb-16 text-center md:pt-20 md:pb-20")}>
-          <div className="flex max-w-3xl flex-col items-center gap-4">
-            <h1 className="text-display text-primary-text text-balance sm:text-headline lg:text-[3rem] lg:leading-[1.1]">{t("common.yourMarketUpClose")}</h1>
-            <p className="text-body text-secondary-text sm:text-[1.0625rem]">{t("site.home.heroSubtitle")}</p>
+      <div className="relative isolate overflow-hidden">
+        <HeroBackdrop />
+        <section className={cn(PAGE_CONTAINER, "flex flex-col items-center gap-6 pt-10 pb-10 text-center sm:gap-8 md:pt-20 md:pb-14 lg:pt-24")}>
+          <div className="flex max-w-4xl flex-col items-center gap-4 sm:gap-5">
+            <h1 className={HERO_TITLE}>{t("common.yourMarketUpClose")}</h1>
+            <p className="max-w-xl text-body text-balance text-secondary-text sm:text-[1.1875rem] sm:leading-normal">{t("site.home.heroSubtitle")}</p>
           </div>
-          <nav aria-label={t("common.market")} className="w-full">
-            <ul className="flex flex-wrap justify-center gap-3">
-              {categories.map((category) => (
-                <li key={category} className={ENTRY_TILE_ITEM}>
-                  <EntryTile
-                    href={marketHref(category)}
-                    icon={KIND_ICON[category]}
-                    title={translate(MARKET_CATEGORY_LABEL_KEYS[category])}
-                    cue={t("common.viewAll")}
-                  />
-                </li>
-              ))}
-            </ul>
-          </nav>
-          <div className="w-full max-w-xl">
+          <div className="flex w-full max-w-xl flex-col items-center gap-4">
             <HeroSearch
               action={getPathname({ locale, href: INDEXABLE_PAGES.market })}
               hidden={{ categoria: marketQueryParams({ ...MARKET_DEFAULT_QUERY, category: "all" }).categoria }}
             />
+            <div className="flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row">
+              <ButtonLink href={SIGN_IN_PATH} prefetch={false} className="sm:w-auto! sm:min-w-48">
+                {signIn}
+              </ButtonLink>
+              <StoreButton kind="secondary" className="sm:w-auto!" />
+            </div>
           </div>
-          <div className="flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row">
-            <ButtonLink href={SIGN_IN_PATH} prefetch={false} className="sm:w-auto! sm:min-w-48">
-              {signIn}
-            </ButtonLink>
-            <StoreButton kind="secondary" className="sm:w-auto!" />
-          </div>
-        </div>
-      </section>
-
-      {market && market.categories.length > 0 ? (
-        <section aria-labelledby="home-market" className={cn(PAGE_CONTAINER, "pb-16 md:pb-24")}>
-          <h2 id="home-market" className="sr-only">
-            {t("common.market")}
-          </h2>
-          <MarketPreview
-            label={t("common.market")}
-            tabs={market.categories.map(({ category, rows }) => ({
-              title: translate(MARKET_CATEGORY_LABEL_KEYS[category]),
-              href: marketHref(category),
-              rows,
-            }))}
-          />
+          {market ? (
+            <HeroFigures
+              items={[
+                { value: format.count(market.total), label: t("common.instruments") },
+                ...market.categories.map(({ category, count }) => ({ value: format.count(count), label: translate(MARKET_CATEGORY_LABEL_KEYS[category]) })),
+              ]}
+            />
+          ) : null}
         </section>
-      ) : null}
+
+        {market && market.categories.length > 0 ? (
+          <section aria-labelledby="home-market" className={cn(PAGE_CONTAINER, "pb-16 md:pb-24")}>
+            <h2 id="home-market" className="sr-only">
+              {t("common.market")}
+            </h2>
+            <Showcase>
+              <MarketPreview
+                label={t("common.market")}
+                tabs={market.categories.map(({ category, rows }) => ({
+                  title: translate(MARKET_CATEGORY_LABEL_KEYS[category]),
+                  href: marketHref(category),
+                  rows,
+                }))}
+              />
+            </Showcase>
+          </section>
+        ) : null}
+      </div>
 
       <section aria-labelledby="all-in-one" className="border-t border-hairline">
         <div className={cn(HOME_SECTION, "flex flex-col gap-12 md:gap-16")}>

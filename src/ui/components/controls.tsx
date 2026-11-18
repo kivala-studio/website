@@ -51,6 +51,7 @@ export function SectionTabs({
   onSelect,
   label,
   idPrefix,
+  className,
 }: {
   titles: readonly string[];
   selected: number;
@@ -58,10 +59,11 @@ export function SectionTabs({
   label: string;
   /** Tabs control panels with ids `${idPrefix}-panel-${index}`. */
   idPrefix?: string;
+  className?: string;
 }) {
   const { refs, onKeyDown } = useRovingKeys(titles.length, selected, onSelect);
   return (
-    <div role="tablist" aria-label={label} onKeyDown={onKeyDown} className={TAB_LIST}>
+    <div role="tablist" aria-label={label} onKeyDown={onKeyDown} className={cn(TAB_LIST, className)}>
       {titles.map((title, index) => (
         <button
           key={title}

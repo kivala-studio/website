@@ -66,7 +66,7 @@ The landing's product visuals (`InstrumentVisual`, `WatchlistVisual`, `Portfolio
 - Sample values only: the iOS onboarding's sample instrument and round invented figures. Never market data, never a live or current price.
 - Built from the real primitives (`StatTile`, `ChangeBadge`, `SecurityLogo`, the segmented track) so they match the product.
 
-Decorative backgrounds and diagrams (`HeroRings`, `HubDiagram`) are `aria-hidden`; the text beside them says the same thing.
+Decorative backgrounds and diagrams (`HeroBackdrop`, the `Showcase` halo, `HubDiagram`) are `aria-hidden`; the text beside them says the same thing.
 
 ## Icons
 
@@ -80,7 +80,7 @@ Decorative backgrounds and diagrams (`HeroRings`, `HubDiagram`) are `aria-hidden
 
 - A card that previews a longer list puts `SeeAll` in its header `action`: the outline compact pill "Ver tudo", linking to the full list.
 - One per card. Other header actions use the same outline compact pill (`ButtonLink kind="outline" size="compact"`).
-- Under a preview table on the landing, the link is a centred outline pill under the card.
+- Under a preview table on the landing, the link is a centred outline pill in the card's footer.
 
 ## Page-level actions
 

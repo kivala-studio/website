@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 
-import { Link } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
 import { PAGE_CONTAINER } from "@/ui/components/layout";
 import { Icon, type IconName } from "@/ui/icons/icon";
@@ -8,7 +7,7 @@ import { Icon, type IconName } from "@/ui/icons/icon";
 import { PalancaMark } from "./chrome";
 
 /*
- * Landing page building blocks (the CoinStats landing structure): a centred hero on faint rings, entry tiles,
+ * Landing page building blocks: a centred hero on a glow and grid with its coverage figures and the market showcase,
  * centred section headings, alternating feature rows and a closing band. Server components only.
  */
 
@@ -18,45 +17,54 @@ export const HOME_SECTION = cn(PAGE_CONTAINER, "py-16 md:py-24");
 /** Large section heading in the display face (CoinStats' 40 px section titles on desk). */
 export const HOME_HEADING = "text-display text-primary-text text-balance lg:text-[2.5rem] lg:leading-[1.15] lg:tracking-[-0.02em]";
 
-/** Faint concentric rings and a soft accent glow behind the hero. Decorative. */
-export function HeroRings() {
+/** The hero title: fluid from 36 px on phones to 68 px on wide screens, tight tracking. */
+export const HERO_TITLE =
+  "font-display text-[clamp(2.25rem,1.2rem+4.4vw,4.25rem)] leading-[1.04] font-semibold tracking-[-0.035em] text-balance text-primary-text";
+
+/**
+ * The hero backdrop: an accent glow from the top over a fine grid that fades out towards the edges. Decorative; place
+ * it first inside a `relative isolate overflow-hidden` block.
+ */
+export function HeroBackdrop() {
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 flex justify-center overflow-hidden [mask-image:linear-gradient(to_bottom,black_55%,transparent)]">
-      <div className="relative aspect-square w-[64rem] max-w-none shrink-0 -translate-y-[18%]">
-        <div className="absolute inset-[22%] rounded-full bg-[radial-gradient(closest-side,var(--accent-soft),transparent)] opacity-80" />
-        <svg viewBox="0 0 200 200" className="absolute inset-0 size-full fill-none stroke-hairline" focusable="false">
-          <circle cx="100" cy="100" r="44" strokeWidth="0.25" />
-          <circle cx="100" cy="100" r="62" strokeWidth="0.25" strokeDasharray="0.6 1.4" />
-          <circle cx="100" cy="100" r="80" strokeWidth="0.25" />
-          <circle cx="100" cy="100" r="98" strokeWidth="0.25" strokeDasharray="0.6 1.4" />
-        </svg>
-      </div>
+    <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,color-mix(in_srgb,var(--primary-text)_7%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_srgb,var(--primary-text)_7%,transparent)_1px,transparent_1px)] bg-[size:2.5rem_2.5rem] sm:bg-[size:3.5rem_3.5rem] bg-center [mask-image:radial-gradient(ellipse_60%_65%_at_50%_0%,black_25%,transparent_100%)]" />
+      <div className="absolute inset-x-0 top-0 h-[44rem] bg-[radial-gradient(ellipse_50%_55%_at_50%_0%,color-mix(in_srgb,var(--accent)_24%,transparent),transparent)]" />
     </div>
   );
 }
 
-/** A square entry tile: icon on a soft accent disc, the label and a "Ver tudo →" cue. The whole tile is the link; size it with `ENTRY_TILE_ITEM`. */
-export function EntryTile({ href, icon, title, cue }: { href: { pathname: string; query: Record<string, string> }; icon: IconName; title: string; cue: string }) {
+/** Coverage figures under the hero actions: each count in the display face beside its label. */
+export function HeroFigures({ items }: { items: { value: string; label: string }[] }) {
   return (
-    <Link
-      href={href}
-      prefetch={false}
-      className="panel motion-press flex min-h-32 w-full flex-col items-center justify-center gap-2 p-3 sm:aspect-square text-center transition-colors hover:border-field-border focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-    >
-      <span className="mb-1 flex size-14 items-center justify-center rounded-full bg-accent-soft text-[1.625rem] text-accent">
-        <Icon name={icon} />
-      </span>
-      <span className="font-display text-secondary font-medium text-primary-text">{title}</span>
-      <span className="inline-flex items-center gap-1 font-display text-caption font-semibold text-primary-text">
-        {cue}
-        <Icon name="arrow-right" scale="s" />
-      </span>
-    </Link>
+    <dl className="flex flex-wrap items-baseline justify-center gap-x-4 gap-y-1.5 sm:gap-x-8">
+      {items.map((item) => (
+        <div key={item.label} className="flex flex-row-reverse items-baseline gap-1.5">
+          <dt className="text-caption text-secondary-text sm:text-secondary">{item.label}</dt>
+          <dd className="font-display text-secondary font-semibold text-primary-text sm:text-body">{item.value}</dd>
+        </div>
+      ))}
+    </dl>
   );
 }
 
-/** The list item around an entry tile: two per row on phones, a fixed square from 640 px. */
-export const ENTRY_TILE_ITEM = "w-[calc(50%-0.375rem)] sm:w-34 lg:w-36";
+/**
+ * The product showcase under the hero: a translucent bezel around the product (from 640 px), on an accent halo. The halo is
+ * decorative; the content is the product.
+ */
+export function Showcase({ children }: { children: ReactNode }) {
+  return (
+    <div className="relative mx-auto w-full max-w-5xl">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -inset-x-4 -top-48 -z-10 h-[26rem] bg-[radial-gradient(ellipse_50%_50%_at_50%_50%,color-mix(in_srgb,var(--accent)_32%,transparent),transparent)] sm:-inset-x-32"
+      />
+      <div className="sm:rounded-[calc(var(--radius-card)+0.5rem)] sm:border sm:border-card-border sm:bg-[color-mix(in_srgb,var(--card-background)_45%,transparent)] sm:p-2 sm:backdrop-blur-md">
+        {children}
+      </div>
+    </div>
+  );
+}
 
 /** One fact in the "all in one" list: icon disc, bold title, one short line. */
 export function FactItem({ icon, title, children }: { icon: IconName; title: string; children: ReactNode }) {
