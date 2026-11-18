@@ -120,7 +120,7 @@ export function HubDiagram({ className }: { className?: string }) {
 }
 
 /**
- * A feature row: the product visual in a card on one side; icon, heading, message and a pill on the other.
+ * A feature row: the product visual (a piece of the web product on a soft stage) on one side; icon, heading, message and a pill on the other.
  * `flip` puts the visual on the right from 768 px.
  */
 export function FeatureRow({
@@ -142,7 +142,7 @@ export function FeatureRow({
 }) {
   return (
     <section aria-labelledby={id} className={cn(PAGE_CONTAINER, "grid items-center gap-8 py-12 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-16 md:py-16")}>
-      <div className={cn("panel flex justify-center gap-4 overflow-hidden px-6 pt-8 pb-4 sm:gap-6 md:px-10 md:pt-10", flip && "md:order-2")}>{visual}</div>
+      <div className={cn("flex min-w-0 justify-center", flip && "md:order-2")}>{visual}</div>
       <div className="flex max-w-md flex-col items-start gap-4">
         <Icon name={icon} className="text-[2rem] text-accent" />
         <h2 id={id} className={HOME_HEADING}>

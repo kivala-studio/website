@@ -36,6 +36,10 @@ export const iconButtonClass = (variant: "filled" | "plain" | "outline" = "fille
     className,
   );
 
+/** A segmented control's groove, and the fill of one segment (the chosen one raised on it). */
+export const SEGMENT_TRACK = "flex gap-1 rounded-medium bg-track p-1";
+export const segmentTone = (selected: boolean) => (selected ? "bg-raised text-primary-text shadow-raised" : "text-secondary-text");
+
 /**
  * A choice chip (presets, filters inside a form): a hairline pill, the chosen one in the soft accent fill. Pair it
  * with `aria-pressed`.

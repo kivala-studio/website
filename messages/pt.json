@@ -2848,10 +2848,9 @@
       "download": "Descarregar na App Store"
     },
     "home": {
-      "instrumentAlt": "Ecrã de um instrumento na app: preço, variação e gráfico de um mês.",
-      "comparisonAlt": "Comparação de dois instrumentos no mesmo gráfico de desempenho.",
-      "alertsAlt": "Alertas de um instrumento: preço acima de um valor e movimentos automáticos.",
-      "portfolioAlt": "Carteira de exemplo com valor, registo manual e evolução.",
+      "instrumentAlt": "Página de um instrumento: preço, variação e gráfico de um mês.",
+      "alertsAlt": "Lista de acompanhamento com preços e variações, e um alerta de preço alvo atingido.",
+      "portfolioAlt": "Carteira de exemplo com valor, variação, evolução e distribuição.",
       "heroSubtitle": "Acompanha a bolsa de Angola num só sítio.",
       "allInOneTitle": "Tudo o que precisas para seguir a bolsa",
       "instrumentsLine": "Ações, obrigações, fundos e Tesouro, com o último fecho verificado.",

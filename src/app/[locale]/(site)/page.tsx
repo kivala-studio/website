@@ -5,9 +5,6 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { requestTime } from "@/data/clock";
 import { MARKET_CATEGORY_LABEL_KEYS, type MarketCategory } from "@/domain/market";
 import { MARKET_DEFAULT_QUERY, marketQueryParams } from "@/features/market/browse/query";
-import alerts from "@/features/site/assets/alerts.webp";
-import comparison from "@/features/site/assets/comparison.webp";
-import instrument from "@/features/site/assets/instrument.webp";
 import { PalancaMark } from "@/features/site/chrome";
 import { ENTRY_TILE_ITEM, EntryTile, FactItem, FeatureRow, HOME_HEADING, HOME_SECTION, HeroRings, HubDiagram } from "@/features/site/home";
 import { HeroSearch, MarketPreview } from "@/features/site/home-client";
@@ -15,7 +12,7 @@ import { HOME_CATEGORIES, type HomeCategory, homeMarket } from "@/features/site/
 import { pageMetadata } from "@/features/site/metadata";
 import { INDEXABLE_PAGES, SIGN_IN_PATH } from "@/features/site/site";
 import { OrganizationData } from "@/features/site/structured-data";
-import { PhoneFigure, PortfolioIllustration, Screenshot, StoreButton } from "@/features/site/visuals";
+import { InstrumentVisual, PortfolioVisual, StoreButton, WatchlistVisual } from "@/features/site/visuals";
 import { getPathname } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
 import { ButtonLink } from "@/ui/components/buttons";
@@ -145,16 +142,7 @@ export default async function HomePage() {
               {t("common.explore")}
             </ButtonLink>
           }
-          visual={
-            <>
-              <PhoneFigure className="max-w-56!">
-                <Screenshot image={instrument} alt={t("site.home.instrumentAlt")} />
-              </PhoneFigure>
-              <PhoneFigure className="max-w-56! translate-y-10 max-[26rem]:hidden">
-                <Screenshot image={comparison} alt={t("site.home.comparisonAlt")} />
-              </PhoneFigure>
-            </>
-          }
+          visual={<InstrumentVisual label={t("site.home.instrumentAlt")} />}
         />
         <FeatureRow
           id="theme-watchlist"
@@ -167,11 +155,7 @@ export default async function HomePage() {
               {t("common.follow")}
             </ButtonLink>
           }
-          visual={
-            <PhoneFigure className="max-w-64!">
-              <Screenshot image={alerts} alt={t("site.home.alertsAlt")} />
-            </PhoneFigure>
-          }
+          visual={<WatchlistVisual label={t("site.home.alertsAlt")} />}
         />
         <FeatureRow
           id="theme-portfolio"
@@ -183,11 +167,7 @@ export default async function HomePage() {
               {t("common.recordPurchase")}
             </ButtonLink>
           }
-          visual={
-            <PhoneFigure className="max-w-64!">
-              <PortfolioIllustration label={t("site.home.portfolioAlt")} />
-            </PhoneFigure>
-          }
+          visual={<PortfolioVisual label={t("site.home.portfolioAlt")} />}
         />
       </div>
 

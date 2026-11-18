@@ -2848,10 +2848,9 @@
       "download": "Download on the App Store"
     },
     "home": {
-      "instrumentAlt": "An instrument screen in the app: price, change and a one-month chart.",
-      "comparisonAlt": "Two instruments compared on the same performance chart.",
-      "alertsAlt": "Alerts for an instrument: price above a value and automatic movements.",
-      "portfolioAlt": "Example portfolio with its value, manual record and trend.",
+      "instrumentAlt": "An instrument page: price, change and a one-month chart.",
+      "alertsAlt": "A watchlist with prices and changes, and a target price reached alert.",
+      "portfolioAlt": "Example portfolio with its value, change, trend and allocation.",
       "heroSubtitle": "Follow Angola''s stock exchange in one place.",
       "allInOneTitle": "Everything you need to follow the market",
       "instrumentsLine": "Stocks, bonds, funds and Treasury, with the last verified close.",

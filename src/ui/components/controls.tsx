@@ -8,6 +8,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "../cn";
 import { Icon, type IconName } from "../icons/icon";
 import { parseTheme, THEME_COOKIE, type Theme, THEMES } from "../theme/theme";
+import { SEGMENT_TRACK, segmentTone } from "./button-styles";
 import { Menu } from "./menu";
 
 /** Arrow, Home and End keys move between options and select them (WAI-ARIA tabs and radio groups). */
@@ -200,8 +201,7 @@ export function OptionGroup<T extends string>({
       aria-label={label}
       onKeyDown={onKeyDown}
       className={cn(
-        "flex gap-1 p-1",
-        variant === "segmented" ? "rounded-medium bg-track" : "overflow-x-auto [scrollbar-width:none]",
+        variant === "segmented" ? SEGMENT_TRACK : "flex gap-1 overflow-x-auto p-1 [scrollbar-width:none]",
         scroll && "overflow-x-auto [scrollbar-width:none]",
       )}
     >
@@ -221,7 +221,7 @@ export function OptionGroup<T extends string>({
             className={cn(
               "min-h-11 px-2 transition-colors duration-200 motion-reduce:transition-none aria-disabled:opacity-42",
               variant === "segmented"
-                ? cn("flex-1 rounded-small text-secondary font-semibold desk:rounded-[0.5rem] desk:font-medium", scroll && "min-w-11 shrink-0", isSelected ? "bg-raised text-primary-text shadow-raised" : "text-secondary-text hover:text-primary-text")
+                ? cn("flex-1 rounded-small text-secondary font-semibold desk:rounded-[0.5rem] desk:font-medium", scroll && "min-w-11 shrink-0", segmentTone(isSelected), !isSelected && "hover:text-primary-text")
                 : cn("min-w-11 shrink-0 rounded-full text-caption font-semibold", isSelected ? "bg-accent-soft text-accent" : "text-secondary-text hover:text-primary-text"),
             )}
           >
