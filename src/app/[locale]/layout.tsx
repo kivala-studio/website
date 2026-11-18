@@ -27,12 +27,19 @@ export const metadata: Metadata = {
   title: { default: "invest.ao", template: "%s · invest.ao" },
 };
 
-export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f2f3f5" },
-    { media: "(prefers-color-scheme: dark)", color: "#090b0f" },
-  ],
-};
+// The browser chrome follows the theme the page is rendered in; "system" follows the OS.
+const THEME_COLOR = { light: "#f2f3f5", dark: "#090b0f" };
+
+export async function generateViewport(): Promise<Viewport> {
+  const theme = parseTheme((await cookies()).get(THEME_COOKIE)?.value);
+  if (theme !== "system") return { themeColor: THEME_COLOR[theme] };
+  return {
+    themeColor: [
+      { media: "(prefers-color-scheme: light)", color: THEME_COLOR.light },
+      { media: "(prefers-color-scheme: dark)", color: THEME_COLOR.dark },
+    ],
+  };
+}
 
 export default async function LocaleLayout({
   children,

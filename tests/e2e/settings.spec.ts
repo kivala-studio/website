@@ -77,8 +77,8 @@ test("settings lists the account, appearance, app and market data rows", async (
   await page.getByText("Sobre a invest.ao").click();
   await expect(page.getByText(/reúne cotações, notícias e alertas/)).toBeVisible();
 
-  await page.getByRole("radio", { name: "Escuro" }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.getByRole("radio", { name: "Claro" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   await page.getByRole("radio", { name: "English" }).click();
   await expect(page).toHaveURL(/\/en\/definicoes$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Profile");
@@ -137,6 +137,7 @@ test("deletion endpoints accept only same-origin posts, and a receipt without it
 
 test("/definicoes and /definicoes/conta have no serious axe issues, light and dark, phone and desktop", async ({ page, context }) => {
   await signIn(context, "plus");
+  await context.addCookies([{ name: "theme", value: "system", domain: "localhost", path: "/" }]);
   for (const width of [375, 1440]) {
     await page.setViewportSize({ width, height: width === 375 ? 812 : 1000 });
     for (const scheme of ["light", "dark"] as const) {

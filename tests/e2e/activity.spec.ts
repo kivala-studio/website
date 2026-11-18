@@ -94,6 +94,7 @@ test("notification preferences are saved and survive a reload", async ({ page, c
 
 test("/atividade and /definicoes have no serious axe issues, light and dark, phone and desktop", async ({ page, context }, testInfo) => {
   await signIn(context, "plus");
+  await context.addCookies([{ name: "theme", value: "system", domain: "localhost", path: "/" }]);
   for (const width of [375, 1440]) {
     await page.setViewportSize({ width, height: width === 375 ? 812 : 1000 });
     for (const scheme of ["light", "dark"] as const) {

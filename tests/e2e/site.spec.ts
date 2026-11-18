@@ -97,9 +97,9 @@ test("language and theme switches work from the keyboard", async ({ page, contex
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Privacy policy");
 
   const theme = page.getByRole("radiogroup", { name: "Theme" });
-  await theme.getByRole("radio", { name: "Dark" }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  expect((await context.cookies()).find((cookie) => cookie.name === "theme")?.value).toBe("dark");
+  await theme.getByRole("radio", { name: "Light" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  expect((await context.cookies()).find((cookie) => cookie.name === "theme")?.value).toBe("light");
 });
 
 test("invite links validate the code, keep it in the tab and never send it to another host", async ({ page, request }) => {

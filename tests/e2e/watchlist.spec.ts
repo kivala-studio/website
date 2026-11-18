@@ -172,6 +172,7 @@ test("alerts: create, pause, edit and delete a rule; Free stops at two", async (
 
 test("/lista has no serious axe issues, light and dark, phone and desktop", async ({ page, context }, testInfo) => {
   await signIn(context, "plus");
+  await context.addCookies([{ name: "theme", value: "system", domain: "localhost", path: "/" }]);
   for (const width of [375, 1440]) {
     await page.setViewportSize({ width, height: width === 375 ? 812 : 1000 });
     for (const scheme of ["light", "dark"] as const) {
