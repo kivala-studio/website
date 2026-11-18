@@ -1,0 +1,532 @@
+# Components
+
+Every shared component, grouped as in the `/dev/design` gallery. Import primitives from `@/ui/components/*` and `@/ui/icons/icon`; the shared feature pieces from the paths given. Props marked `…` also accept the element's own HTML attributes.
+
+Pick by intent:
+
+| You need | Use | Not |
+|---|---|---|
+| A group of content with a surface on every width | `Card` | `Panel` |
+| A section that is a plain block on phones and a card from 1024 px | `Panel` | `Card` |
+| A labelled figure inside a card | `StatTile` (in a `<dl>`) | `StatStrip`, `MarketMetric` |
+| Several label/value facts in a sidebar or a strip | `StatStrip` (`grid` or `strip`) | a row of `StatTile`s |
+| Switch between panels of one view | `SectionTabs` | `NavTabs` |
+| Go to sibling pages, or to URL-filtered views of one list | `NavTabs` | `SectionTabs` |
+| Filter one list in place, no URL | `FilterTabs` | `SectionTabs` |
+| Pick one of 2–4 values inside a card (Kz/%, gains/declines) | `SegmentedControl` | tabs |
+| Pick a chart range | `TimeRangePicker` | a hand-made group |
+| Toggle presets or filters inside a form | `chipClass` buttons with `aria-pressed` | `SegmentedControl` |
+| A list with columns, sorting or many rows | `DataTable` primitives in a flush card | `CompactRow` |
+| A short list in a narrow column | `CompactRow` in a `Panel` or `Card` | a table |
+| "See everything" from a card | `SeeAll` in the card's `action` | an accent text link |
+
+## Foundations
+
+### `panel` (utility, `src/app/globals.css`)
+
+The web card surface: `border: 1px solid var(--card-border)`, `rounded-card` (22 px), `bg-card-background`, `shadow-panel`. Use it directly for blocks that are not `Card`s (entry tiles, landing bands, a table card that must be a card on phones too: `<Card flush className="overflow-hidden panel">`). Variants work: `lg:panel`, `desk:panel`.
+
+### `Icon` (`@/ui/icons/icon`)
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `name` | `IconName` | | One of the 56 icons in `ICON_PACK` |
+| `scale` | `"s" \| "m" \| "l"` | `"m"` | 0.783 em, 1 em, 1.29 em: follows the surrounding font size |
+| `label` | `string` | | Accessible name; without it the icon is `aria-hidden` |
+| … | SVG attributes | | `className` sets colour (`text-accent`) and size (`text-[1.25rem]`) |
+
+```tsx
+<Icon name="alert" scale="l" className="text-accent" />
+<Icon name="chart" label={t("unusualActivity.title")} />
+```
+
+The pack is generated from `design/icon-pack/masters.json` by `npm run icons`; never edit `icon-pack.ts`. 24 × 24 grid, 2 px round strokes, `currentColor`. Icons are decorative by default: the control around them carries the name.
+
+## Layout and surfaces (`@/ui/components/layout`)
+
+### `PAGE_CONTAINER`, `READING_COLUMN`
+
+Class strings, not components. See [layout.md](layout.md#the-page-column). Page wrappers built on them: `SITE_PAGE`, `ReadingPage`, `MessagePage` (`@/features/site/pages`), `SIGNED_IN_PAGE`, `SignedInPage` (`@/features/shell/placeholder-page`).
+
+### `Card`
+
+The grouping surface. On phones a white (`card-background`) block with 24 px corners and 20 px padding; on `desk:` the web card (`panel`, 24 px padding). With a `title` it renders a `CardHeader` and pads the body under it.
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `title` | `ReactNode` | | The card's `h2` |
+| `titleId` | `string` | | With `title`, makes the card a `region` labelled by its title |
+| `action` | `ReactNode` | | Right of the title: `SeeAll`, a compact pill, a status |
+| `flush` | `boolean` | `false` | No body padding: tables and row lists reach the edges |
+| `compact` | `boolean` | `false` | 16 px padding |
+| `surface` | `"card" \| "elevated"` | `"card"` | `elevated` uses `elevated-background` |
+| `bodyClassName` | `string` | | Classes for the body under a title (`flex-1`, `flex flex-col gap-5`) |
+| … | `div` attributes | | |
+
+```tsx
+<Card title={t("common.yourWatchlist")} titleId="watchlist-title" action={<SeeAll href="/lista" />}>
+  <p className="text-body text-secondary-text">…</p>
+</Card>
+
+<Card flush className="overflow-hidden panel">
+  <DataTable>…</DataTable>
+</Card>
+```
+
+- Do give every titled card a `titleId` so it is a named region.
+- Do put tables in a `flush` card; add `panel` when the table must be a card on phones too.
+- Don't nest cards. Inside a card, use `StatTile`, hairline dividers or an inset `bg-app-background` notice.
+- Don't add `shadow-*` or `border` classes: the surface is the token.
+
+### `Panel`
+
+A section that is the canvas on phones (iOS stacked sections) and a card from 1024 px (`lg:panel`). Renders a `<section>`; its children are laid out `flex flex-col gap-4`.
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `title`, `titleId`, `action` | as `Card` | | `aria-labelledby` the title |
+| `always` | `boolean` | `false` | A card on phones too |
+| `flush` | `boolean` | `false` | No padding around the content |
+| … | `section` attributes | | |
+
+```tsx
+<Panel title={t("common.onTheMove")} titleId="home-movement" action={<ButtonLink href="/mercado" kind="outline" size="compact">{t("home.explore.header")}</ButtonLink>}>
+  <SegmentedControl … />
+  <ul>{/* CompactRow */}</ul>
+</Panel>
+```
+
+Card vs Panel: use `Card` when the block needs a surface on phones (a figure, a form, a table); use `Panel` for row lists and sections that read better as plain iOS sections on a phone.
+
+### `CardHeader`, `SectionHeader`, `PageHeading`
+
+| Component | Props | Renders |
+|---|---|---|
+| `CardHeader` | `title`, `titleId?`, `action?`, `className?` | A 44 px row: `h2.text-section` left, the action right. Used by `Card` and `Panel`; use it directly only for a custom card |
+| `SectionHeader` | `title: string`, `action?`, `id?` | `h2.text-section` and an action, baseline-aligned, for headings on the canvas outside a card |
+| `PageHeading` | `title: string`, `eyebrow?: string` | `<header>` with the page `h1.text-display`; `eyebrow` is a caption above it (only the gallery uses it) |
+
+### `MessageCard`
+
+A one-message page's card: `panel`, at most 448 px, centred, `gap-6`, 24 px padding (32 px from 640 px). Put the page `h1` inside. Prefer `MessagePage` from `@/features/site/pages`, which centres it in the page.
+
+```tsx
+<MessagePage title={t("site.notFound.title")}>
+  <ButtonLink href="/" className="sm:w-auto">{t("common.home")}</ButtonLink>
+</MessagePage>
+```
+
+### `StatTile`
+
+A labelled figure inside a card: a hairline box, a muted label over a value in the display face, an optional detail line. Renders `dt`/`dd`, so place tiles in a `<dl>`.
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `label` | `ReactNode` | | `dt`; may hold an info button |
+| `value` | `ReactNode` | | `dd`; text, a `ChangeBadge`, a `MarketStatusIndicator size="value"` |
+| `detail` | `ReactNode` | | A caption `dd` (a date, a source) |
+| `size` | `"large" \| "small"` | `"small"` | `large` is the card's lead figure (26 px, 24 on desk) |
+| … | `div` attributes | | |
+
+```tsx
+<dl className="grid grid-cols-2 gap-3">
+  <StatTile size="large" className="col-span-2" label={t("markets.summary.tradedSecurities")} value={format.chartAxis(volume)} />
+  <StatTile label={t("markets.summary.transactions")} value={format.count(trades)} />
+  <StatTile label={t("markets.summary.verifiedTraded")} value="—" />
+</dl>
+```
+
+Show "—" for a value that is not usable yet; never a zero.
+
+### `StatStrip`
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `items` | `{ title: string; value: ReactNode; tone?: string }[]` | | `tone` is a text class (`text-positive`) for change values only |
+| `variant` | `"strip" \| "grid"` | `"strip"` | `strip`: cells divided by hairlines, two per row on phones, auto-fit from 640 px, values truncate. `grid`: two columns of label over value, no dividers, values wrap (the instrument sidebar's key statistics) |
+| `className` | `string` | | |
+
+Use `grid` in narrow columns where values must not truncate; `strip` across a card's width.
+
+## Navigation
+
+### `TopBar` (`@/ui/components/top-bar`)
+
+The one top bar. Use it through `SiteHeader` (`@/features/site/chrome`) or `ShellTopBar` (`@/features/shell/shell-nav`); build a new bar only for a new area.
+
+| Prop | Type | |
+|---|---|---|
+| `home` | `{ href: string; label: string }` | The logo link and its accessible name |
+| `logo` | `ReactNode` | `<BrandLockup />` |
+| `nav` | `{ href: string; label: string }[]` | Pill links; the current one (path match) gets `aria-current` and the grey pill |
+| `navLabel` | `string` | The `<nav>` name |
+| `mobileNav` | `"row" \| "none"` | Below 1024 px: a scrolling row of pills, or nothing (the bottom tab bar has them) |
+| `search` | `ReactNode` | From 1024 px a 288–320 px slot |
+| `actions` | `ReactNode` | Icon buttons and one compact pill, right-aligned |
+
+`TOP_BAR_PILL` is the pill link's class string. Actions are 44 px: `IconButton variant="plain"`, `iconButtonClass("plain")` on links, `LANGUAGE_CONTROL`, `ThemeMenu`, a `size="compact"` pill.
+
+### `ShellNav` (`@/features/shell/shell-nav`)
+
+The bottom tab bar below 1024 px. Props: `items: { href; label; icon }[]`, `label: string`. Rendered by `AppShell`; pages never render it.
+
+### `SectionRail` (`@/ui/components/section-rail`)
+
+A section's own navigation: icon-over-label tiles in a 96 px vertical rail from 1024 px (sticky at `lg:top-20`), a horizontally scrolling strip below. The current tile is raised (`bg-raised shadow-raised`, accent icon) with `aria-current`.
+
+| Prop | Type | |
+|---|---|---|
+| `items` | `RailItem[]` | `{ href; label; icon; exact?; current?: "page" \| "true" \| false; testID? }`. `current` overrides the path match (an overview that owns its detail pages) |
+| `label` | `string` | The `<nav>` name |
+| `leading` | `ReactNode` | A switcher above the items (beside them on the strip, outside the scroller so its menu is not clipped) |
+| `className` | `string` | |
+
+Place it in a `lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-8` grid beside the section's page. Style a `leading` control as a tile with `RAIL_TILE` + `RAIL_TILE_IDLE` (see `BookSwitcher` in `portfolio-rail.tsx`: a `Menu` with `triggerClassName`).
+
+```tsx
+<SectionRail
+  label={t("common.portfolio")}
+  items={[
+    { href: "/carteira", label: t("assetDetails.tab.overview"), icon: "portfolio", exact: true },
+    { href: "/carteira/registos", label: t("common.records"), icon: "history" },
+  ]}
+/>
+```
+
+### Tabs: `SectionTabs`, `NavTabs`, `FilterTabs` (`@/ui/components/controls`)
+
+All three share one look: text tabs in the display face on a hairline, the current one semibold with a 2 px accent underline; idle tabs `secondary-text`. 48 px tall on phones, 44 on desk. The row scrolls sideways when it runs out of width.
+
+| Component | Semantics | Props |
+|---|---|---|
+| `SectionTabs` | WAI-ARIA tabs (`tablist`/`tab`, roving focus, arrows, Home, End) | `titles: string[]`, `selected: number`, `onSelect`, `label`, `idPrefix?` (tabs control `${idPrefix}-panel-${i}`; render each panel with `role="tabpanel"`, that id and `aria-labelledby={`${idPrefix}-tab-${i}`}`) |
+| `NavTabs` | Links in a `<nav>`, the current one `aria-current` | `items: { href; title; exact?; current? }[]`, `label`, `bare?` (no hairline of its own, for a row that draws one under more than the tabs), `linkProps?`, `className?` |
+| `FilterTabs` | Toggle buttons with `aria-pressed` in a labelled `group` | `options: { value; title }[]`, `value`, `onChange`, `label`, `testID?` |
+
+```tsx
+<SectionTabs titles={[t("assetDetails.tab.overview"), t("common.about")]} selected={tab} onSelect={setTab} label={t("common.security")} idPrefix="instrument" />
+<div role="tabpanel" id="instrument-panel-0" aria-labelledby="instrument-tab-0" hidden={tab !== 0}>…</div>
+```
+
+- Do use `NavTabs` with `current` when the tabs are URL filters (`/mercado?categoria=…`), so the list works without JavaScript.
+- Don't put tabs inside a card for 2–3 short values; use `SegmentedControl`.
+
+`useLinkCurrent()` returns `(href, exact?) => "page" | "true" | undefined` for custom navigation.
+
+### `SeeAll` (`@/ui/components/see-all`)
+
+`<SeeAll href="/lista" />`: the outline compact pill "Ver tudo" for a card header's `action`. One per card.
+
+### Site chrome (`@/features/site/chrome`)
+
+`SiteHeader({ theme })`, `SiteFooter({ theme })`, `BrandLockup()` (mark + wordmark, the wordmark hidden below 400 px), `PalancaMark({ className })` (the mark as a mask in `currentColor`), `LANGUAGE_CONTROL` (class string of the round language link).
+
+## Buttons and choices
+
+### `Button`, `ButtonLink` (`@/ui/components/buttons`)
+
+Pills. Phones: full width, 56 px, 17 px semibold (iOS). `desk:`: 44 px, 14 px medium. `size="compact"`: 44 px everywhere, 14 px, sized to the title (card actions, toolbars, the top bar).
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `kind` | `"primary" \| "secondary" \| "outline" \| "destructive"` | `"primary"` | Accent fill · grey fill · hairline outline · red tint |
+| `size` | `"regular" \| "compact"` | `"regular"` | |
+| `icon` | `IconName` | | Leading icon |
+| `loading` | `boolean` | `false` | `Button` only: spinner, `aria-busy`, `aria-disabled`, presses ignored, "processing" announced |
+| … | `button` attributes / `Link` props | | `type` defaults to `button` |
+
+A regular pill is `w-full`. To size it to its title write `w-auto!` (or `sm:w-auto` from 640 px): `cn` does not merge classes and Tailwind emits `w-full` after `w-auto`.
+
+```tsx
+<Button icon="add" onClick={record}>{t("common.recordPurchase")}</Button>
+<Button kind="secondary" size="compact" icon="refresh" loading={retrying}>{t("common.tryAgain")}</Button>
+<ButtonLink href="/mercado" kind="outline" size="compact">{t("home.explore.header")}</ButtonLink>
+```
+
+- One `primary` per view. Everything else is `secondary` or `outline`.
+- `destructive` for delete and sign-out confirmations only.
+- Disabled pills are at 42 % opacity; prefer `loading` over disabling during a request.
+
+`buttonClass(kind?, className?, size?)` gives the same classes for elements that are not `Button`/`ButtonLink`: external links (`StoreButton`), `<summary>`, a server form's submit. It lives in `button-styles.ts`, which server components can import.
+
+### `IconButton`, `iconButtonClass`
+
+Round icon-only button: 48 px on phones, 44 on desk. `label` is required (it is the `aria-label` and the tooltip).
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `icon` | `IconName` | | |
+| `label` | `string` | | |
+| `variant` | `"filled" \| "plain" \| "outline"` | `"filled"` | Grey disc · bare icon with a hover disc (top bar, toolbars, dialog close) · hairline ring |
+| … | `button` attributes | | |
+
+`iconButtonClass(variant?, className?)` styles a link as an icon button (the top bar's activity links). Mark the current one with `aria-current` and `aria-[current=page]:bg-action-surface`.
+
+### `ActionTile`
+
+Icon over a label in a tile (`aria-pressed` toggle; selected: soft accent fill and accent border). Props: `icon`, `title`, `selected?`, button attributes. No page uses it yet.
+
+### `chipClass(selected, className?)` (`button-styles.ts`)
+
+A choice chip: 44 px hairline pill, the chosen one in `accent-soft` with accent text. Use on `<button aria-pressed>` for presets and filters inside forms (alert presets, simulator amounts).
+
+```tsx
+<button type="button" aria-pressed={value === preset} onClick={() => setValue(preset)} className={chipClass(value === preset)}>{label}</button>
+```
+
+### `SegmentedControl`, `OptionGroup`, `TimeRangePicker` (`controls.tsx`)
+
+A WAI-ARIA `radiogroup` with roving focus. The segmented look is a `track` groove with the selected segment raised (`SEGMENT_TRACK`, `segmentTone(selected)` in `button-styles.ts`).
+
+| Component | Props |
+|---|---|
+| `SegmentedControl<T>` | `options: { value: T; title; spoken?; disabled? }[]`, `value`, `onChange`, `label` |
+| `OptionGroup<T>` | the same, plus `variant?: "segmented" \| "ranges"` (`ranges`: small pills, the chosen one in `accent-soft`) and `scroll?` (each option keeps 44 px and the track scrolls) |
+| `TimeRangePicker` | `value: TimeRange`, `onChange`, `label`, `ranges?` (default `TIME_RANGES`: 1D · 1S · 1M · 3M · 6M · 1A · Tudo), `isEnabled?` (disabled ranges stay visible and inert; arrows skip them), `variant?: "ranges" \| "segmented"` (`segmented` is the chart card's range track) |
+
+```tsx
+<SegmentedControl label={t("common.onTheMove")} value={tab} onChange={setTab} options={[{ value: "gains", title: t("home.movers.gainsTab") }, { value: "declines", title: t("home.movers.declinesTab") }]} />
+<TimeRangePicker variant="segmented" label={t("components.chart.priceAccessibility")} value={range} onChange={setRange} />
+```
+
+`spoken` is the option's accessible name when the title is an abbreviation (`1M` → "One month").
+
+### `SwitchRow` (`@/ui/components/menu`)
+
+An on/off switch with its visible label; the whole 44 px row is the target (`role="switch"`). Props: `label`, `checked`, `onChange`, `disabled?`, `testID?`, `children?` (a value line under the label).
+
+### `ThemeSwitch`, `ThemeMenu` (`controls.tsx`)
+
+`<ThemeSwitch initial={theme} />` (Sistema · Claro · Escuro as a segmented control, in the footer) and `<ThemeMenu initial={theme} icon? />` (the same as a check menu, in the top bar). `initial` is the server's `parseTheme(cookie)`.
+
+### `Menu` (`@/ui/components/menu`)
+
+A WAI-ARIA menu button. Enter, Space or the arrows open it on the first or last item; arrows, Home and End move; Escape closes it and returns focus; a click outside or Tab closes it. It replaces swipe and long-press actions on the web.
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `label` | `string` | | The trigger's name (and the menu's) |
+| `entries` | `MenuEntry[]` | | `{ kind: "item", label, icon?, onSelect, destructive?, disabled?, testID? }`, `{ kind: "check", label, checked, onToggle }`, `{ kind: "heading", label }`, `{ kind: "separator" }` |
+| `icon` | `IconName` | `"more"` | Icon trigger |
+| `trigger` | `ReactNode` | | Visible trigger content: a grey pill instead of the icon |
+| `align` | `"start" \| "end"` | `"end"` | |
+| `triggerClassName` | `string` | | Replaces the trigger's look (a rail tile) |
+| `testID`, `className` | | | |
+
+Menu items show a soft `action-surface` fill on focus instead of the ring.
+
+### `PrivacyModeButton` (`@/features/privacy/privacy-mode`)
+
+The eye `IconButton` that hides or shows personal values in this browser. Place it in the title row of any page with personal figures. Props: `className?`.
+
+## Fields
+
+All text fields share one look: 48 px (44 on desk), 12 px corners on desk, `field-border` on `card-background`. **Focus never shows an outline**: the border turns `accent` and the `shadow-focus` glow appears (mouse and keyboard alike). The base layer removes the outline from every text input, textarea and select; checkboxes, radios, ranges and file pickers keep the ring.
+
+### `field-styles.ts`
+
+| Export | For |
+|---|---|
+| `INPUT` | A standalone `<input>` or `<select>` (includes `FIELD_FOCUS`) |
+| `INPUT_BOX` | A box around a bare input and its prefix or suffix (`Kz`, `%`); lights up with `focus-within` |
+| `INPUT_BARE` | The input inside an `INPUT_BOX` |
+| `FIELD_FOCUS` | `focus:border-accent focus:shadow-focus`, for a custom element that is itself the field |
+| `FIELD_FOCUS_WITHIN` | The same on `focus-within`, for a custom box |
+
+```tsx
+<label className="flex flex-col gap-1 text-secondary font-semibold text-primary-text">
+  {t("site.auth.email")}
+  <input name="email" type="email" className={cn(INPUT, "font-normal")} />
+</label>
+```
+
+Label every field with a visible `<label>`; placeholders are not labels (except the search field, whose prompt is also its `aria-label`).
+
+### `SearchField` (`controls.tsx`)
+
+The magnifier, the input, then a clear button once there is text or a `KeyHint` chip while empty.
+
+| Prop | Type | |
+|---|---|---|
+| `value`, `onChange` | `string`, `(value) => void` | |
+| `placeholder` | `string` | Defaults to "Pesquisar títulos ou emitentes"; also the `aria-label` |
+| `name` | `string` | So the field works in a plain GET form without JavaScript |
+| `controls` | `string` | Id of the results it filters |
+| `hint` | `string` | A shortcut chip (`/`) |
+| `autoFocus`, `onKeyDown`, `className` | | `className` sizes the box (the landing's taller field) |
+
+Wrap it in `<form role="search" action=… method="get">` when the results page reads the query from the URL. `FIELD` is its box class (shared with the command palette's button); `KeyHint` the chip.
+
+### `AmountField` (`@/ui/components/amount-field`)
+
+Decimal amounts: comma decimal separator in every language (`.` typed as `,`), live thousands grouping, the caret kept on the same digit, invalid keystrokes rejected, completed on blur. Parse the text with `parseAmount` into a `Decimal`.
+
+| Prop | Type | |
+|---|---|---|
+| `value` | `string` | The field's text |
+| `onValueChange` | `(text: string) => void` | |
+| `prefix`, `suffix` | `ReactNode` | E.g. a minus sign, `Kz` |
+| `boxClassName` | `string` | Classes for the `INPUT_BOX` |
+| … | `input` attributes | `id`, `aria-*`, `onBlur` |
+
+## Data display
+
+### Table primitives (`@/ui/components/table`)
+
+60 px rows divided by hairlines, no zebra, a muted 14 px header in Inter, cells in the display face, numeric columns right-aligned, a faint hover. The first and last cells carry the card's inset (16 px, 24 on desk).
+
+| Component | Props |
+|---|---|
+| `DataTable` | `table` attributes (`className="table-fixed"` with fixed numeric widths) |
+| `TableHead` | `children` (header cells), `className?`: one header row with a hairline under it |
+| `TableHeaderCell` | `align?: "left" \| "right" \| "center"`, `th` attributes (`scope="col"`) |
+| `TableSortHeader` | `label`, `sort: "ascending" \| "descending" \| undefined`, `href` (the URL with the new sort), `align?`, `className?`: the label is a link; the sorted column has `aria-sort`, primary text and an arrow |
+| `TableRow` | `tr` attributes |
+| `TableCell` | `numeric?` (right-aligned, no wrap), `td` attributes |
+| `TableNameCell` | `logo?`, `name`, `symbol?` (a muted "• SYM"), `href?` (the whole row becomes the link through an overlay that carries the focus ring), `linkProps?`, `stackOnPhone?` (symbol under the name below 640 px), `detail?` (a caption line under the name), `className?`. Renders `th scope="row"` |
+
+`TABLE_HEADER_CELL`, `TABLE_ROW`, `TABLE_CELL` are the class strings for custom cells.
+
+```tsx
+<Card flush className="overflow-hidden panel">
+  <DataTable className="table-fixed">
+    <TableHead>
+      <TableSortHeader label={t("common.instrument")} sort={ariaSort("name")} href={sortLink("name")} />
+      <TableSortHeader label={t("common.price")} sort={ariaSort("price")} href={sortLink("price")} align="right" className="w-36 sm:w-44" />
+    </TableHead>
+    <tbody>
+      <TableRow>
+        <TableNameCell logo={<SecurityLogo symbol="BAI" size="s" />} name="Banco Angolano de Investimentos" symbol="BAI" href="/mercado/BAI" stackOnPhone />
+        <TableCell numeric><PriceCell row={row} security={live} at={at} /></TableCell>
+      </TableRow>
+    </tbody>
+  </DataTable>
+</Card>
+```
+
+- Row actions go in the last cell with `relative z-10`, above the row link.
+- Fold columns on phones instead of scrolling ([layout.md](layout.md#tables-on-phones)).
+
+### `CompactRow`, `MoverRow` (`@/features/market/browse/market-overview`)
+
+`CompactRow({ security, row, children, className? })`: an `<li>` whose whole 48 px row (44 on desk) links to the instrument: logo (hidden below 400 px), symbol, then `children` (the trailing figures). Put rows in a `<ul>` in a `Panel` or `Card`. `MoverRow({ security, row, at, volume, className? })` is a `CompactRow` with the price (or traded volume) and the change. Use them for short lists in narrow columns; use a table when there are columns to compare.
+
+### `PriceCell`, `ChangeCell`, `rowFigure` (`@/features/market/browse/price-cell`)
+
+The only way a list shows a price. `rowFigure(row, security, at)` decides: a current price once the store has assessed the quote as usable, otherwise the server's dated verified close, otherwise nothing.
+
+| Component | Props | Shows |
+|---|---|---|
+| `PriceCell` | `row: CatalogueRow \| undefined`, `security: MarketSecurity \| undefined`, `at: number \| undefined`, `inlineChange?` (classes for the badge under a current price), `compact?` (14 px), `className?` | Current: the price and its change badge. Close: the price and its date (read as "Último fecho verificado · date"). None: "Preço por confirmar" |
+| `ChangeCell` | `row`, `security`, `at` | The change badge, or a muted "—" |
+
+Pass `security={undefined}` and `at={undefined}` on cached pages (the landing): they show the dated close only.
+
+### `FinancialValue` (`@/ui/components/financial`)
+
+A formatted instrument value in the display face, always `primary-text`, animated when it changes.
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `value` | `Numeric` (`Decimal`, decimal string or number) | | |
+| `style` | `"display" \| "price" \| "standard"` | `"standard"` | `text-headline` · `text-price` · 17/16 px medium |
+| `bond` | `boolean` | `false` | Bond prices format as a percentage of nominal |
+| `code` | `string` | `"AOA"` | Currency |
+| `digits` | `number` | | Fraction digits |
+| `className` | `string` | | |
+
+### `ChangeBadge`
+
+`<ChangeBadge value={change} />`: a signed percentage capsule with an arrow, in the gain/loss colour with a 12 % tint; zero is grey. Read as "Variação: Subiu 2,14 %". 28 px tall on phones, 24 on desk. Props: `value: Numeric`, `className?`.
+
+### `MarketStatusIndicator`
+
+A status dot and its word (Aberto, Fechado, Em breve, Indisponível), read as "Mercado …". Props: `status: "unknown" | "closed" | "openingSoon" | "open"`, `size?: "caption" | "value"` (`value` sets it as a `StatTile`'s figure).
+
+### `MarketMetric`
+
+Label, value and an optional caption and icon, "—" when the value is `null`. Props: `title`, `value: string | null`, `detail?`, `icon?`. No page uses it yet; prefer `StatTile`.
+
+### `SecurityLogo` (`@/ui/components/rows`)
+
+Circular issuer logo; a coloured monogram when there is no image or it fails. Decorative (`aria-hidden`): the row names the instrument.
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `symbol` | `string` | | Monogram: up to four characters, hyphens dropped |
+| `logoUrl` | `string \| null` | | |
+| `brandColor` | `"blue" \| "gold" \| "green" \| "red" \| "violet"` | `"blue"` | Pages use `violet` for bonds and `blue` otherwise |
+| `size` | `"s" \| "m" \| "l" \| "header"` | `"m"` | 32 px · 48/36 desk · 64/48 desk · 48 px everywhere |
+
+### `AssetRow`, `FeatureRow` (`rows.tsx`)
+
+`AssetRow({ symbol, name, price: Numeric | null, change?, bond?, code?, logoUrl?, brandColor?, href? })`: the iOS instrument row (logo, symbol over name, price over change badge, or "Preço por confirmar" when `price` is null); stacks below 320 px. Used in the market information list. `FeatureRow({ icon, title, subtitle })`: an icon tile beside a title and a line; no page uses it yet.
+
+## Overlays
+
+### `Dialog` (`@/ui/components/dialog`)
+
+A modal on `<dialog>`: focus is trapped, Escape and a backdrop click close it, focus returns to the opener. Opening focuses the close button, or a descendant marked `data-autofocus`. The title is the dialog's `h2` and its name.
+
+| Prop | Type | Default | |
+|---|---|---|---|
+| `open`, `onClose` | `boolean`, `() => void` | | |
+| `title` | `string` | | |
+| `variant` | `"sheet" \| "dialog"` | `"sheet"` | `sheet`: a bottom sheet on phones, a 448 px side panel from 768 px. `dialog`: a centred window, 512 px max |
+| `footer` | `ReactNode` | | A persistent bottom area above a hairline for the primary action |
+| `children` | `ReactNode` | | Padded body that scrolls |
+
+```tsx
+<Dialog open={open} onClose={() => setOpen(false)} title={t("common.hiddenValues")} variant="dialog" footer={<Button onClick={() => setOpen(false)}>{t("common.ok")}</Button>}>
+  <p className="text-body">…</p>
+</Dialog>
+```
+
+Use `sheet` for tasks and long content (forms, alerts, methodology), `dialog` for a short confirmation or explanation. The body is already padded; don't add horizontal padding inside.
+
+## Feedback (`@/ui/components/feedback`)
+
+| Component | Props | |
+|---|---|---|
+| `ToastHost` | `children` | Wrap the tree once; one toast at a time from the top, announced politely, auto-dismissed after 7 s unless it has a retry |
+| `useToast()` | | `{ show(toast), dismiss() }`; `toast: { title, message, actionTitle?, onRetry?, onDismiss? }` |
+| `OfflineBanner` | `forceVisible?` | "Sem ligação à Internet" while offline (`role="status"`). Put it first on pages that show market data |
+| `useOnline()` | | `navigator.onLine` as state |
+| `HiddenValue` | `className?` | Six dots for a personal value, read as "Valor oculto"; the value is not in the page |
+| `SensitiveValue` | `hidden`, `children`, `className?` | Masks a value but keeps its footprint (the value stays in the DOM, inert). No page uses it yet |
+
+`Private({ children, className? })` in `@/features/portfolio/portfolio-ui` renders the text or, in privacy mode, `HiddenValue`: use it for every personal figure.
+
+## States (`@/ui/components/states`)
+
+| Component | Props | Use |
+|---|---|---|
+| `Spinner` | `className?` | 1 em ring in `currentColor`; inside buttons and `LoadingState` |
+| `LoadingState` | `message?` | A whole view loading (`role="status"`) |
+| `EmptyState` | `title`, `message?`, `icon?` (`"info"`), `action?` | Nothing to show; offer the next step as the action |
+| `ErrorState` | `title?` ("Dados indisponíveis"), `message`, `action?` | A view failed (`role="alert"`); the action is "Tentar novamente" |
+| `Skeleton` | `className` | A grey pulsing block shaped like what will load |
+| `InstrumentRowSkeleton` | | Placeholder for an instrument row |
+| `ChartShimmer` | `className?` | A chart's place while it loads; never fake data |
+| `SectionPlaceholder` | `title`, `failed?`, `onRetry?` | A section keeps its place while loading or after it fails |
+
+## Settings rows (`@/features/settings/settings-ui`)
+
+`SettingsGroup({ id, title, children, className? })`: a titled `Card` whose rows are divided by hairlines. Rows: `LinkRow({ href, icon?, label, value?, external? })` (chevron or external arrow), `ValueRow({ icon?, label, children })`, `ControlRow({ icon?, label, children })` (the control under the label on phones, beside it from 640 px), `DisclosureRow({ icon?, label, children })` (an expandable `<details>`). All work without JavaScript.
+
+## Landing pieces (`@/features/site/home`, `@/features/site/visuals`)
+
+Landing-only building blocks; reuse them for new marketing sections, not for app pages.
+
+| Export | |
+|---|---|
+| `HOME_SECTION`, `HOME_HEADING` | Section spacing (`py-16 md:py-24`) and the large centred section title (40 px from 1024 px) |
+| `HeroRings` | Decorative rings and glow behind the hero |
+| `EntryTile`, `ENTRY_TILE_ITEM` | A square `panel` link tile (icon disc, label, "Ver tudo →"); `ENTRY_TILE_ITEM` sizes its `<li>` |
+| `FactItem` | Icon disc, title, one line, in a `<ul>` |
+| `HubDiagram` | Decorative diagram (`aria-hidden`) |
+| `FeatureRow` | Visual on one side; icon, `h2`, message and an action on the other; `flip` swaps sides from 768 px |
+| `InstrumentVisual`, `WatchlistVisual`, `PortfolioVisual` | Product visuals on a soft stage, `{ label }` is the figure's accessible name; captioned "Exemplo ilustrativo" (`onboarding.preview.illustrativeExample`) |
+| `StoreButton` | The App Store pill; `kind?`, `className?` |
+
+See [patterns.md](patterns.md#illustrative-visuals) for the visuals rule.
