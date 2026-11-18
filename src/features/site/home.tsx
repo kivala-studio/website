@@ -18,9 +18,12 @@ export const HOME_SECTION = cn(PAGE_CONTAINER, "py-16 md:py-24");
 /** Large section heading in the display face (CoinStats' 40 px section titles on desk). */
 export const HOME_HEADING = "text-display text-primary-text text-balance lg:text-[2.5rem] lg:leading-[1.15] lg:tracking-[-0.02em]";
 
-/** The hero title: fluid from 36 px on phones to 68 px on wide screens, tracking −0.02em (−0.025em from 640 px). */
+/**
+ * The hero title: fluid from 38 px at 320 to 44 px on phones (42 px at 390, two lines, leading 1.08), then from 47 px at
+ * 640 to 68 px on wide screens (leading 1.04); tracking −0.02em (−0.025em from 640 px).
+ */
 export const HERO_TITLE =
-  "font-display text-[clamp(2.25rem,1.2rem+4.4vw,4.25rem)] leading-[1.04] font-semibold tracking-[-0.02em] sm:tracking-[-0.025em] text-balance text-primary-text";
+  "font-display text-[clamp(2.25rem,1.2rem+4.4vw,4.25rem)] leading-[1.04] max-sm:text-[clamp(2.375rem,1.23rem+5.7vw,2.75rem)] max-sm:leading-[1.08] font-semibold tracking-[-0.02em] sm:tracking-[-0.025em] text-balance text-primary-text";
 
 /** The closing line: display face, fluid from 34 px on phones to 56 px, between `HOME_HEADING` and `HERO_TITLE`. */
 export const CLOSING_TITLE =
@@ -40,14 +43,34 @@ export function HeroBackdrop({ edge = "top" }: { edge?: "top" | "bottom" }) {
   );
 }
 
-/** Coverage figures under the hero actions: each count in the display face beside its label. */
-export function HeroFigures({ items, className }: { items: { value: string; label: string }[]; className?: string }) {
+type HeroFigure = { value: string; label: string };
+
+/**
+ * Coverage figures under the hero actions. Phones: the kinds as an even stat row, each count above its label, hairlines
+ * between the columns, no total (it is their sum). From 640 px: one inline strip, the total first, each count in the
+ * display face beside its label.
+ */
+export function HeroFigures({ total, items, className }: { total?: HeroFigure; items: HeroFigure[]; className?: string }) {
   return (
-    <dl className={cn("flex flex-wrap items-baseline justify-center gap-x-4 gap-y-1.5 sm:gap-x-8", className)}>
-      {items.map((item) => (
-        <div key={item.label} className="flex flex-row-reverse items-baseline gap-1.5">
-          <dt className="text-caption text-secondary-text sm:text-secondary">{item.label}</dt>
-          <dd className="font-display text-secondary font-semibold text-primary-text sm:text-body">{item.value}</dd>
+    <dl
+      className={cn(
+        "flex flex-wrap items-baseline justify-center gap-x-4 gap-y-1.5 sm:gap-x-8",
+        "max-sm:grid max-sm:w-full max-sm:auto-cols-fr max-sm:grid-flow-col max-sm:gap-0 max-sm:divide-x max-sm:divide-hairline",
+        className,
+      )}
+    >
+      {(total ? [total, ...items] : items).map((item, index) => (
+        <div
+          key={item.label}
+          className={cn(
+            "flex flex-row-reverse items-baseline gap-1.5 max-sm:min-w-0 max-sm:flex-col-reverse max-sm:items-center max-sm:px-1",
+            total && index === 0 && "max-sm:hidden",
+          )}
+        >
+          <dt className="text-caption text-secondary-text max-[22.5rem]:text-[0.6875rem] sm:text-secondary">{item.label}</dt>
+          <dd className="font-display text-secondary font-semibold text-primary-text max-sm:text-[1.375rem] max-sm:leading-none max-sm:tabular-nums sm:text-body">
+            {item.value}
+          </dd>
         </div>
       ))}
     </dl>

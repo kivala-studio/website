@@ -20,8 +20,8 @@ import { ButtonLink } from "@/ui/components/buttons";
 import { GallerySection, SPECIMEN_GRID, Specimen } from "./specimen";
 
 /** Sample counts; the landing reads them from the catalogue. */
+const TOTAL = { value: "24", key: "common.instruments" } as const;
 const FIGURES = [
-  { value: "24", key: "common.instruments" },
   { value: "6", key: "common.stocks" },
   { value: "18", key: "common.bonds" },
 ] as const;
@@ -34,7 +34,10 @@ export function Landing() {
         <div className="relative isolate flex w-full flex-col items-center gap-6 overflow-hidden rounded-card px-4 py-12 text-center">
           <HeroBackdrop />
           <p className={HERO_TITLE}>{t("common.yourMarketUpClose")}</p>
-          <HeroFigures items={FIGURES.map((item) => ({ value: item.value, label: t(item.key) }))} />
+          <HeroFigures
+            total={{ value: TOTAL.value, label: t(TOTAL.key) }}
+            items={FIGURES.map((item) => ({ value: item.value, label: t(item.key) }))}
+          />
         </div>
       </Specimen>
 
