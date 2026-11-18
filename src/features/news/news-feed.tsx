@@ -8,9 +8,10 @@ import { NewsFeedStore } from "@/data/news/feed-store";
 import { routeNewsRepository } from "@/data/news/route-repository";
 import { ARTICLE_LANGUAGE, type ArchiveSection, type NewsArticle, archiveSections } from "@/domain/news/article";
 import { Link } from "@/i18n/navigation";
+import { buttonClass } from "@/ui/components/button-styles";
 import { Button } from "@/ui/components/buttons";
 import { SearchField } from "@/ui/components/controls";
-import { SectionHeader } from "@/ui/components/layout";
+import { Card } from "@/ui/components/layout";
 import { EmptyState, ErrorState, LoadingState } from "@/ui/components/states";
 
 import { ArticleMetadata } from "./article-metadata";
@@ -38,23 +39,25 @@ function Archive({ articles, now }: { articles: readonly NewsArticle[]; now: num
   const t = useTranslations();
   const monthTitle = useMonthTitle();
   return archiveSections(articles, now).map((section) => (
-    <section key={section.key} aria-labelledby={`news-${section.key}`} className="flex flex-col gap-3">
-      <SectionHeader
-        id={`news-${section.key}`}
-        title={section.kind === "month" ? monthTitle(section) : t(section.kind === "today" ? "common.today" : "common.yesterday")}
-      />
-      <ul className="flex flex-col rounded-large border-[length:var(--card-outline-width)] border-card-outline bg-card-background px-4">
+    <Card
+      key={section.key}
+      title={section.kind === "month" ? monthTitle(section) : t(section.kind === "today" ? "common.today" : "common.yesterday")}
+      titleId={`news-${section.key}`}
+      flush
+      className="overflow-hidden"
+    >
+      <ul className="flex flex-col">
         {section.articles.map((article) => (
-          <li key={article.id} className="border-b border-separator last:border-b-0">
+          <li key={article.id} className="border-t border-hairline first:border-t-0">
             <Link
               href={`/noticias/${article.slug}`}
               prefetch={false}
               aria-description={t(article.isRecap ? "news.row.recapHint" : "news.row.articleHint")}
-              className="flex min-h-11 flex-col gap-3 rounded-small py-4"
+              className="flex min-h-11 flex-col gap-2 px-5 py-4 transition-colors hover:bg-app-background/70 desk:px-6"
               data-testid="news-row"
             >
               <ArticleMetadata article={article} />
-              <span lang={ARTICLE_LANGUAGE} className="text-body font-semibold text-primary-text">
+              <span lang={ARTICLE_LANGUAGE} className="font-display text-body font-medium text-primary-text">
                 {article.title}
               </span>
               <span lang={ARTICLE_LANGUAGE} className="line-clamp-2 text-secondary text-secondary-text">
@@ -64,7 +67,7 @@ function Archive({ articles, now }: { articles: readonly NewsArticle[]; now: num
           </li>
         ))}
       </ul>
-    </section>
+    </Card>
   ));
 }
 
@@ -138,7 +141,7 @@ export function NewsFeed({
   const error = query === "" ? (state.errorKey === "news.store.refreshFailed" && visible.length === 0 ? t(state.errorKey) : null) : found.articles === null && !searching ? t("news.feed.searchFailed") : null;
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       <form role="search" action={pathname} onSubmit={(event) => event.preventDefault()}>
         <SearchField name="q" value={search} onChange={updateSearch} placeholder={t("news.feed.searchPrompt")} />
       </form>
@@ -170,7 +173,7 @@ export function NewsFeed({
               void store.loadMore();
             }}
             aria-disabled={state.isLoading || undefined}
-            className="inline-flex min-h-11 items-center justify-center rounded-medium bg-action-surface px-5 text-body font-semibold text-accent"
+            className={buttonClass("secondary")}
           >
             {t("common.loadMore")}
           </Link>

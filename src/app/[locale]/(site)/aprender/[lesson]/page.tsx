@@ -6,11 +6,12 @@ import { use } from "react";
 
 import { LESSON_SECTIONS, lessonBySlug } from "@/features/learn/lessons";
 import { MarkRead } from "@/features/learn/read-state";
-import { PAGE_WIDTH } from "@/features/site/chrome";
 import { pageMetadata } from "@/features/site/metadata";
+import { SITE_PAGE } from "@/features/site/pages";
 import { Link } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
 import { cn } from "@/ui/cn";
+import { READING_COLUMN } from "@/ui/components/layout";
 import { Icon } from "@/ui/icons/icon";
 
 type Props = { params: Promise<{ locale: string; lesson: string }> };
@@ -35,13 +36,13 @@ export default function LessonPage({ params }: Props) {
   if (!lesson) notFound();
   const t = useTranslations();
   return (
-    <main id="main" className={cn(PAGE_WIDTH, "pt-4 pb-16")}>
+    <main id="main" className={SITE_PAGE}>
       <MarkRead id={lesson.id} />
-      <article className="flex max-w-170 flex-col gap-6">
+      <article className={cn(READING_COLUMN, "gap-6")}>
         <Link
           href="/aprender"
           prefetch={false}
-          className="-ml-2 inline-flex min-h-11 items-center gap-1 self-start rounded-small px-2 text-secondary font-semibold text-accent"
+          className="-mb-4 -ml-1 inline-flex min-h-11 items-center gap-1 self-start rounded-small px-1 text-secondary font-semibold text-accent"
         >
           <Icon name="chevron-left" />
           {t("learn.title")}

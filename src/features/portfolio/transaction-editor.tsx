@@ -12,6 +12,7 @@ import { type RecordIssue, netAmount, priceScaleOf, recordIssues, supportsLedger
 import { cn } from "@/ui/cn";
 import { AmountField } from "@/ui/components/amount-field";
 import { Button } from "@/ui/components/buttons";
+import { INPUT } from "@/ui/components/field-styles";
 import { SectionTabs, SearchField } from "@/ui/components/controls";
 import { Dialog } from "@/ui/components/dialog";
 import { SecurityLogo } from "@/ui/components/rows";
@@ -139,20 +140,19 @@ function EditorSheet({ request, model, onClose }: { request: EditorRequest; mode
       <label htmlFor={ids[name]} className={cn(big ? "text-section" : "text-secondary", "text-primary-text")}>
         {label}
       </label>
-      <div className={cn("flex items-center gap-2 rounded-medium bg-elevated-background px-3 focus-within:outline-2 focus-within:outline-accent", big ? "min-h-16" : "min-h-12 desk:min-h-11")}>
-        <AmountField
-          id={ids[name]}
-          value={values[name]}
-          onValueChange={(text) => (setValues((current) => ({ ...current, [name]: text })), setRefusal(null))}
-          inputMode={name === "quantity" && instrument.kind === "equity" ? "numeric" : "decimal"}
-          aria-invalid={messages.has(name)}
-          aria-describedby={messages.has(name) ? `${ids[name]}-error` : undefined}
-          data-autofocus={big ? true : undefined}
-          data-testid={`editor-${name}`}
-          className={cn("min-w-0 flex-1 bg-transparent text-primary-text outline-none", big ? "text-headline" : "text-body")}
-        />
-        {suffix ? <span className="text-body text-secondary-text">{suffix}</span> : null}
-      </div>
+      <AmountField
+        id={ids[name]}
+        value={values[name]}
+        onValueChange={(text) => (setValues((current) => ({ ...current, [name]: text })), setRefusal(null))}
+        inputMode={name === "quantity" && instrument.kind === "equity" ? "numeric" : "decimal"}
+        aria-invalid={messages.has(name)}
+        aria-describedby={messages.has(name) ? `${ids[name]}-error` : undefined}
+        data-autofocus={big ? true : undefined}
+        data-testid={`editor-${name}`}
+        className={big ? "text-headline!" : undefined}
+        boxClassName={big ? "min-h-16 desk:min-h-16" : undefined}
+        suffix={suffix || undefined}
+      />
       {messages.has(name) ? (
         <p id={`${ids[name]}-error`} className="text-secondary text-negative" role="alert">
           {messages.get(name)}
@@ -215,7 +215,7 @@ function EditorSheet({ request, model, onClose }: { request: EditorRequest; mode
               onChange={(event) => (setValues((current) => ({ ...current, date: event.target.value })), setRefusal(null))}
               aria-invalid={messages.has("date")}
               data-testid="editor-date"
-              className="min-h-12 rounded-medium bg-elevated-background px-3 text-body text-primary-text desk:min-h-11"
+              className={INPUT}
             />
             {messages.has("date") ? (
               <p className="text-secondary text-negative" role="alert">

@@ -8,6 +8,7 @@ import { useAccount, useAccountStores } from "@/features/account/account-provide
 import type { CatalogueRow } from "@/features/market/browse/price-cell";
 import { cn } from "@/ui/cn";
 import { Button } from "@/ui/components/buttons";
+import { INPUT } from "@/ui/components/field-styles";
 import { Dialog } from "@/ui/components/dialog";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
@@ -104,7 +105,7 @@ export function FreeSelectionDialog({ onClose, rows }: { onClose: () => void; ro
               setMovement(event.target.value);
               setResult(null);
             }}
-            className="min-h-11 rounded-medium bg-elevated-background px-3 text-body text-primary-text"
+            className={INPUT}
           >
             <option value="">{t("subscriptions.freeSelection.noneOption")}</option>
             {chosen.map((id) => (

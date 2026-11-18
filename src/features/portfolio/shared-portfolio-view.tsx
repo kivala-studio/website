@@ -8,8 +8,8 @@ import type { SharedTransaction } from "@/data/portfolio/shared-portfolio";
 import { currentQuotePrices } from "@/domain/market";
 import { type PortfolioTransaction, ledgerPositions, portfolioPriceScale, portfolioSummary, validateLedger, valuePositions } from "@/domain/portfolio";
 import { useMarketState } from "@/features/market/market-provider";
-import { cn } from "@/ui/cn";
 import { ChangeBadge, FinancialValue } from "@/ui/components/financial";
+import { Card } from "@/ui/components/layout";
 import { SecurityLogo } from "@/ui/components/rows";
 import { Skeleton } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
@@ -63,9 +63,9 @@ export function SharedPortfolioView({
   }
 
   return (
-    <div className="flex flex-col gap-8" data-testid="shared-portfolio">
-      <section aria-labelledby="value" className="flex flex-col gap-2">
-        <h2 id="value" className="text-secondary text-secondary-text">
+    <div className="flex flex-col gap-6" data-testid="shared-portfolio">
+      <Card role="region" aria-labelledby="value" className="flex flex-col gap-2">
+        <h2 id="value" className="text-secondary font-medium text-secondary-text">
           {t("common.portfolioValue")}
         </h2>
         {summary === undefined ? (
@@ -87,26 +87,23 @@ export function SharedPortfolioView({
             ) : null}
           </>
         )}
-      </section>
+      </Card>
 
-      <section aria-labelledby="positions" className="flex flex-col gap-1">
-        <h2 id="positions" className="text-section text-primary-text">
-          {t("common.instruments")}
-        </h2>
-        <ul className="flex flex-col">
+      <Card title={t("common.instruments")} titleId="positions" flush>
+        <ul className="flex flex-col pb-2">
           {valuations.map((valuation) => {
             const instrument = byID.get(valuation.position.securityId);
             const symbol = instrument?.symbol ?? "—";
             return (
-              <li key={valuation.position.securityId} className="flex min-h-18 items-center gap-3 border-b border-separator py-3 last:border-b-0">
-                <SecurityLogo symbol={symbol} brandColor={instrument?.bond ? "violet" : "blue"} />
-                <span className="flex min-w-0 flex-1 flex-col gap-1">
-                  <span className="text-body font-semibold text-primary-text">{symbol}</span>
+              <li key={valuation.position.securityId} className="flex min-h-16 items-center gap-3 border-t border-hairline px-5 py-3 first:border-t-0 desk:px-6">
+                <SecurityLogo symbol={symbol} brandColor={instrument?.bond ? "violet" : "blue"} size="s" />
+                <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                  <span className="font-display text-body font-semibold text-primary-text">{symbol}</span>
                   <span className="text-caption text-secondary-text">
                     {`${t("common.quantity")}: ${format.quantity(valuation.position.quantity)}`}
                   </span>
                 </span>
-                <span className={cn("flex flex-col items-end gap-1")}>
+                <span className="flex flex-col items-end gap-1">
                   {prices === undefined ? (
                     <Skeleton className="h-5 w-24" />
                   ) : valuation.currentValue ? (
@@ -122,7 +119,7 @@ export function SharedPortfolioView({
             );
           })}
         </ul>
-      </section>
+      </Card>
     </div>
   );
 }

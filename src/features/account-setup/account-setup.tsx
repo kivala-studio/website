@@ -11,9 +11,11 @@ import { MARKET_CATEGORY_LABEL_KEYS } from "@/domain/market";
 import { reauthenticate } from "@/features/auth/reauthenticate";
 import { SignOutForm } from "@/features/auth/sign-out-form";
 import { cn } from "@/ui/cn";
+import { chipClass } from "@/ui/components/button-styles";
 import { Button, IconButton } from "@/ui/components/buttons";
 import { SearchField } from "@/ui/components/controls";
 import { Dialog } from "@/ui/components/dialog";
+import { INPUT } from "@/ui/components/field-styles";
 import { SecurityLogo } from "@/ui/components/rows";
 import { EmptyState, ErrorState } from "@/ui/components/states";
 import { Icon } from "@/ui/icons/icon";
@@ -181,7 +183,7 @@ export function AccountSetup({ userID, initialName, instruments, watchedIDs }: P
                 spellCheck={false}
                 disabled={isWorking}
                 data-testid="setup-name"
-                className="min-h-14 rounded-medium border border-control-outline bg-elevated-background px-4 text-body font-normal focus:border-accent"
+                className={cn(INPUT, "font-normal")}
               />
             </label>
           ) : instruments === null ? (
@@ -208,10 +210,7 @@ export function AccountSetup({ userID, initialName, instruments, watchedIDs }: P
                       aria-pressed={chosen}
                       disabled={isWorking}
                       onClick={() => flow.update({ category })}
-                      className={cn(
-                        "inline-flex min-h-11 shrink-0 items-center gap-1 rounded-full px-3 text-secondary font-medium",
-                        chosen ? "bg-accent text-on-accent" : "bg-elevated-background text-primary-text",
-                      )}
+                      className={chipClass(chosen, "px-3")}
                     >
                       {chosen ? <Icon name="check" scale="s" /> : null}
                       {t(MARKET_CATEGORY_LABEL_KEYS[category] as never)}
@@ -225,7 +224,7 @@ export function AccountSetup({ userID, initialName, instruments, watchedIDs }: P
               {results.length === 0 ? (
                 <EmptyState title={t("common.noResults")} message={t("onboarding.emptyState.noResultsMessage")} icon="search" />
               ) : (
-                <ul className="flex flex-col divide-y divide-separator">
+                <ul className="flex flex-col divide-y divide-hairline">
                   {results.map((item) => {
                     const isWatched = watched.has(item.id);
                     const isSelected = draft.selectedIDs.includes(item.id);
@@ -237,13 +236,13 @@ export function AccountSetup({ userID, initialName, instruments, watchedIDs }: P
                           disabled={isWorking || isWatched}
                           onClick={() => flow.toggle(item.id)}
                           className={cn(
-                            "flex min-h-16 w-full items-center gap-3 rounded-small px-3 py-3 text-left disabled:opacity-70",
-                            isSelected && "bg-accent-soft",
+                            "flex min-h-16 w-full items-center gap-3 rounded-medium px-3 py-3 text-left transition-colors disabled:opacity-70",
+                            isSelected ? "bg-accent-soft" : "enabled:hover:bg-action-surface",
                           )}
                         >
                           <SecurityLogo symbol={item.symbol} size="s" />
                           <span className="flex min-w-0 flex-1 flex-col">
-                            <span className="text-secondary font-semibold text-primary-text">{item.symbol}</span>
+                            <span className="font-display text-body font-semibold text-primary-text">{item.symbol}</span>
                             <span className="truncate text-secondary text-primary-text">{item.name}</span>
                             {isWatched ? <span className="text-caption text-secondary-text">{t("common.alreadyOnWatchlist")}</span> : null}
                           </span>

@@ -4,7 +4,7 @@ import { isVisibleOutsideSearch, kindLabelKey, marketSecurity, securityDisplayNa
 import type { NewsArticle } from "@/domain/news/article";
 import { type CatalogueRow, PriceCell } from "@/features/market/browse/price-cell";
 import { Link } from "@/i18n/navigation";
-import { SectionHeader } from "@/ui/components/layout";
+import { Card } from "@/ui/components/layout";
 import { SecurityLogo } from "@/ui/components/rows";
 
 /** Visible instruments the article links to (by id or symbol), with their dated verified close. */
@@ -18,21 +18,20 @@ export function RelatedInstruments({ article, rows, now }: { article: NewsArticl
   );
   if (related.length === 0) return null;
   return (
-    <section aria-labelledby="related" className="flex flex-col gap-1">
-      <SectionHeader id="related" title={t("common.relatedSecurities")} />
-      <ul className="flex flex-col">
+    <Card title={t("common.relatedSecurities")} titleId="related" flush className="overflow-hidden">
+      <ul className="flex flex-col pb-2">
         {related.map((row) => (
-          <li key={row.id} className="border-b border-separator last:border-b-0">
+          <li key={row.id} className="border-t border-hairline first:border-t-0">
             <Link
               href={`/mercado/${encodeURIComponent(row.symbol)}`}
               prefetch={false}
               aria-description={t("common.openSecurityDetailsHint")}
-              className="flex min-h-18 items-center gap-3 rounded-small py-2"
+              className="flex min-h-16 items-center gap-3 px-5 py-2 transition-colors hover:bg-app-background/70 desk:px-6"
               data-testid="related-instrument"
             >
-              <SecurityLogo symbol={row.symbol} brandColor={row.bond ? "violet" : "blue"} />
-              <span className="flex min-w-0 flex-1 flex-col gap-1">
-                <span className="text-body font-semibold text-primary-text">{row.symbol}</span>
+              <SecurityLogo symbol={row.symbol} brandColor={row.bond ? "violet" : "blue"} size="s" />
+              <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                <span className="font-display text-body font-semibold text-primary-text">{row.symbol}</span>
                 <span className="truncate text-secondary text-secondary-text">
                   {securityDisplayName(marketSecurity({ id: row.id, symbol: row.symbol, kind: row.kind, name: row.name, issuer: row.issuer })) ?? translate(kindLabelKey(row.kind))}
                 </span>
@@ -42,6 +41,6 @@ export function RelatedInstruments({ article, rows, now }: { article: NewsArticl
           </li>
         ))}
       </ul>
-    </section>
+    </Card>
   );
 }

@@ -12,7 +12,7 @@ export type MenuEntry =
   | { kind: "separator" };
 
 const ENTRY =
-  "flex min-h-11 w-full items-center gap-3 rounded-small px-3 text-left text-body text-primary-text outline-none focus-visible:bg-elevated-background hover:bg-elevated-background aria-disabled:opacity-42";
+  "flex min-h-11 w-full items-center gap-3 rounded-small px-3 text-left text-body text-primary-text outline-none focus-visible:bg-action-surface hover:bg-action-surface aria-disabled:opacity-42";
 
 /**
  * A menu button (WAI-ARIA menu): Enter, Space or the arrows open it on the first or last item; arrows, Home
@@ -26,6 +26,8 @@ export function Menu({
   trigger,
   align = "end",
   testID,
+  className,
+  triggerClassName,
 }: {
   /** The trigger's accessible name. */
   label: string;
@@ -35,6 +37,9 @@ export function Menu({
   trigger?: ReactNode;
   align?: "start" | "end";
   testID?: string;
+  className?: string;
+  /** Replaces the trigger's own look (a pill or a rail tile instead of the plain icon or grey capsule). */
+  triggerClassName?: string;
 }) {
   const [open, setOpen] = useState(false);
   const button = useRef<HTMLButtonElement>(null);
@@ -86,7 +91,7 @@ export function Menu({
   };
 
   return (
-    <div className="relative inline-flex shrink-0">
+    <div className={cn("relative inline-flex shrink-0", className)}>
       <button
         ref={button}
         type="button"
@@ -106,10 +111,13 @@ export function Menu({
             show("last");
           }
         }}
-        className={cn(
-          "motion-press inline-flex min-h-11 items-center justify-center rounded-full text-primary-text",
-          trigger ? "gap-2 bg-action-surface px-4 text-secondary font-semibold" : "size-11 text-secondary-text hover:text-primary-text",
-        )}
+        className={
+          triggerClassName ??
+          cn(
+            "motion-press inline-flex min-h-11 items-center justify-center rounded-full text-primary-text",
+            trigger ? "gap-2 bg-action-surface px-4 text-secondary font-semibold" : "size-11 text-secondary-text hover:bg-action-surface hover:text-primary-text",
+          )
+        }
       >
         {trigger ?? <Icon name={icon} />}
       </button>
@@ -121,7 +129,7 @@ export function Menu({
           aria-label={label}
           onKeyDown={onMenuKey}
           className={cn(
-            "panel absolute top-full z-40 mt-1 flex max-h-[min(24rem,70dvh)] min-w-60 flex-col overflow-y-auto bg-card-background p-1",
+            "absolute top-full z-40 mt-1 flex max-h-[min(24rem,70dvh)] min-w-60 flex-col overflow-y-auto rounded-medium border border-card-border bg-card-background p-1 shadow-panel",
             align === "end" ? "right-0" : "left-0",
           )}
         >
@@ -209,7 +217,7 @@ export function SwitchRow({
         aria-hidden
         className={cn(
           "relative h-7 w-12 shrink-0 rounded-full transition-colors duration-200 motion-reduce:transition-none",
-          checked ? "bg-positive" : "bg-elevated-background ring-1 ring-hairline",
+          checked ? "bg-positive" : "bg-track ring-1 ring-field-border",
         )}
       >
         <span

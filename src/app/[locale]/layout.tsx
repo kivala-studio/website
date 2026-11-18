@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import { Inter } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
@@ -16,8 +16,10 @@ import { parseTheme, THEME_COOKIE } from "@/ui/theme/theme";
 
 import "../globals.css";
 
-// One variable file served from this origin; tabular figures come from `font-variant-numeric` in globals.css.
+// Variable files served from this origin; tabular figures come from `font-variant-numeric` in globals.css.
+// Inter: body, buttons, fields. Outfit: headings, financial values, table cells and navigation (`font-display`).
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
+const outfit = Outfit({ subsets: ["latin"], display: "swap", variable: "--font-outfit" });
 
 // Pages are indexable unless they opt out (the /dev gallery, invite links and 404s do).
 export const metadata: Metadata = {
@@ -44,7 +46,7 @@ export default async function LocaleLayout({
   const theme = parseTheme((await cookies()).get(THEME_COOKIE)?.value);
 
   return (
-    <html lang={locale === "pt" ? "pt-AO" : "en-AO"} data-theme={theme} className={`${inter.variable} h-full antialiased`}>
+    <html lang={locale === "pt" ? "pt-AO" : "en-AO"} data-theme={theme} className={`${inter.variable} ${outfit.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider messages={pickClientMessages(await getMessages())}>
           {maintenanceActive() ? <MaintenanceScreen /> : children}

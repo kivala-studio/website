@@ -8,6 +8,7 @@ import { SettingsGroup, ValueRow } from "@/features/settings/settings-ui";
 import { SignedInPage, signedInMetadata } from "@/features/shell/placeholder-page";
 import { APP_STORE_SUBSCRIPTIONS_URL } from "@/features/site/site";
 import { Link } from "@/i18n/navigation";
+import { Card } from "@/ui/components/layout";
 import { ErrorState } from "@/ui/components/states";
 import { Icon } from "@/ui/icons/icon";
 
@@ -38,14 +39,14 @@ export default async function AccountPage({ searchParams }: Props) {
   const providers = profile?.providers.map((provider) => PROVIDERS[provider] ?? provider) ?? [];
 
   return (
-    <SignedInPage titleKey="common.manageAccount">
-      <Link href="/definicoes" prefetch={false} className="-mt-6 inline-flex min-h-11 items-center gap-1 self-start text-secondary font-semibold text-accent">
+    <SignedInPage titleKey="common.manageAccount" narrow>
+      <Link href="/definicoes" prefetch={false} className="order-first -mb-4 -ml-1 inline-flex min-h-11 items-center gap-1 self-start rounded-small px-1 text-secondary font-semibold text-accent">
         <Icon name="chevron-left" scale="s" />
         {t("profile.navigation.title")}
       </Link>
 
       {result ? (
-        <div role="status" className="flex max-w-2xl flex-col gap-1 rounded-medium bg-elevated-background px-4 py-3" data-testid="deletion-result">
+        <div role="status" className="panel flex flex-col gap-1 px-5 py-3 desk:px-6" data-testid="deletion-result">
           {result === "cancelled" ? null : <p className="text-body font-semibold text-primary-text">{t("errors.account.deleteFailed")}</p>}
           <p className="text-secondary text-secondary-text">{t(NOTICE[result] as never)}</p>
         </div>
@@ -60,10 +61,7 @@ export default async function AccountPage({ searchParams }: Props) {
             {profile.email ? <ValueRow label={t("common.account")}>{profile.email}</ValueRow> : null}
           </SettingsGroup>
 
-          <section aria-labelledby="account-deletion" className="flex max-w-2xl flex-col gap-3">
-            <h2 id="account-deletion" className="text-section text-primary-text">
-              {t("common.deleteAccount")}
-            </h2>
+          <Card title={t("common.deleteAccount")} titleId="account-deletion" bodyClassName="flex flex-col gap-3">
             <p className="flex items-start gap-2 text-body font-semibold text-primary-text">
               <Icon name="warning" className="mt-0.5 shrink-0 text-negative" />
               {t("settings.deleteAccount.irreversible")}
@@ -77,7 +75,7 @@ export default async function AccountPage({ searchParams }: Props) {
               </a>
             </p>
             <DeleteAccount userID={session.userID} email={profile.email} apple={profile.apple} />
-          </section>
+          </Card>
         </>
       )}
     </SignedInPage>

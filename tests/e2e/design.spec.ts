@@ -63,12 +63,22 @@ test("tabs, radio groups and dialogs work from the keyboard", async ({ page }) =
   await expect(opener).toBeFocused();
 });
 
+// The component sections only: the full library is over 20 000 px tall on a phone. Foundations, overlays, feedback,
+// landing and the formatter table are left out; tokens.test.ts and the tests above cover them.
+const SCREENSHOT_SECTIONS = ["layout", "navigation", "buttons", "fields", "data"];
+
 for (const theme of ["light", "dark"] as const) {
   for (const width of [375, 1440]) {
     test(`gallery screenshot ${theme} ${width}`, async ({ page }) => {
       test.skip(process.platform !== "darwin", "The baseline is recorded with macOS fonts.");
       await page.setViewportSize({ width, height: 900 });
       await openGallery(page, theme);
+      await page.getByTestId("gallery-nav").evaluate((nav) => {
+        nav.style.position = "static";
+      });
+      await page.locator("[data-gallery-section]").evaluateAll((sections, keep) => {
+        for (const section of sections) if (!keep.includes(section.id)) section.style.display = "none";
+      }, SCREENSHOT_SECTIONS);
       await expect(page).toHaveScreenshot(`gallery-${theme}-${width}.png`, { fullPage: true, animations: "disabled" });
     });
   }

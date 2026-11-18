@@ -31,13 +31,13 @@ export default async function ProfilePage() {
   const theme = parseTheme((await cookies()).get(THEME_COOKIE)?.value);
 
   return (
-    <SignedInPage titleKey="profile.navigation.title">
-      <div className="flex max-w-2xl items-center gap-4" data-testid="identity">
-        <span aria-hidden className="flex size-16 shrink-0 items-center justify-center rounded-full bg-accent-soft text-headline font-semibold text-accent">
+    <SignedInPage titleKey="profile.navigation.title" narrow>
+      <div className="flex items-center gap-4" data-testid="identity">
+        <span aria-hidden className="flex size-14 shrink-0 items-center justify-center rounded-full bg-accent-soft font-display text-section text-accent">
           {profileInitials(name)}
         </span>
-        <div className="flex min-w-0 flex-col">
-          <span className="text-headline text-primary-text [overflow-wrap:anywhere]">{name}</span>
+        <div className="flex min-w-0 flex-col gap-0.5">
+          <span className="font-display text-section text-primary-text [overflow-wrap:anywhere]">{name}</span>
           {profile?.email ? <span className="text-secondary text-secondary-text [overflow-wrap:anywhere]">{profile.email}</span> : null}
         </div>
       </div>

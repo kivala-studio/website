@@ -16,6 +16,7 @@ import { cn } from "@/ui/cn";
 import { Button, IconButton } from "@/ui/components/buttons";
 import { SectionTabs } from "@/ui/components/controls";
 import { Dialog } from "@/ui/components/dialog";
+import { Card, READING_COLUMN } from "@/ui/components/layout";
 import { EmptyState, ErrorState, LoadingState } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
 import { Icon, type IconName } from "@/ui/icons/icon";
@@ -101,7 +102,7 @@ export function ActivityCenter({ symbols, renderedAt }: { symbols: Readonly<Reco
   const filterIndex = FILTERS.indexOf(filter);
 
   return (
-    <div className="flex w-full max-w-3xl flex-col gap-4">
+    <div className={cn(READING_COLUMN, "gap-4")}>
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="min-w-0 flex-1 text-display text-primary-text">{t("common.activity")}</h1>
         <div className="flex items-center gap-2">
@@ -109,7 +110,7 @@ export function ActivityCenter({ symbols, renderedAt }: { symbols: Readonly<Reco
           <IconButton icon="refresh" label={t("common.refresh")} onClick={() => void store.load()} />
           <Button
             kind="secondary"
-            className="w-auto"
+            className="w-auto!"
             disabled={!unread}
             onClick={() => {
               local.markRead(local.rows.filter((row) => !row.read && filterOf(row.category) === filter && isVisible(row, now)));
@@ -146,14 +147,14 @@ export function ActivityCenter({ symbols, renderedAt }: { symbols: Readonly<Reco
         </button>
       ) : null}
 
-      <section role="tabpanel" id={`activity-panel-${filterIndex}`} aria-labelledby={`activity-tab-${filterIndex}`} className="flex flex-col gap-6">
+      <section role="tabpanel" id={`activity-panel-${filterIndex}`} aria-labelledby={`activity-tab-${filterIndex}`} className="flex flex-col gap-4">
         {state.status === "loading" || state.status === "idle" ? (
           <LoadingState message={t("notifications.activity.loading")} />
         ) : state.status === "failed" ? (
           <ErrorState
             message={t("components.placeholder.loadFailed")}
             action={
-              <Button kind="secondary" className="w-auto" onClick={() => void store.load()}>
+              <Button kind="secondary" className="w-auto!" onClick={() => void store.load()}>
                 {t("common.tryAgain")}
               </Button>
             }
@@ -164,11 +165,8 @@ export function ActivityCenter({ symbols, renderedAt }: { symbols: Readonly<Reco
           <EmptyState icon={EMPTY[filter].icon} title={t(EMPTY[filter].title as never)} message={t(EMPTY[filter].message as never)} />
         ) : (
           days.map((day) => (
-            <section key={day.date} aria-labelledby={`day-${day.date}`} className="flex flex-col gap-2">
-              <h2 id={`day-${day.date}`} className="text-section text-primary-text">
-                {dayTitle(day.date)}
-              </h2>
-              <div className="flex flex-col gap-4 rounded-large bg-card-background px-4 py-3 lg:panel">
+            <Card key={day.date} title={dayTitle(day.date)} titleId={`day-${day.date}`} bodyClassName="flex flex-col gap-4 pb-2!">
+              <div className="flex flex-col gap-4">
                 {day.groups.map((group) => (
                   <div key={group.category} className="flex flex-col">
                     <span
@@ -202,7 +200,7 @@ export function ActivityCenter({ symbols, renderedAt }: { symbols: Readonly<Reco
                   </div>
                 ))}
               </div>
-            </section>
+            </Card>
           ))
         )}
         {state.status === "loaded" && state.cursor ? (

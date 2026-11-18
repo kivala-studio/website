@@ -4,7 +4,7 @@ import Decimal from "decimal.js";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
-import { type PricePoint, TIME_RANGE_LINE_WIDTH, tradingDateNoon } from "@/domain/market";
+import { type PricePoint, TIME_RANGE_LINE_WIDTH, nameBeyondSymbol, tradingDateNoon } from "@/domain/market";
 import type { ValuePoint } from "@/domain/portfolio";
 import { type BenchmarkQuote, type BenchmarkQuoteWire, fromQuoteWire } from "@/domain/portfolio/benchmark";
 import { orderWhileHidden } from "@/domain/privacy/privacy";
@@ -13,21 +13,22 @@ import { RANGE_OF } from "@/features/chart/ranges";
 import { PortfolioInsights } from "@/features/intelligence/portfolio-insights";
 import type { CatalogueRow } from "@/features/market/browse/price-cell";
 import { PrivacyModeButton, usePrivacyMode } from "@/features/privacy/privacy-mode";
-import { Link } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
 import { Button, ButtonLink } from "@/ui/components/buttons";
-import { SectionTabs, type TimeRange as RangeName, TimeRangePicker } from "@/ui/components/controls";
+import { type TimeRange as RangeName, TimeRangePicker } from "@/ui/components/controls";
 import { HiddenValue } from "@/ui/components/feedback";
+import { Card } from "@/ui/components/layout";
 import { SecurityLogo } from "@/ui/components/rows";
+import { DataTable, TableCell, TableHead, TableHeaderCell, TableNameCell, TableRow } from "@/ui/components/table";
 import { ErrorState, InstrumentRowSkeleton, Skeleton } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
 
-import { BookMenu, useSelectionTitle } from "./book-menu";
+import { BookMenu, ShareButton, useSelectionTitle } from "./book-menu";
 import { CsvTransfer } from "./csv-transfer";
 import { Private, toneOf, useQuantityText } from "./portfolio-ui";
 import { type EditorRequest, TransactionEditor } from "./transaction-editor";
-import { BenchmarkSection, CashSection, ResultsSection } from "./summary-sections";
+import { BenchmarkSection, CashSection, Metric, ResultsSection } from "./summary-sections";
 import { type PortfolioModel, usePortfolio } from "./use-portfolio";
 
 const RANGES: readonly RangeName[] = ["oneWeek", "oneMonth", "threeMonths", "sixMonths", "oneYear", "all"];
@@ -52,39 +53,57 @@ export function PortfolioView({
   const [editor, setEditor] = useState<EditorRequest | null>(null);
   const loaded = model.status === "loaded";
   const open = model.valid ? model.positions : [];
+  const dashboard = loaded && open.length > 0;
+  const record = () => setEditor({ mode: "new" });
 
   return (
-    <div className="flex flex-col gap-8" data-testid="portfolio">
-      <header className="flex flex-wrap items-center gap-3">
-        {/* Phones: the actions on top, the title on its own line below (iOS large title). */}
-        <h1 className="min-w-0 flex-1 basis-full truncate text-display text-primary-text sm:basis-0" data-testid="portfolio-title">
+    <div className="flex flex-col gap-6" data-testid="portfolio">
+      <header className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <h1 className="min-w-0 flex-1 truncate text-display text-primary-text" data-testid="portfolio-title">
           {title}
         </h1>
-        <div className="order-first ml-auto flex items-center gap-2 sm:order-none">
-          <PrivacyModeButton />
-          {loaded ? <BookMenu model={model} /> : null}
-          {loaded ? <CsvTransfer model={model} /> : null}
-          {loaded && model.transactions.length > 0 ? (
-            <ButtonLink kind="secondary" icon="history" href={`${PORTFOLIO_PATH}/registos`} data-testid="records-link">
-              {t("common.records")}
+        <PrivacyModeButton />
+        {loaded ? (
+          <div className="flex flex-wrap items-center gap-2 max-sm:basis-full">
+            <BookMenu model={model} />
+            <ShareButton model={model} />
+          </div>
+        ) : null}
+      </header>
+
+      {loaded ? (
+        // Phones: one scrolling strip of pills (CoinStats); wider screens wrap them.
+        <div
+          className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0"
+          data-testid="portfolio-actions"
+        >
+          {dashboard ? (
+            <Button size="compact" icon="add" onClick={record} data-testid="record-purchase">
+              {t("common.recordPurchase")}
+            </Button>
+          ) : null}
+          <CsvTransfer model={model} />
+          {dashboard ? (
+            <ButtonLink kind="secondary" size="compact" icon="calculator" href="/simulador">
+              {t("common.simulateInvestment")}
             </ButtonLink>
           ) : null}
         </div>
-      </header>
+      ) : null}
 
       {!loaded && model.status !== "failed" ? (
         <DashboardSkeleton />
       ) : model.status === "failed" ? (
         <ErrorState message={t("errors.portfolio.loadFailed")} action={<Button onClick={() => void model.store.load()}>{t("common.tryAgain")}</Button>} />
       ) : !model.valid && model.transactions.length > 0 ? (
-        <section className="flex flex-col gap-4" data-testid="portfolio-invalid">
+        <Card className="flex flex-col gap-2" data-testid="portfolio-invalid">
           <p className="text-body text-primary-text">{t("portfolio.summary.valueUnavailable")}</p>
           <p className="text-secondary text-secondary-text">{t("portfolio.csvTransfer.invalidPortfolio")}</p>
-        </section>
+        </Card>
       ) : open.length === 0 ? (
-        <EmptyPortfolio onRecord={() => setEditor({ mode: "new" })} />
+        <EmptyPortfolio onRecord={record} />
       ) : (
-        <Dashboard model={model} quotes={quotes} onRecord={() => setEditor({ mode: "new" })} />
+        <Dashboard model={model} quotes={quotes} />
       )}
 
       <TransactionEditor request={editor} model={model} onClose={() => setEditor(null)} />
@@ -95,20 +114,19 @@ export function PortfolioView({
 function DashboardSkeleton() {
   const t = useTranslations();
   return (
-    <div role="status" aria-label={t("portfolio.header.loading")} className="flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-10">
-      <div className="flex flex-col gap-4">
-        <Skeleton className="h-6 w-32" />
+    <div role="status" aria-label={t("portfolio.header.loading")} className="flex flex-col gap-6">
+      <Card className="flex flex-col gap-4">
+        <Skeleton className="h-5 w-32" />
         <Skeleton className="h-12 w-64" />
         <Skeleton className="h-5 w-40" />
         <Skeleton className="h-45 w-full" />
-        <Skeleton className="h-13 w-full" />
-      </div>
-      <div className="flex flex-col gap-2">
-        <Skeleton className="h-11 w-full" />
+      </Card>
+      <Card className="flex flex-col gap-2">
+        <Skeleton className="h-7 w-32" />
         {[0, 1, 2, 3].map((index) => (
           <InstrumentRowSkeleton key={index} />
         ))}
-      </div>
+      </Card>
     </div>
   );
 }
@@ -116,52 +134,45 @@ function DashboardSkeleton() {
 function EmptyPortfolio({ onRecord }: { onRecord: () => void }) {
   const t = useTranslations();
   return (
-    <section className="mx-auto flex max-w-[480px] flex-col items-center gap-4 py-8 text-center" data-testid="portfolio-empty">
-      <span className="flex size-18 items-center justify-center rounded-full bg-accent/12 text-accent">
-        <Icon name="portfolio" className="size-8" />
-      </span>
-      <h2 className="text-section text-primary-text">{t("portfolio.emptyState.title")}</h2>
-      <p className="text-body text-secondary-text">{t("portfolio.emptyState.message")}</p>
-      <Button icon="add" className="w-full" onClick={onRecord} data-testid="record-purchase">
-        {t("common.recordPurchase")}
-      </Button>
-      <ButtonLink kind="secondary" icon="calculator" className="w-full" href="/simulador">
-        {t("common.simulateInvestment")}
-      </ButtonLink>
-      <p className="text-caption text-secondary-text">{t("portfolio.emptyState.manualEntryNotice")}</p>
-    </section>
+    <Card>
+      <section className="mx-auto flex max-w-[480px] flex-col items-center gap-4 py-8 text-center" data-testid="portfolio-empty">
+        <span className="flex size-18 items-center justify-center rounded-full bg-accent/12 text-accent">
+          <Icon name="portfolio" className="size-8" />
+        </span>
+        <h2 className="text-section text-primary-text">{t("portfolio.emptyState.title")}</h2>
+        <p className="text-body text-secondary-text">{t("portfolio.emptyState.message")}</p>
+        <Button icon="add" className="w-full" onClick={onRecord} data-testid="record-purchase">
+          {t("common.recordPurchase")}
+        </Button>
+        <ButtonLink kind="secondary" icon="calculator" className="w-full" href="/simulador">
+          {t("common.simulateInvestment")}
+        </ButtonLink>
+        <p className="text-caption text-secondary-text">{t("portfolio.emptyState.manualEntryNotice")}</p>
+      </section>
+    </Card>
   );
 }
 
-const TABS = ["portfolio.dashboard.positionsTab", "common.allocation", "portfolio.dashboard.summaryTab"] as const;
-
-function Dashboard({ model, quotes, onRecord }: { model: PortfolioModel; quotes: readonly BenchmarkQuote[] | null; onRecord: () => void }) {
-  const t = useTranslations();
+/**
+ * The dashboard (CoinStats portfolio dashboard): the value card with its chart, the positions table, then iOS's
+ * other tabs and sections as cards, two columns from 1280 px.
+ */
+function Dashboard({ model, quotes }: { model: PortfolioModel; quotes: readonly BenchmarkQuote[] | null }) {
   const [range, setRange] = useState<RangeName>("oneMonth");
-  const [tab, setTab] = useState(0);
   const domainRange = RANGE_OF[range];
   const { series } = model;
   const { points, change } = useMemo(() => series(domainRange), [series, domainRange]);
 
   return (
-    <div className="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-10">
-      <div className="flex flex-col gap-6">
-        <Summary model={model} change={change} hasHistory={points.length >= 2} />
-        <section aria-label={t("portfolio.performance.title")} className="flex flex-col gap-4">
-          <ValueChart points={points} range={domainRange} pending={model.historyPending} />
-          <TimeRangePicker value={range} onChange={setRange} ranges={RANGES} label={t("portfolio.performance.title")} />
-        </section>
-        <Button icon="add" className="w-full" onClick={onRecord} data-testid="record-purchase">
-          {t("common.recordPurchase")}
-        </Button>
-      </div>
-      <div className="flex flex-col gap-4">
-        <SectionTabs label={t("common.portfolio")} titles={TABS.map((key) => t(key))} selected={tab} onSelect={setTab} idPrefix="portfolio" />
-        <PortfolioInsights transactions={model.transactions} section={tab as 0 | 1 | 2} />
-        <div role="tabpanel" id={`portfolio-panel-${tab}`} aria-labelledby={`portfolio-tab-${tab}`}>
-          {tab === 0 ? <Holdings model={model} /> : tab === 1 ? <Allocation model={model} /> : <SummaryTab model={model} points={points} quotes={quotes} />}
-        </div>
-        {model.valueState === "partial" ? <p className="text-secondary text-warning">{t("portfolio.dashboard.partialValuesNotice")}</p> : null}
+    <div className="flex flex-col gap-6">
+      <Summary model={model} change={change} points={points} range={range} onRange={setRange} />
+      <Holdings model={model} />
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2 xl:items-start">
+        <SummaryCard model={model} />
+        <Allocation model={model} />
+        <CashSection model={model} />
+        <BenchmarkSection model={model} points={points} quotes={quotes} />
+        <ResultsSection model={model} />
       </div>
     </div>
   );
@@ -174,47 +185,76 @@ const SUMMARY_TITLES = {
   unavailable: "portfolio.summary.valueUnavailable",
 } as const;
 
-function Summary({ model, change, hasHistory }: { model: PortfolioModel; change: ReturnType<PortfolioModel["series"]>["change"]; hasHistory: boolean }) {
+/** The value card: the figure and its change for the chart's range (CoinStats "Total Worth"), the range, the chart. */
+function Summary({
+  model,
+  change,
+  points,
+  range,
+  onRange,
+}: {
+  model: PortfolioModel;
+  change: ReturnType<PortfolioModel["series"]>["change"];
+  points: readonly ValuePoint[];
+  range: RangeName;
+  onRange: (range: RangeName) => void;
+}) {
   const t = useTranslations();
   const format = useFormat();
   const { summary, valueState } = model;
   return (
-    <section className="flex flex-col items-start gap-2" data-testid="portfolio-summary" data-value-state={valueState}>
-      <span className="rounded-full bg-accent/12 px-3 py-1 text-caption font-semibold text-accent">{t("portfolio.summary.manualRecords")}</span>
-      <h2 className="text-secondary text-secondary-text">{t(SUMMARY_TITLES[valueState])}</h2>
-      {valueState === "pending" ? (
-        <Skeleton className="h-12 w-56" />
-      ) : valueState === "unavailable" ? (
-        <>
-          <p className="text-headline text-primary-text">—</p>
-          <p className="text-secondary text-secondary-text">{t("portfolio.summary.noQuotes")}</p>
-        </>
-      ) : (
-        <>
-          <Private className="text-[clamp(1.75rem,8vw,2.75rem)] font-semibold text-primary-text">
-            <span data-testid="portfolio-value">{format.currency(summary.currentValue, { digits: 2 })}</span>
-          </Private>
-          {change ? (
-            <Private className={cn("flex items-center gap-1 text-body font-semibold tabular-nums", toneOf(change.amount))}>
-              <span data-testid="portfolio-change">
-                {format.currency(change.amount, { signed: true })}
-                {change.percentage ? ` (${format.percent(change.percentage)})` : ""}
-              </span>
-            </Private>
-          ) : !hasHistory ? (
-            <p className="text-secondary text-secondary-text">{t("portfolio.summary.insufficientHistory")}</p>
-          ) : null}
-          {summary.missingPriceCount > 0 ? (
-            <p className="flex items-center gap-1 text-secondary text-warning">
-              <Icon name="warning" />
-              {summary.missingPriceCount === 1
-                ? t("portfolio.summary.missingQuoteOne")
-                : t("portfolio.summary.missingQuotesCount", { arg1: format.count(summary.missingPriceCount) })}
-            </p>
-          ) : null}
-        </>
-      )}
-    </section>
+    <Card
+      role="region"
+      aria-labelledby="portfolio-summary-title"
+      className="flex flex-col gap-5"
+      data-testid="portfolio-summary"
+      data-value-state={valueState}
+    >
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex min-w-0 flex-col items-start gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 id="portfolio-summary-title" className="text-secondary text-secondary-text">
+              {t(SUMMARY_TITLES[valueState])}
+            </h2>
+            <span className="rounded-full bg-accent/12 px-3 py-1 text-caption font-semibold text-accent">{t("portfolio.summary.manualRecords")}</span>
+          </div>
+          {valueState === "pending" ? (
+            <Skeleton className="h-12 w-56" />
+          ) : valueState === "unavailable" ? (
+            <>
+              <p className="font-display text-headline text-primary-text">—</p>
+              <p className="text-secondary text-secondary-text">{t("portfolio.summary.noQuotes")}</p>
+            </>
+          ) : (
+            <>
+              <Private className="font-display text-[clamp(1.75rem,8vw,2.75rem)] leading-tight font-semibold tracking-tight text-primary-text">
+                <span data-testid="portfolio-value">{format.currency(summary.currentValue, { digits: 2 })}</span>
+              </Private>
+              {change ? (
+                <Private className={cn("flex items-center gap-1 font-display text-body font-semibold tabular-nums", toneOf(change.amount))}>
+                  <span data-testid="portfolio-change">
+                    {format.currency(change.amount, { signed: true })}
+                    {change.percentage ? ` (${format.percent(change.percentage)})` : ""}
+                  </span>
+                </Private>
+              ) : points.length < 2 ? (
+                <p className="text-secondary text-secondary-text">{t("portfolio.summary.insufficientHistory")}</p>
+              ) : null}
+              {summary.missingPriceCount > 0 ? (
+                <p className="flex items-center gap-1 text-secondary text-warning">
+                  <Icon name="warning" />
+                  {summary.missingPriceCount === 1
+                    ? t("portfolio.summary.missingQuoteOne")
+                    : t("portfolio.summary.missingQuotesCount", { arg1: format.count(summary.missingPriceCount) })}
+                </p>
+              ) : null}
+            </>
+          )}
+        </div>
+        <TimeRangePicker value={range} onChange={onRange} ranges={RANGES} label={t("portfolio.performance.title")} variant="segmented" />
+      </div>
+      <ValueChart points={points} range={RANGE_OF[range]} pending={model.historyPending} />
+    </Card>
   );
 }
 
@@ -288,6 +328,7 @@ function PrivateTrend({ points }: { points: readonly PricePoint[] }) {
   );
 }
 
+/** Posições as a table (CoinStats "Assets"): the whole row opens the position; personal figures masked in privacy mode. */
 function Holdings({ model }: { model: PortfolioModel }) {
   const t = useTranslations();
   const format = useFormat();
@@ -301,53 +342,110 @@ function Holdings({ model }: { model: PortfolioModel }) {
     );
   }, [model.valuations, hidden]);
   return (
-    <ul className="flex flex-col" data-testid="holdings">
-      {rows.map(({ id, valuation }) => {
-        const instrument = model.instruments.get(id);
-        return (
-          <li key={id} className="border-b border-separator last:border-b-0">
-            <Link
-              href={`${PORTFOLIO_PATH}/${id}`}
-              className="flex min-h-19 items-center gap-3 py-3"
-              aria-description={t("portfolio.accessibility.positionDetailsHint")}
-              data-testid="holding-row"
-            >
-              <SecurityLogo symbol={instrument?.symbol ?? "—"} logoUrl={instrument?.logoURL} brandColor={instrument?.bond ? "violet" : "blue"} />
-              <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                <span className="text-body font-semibold text-primary-text" data-testid="holding-symbol">
-                  {instrument?.symbol ?? t("common.instrumentUnavailable")}
-                </span>
-                <span className="truncate text-caption text-secondary-text">{instrument?.name ?? ""}</span>
-                <Private className="text-caption text-secondary-text">{quantityText(valuation.position.quantity, instrument)}</Private>
-              </span>
-              <span className="flex flex-col items-end gap-1 text-right">
-                {valuation.currentValue ? (
-                  <>
-                    <Private className="text-body font-semibold text-primary-text">{format.currency(valuation.currentValue)}</Private>
-                    {valuation.returnPercentage ? (
-                      <Private className={cn("text-secondary tabular-nums", toneOf(valuation.returnPercentage))}>
-                        {format.percent(valuation.returnPercentage)}
-                      </Private>
-                    ) : null}
-                  </>
-                ) : (
-                  <>
-                    <span className="text-secondary text-tertiary-text">{t("common.quoteUnavailable")}</span>
-                    <span className="flex items-center gap-1 text-secondary text-warning">
-                      <Icon name="warning" />—
+    <Card title={t("portfolio.dashboard.positionsTab")} titleId="portfolio-positions" flush>
+      <div className="px-5 pb-3 empty:hidden desk:px-6">
+        <PortfolioInsights transactions={model.transactions} section={0} />
+      </div>
+      <DataTable data-testid="holdings">
+        <TableHead>
+          <TableHeaderCell>{t("common.instrument")}</TableHeaderCell>
+          <TableHeaderCell align="right" className="max-md:hidden">
+            {t("common.quantity")}
+          </TableHeaderCell>
+          <TableHeaderCell align="right" className="max-lg:hidden">
+            {t("portfolio.positionContent.currentPrice")}
+          </TableHeaderCell>
+          <TableHeaderCell align="right" className="max-xl:hidden">
+            {t("portfolio.positionContent.averagePurchasePrice")}
+          </TableHeaderCell>
+          <TableHeaderCell align="right">{t("common.value")}</TableHeaderCell>
+          <TableHeaderCell align="right" className="max-sm:hidden">
+            {t("portfolio.positionContent.gainLoss")}
+          </TableHeaderCell>
+        </TableHead>
+        <tbody>
+          {rows.map(({ id, valuation }) => {
+            const instrument = model.instruments.get(id);
+            const bond = instrument?.bond ?? false;
+            const { position } = valuation;
+            const quantity = quantityText(position.quantity, instrument);
+            const name = instrument ? nameBeyondSymbol(instrument.name, instrument.symbol) : undefined;
+            return (
+              <TableRow key={id} data-testid="holding-row">
+                <TableNameCell
+                  href={`${PORTFOLIO_PATH}/${id}`}
+                  linkProps={{ "aria-description": t("portfolio.accessibility.positionDetailsHint") }}
+                  logo={<SecurityLogo symbol={instrument?.symbol ?? "—"} logoUrl={instrument?.logoURL} brandColor={bond ? "violet" : "blue"} size="s" />}
+                  name={<span data-testid="holding-symbol">{instrument?.symbol ?? t("common.instrumentUnavailable")}</span>}
+                  detail={
+                    <>
+                      {name ? <span className="truncate">{name}</span> : null}
+                      <Private className="md:hidden">{quantity}</Private>
+                    </>
+                  }
+                />
+                <TableCell numeric className="max-md:hidden">
+                  <Private>{quantity}</Private>
+                </TableCell>
+                <TableCell numeric className="max-lg:hidden" data-testid="holding-price">
+                  {valuation.currentPrice ? format.securityPrice(valuation.currentPrice, { bond }) : "—"}
+                </TableCell>
+                <TableCell numeric className="max-xl:hidden">
+                  <Private>{format.securityPrice(position.averagePurchasePrice, { bond })}</Private>
+                </TableCell>
+                <TableCell numeric>
+                  {valuation.currentValue ? (
+                    <span className="flex flex-col items-end gap-0.5">
+                      <Private className="font-semibold">{format.currency(valuation.currentValue)}</Private>
+                      {valuation.returnPercentage ? (
+                        <Private className={cn("text-secondary tabular-nums sm:hidden", toneOf(valuation.returnPercentage))}>
+                          {format.percent(valuation.returnPercentage)}
+                        </Private>
+                      ) : null}
                     </span>
-                  </>
-                )}
-              </span>
-            </Link>
-          </li>
-        );
-      })}
-    </ul>
+                  ) : (
+                    <span className="flex flex-col items-end gap-0.5">
+                      <span className="font-sans text-secondary text-tertiary-text">{t("common.quoteUnavailable")}</span>
+                      <span className="flex items-center gap-1 text-secondary text-warning">
+                        <Icon name="warning" />—
+                      </span>
+                    </span>
+                  )}
+                </TableCell>
+                <TableCell numeric className="max-sm:hidden">
+                  {valuation.unrealizedProfitLoss ? (
+                    <span className={cn("flex flex-col items-end gap-0.5 tabular-nums", toneOf(valuation.unrealizedProfitLoss))}>
+                      <Private>{format.currency(valuation.unrealizedProfitLoss, { signed: true })}</Private>
+                      {valuation.returnPercentage ? (
+                        <Private className={cn("text-secondary", toneOf(valuation.returnPercentage))}>{format.percent(valuation.returnPercentage)}</Private>
+                      ) : null}
+                    </span>
+                  ) : (
+                    <span className="text-tertiary-text">—</span>
+                  )}
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </tbody>
+      </DataTable>
+      {model.valueState === "partial" ? <p className="px-5 pt-3 pb-5 text-secondary text-warning desk:px-6">{t("portfolio.dashboard.partialValuesNotice")}</p> : null}
+    </Card>
   );
 }
 
+/** Distribuição: the five largest weights and the rest as `Outros`. */
 function Allocation({ model }: { model: PortfolioModel }) {
+  const t = useTranslations();
+  return (
+    <Card title={t("common.allocation")} titleId="portfolio-allocation" bodyClassName="flex flex-col gap-4">
+      <PortfolioInsights transactions={model.transactions} section={1} />
+      <AllocationList model={model} />
+    </Card>
+  );
+}
+
+function AllocationList({ model }: { model: PortfolioModel }) {
   const t = useTranslations();
   const format = useFormat();
   const hidden = usePrivacyMode();
@@ -358,12 +456,10 @@ function Allocation({ model }: { model: PortfolioModel }) {
   const top = model.allocations.slice(0, 5);
   const rest = model.allocations.slice(5);
   const rows = [
-    ...top.map((item) => ({
-      key: item.securityId,
-      title: model.instruments.get(item.securityId)?.symbol ?? "—",
-      subtitle: model.instruments.get(item.securityId)?.name ?? "",
-      ...item,
-    })),
+    ...top.map((item) => {
+      const instrument = model.instruments.get(item.securityId);
+      return { key: item.securityId, title: instrument?.symbol ?? "—", subtitle: instrument ? nameBeyondSymbol(instrument.name, instrument.symbol) : undefined, ...item };
+    }),
     ...(rest.length
       ? [
           {
@@ -377,16 +473,16 @@ function Allocation({ model }: { model: PortfolioModel }) {
       : []),
   ];
   return (
-    <ul className="flex flex-col gap-4 py-2" data-testid="allocation">
+    <ul className="flex flex-col gap-4" data-testid="allocation">
       {rows.map((row) => (
         <li key={row.key} className="flex flex-col gap-2">
           <div className="flex items-baseline gap-3">
             <span className="flex min-w-0 flex-1 flex-col">
-              <span className="text-body font-semibold text-primary-text">{row.title}</span>
-              <span className="truncate text-caption text-secondary-text">{row.subtitle}</span>
+              <span className="font-display text-body font-semibold text-primary-text">{row.title}</span>
+              {row.subtitle ? <span className="truncate text-caption text-secondary-text">{row.subtitle}</span> : null}
             </span>
             <span className="flex flex-col items-end">
-              <span className="text-body font-semibold text-primary-text">{format.number(row.percentage, { digits: 1 })}%</span>
+              <span className="font-display text-body font-semibold text-primary-text">{format.number(row.percentage, { digits: 1 })}%</span>
               <span className="text-caption text-secondary-text">{format.currency(row.currentValue)}</span>
             </span>
           </div>
@@ -402,51 +498,33 @@ function Allocation({ model }: { model: PortfolioModel }) {
   );
 }
 
-function SummaryTab({ model, points, quotes }: { model: PortfolioModel; points: readonly ValuePoint[]; quotes: readonly BenchmarkQuote[] | null }) {
+/** Resumo: invested, current value, the unrealised result and the change against cost. */
+function SummaryCard({ model }: { model: PortfolioModel }) {
   const t = useTranslations();
   const format = useFormat();
   const { summary, valueState } = model;
   const partial = valueState === "partial";
   const none = valueState === "unavailable" || valueState === "pending";
-  const tiles = [
-    { title: t("common.investedAmount"), value: format.currency(summary.investedAmount), tone: "text-primary-text" },
-    {
-      title: t(partial ? "common.partialValue" : none ? "common.valueUnavailable" : "common.currentValue"),
-      value: none ? "—" : format.currency(summary.currentValue),
-      tone: "text-primary-text",
-    },
-    {
-      title: t(partial ? "portfolio.metrics.partialGainLoss" : "portfolio.metrics.unrealizedGainLoss"),
-      value: none ? "—" : format.currency(summary.unrealizedProfitLoss, { signed: true }),
-      tone: none ? "text-secondary-text" : toneOf(summary.unrealizedProfitLoss),
-    },
-    {
-      title: t(partial ? "portfolio.metrics.partialChangeVsCost" : "portfolio.metrics.changeVsCost"),
-      value: none ? "—" : format.percent(summary.returnPercentage),
-      tone: none ? "text-secondary-text" : toneOf(summary.returnPercentage),
-    },
-  ];
   return (
-    <div className="flex flex-col gap-6 py-2">
-      <ButtonLink kind="secondary" icon="calendar" href={`${PORTFOLIO_PATH}/rendimentos`} data-testid="income-link">
-        {t("income.title")}
-      </ButtonLink>
+    <Card title={t("portfolio.dashboard.summaryTab")} titleId="portfolio-overview" bodyClassName="flex flex-col gap-4">
+      <PortfolioInsights transactions={model.transactions} section={2} />
       <dl className="grid grid-cols-2 gap-3" data-testid="portfolio-metrics">
-        {tiles.map((tile) => (
-          <div key={tile.title} className="flex flex-col gap-1 rounded-medium bg-elevated-background p-4">
-            <dt className="text-caption text-secondary-text">{tile.title}</dt>
-            <dd className={cn("text-body font-semibold tabular-nums", tile.tone)}>
-              <Private>{tile.value}</Private>
-            </dd>
-          </div>
-        ))}
+        <Metric title={t("common.investedAmount")} value={format.currency(summary.investedAmount)} />
+        <Metric
+          title={t(partial ? "common.partialValue" : none ? "common.valueUnavailable" : "common.currentValue")}
+          value={none ? "—" : format.currency(summary.currentValue)}
+        />
+        <Metric
+          title={t(partial ? "portfolio.metrics.partialGainLoss" : "portfolio.metrics.unrealizedGainLoss")}
+          value={none ? "—" : format.currency(summary.unrealizedProfitLoss, { signed: true })}
+          tone={none ? "text-secondary-text" : toneOf(summary.unrealizedProfitLoss)}
+        />
+        <Metric
+          title={t(partial ? "portfolio.metrics.partialChangeVsCost" : "portfolio.metrics.changeVsCost")}
+          value={none ? "—" : format.percent(summary.returnPercentage)}
+          tone={none ? "text-secondary-text" : toneOf(summary.returnPercentage)}
+        />
       </dl>
-      <CashSection model={model} />
-      <BenchmarkSection model={model} points={points} quotes={quotes} />
-      <ResultsSection model={model} />
-      <ButtonLink kind="secondary" icon="calculator" href="/simulador">
-        {t("common.simulateInvestment")}
-      </ButtonLink>
-    </div>
+    </Card>
   );
 }

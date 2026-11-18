@@ -8,7 +8,8 @@ import { getPublicIssuer } from "@/data/market/public-cache";
 import { catalogueRows } from "@/features/market/browse/catalogue";
 import { Link, redirect } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
-import { SectionHeader } from "@/ui/components/layout";
+import { cn } from "@/ui/cn";
+import { Card, READING_COLUMN } from "@/ui/components/layout";
 import { SecurityLogo } from "@/ui/components/rows";
 import { Icon } from "@/ui/icons/icon";
 
@@ -44,58 +45,62 @@ export default async function ListingPage({ params }: Props) {
   const year = event.scheduledDate?.slice(0, 4);
 
   return (
-    <article className="flex flex-col gap-8" data-testid="listing">
-      <Link href="/mercado" prefetch={false} className="inline-flex min-h-11 items-center gap-1 self-start rounded-small text-secondary text-accent">
+    <article className={cn(READING_COLUMN, "gap-6")} data-testid="listing">
+      <Link href="/mercado" prefetch={false} className="-mb-2 -ml-1 inline-flex min-h-11 items-center gap-1 self-start rounded-small px-1 text-secondary font-semibold text-accent">
         <Icon name="chevron-left" />
         {t("common.market")}
       </Link>
-      <header className="flex flex-col items-center gap-3 text-center">
+      <header className="flex items-center gap-4">
         <SecurityLogo symbol={issuer?.shortName ?? name} logoUrl={issuer?.logoURL} size="l" />
-        <h1 className="text-display text-primary-text">{name}</h1>
-        <p className="text-secondary font-semibold text-accent">{t("assetDetails.listing.newAdmission")}</p>
+        <div className="flex min-w-0 flex-col gap-1">
+          <h1 className="text-display text-primary-text">{name}</h1>
+          <p className="text-secondary font-semibold text-accent">{t("assetDetails.listing.newAdmission")}</p>
+        </div>
       </header>
 
-      <section aria-labelledby="listing-admission" className="flex flex-col gap-4 rounded-large bg-elevated-background p-5">
-        <h2 id="listing-admission" className="flex items-center gap-2 text-secondary font-semibold text-secondary-text">
-          <Icon name="calendar" />
-          {t(confirmed ? "assetDetails.listing.admissionConfirmed" : "assetDetails.listing.admissionExpected")}
-        </h2>
+      <Card
+        title={
+          <span className="flex items-center gap-2">
+            <Icon name="calendar" className="text-secondary-text" />
+            {t(confirmed ? "assetDetails.listing.admissionConfirmed" : "assetDetails.listing.admissionExpected")}
+          </span>
+        }
+        titleId="listing-admission"
+        bodyClassName="flex flex-col gap-4"
+      >
         {day ? (
           <p className="flex flex-col">
-            <span className="text-headline text-primary-text">{day}</span>
+            <span className="font-display text-headline text-primary-text">{day}</span>
             <span className="text-secondary text-secondary-text">{year}</span>
           </p>
         ) : null}
-        <div className="flex flex-col gap-1 border-t border-separator pt-4">
+        <div className="flex flex-col gap-1 border-t border-hairline pt-4">
           <p className="text-body font-semibold text-primary-text">{t(confirmed ? "assetDetails.listing.statusConfirmed" : "assetDetails.listing.statusPending")}</p>
           <p className="text-secondary text-secondary-text">{t(confirmed ? "assetDetails.listing.confirmedMessage" : "assetDetails.listing.pendingMessage")}</p>
         </div>
-      </section>
+      </Card>
 
       {issuer?.description ? (
-        <section aria-labelledby="listing-about" className="flex flex-col gap-2">
-          <SectionHeader id="listing-about" title={t("assetDetails.listing.aboutHeader")} />
+        <Card title={t("assetDetails.listing.aboutHeader")} titleId="listing-about">
           <p className="text-body text-secondary-text">{issuer.description}</p>
-        </section>
+        </Card>
       ) : null}
 
-      <section aria-labelledby="listing-quotes" className="flex flex-col gap-2">
-        <SectionHeader id="listing-quotes" title={t("assetDetails.listing.quotesTitle")} />
+      <Card title={t("assetDetails.listing.quotesTitle")} titleId="listing-quotes">
         <p className="text-secondary text-secondary-text">{t("assetDetails.listing.quotesMessage")}</p>
-      </section>
+      </Card>
 
       {event.sources.length > 0 ? (
-        <section aria-labelledby="listing-sources" className="flex flex-col gap-2">
-          <SectionHeader id="listing-sources" title={t("assetDetails.listing.officialHeader")} />
-          <ul className="flex flex-col">
+        <Card title={t("assetDetails.listing.officialHeader")} titleId="listing-sources" flush className="overflow-hidden">
+          <ul className="flex flex-col pb-2">
             {event.sources.map((source) => (
-              <li key={source.url} className="border-b border-separator last:border-b-0">
+              <li key={source.url} className="border-t border-hairline first:border-t-0">
                 <a
                   href={source.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={t("assetDetails.accessibility.viewOfficialInfo", { arg1: source.name })}
-                  className="flex min-h-14 items-center justify-between gap-3 rounded-small py-2"
+                  className="flex min-h-14 items-center justify-between gap-3 px-5 py-2 transition-colors hover:bg-app-background/70 desk:px-6"
                 >
                   <span className="flex flex-col">
                     <span className="text-body font-semibold text-primary-text">{source.name}</span>
@@ -106,7 +111,7 @@ export default async function ListingPage({ params }: Props) {
               </li>
             ))}
           </ul>
-        </section>
+        </Card>
       ) : null}
     </article>
   );

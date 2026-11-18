@@ -15,6 +15,7 @@ import { SIGNED_IN_PAGE, signedInMetadata } from "@/features/shell/placeholder-p
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
 import { OfflineBanner } from "@/ui/components/feedback";
+import { Panel } from "@/ui/components/layout";
 import { Icon } from "@/ui/icons/icon";
 
 export const generateMetadata = signedInMetadata("common.home");
@@ -90,7 +91,7 @@ export default async function HomePage() {
         simulator={
           <Link
             href="/simulador"
-            className="flex min-h-18 items-center gap-4 rounded-small border-y border-separator py-3 lg:panel lg:min-h-14 lg:px-4"
+            className="flex min-h-18 items-center gap-4 rounded-small border-y border-separator py-3 lg:panel lg:min-h-14 lg:px-6 lg:py-4"
             data-testid="home-simulator"
           >
             <span aria-hidden className="flex size-11 shrink-0 items-center justify-center rounded-full bg-accent/12 text-accent">
@@ -110,10 +111,7 @@ export default async function HomePage() {
 
 function Recaps({ wraps, title, label }: { wraps: readonly AvailableWrap[]; title: string; label: (wrap: AvailableWrap) => string }) {
   return (
-    <section aria-labelledby="home-recaps" className="flex flex-col gap-2 lg:panel lg:gap-0 lg:px-4 lg:py-3" data-testid="home-recaps">
-      <h2 id="home-recaps" className="text-secondary font-semibold text-secondary-text">
-        {title}
-      </h2>
+    <Panel title={title} titleId="home-recaps" data-testid="home-recaps">
       <ul className="flex flex-col">
         {wraps.map((wrap) => (
           <li key={wrapSlug(wrap)}>
@@ -124,6 +122,6 @@ function Recaps({ wraps, title, label }: { wraps: readonly AvailableWrap[]; titl
           </li>
         ))}
       </ul>
-    </section>
+    </Panel>
   );
 }

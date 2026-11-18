@@ -7,6 +7,7 @@ import { MOVEMENT_SENSITIVITIES, type MovementSensitivity } from "@/domain/accou
 import { CATEGORY_PREFERENCES, CONFIGURABLE_UNUSUAL_RULES, type CategoryPreference, type UnusualPreferences } from "@/domain/activity/preferences";
 import { useAccountStores } from "@/features/account/account-provider";
 import { OptionGroup } from "@/ui/components/controls";
+import { Card } from "@/ui/components/layout";
 import { SwitchRow } from "@/ui/components/menu";
 import { SectionPlaceholder } from "@/ui/components/states";
 
@@ -59,20 +60,14 @@ export function NotificationSettings() {
   const preferences = state.preferences;
   if (!preferences) {
     return (
-      <section aria-labelledby="notifications-title" className="flex flex-col gap-3">
-        <h2 id="notifications-title" className="text-section text-primary-text">
-          {title}
-        </h2>
+      <Card title={title} titleId="notifications-title">
         <SectionPlaceholder title={title} failed={state.status === "failed"} onRetry={() => void store.load()} />
-      </section>
+      </Card>
     );
   }
 
   return (
-    <section aria-labelledby="notifications-title" className="flex max-w-2xl flex-col gap-6" data-testid="notification-settings">
-      <h2 id="notifications-title" className="text-section text-primary-text">
-        {title}
-      </h2>
+    <Card title={title} titleId="notifications-title" bodyClassName="flex flex-col gap-6" data-testid="notification-settings">
       <div className="flex flex-col">
         {CATEGORY_PREFERENCES.map((key) => (
           <SwitchRow
@@ -101,7 +96,7 @@ export function NotificationSettings() {
         <h3 className="pb-1 text-body font-semibold text-primary-text">{t("unusualActivity.title")}</h3>
         <UnusualActivitySwitches preferences={preferences.unusual} store={store} />
       </div>
-    </section>
+    </Card>
   );
 }
 

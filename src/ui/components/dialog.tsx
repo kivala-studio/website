@@ -53,21 +53,22 @@ export function Dialog({
         if (event.target === ref.current) onClose();
       }}
       className={cn(
-        "m-0 max-h-none max-w-none bg-app-background p-0 text-primary-text backdrop:bg-black/40 open:flex open:flex-col",
+        "m-0 max-h-none max-w-none border-card-border bg-card-background p-0 text-primary-text shadow-panel backdrop:bg-black/40 open:flex open:flex-col",
         variant === "dialog"
-          ? "inset-0 m-auto max-h-[85dvh] w-[min(32rem,calc(100%-2rem))] rounded-large"
-          : "inset-x-0 top-auto bottom-0 max-h-[92dvh] w-full rounded-t-large md:inset-y-0 md:right-0 md:left-auto md:h-dvh md:max-h-none md:w-[28rem] md:rounded-none md:rounded-l-large",
+          ? "inset-0 m-auto max-h-[85dvh] w-[min(32rem,calc(100%-2rem))] rounded-card border"
+          : "inset-x-0 top-auto bottom-0 max-h-[92dvh] w-full rounded-t-card border-t md:inset-y-0 md:right-0 md:left-auto md:h-dvh md:max-h-none md:w-[28rem] md:rounded-none md:rounded-l-card md:border-t-0 md:border-l",
         "motion-presence",
       )}
     >
-      <header className="flex items-center gap-3 px-4 pt-4">
-        <IconButton icon="close" label={t("close")} onClick={onClose} />
-        <h2 id={titleId} className="text-section text-primary-text">
+      {/* The close button comes first in the DOM (the control `showModal` focuses) and sits at the end of the row. */}
+      <header className="flex min-h-11 items-center gap-3 pt-4 pr-3 pl-5 desk:pt-5 desk:pr-4 desk:pl-6">
+        <IconButton icon="close" label={t("close")} onClick={onClose} variant="plain" className="order-last -my-1 text-secondary-text" />
+        <h2 id={titleId} className="min-w-0 flex-1 text-section text-primary-text">
           {title}
         </h2>
       </header>
-      <div className="flex-1 overflow-y-auto px-5 py-4">{children}</div>
-      {footer ? <div className="border-t border-separator px-5 py-4">{footer}</div> : null}
+      <div className="flex-1 overflow-y-auto px-5 py-4 desk:px-6 desk:pb-6">{children}</div>
+      {footer ? <div className="border-t border-hairline px-5 py-4 desk:px-6">{footer}</div> : null}
     </dialog>
   );
 }

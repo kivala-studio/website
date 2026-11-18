@@ -22,7 +22,8 @@ test("market filters and sort live in the URL and open an instrument", async ({ 
   await expect(page.getByRole("heading", { level: 1, name: "Mercado" })).toBeVisible();
   await page.getByRole("navigation", { name: "Categoria" }).getByRole("link", { name: "Obrigações" }).click();
   await expect(page).toHaveURL(/\?categoria=obrigacoes$/);
-  await page.getByRole("link", { name: /^Ordem / }).click();
+  // From 768 px the column headers sort: the sorted column's header flips the direction.
+  await page.getByRole("columnheader", { name: /Variação/ }).getByRole("link").click();
   await expect(page).toHaveURL(/categoria=obrigacoes&sentido=asc$/);
 
   await page.goto("/mercado?categoria=acoes&ordem=nome&sentido=asc");

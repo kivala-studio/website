@@ -7,29 +7,24 @@ import { Link } from "@/i18n/navigation";
 
 import { cn } from "../cn";
 import { Icon, type IconName } from "../icons/icon";
+import { type ButtonKind as Kind, type ButtonSize as Size, buttonClass, iconButtonClass } from "./button-styles";
 import { Spinner } from "./states";
 
-type Kind = "primary" | "secondary" | "destructive";
-
-const KIND: Record<Kind, string> = {
-  primary: "bg-accent text-on-accent",
-  secondary:
-    "bg-action-surface text-primary-text border-[length:var(--control-outline-width)] border-control-outline",
-  destructive: "bg-negative/12 text-negative",
-};
-
-const BASE =
-  "motion-press inline-flex w-full min-h-14 items-center justify-center gap-2 rounded-full px-5 py-4 text-center text-body font-semibold desk:min-h-11 desk:px-4 desk:py-2 disabled:opacity-42 aria-disabled:opacity-42";
+export { buttonClass, iconButtonClass };
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   kind?: Kind;
+  size?: Size;
   icon?: IconName;
   /** Keeps the title, blocks repeat presses and announces progress. */
   loading?: boolean;
 };
 
-/** Full-width capsule button (iOS InvestButtonStyle + ActionButton). */
-export function Button({ kind = "primary", icon, loading = false, className, children, onClick, ...props }: ButtonProps) {
+/**
+ * Full-width pill button (iOS InvestButtonStyle + ActionButton). `className="w-auto!"` sizes it to its title (`cn` does not
+ * merge classes, and Tailwind emits `w-full` after `w-auto`); `sm:w-auto` does so from 640 px.
+ */
+export function Button({ kind = "primary", size, icon, loading = false, className, children, onClick, ...props }: ButtonProps) {
   const t = useTranslations("components.button");
   return (
     <button
@@ -41,7 +36,7 @@ export function Button({ kind = "primary", icon, loading = false, className, chi
         if (loading) return event.preventDefault();
         onClick?.(event);
       }}
-      className={cn(BASE, KIND[kind], className)}
+      className={buttonClass(kind, className, size)}
     >
       {loading ? <Spinner /> : icon ? <Icon name={icon} /> : null}
       <span>{children}</span>
@@ -50,30 +45,33 @@ export function Button({ kind = "primary", icon, loading = false, className, chi
   );
 }
 
-export function ButtonLink({ kind = "primary", icon, className, children, ...props }: ComponentProps<typeof Link> & { kind?: Kind; icon?: IconName }) {
+export function ButtonLink({
+  kind = "primary",
+  size,
+  icon,
+  className,
+  children,
+  ...props
+}: ComponentProps<typeof Link> & { kind?: Kind; size?: Size; icon?: IconName }) {
   return (
-    <Link {...props} className={cn(BASE, KIND[kind], className)}>
+    <Link {...props} className={buttonClass(kind, className, size)}>
       {icon ? <Icon name={icon} /> : null}
       <span>{children}</span>
     </Link>
   );
 }
 
-type IconButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & { icon: IconName; label: string };
+type IconButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
+  icon: IconName;
+  label: string;
+  /** `filled` sits on a grey disc; `plain` is a bare icon with a hover disc (top bar, toolbars); `outline` a hairline ring. */
+  variant?: "filled" | "plain" | "outline";
+};
 
-/** Circular 48 px icon-only button; the label is required. */
-export function IconButton({ icon, label, className, ...props }: IconButtonProps) {
+/** Circular icon-only button; the label is required. */
+export function IconButton({ icon, label, variant = "filled", className, ...props }: IconButtonProps) {
   return (
-    <button
-      type="button"
-      aria-label={label}
-      title={label}
-      {...props}
-      className={cn(
-        "motion-press inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-action-surface desk:size-11 text-primary-text disabled:opacity-42",
-        className,
-      )}
-    >
+    <button type="button" aria-label={label} title={label} {...props} className={iconButtonClass(variant, className)}>
       <Icon name={icon} />
     </button>
   );

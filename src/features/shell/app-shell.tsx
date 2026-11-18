@@ -12,17 +12,16 @@ import { MarketArea } from "@/features/market/market-provider";
 import { IntelligenceProvider } from "@/features/intelligence/intelligence-provider";
 import { PrivacyModeProvider } from "@/features/privacy/privacy-mode";
 import { CommandPalette } from "@/features/search/command-palette";
-import { PalancaMark } from "@/features/site/chrome";
+import { BrandLockup } from "@/features/site/chrome";
 import { AreaMessages } from "@/i18n/area-messages";
-import { Link } from "@/i18n/navigation";
 
 import { TABS } from "./destinations";
-import { ShellHeader, ShellNav } from "./shell-nav";
+import { ShellNav, ShellTopBar } from "./shell-nav";
 
 /**
- * The signed-in app: a sidebar from 1024 px, a bottom bar below it (iOS tab bar), and a header with the profile
- * initials, the search palette, unusual activity and the activity bell. One market store and one account store
- * serve every page of the tab. Pages render their own `<main>`.
+ * The signed-in app: the shared top bar (tabs as pills from 1024 px, the search palette, unusual activity, the
+ * activity bell and the profile initials) and, below 1024 px, the bottom tab bar (iOS tab bar). One market store
+ * and one account store serve every page of the tab. Pages render their own `<main>`.
  */
 export async function AppShell({
   name,
@@ -56,33 +55,24 @@ export async function AppShell({
         <AccountProvider initial={account}>
           <PrivacyModeProvider initial={privacy}>
             <IntelligenceProvider>
-              <div className="flex min-h-dvh flex-col lg:grid lg:grid-cols-[14rem_minmax(0,1fr)]">
-                <aside className="hidden lg:sticky lg:top-0 lg:flex lg:h-dvh lg:flex-col lg:gap-6 lg:border-r lg:border-hairline lg:bg-elevated-background lg:px-3 lg:py-3">
-                  <Link
-                    href="/inicio"
-                    aria-label={t("site.header.homeLabel")}
-                    className="inline-flex min-h-11 items-center gap-2 self-start rounded-small px-2 text-primary-text"
-                  >
-                    <PalancaMark className="size-8" />
-                    <span className="text-body font-semibold tracking-wide">{t("common.appName")}</span>
-                  </Link>
-                  <ShellNav items={tabs} label={navLabel} variant="sidebar" />
-                </aside>
-                <div className="flex min-w-0 flex-1 flex-col pb-20 lg:pb-0">
-                  <ShellHeader
-                    initials={profileInitials(displayName)}
-                    profileLabel={t("home.accessibility.profile", {
-                      arg1: displayName,
-                    })}
-                    unusualLabel={t("unusualActivity.title")}
-                    activityLabel={t("common.activity")}
-                    activityStates={{ new: t("home.accessibility.activityNew"), none: t("home.accessibility.activityNone") }}
-                    hasUnread={account.hasUnread}
-                    search={<CommandPalette rows={rows} renderedAt={requestTime()} />}
-                  />
-                  {children}
-                </div>
-                <ShellNav items={tabs} label={navLabel} variant="bar" />
+              <div className="flex min-h-dvh flex-col pb-20 lg:pb-0">
+                <ShellTopBar
+                  tabs={tabs}
+                  navLabel={navLabel}
+                  homeLabel={t("site.header.homeLabel")}
+                  logo={<BrandLockup />}
+                  initials={profileInitials(displayName)}
+                  profileLabel={t("home.accessibility.profile", {
+                    arg1: displayName,
+                  })}
+                  unusualLabel={t("unusualActivity.title")}
+                  activityLabel={t("common.activity")}
+                  activityStates={{ new: t("home.accessibility.activityNew"), none: t("home.accessibility.activityNone") }}
+                  hasUnread={account.hasUnread}
+                  search={<CommandPalette rows={rows} renderedAt={requestTime()} />}
+                />
+                {children}
+                <ShellNav items={tabs} label={navLabel} />
               </div>
             </IntelligenceProvider>
           </PrivacyModeProvider>

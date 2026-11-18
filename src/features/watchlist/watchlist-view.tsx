@@ -5,18 +5,18 @@ import { type DragEvent, useEffect, useMemo, useState, useSyncExternalStore } fr
 
 import { pausedIDs } from "@/domain/account/watchlist";
 import { moved } from "@/domain/account/watchlist-ordering";
-import { type MarketSecurity, displayPrice, isBondKind, securityDisplayName } from "@/domain/market";
+import { type MarketSecurity, displayPrice, isBondKind, nameBeyondSymbol, securityDisplayName } from "@/domain/market";
 import { useAccount, useAccountStores } from "@/features/account/account-provider";
 import { AlertsDialog, type AlertTarget } from "@/features/alerts/alerts-dialog";
 import { ACCOUNT_STORAGE_PREFIX } from "@/features/auth/account-state";
-import { type CatalogueRow, PriceCell } from "@/features/market/browse/price-cell";
+import { type CatalogueRow, ChangeCell, PriceCell } from "@/features/market/browse/price-cell";
 import { useMarketState, useMarketStore } from "@/features/market/market-provider";
-import { Link } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
 import { Button, IconButton } from "@/ui/components/buttons";
 import { SectionTabs } from "@/ui/components/controls";
 import { Menu, type MenuEntry } from "@/ui/components/menu";
 import { SecurityLogo } from "@/ui/components/rows";
+import { DataTable, TableCell, TableHead, TableHeaderCell, TableNameCell, TableRow } from "@/ui/components/table";
 import { EmptyState, InstrumentRowSkeleton, SectionPlaceholder } from "@/ui/components/states";
 import { WatchlistInsights } from "@/features/intelligence/watchlist-insights";
 import { useFormat } from "@/ui/format";
@@ -290,7 +290,7 @@ export function WatchlistView({ rows, renderedAt }: { rows: readonly CatalogueRo
       ) : null}
 
       {undone ? (
-        <div role="status" className="flex items-center gap-2 rounded-medium bg-elevated-background py-1 pr-1 pl-4" data-testid="undo-bar">
+        <div role="status" className="panel flex items-center gap-2 py-1 pr-1 pl-5 desk:pl-6" data-testid="undo-bar">
           <span className="flex-1 text-body text-primary-text">{t("watchlist.undo.removed", { arg1: symbol(undone.securityID) })}</span>
           <button
             id="watchlist-undo"
@@ -304,13 +304,13 @@ export function WatchlistView({ rows, renderedAt }: { rows: readonly CatalogueRo
         </div>
       ) : null}
 
-      <section aria-label={group?.name ?? t("common.yourWatchlist")} className="lg:panel lg:px-4" data-testid="watchlist">
+      <section aria-label={group?.name ?? t("common.yourWatchlist")} className="panel overflow-hidden" data-testid="watchlist">
         {list.status === "failed" ? (
-          <div className="py-4">
+          <div className="p-5 desk:p-6">
             <SectionPlaceholder title={t("common.watchlist")} failed onRetry={() => void stores.watchlist.load(true)} />
           </div>
         ) : !loaded ? (
-          <div role="status" aria-label={t("watchlist.accessibility.loading")}>
+          <div role="status" aria-label={t("watchlist.accessibility.loading")} className="px-5 desk:px-6">
             {Array.from({ length: 6 }, (_, index) => (
               <InstrumentRowSkeleton key={index} />
             ))}
@@ -322,7 +322,7 @@ export function WatchlistView({ rows, renderedAt }: { rows: readonly CatalogueRo
               title={t("watchlist.emptyState.title")}
               message={t("watchlist.emptyState.message")}
               action={
-                <Button icon="add" className="w-auto" onClick={() => setAdding(true)}>
+                <Button icon="add" className="w-auto!" onClick={() => setAdding(true)}>
                   {t("common.addInstruments")}
                 </Button>
               }
@@ -333,68 +333,89 @@ export function WatchlistView({ rows, renderedAt }: { rows: readonly CatalogueRo
             <EmptyState icon="filter" title={group!.name} />
           </div>
         ) : (
-          <ul className="flex flex-col divide-y divide-hairline">
-            {visible.map((id) => {
-              const security = securities.get(id);
-              const row = byID.get(id);
-              const count = alerts.rules.filter((rule) => rule.securityID === id && rule.isEnabled).length;
-              const drag = !group
-                ? {
-                    draggable: true,
-                    onDragStart: (event: DragEvent) => {
-                      event.dataTransfer.effectAllowed = "move";
-                      setDragging(id);
-                    },
-                    onDragOver: (event: DragEvent) => {
-                      if (!dragging) return;
-                      event.preventDefault();
-                      setOver(id);
-                    },
-                    onDrop: (event: DragEvent) => {
-                      event.preventDefault();
-                      drop(id);
-                      setDragging(null);
-                      setOver(null);
-                    },
-                    onDragEnd: () => {
-                      setDragging(null);
-                      setOver(null);
-                    },
-                  }
-                : {};
-              return (
-                <li
-                  key={id}
-                  {...drag}
-                  data-testid="watchlist-row"
-                  className={cn("flex items-center gap-1", dragging === id && "opacity-50", over === id && dragging !== id && "bg-accent-soft")}
-                >
-                  {!group ? (
-                    <span aria-hidden className="hidden shrink-0 cursor-grab text-tertiary-text desk:block">
-                      <Icon name="sort" />
-                    </span>
-                  ) : null}
-                  <WatchlistRow id={id} security={security} row={row} at={at} paused={paused.has(id)} />
-                  <IconButton
-                    icon={count > 0 ? "alert" : "notification"}
-                    label={
-                      count > 0
-                        ? t("watchlist.accessibility.manageAlerts", {
-                            arg1: format.count(count),
-                            arg2: symbol(id),
-                          })
-                        : t("watchlist.accessibility.createAlert", {
-                            arg1: symbol(id),
-                          })
+          <DataTable className="table-fixed">
+            <TableHead>
+              <TableHeaderCell>{t("common.instrument")}</TableHeaderCell>
+              {/* Below 360 px the price and actions columns tighten so an eight-letter symbol stays whole. */}
+              <TableHeaderCell align="right" className="w-31 max-[22.5rem]:px-1.5 min-[22.5rem]:w-36 sm:w-44">
+                {t("common.price")}
+              </TableHeaderCell>
+              <TableHeaderCell align="right" className="hidden w-32 sm:table-cell">
+                {t("common.change")}
+              </TableHeaderCell>
+              {/* The row actions have no column title. */}
+              <td className="w-11 min-[22.5rem]:w-14 sm:w-30" />
+            </TableHead>
+            <tbody>
+              {visible.map((id) => {
+                const security = securities.get(id);
+                const row = byID.get(id);
+                const count = alerts.rules.filter((rule) => rule.securityID === id && rule.isEnabled).length;
+                const drag = !group
+                  ? {
+                      draggable: true,
+                      onDragStart: (event: DragEvent) => {
+                        event.dataTransfer.effectAllowed = "move";
+                        setDragging(id);
+                      },
+                      onDragOver: (event: DragEvent) => {
+                        if (!dragging) return;
+                        event.preventDefault();
+                        setOver(id);
+                      },
+                      onDrop: (event: DragEvent) => {
+                        event.preventDefault();
+                        drop(id);
+                        setDragging(null);
+                        setOver(null);
+                      },
+                      onDragEnd: () => {
+                        setDragging(null);
+                        setOver(null);
+                      },
                     }
-                    onClick={() => setAlerting(id)}
-                    className={cn("relative max-sm:hidden", count > 0 ? "text-accent" : "text-secondary-text")}
-                  />
-                  <Menu label={t("site.watchlist.options", { arg1: symbol(id) })} entries={rowMenu(id, list.order.indexOf(id))} testID="row-menu" />
-                </li>
-              );
-            })}
-          </ul>
+                  : {};
+                return (
+                  <TableRow
+                    key={id}
+                    {...drag}
+                    data-testid="watchlist-row"
+                    className={cn(dragging === id && "opacity-50", over === id && dragging !== id && "bg-accent-soft")}
+                  >
+                    <WatchlistName id={id} security={security} row={row} paused={paused.has(id)} handle={!group} />
+                    <TableCell numeric className="max-[22.5rem]:px-1.5">
+                      <PriceCell row={row} security={security} at={at} inlineChange="sm:hidden" />
+                    </TableCell>
+                    <TableCell numeric className="hidden sm:table-cell">
+                      <ChangeCell row={row} security={security} at={at} />
+                    </TableCell>
+                    {/* Above the row link's overlay, so the actions stay clickable. */}
+                    <TableCell className="relative z-10 pl-1 last:pr-2 desk:last:pr-4 max-[22.5rem]:px-0!">
+                      <span className="flex items-center justify-end gap-1">
+                        <IconButton
+                          icon={count > 0 ? "alert" : "notification"}
+                          variant="plain"
+                          label={
+                            count > 0
+                              ? t("watchlist.accessibility.manageAlerts", {
+                                  arg1: format.count(count),
+                                  arg2: symbol(id),
+                                })
+                              : t("watchlist.accessibility.createAlert", {
+                                  arg1: symbol(id),
+                                })
+                          }
+                          onClick={() => setAlerting(id)}
+                          className={cn("max-sm:hidden", count > 0 ? "text-accent" : "text-secondary-text")}
+                        />
+                        <Menu label={t("site.watchlist.options", { arg1: symbol(id) })} entries={rowMenu(id, list.order.indexOf(id))} testID="row-menu" />
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </tbody>
+          </DataTable>
         )}
       </section>
       {loaded && list.order.length > 0 && !group ? <WatchlistInsights /> : null}
@@ -421,30 +442,38 @@ export function WatchlistView({ rows, renderedAt }: { rows: readonly CatalogueRo
   );
 }
 
-function WatchlistRow({ id, security, row, at, paused }: { id: string; security?: MarketSecurity; row?: CatalogueRow; at?: number; paused: boolean }) {
+/** The row header: logo, the name only when it says more than the symbol, the symbol; the whole row links to the instrument. */
+function WatchlistName({ id, security, row, paused, handle }: { id: string; security?: MarketSecurity; row?: CatalogueRow; paused: boolean; handle: boolean }) {
   const t = useTranslations();
   const symbol = row?.symbol ?? security?.symbol ?? "";
-  const name = (security ? securityDisplayName(security) : null) ?? row?.name ?? "";
+  const name = (security ? securityDisplayName(security) : nameBeyondSymbol(row?.name, symbol)) ?? undefined;
   return (
-    <Link
-      href={`/mercado/${encodeURIComponent(symbol)}`}
-      prefetch={false}
-      className="flex min-h-20 min-w-0 flex-1 items-center gap-3 rounded-small py-3 desk:min-h-16 desk:py-2"
-      data-security={id}
-    >
-      <SecurityLogo symbol={symbol} logoUrl={row?.logoURL ?? security?.logoURL} brandColor={row?.bond ? "violet" : "blue"} />
-      <span className="flex min-w-0 flex-1 flex-col gap-1">
-        <span className="truncate text-body font-semibold text-primary-text">{symbol}</span>
-        <span className="flex min-w-0 items-center gap-2">
-          {paused ? (
-            <span className="shrink-0 rounded-full bg-elevated-background px-2 py-0.5 text-caption text-secondary-text" data-testid="paused-badge">
-              {t("subscriptions.freeSelection.paused")}
+    <TableNameCell
+      logo={
+        <>
+          {handle ? (
+            <span aria-hidden className="-mr-1 hidden shrink-0 cursor-grab text-tertiary-text desk:block">
+              <Icon name="sort" scale="s" />
             </span>
           ) : null}
-          <span className="truncate text-secondary text-secondary-text">{name}</span>
-        </span>
-      </span>
-      <PriceCell row={row} security={security} at={at} className="shrink-0" />
-    </Link>
+          <span className="flex shrink-0 max-[25rem]:hidden">
+            <SecurityLogo symbol={symbol} logoUrl={row?.logoURL ?? security?.logoURL} brandColor={row?.bond ? "violet" : "blue"} size="s" />
+          </span>
+        </>
+      }
+      name={name ?? symbol}
+      symbol={name ? symbol : undefined}
+      href={`/mercado/${encodeURIComponent(symbol)}`}
+      linkProps={{ "data-security": id } as object}
+      stackOnPhone
+      className="max-[22.5rem]:pr-1.5"
+      detail={
+        paused ? (
+          <span className="self-start rounded-full bg-action-surface px-2 py-0.5 text-caption text-secondary-text" data-testid="paused-badge">
+            {t("subscriptions.freeSelection.paused")}
+          </span>
+        ) : undefined
+      }
+    />
   );
 }

@@ -10,6 +10,10 @@ import { SignInOptions } from "@/features/auth/sign-in-options";
 import { PalancaMark } from "@/features/site/chrome";
 import { INDEXABLE_PAGES } from "@/features/site/site";
 import { Link } from "@/i18n/navigation";
+import { cn } from "@/ui/cn";
+import { buttonClass } from "@/ui/components/button-styles";
+import { INPUT } from "@/ui/components/field-styles";
+import { MessageCard } from "@/ui/components/layout";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -36,52 +40,56 @@ export default async function SignInPage({ params, searchParams }: Props) {
   const t = await getTranslations({ locale: locale as Locale });
   const reason = readSignInReason(first(query.motivo));
 
+  const notice = "flex flex-col gap-1 rounded-medium bg-app-background px-4 py-3";
+
   return (
-    <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center gap-8 px-4 py-10 sm:px-6">
-      <Link href="/" prefetch={false} aria-label={t("site.header.homeLabel")} className="-ml-1 inline-flex min-h-11 items-center gap-2 self-start rounded-small px-1 text-primary-text">
-        <PalancaMark className="size-10" />
-      </Link>
-      <div className="flex flex-col gap-3">
-        <h1 className="text-display text-primary-text">{t("onboarding.navigation.signIn")}</h1>
-        <p className="text-body text-secondary-text">{t("site.auth.noBankLink")}</p>
-      </div>
-      {reason === "deleted" ? (
-        <div role="status" className="flex flex-col gap-1 rounded-medium bg-elevated-background px-4 py-3" data-testid="account-deleted">
-          <p className="text-body font-semibold text-primary-text">{t("app.accountDeleted.title")}</p>
-          <p className="text-secondary text-secondary-text">{t("app.accountDeleted.message")}</p>
+    <main id="main" className="flex min-h-dvh w-full flex-col items-center justify-center bg-app-background px-4 py-10 sm:px-6">
+      <MessageCard>
+        <Link href="/" prefetch={false} aria-label={t("site.header.homeLabel")} className="-ml-1 inline-flex min-h-11 items-center gap-2 self-start rounded-small px-1 text-primary-text">
+          <PalancaMark className="size-10" />
+        </Link>
+        <div className="flex flex-col gap-2">
+          <h1 className="text-display text-primary-text">{t("onboarding.navigation.signIn")}</h1>
+          <p className="text-body text-secondary-text">{t("site.auth.noBankLink")}</p>
         </div>
-      ) : null}
-      {reason === "expired" || reason === "signedOutHere" ? (
-        <div role="status" className="flex flex-col gap-1 rounded-medium bg-elevated-background px-4 py-3">
-          <p className="text-body font-semibold text-primary-text">
-            {t(reason === "expired" ? "errors.session.signInAgainTitle" : "errors.session.signedOutHereTitle")}
-          </p>
-          <p className="text-secondary text-secondary-text">
-            {t(reason === "expired" ? "errors.session.expiredMessage" : "errors.session.signOutOthersFailed")}
-          </p>
-        </div>
-      ) : null}
-      <SignInOptions next={next} available={publicEnv.dataMode !== "demo"} failed={reason === "failed"} />
-      {publicEnv.dataMode === "demo" ? <p className="text-secondary text-secondary-text">{t("site.auth.unavailable")}</p> : null}
-      {process.env.NEXT_PUBLIC_DATA_MODE === "local" ? (
-        <form method="post" action="/auth/local-password" className="flex flex-col gap-3 border-t border-separator pt-6">
-          <input type="hidden" name="next" value={next} />
-          <label className="flex flex-col gap-1 text-secondary font-semibold text-primary-text">
-            {t("site.auth.email")}
-            <input name="email" type="email" required autoComplete="username" className="min-h-12 rounded-medium border border-control-outline bg-elevated-background px-4 text-body font-normal" />
-          </label>
-          <label className="flex flex-col gap-1 text-secondary font-semibold text-primary-text">
-            {t("site.auth.password")}
-            <input name="password" type="password" required autoComplete="current-password" className="min-h-12 rounded-medium border border-control-outline bg-elevated-background px-4 text-body font-normal" />
-          </label>
-          <button type="submit" className="motion-press inline-flex min-h-14 items-center justify-center rounded-full bg-accent px-5 text-body font-semibold text-on-accent">
-            {t("onboarding.navigation.signIn")}
-          </button>
-        </form>
-      ) : null}
-      <Link href={INDEXABLE_PAGES.policy} prefetch={false} className="inline-flex min-h-11 items-center self-start text-secondary font-semibold text-accent">
-        {t("common.privacyPolicy")}
-      </Link>
+        {reason === "deleted" ? (
+          <div role="status" className={notice} data-testid="account-deleted">
+            <p className="text-body font-semibold text-primary-text">{t("app.accountDeleted.title")}</p>
+            <p className="text-secondary text-secondary-text">{t("app.accountDeleted.message")}</p>
+          </div>
+        ) : null}
+        {reason === "expired" || reason === "signedOutHere" ? (
+          <div role="status" className={notice}>
+            <p className="text-body font-semibold text-primary-text">
+              {t(reason === "expired" ? "errors.session.signInAgainTitle" : "errors.session.signedOutHereTitle")}
+            </p>
+            <p className="text-secondary text-secondary-text">
+              {t(reason === "expired" ? "errors.session.expiredMessage" : "errors.session.signOutOthersFailed")}
+            </p>
+          </div>
+        ) : null}
+        <SignInOptions next={next} available={publicEnv.dataMode !== "demo"} failed={reason === "failed"} />
+        {publicEnv.dataMode === "demo" ? <p className="text-secondary text-secondary-text">{t("site.auth.unavailable")}</p> : null}
+        {process.env.NEXT_PUBLIC_DATA_MODE === "local" ? (
+          <form method="post" action="/auth/local-password" className="flex flex-col gap-3 border-t border-hairline pt-6">
+            <input type="hidden" name="next" value={next} />
+            <label className="flex flex-col gap-1 text-secondary font-semibold text-primary-text">
+              {t("site.auth.email")}
+              <input name="email" type="email" required autoComplete="username" className={cn(INPUT, "font-normal")} />
+            </label>
+            <label className="flex flex-col gap-1 text-secondary font-semibold text-primary-text">
+              {t("site.auth.password")}
+              <input name="password" type="password" required autoComplete="current-password" className={cn(INPUT, "font-normal")} />
+            </label>
+            <button type="submit" className={buttonClass("primary")}>
+              {t("onboarding.navigation.signIn")}
+            </button>
+          </form>
+        ) : null}
+        <Link href={INDEXABLE_PAGES.policy} prefetch={false} className="-ml-1 inline-flex min-h-11 items-center self-start rounded-small px-1 text-secondary font-semibold text-accent">
+          {t("common.privacyPolicy")}
+        </Link>
+      </MessageCard>
     </main>
   );
 }

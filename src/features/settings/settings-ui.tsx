@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
+import { Card } from "@/ui/components/layout";
 import { Icon, type IconName } from "@/ui/icons/icon";
 
 /*
@@ -11,14 +12,12 @@ import { Icon, type IconName } from "@/ui/icons/icon";
 
 const ROW = "flex min-h-12 w-full items-center gap-3 py-2 text-left";
 
+/** A titled card of rows (the card header carries the group title). */
 export function SettingsGroup({ id, title, children, className }: { id: string; title: string; children: ReactNode; className?: string }) {
   return (
-    <section aria-labelledby={id} className={cn("flex max-w-2xl flex-col gap-2", className)}>
-      <h2 id={id} className="text-section text-primary-text">
-        {title}
-      </h2>
-      <div className="flex flex-col divide-y divide-hairline rounded-large bg-card-background px-4 lg:panel">{children}</div>
-    </section>
+    <Card title={title} titleId={id} className={className} bodyClassName="flex flex-col divide-y divide-hairline pt-1! pb-2!">
+      {children}
+    </Card>
   );
 }
 

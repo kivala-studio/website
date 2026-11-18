@@ -32,7 +32,7 @@ export function FinancialValue({
   const format = useFormat();
   const text = format.securityPrice(value, { bond, code, digits });
   return (
-    <span key={text} className={cn("motion-value inline-block whitespace-nowrap text-primary-text", STYLE[style], className)}>
+    <span key={text} className={cn("motion-value inline-block whitespace-nowrap font-display text-primary-text", STYLE[style], className)}>
       {text}
     </span>
   );
@@ -58,7 +58,7 @@ export function ChangeBadge({ value, className }: { value: Numeric; className?: 
       ? t("components.financial.fellAccessibility", { arg1: text.replace("-", "") })
       : t("common.unchanged");
   return (
-    <span className={cn("inline-flex min-h-7 shrink-0 items-center gap-1 rounded-full px-2 text-caption font-semibold desk:min-h-6 desk:rounded-md desk:px-1.5", tone, className)}>
+    <span className={cn("inline-flex min-h-7 shrink-0 items-center gap-1 rounded-full px-2 font-display text-caption font-semibold desk:min-h-6 desk:rounded-md desk:px-1.5", tone, className)}>
       <Icon name={icon} aria-hidden />
       <span aria-hidden key={text} className="motion-value">{text}</span>
       <span className="sr-only">{`${t("common.change")}: ${spoken}`}</span>
@@ -71,7 +71,7 @@ export function MarketMetric({ title, value, detail, icon }: { title: string; va
   return (
     <div className="flex min-w-0 flex-col gap-2">
       {icon ? <Icon name={icon} className="text-accent" /> : null}
-      <span className="text-body font-medium text-primary-text">{value ?? "—"}</span>
+      <span className="font-display text-body font-medium text-primary-text">{value ?? "—"}</span>
       <span className="text-caption text-secondary-text">{title}</span>
       {detail ? <span className="text-caption text-tertiary-text">{detail}</span> : null}
     </div>
@@ -94,12 +94,13 @@ const STATUS_DOT = {
   open: "bg-positive",
 } as const;
 
-export function MarketStatusIndicator({ status }: { status: MarketStatus }) {
+/** A status dot and its word; `value` sets it as a stat tile's figure instead of a caption. */
+export function MarketStatusIndicator({ status, size = "caption" }: { status: MarketStatus; size?: "caption" | "value" }) {
   const t = useTranslations();
   const title = t(STATUS_KEY[status]);
   return (
-    <span className="inline-flex items-center gap-2 text-caption font-medium text-secondary-text">
-      <span aria-hidden className={cn("size-[7px] rounded-full", STATUS_DOT[status])} />
+    <span className={cn("inline-flex items-center gap-2", size === "value" ? "text-primary-text" : "text-caption font-medium text-secondary-text")}>
+      <span aria-hidden className={cn("rounded-full", size === "value" ? "size-2" : "size-[7px]", STATUS_DOT[status])} />
       <span aria-hidden>{title}</span>
       <span className="sr-only">{t("common.marketStatus", { arg1: title })}</span>
     </span>

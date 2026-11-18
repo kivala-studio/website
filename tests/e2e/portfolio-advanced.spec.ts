@@ -28,7 +28,6 @@ async function signIn(context: BrowserContext, tier: "free" | "plus" = "plus", p
 async function openSummary(page: Page) {
   await page.goto("/carteira");
   await expect(page.getByTestId("portfolio-summary")).toBeVisible();
-  await page.getByRole("tab", { name: "Resumo" }).click();
 }
 
 async function expectPaywall(page: Page) {
@@ -43,14 +42,12 @@ test("free: every Plus control opens the plan dialog", async ({ page, context })
   await page.getByTestId("book-menu").click();
   await page.getByTestId("book-new").click();
   await expectPaywall(page);
-  await page.getByTestId("book-menu").click();
   await page.getByTestId("book-share").click();
   await expectPaywall(page);
   for (const id of ["cash-add", "benchmark-unlock", "report-pdf"]) {
     await page.getByTestId(id).first().click();
     await expectPaywall(page);
   }
-  await page.getByTestId("csv-menu").click();
   await page.getByTestId("statement-read").click();
   await expectPaywall(page);
 
@@ -89,10 +86,11 @@ test("plus: named portfolios split the ledger, and deleting one removes its reco
   await page.getByTestId("editor-save").click();
   await expect(page.getByTestId("holding-row")).toHaveCount(1);
 
-  await page.getByTestId("book-menu").click();
+  // The switcher heads the area's rail once named portfolios exist.
+  await page.getByTestId("book-switcher").click();
   await page.getByRole("menuitemcheckbox", { name: "Principal" }).click();
   await expect(page.getByTestId("holding-row")).toHaveCount(4);
-  await page.getByTestId("book-menu").click();
+  await page.getByTestId("book-switcher").click();
   await page.getByRole("menuitemcheckbox", { name: "Todas as carteiras" }).click();
   await expect(page.getByTestId("portfolio-title")).toHaveText("Todas as carteiras");
   await expect(page.getByTestId("holding-row")).toHaveCount(4);
@@ -138,7 +136,6 @@ test("plus: cash, benchmark and the yearly PDF", async ({ page, context }) => {
 test("plus: the income calendar marks recorded payments and records the rest", async ({ page, context }) => {
   await signIn(context);
   await page.goto("/carteira");
-  await page.getByRole("tab", { name: "Resumo" }).click();
   await page.getByTestId("income-link").click();
   await expect(page).toHaveURL(/\/carteira\/rendimentos$/);
   await expect(page.getByTestId("income-totals")).toBeVisible();
@@ -189,7 +186,6 @@ test("plus: a statement PDF is read in the browser and never uploaded", async ({
 test("plus: a share link opens the read-only page until it is revoked", async ({ page, context, request }) => {
   await signIn(context);
   await page.goto("/carteira");
-  await page.getByTestId("book-menu").click();
   await page.getByTestId("book-share").click();
   await page.getByTestId("share-new").click();
   await page.getByTestId("share-label").fill("Contabilista");

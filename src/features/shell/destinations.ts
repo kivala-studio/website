@@ -22,13 +22,16 @@ export const isSignedInPath = (pathname: string) => SIGNED_IN.test(pathname);
 
 export type Destination = { href: string; labelKey: string; icon: IconName };
 
+/** The search tab: the phone tab bar has it; from 1024 px the top bar's search field takes its place. */
+export const SEARCH_TAB = "/pesquisa";
+
 /** The shell's tabs in iOS order: Início · Explorar · Carteira · Lista · Pesquisa. */
 export const TABS: readonly Destination[] = [
   { href: "/inicio", labelKey: "common.home", icon: "home" },
   { href: "/mercado", labelKey: "common.explore", icon: "markets" },
   { href: "/carteira", labelKey: "common.portfolio", icon: "portfolio" },
   { href: "/lista", labelKey: "common.watchlistTab", icon: "watchlist" },
-  { href: "/pesquisa", labelKey: "common.search", icon: "search" },
+  { href: SEARCH_TAB, labelKey: "common.search", icon: "search" },
 ];
 
 /** A tab is current on its own page and on the pages below it (`/carteira/posicao/BAI` is Carteira). */

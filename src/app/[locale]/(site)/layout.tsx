@@ -9,7 +9,7 @@ export default async function SiteLayout({ children }: Readonly<{ children: Reac
   const theme = parseTheme((await cookies()).get(THEME_COOKIE)?.value);
   return (
     <>
-      <SiteHeader />
+      <SiteHeader theme={theme} />
       {children}
       <SiteFooter theme={theme} />
     </>

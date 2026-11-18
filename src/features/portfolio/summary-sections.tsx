@@ -17,9 +17,11 @@ import { usePrivacyMode } from "@/features/privacy/privacy-mode";
 import { cn } from "@/ui/cn";
 import { AmountField } from "@/ui/components/amount-field";
 import { Button } from "@/ui/components/buttons";
+import { INPUT } from "@/ui/components/field-styles";
 import { SegmentedControl } from "@/ui/components/controls";
 import { Dialog } from "@/ui/components/dialog";
 import { HiddenValue } from "@/ui/components/feedback";
+import { Card, StatTile } from "@/ui/components/layout";
 import { useFormat } from "@/ui/format";
 
 import { useSelectionTitle } from "./book-menu";
@@ -28,14 +30,17 @@ import type { PortfolioModel } from "./use-portfolio";
 
 const CASH_TITLES: Record<CashKind, string> = { deposit: "cash.kind.deposit", withdrawal: "cash.kind.withdrawal", fee: "cash.kind.fee" };
 
-function Metric({ title, value, tone = "text-primary-text", testID }: { title: string; value: string; tone?: string; testID?: string }) {
+/** A personal figure in a stat tile; `tone` colours a change. */
+export function Metric({ title, value, tone, testID }: { title: string; value: string; tone?: string; testID?: string }) {
   return (
-    <div className="flex flex-col gap-1 rounded-medium bg-elevated-background p-4">
-      <dt className="text-caption text-secondary-text">{title}</dt>
-      <dd className={cn("text-body font-semibold tabular-nums", tone)} data-testid={testID}>
-        <Private>{value}</Private>
-      </dd>
-    </div>
+    <StatTile
+      label={title}
+      value={
+        <Private className={cn("tabular-nums", tone)}>
+          <span data-testid={testID}>{value}</span>
+        </Private>
+      }
+    />
   );
 }
 
@@ -57,17 +62,18 @@ export function CashSection({ model }: { model: PortfolioModel }) {
     setEditing(true);
   };
   return (
-    <section className="flex flex-col gap-3" aria-labelledby="cash-title" data-testid="cash-section">
-      <div className="flex items-center gap-3">
-        <h3 id="cash-title" className="flex-1 text-section text-primary-text">
-          {t("cash.title")}
-        </h3>
-        {cash.length > 0 ? (
-          <Button kind="secondary" className="w-auto! shrink-0" onClick={() => setListing(true)} data-testid="cash-movements">
+    <Card
+      title={t("cash.title")}
+      titleId="cash-title"
+      data-testid="cash-section"
+      action={
+        cash.length > 0 ? (
+          <Button kind="outline" size="compact" onClick={() => setListing(true)} data-testid="cash-movements">
             {t("cash.movements")}
           </Button>
-        ) : null}
-      </div>
+        ) : null
+      }
+    >
       {cash.length === 0 ? (
         <Button kind="secondary" icon="add" onClick={add} data-testid="cash-add">
           {t("cash.add")}
@@ -87,7 +93,7 @@ export function CashSection({ model }: { model: PortfolioModel }) {
       )}
       {editing ? <CashEditor model={model} onClose={() => setEditing(false)} /> : null}
       {listing ? <MovementsDialog model={model} onAdd={add} onClose={() => setListing(false)} /> : null}
-    </section>
+    </Card>
   );
 }
 
@@ -137,18 +143,7 @@ function CashEditor({ model, onClose }: { model: PortfolioModel; onClose: () => 
           <label htmlFor={ids.amount} className="text-secondary text-primary-text">
             {t("cash.amount")}
           </label>
-          <div className="flex min-h-12 items-center gap-2 rounded-medium bg-elevated-background px-3 focus-within:outline-2 focus-within:outline-accent desk:min-h-11">
-            <AmountField
-              id={ids.amount}
-              value={amountText}
-              onValueChange={setAmountText}
-              inputMode="decimal"
-              data-autofocus
-              data-testid="cash-amount"
-              className="min-w-0 flex-1 bg-transparent text-body text-primary-text outline-none"
-            />
-            <span className="text-body text-secondary-text">Kz</span>
-          </div>
+          <AmountField id={ids.amount} value={amountText} onValueChange={setAmountText} inputMode="decimal" data-autofocus data-testid="cash-amount" suffix="Kz" />
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor={ids.date} className="text-secondary text-primary-text">
@@ -162,7 +157,7 @@ function CashEditor({ model, onClose }: { model: PortfolioModel; onClose: () => 
             value={date}
             onChange={(event) => setDate(event.target.value)}
             data-testid="cash-date"
-            className="min-h-12 rounded-medium bg-elevated-background px-3 text-body text-primary-text desk:min-h-11"
+            className={INPUT}
           />
         </div>
         <button type="submit" hidden />
@@ -229,9 +224,11 @@ export function BenchmarkSection({ model, points, quotes }: { model: PortfolioMo
 
   if (account && !account.unlocksPlus) {
     return (
-      <Button kind="secondary" icon="chart" onClick={() => account.requestUpgrade("benchmark")} data-testid="benchmark-unlock">
-        {t("benchmark.unlock")}
-      </Button>
+      <Card title={t("benchmark.title")} titleId="benchmark-title">
+        <Button kind="secondary" icon="chart" onClick={() => account.requestUpgrade("benchmark")} data-testid="benchmark-unlock">
+          {t("benchmark.unlock")}
+        </Button>
+      </Card>
     );
   }
   if (quotes?.length === 0) return null;
@@ -239,10 +236,7 @@ export function BenchmarkSection({ model, points, quotes }: { model: PortfolioMo
   const reference = benchmark.at(-1);
   const difference = last && reference ? last.value.minus(reference.value) : null;
   return (
-    <section className="flex flex-col gap-3" aria-labelledby="benchmark-title" data-testid="benchmark">
-      <h3 id="benchmark-title" className="text-section text-primary-text">
-        {t("benchmark.title")}
-      </h3>
+    <Card title={t("benchmark.title")} titleId="benchmark-title" bodyClassName="flex flex-col gap-3" data-testid="benchmark">
       {quotes === null ? (
         <Button kind="secondary" icon="refresh" onClick={() => router.refresh()}>
           {t("common.tryAgain")}
@@ -286,7 +280,7 @@ export function BenchmarkSection({ model, points, quotes }: { model: PortfolioMo
           )}
         </>
       )}
-    </section>
+    </Card>
   );
 }
 
@@ -363,36 +357,23 @@ export function ResultsSection({ model }: { model: PortfolioModel }) {
   };
 
   return (
-    <section className="flex flex-col gap-3" aria-labelledby="results-by-year" data-testid="results">
-      <h3 id="results-by-year" className="text-section text-primary-text">
-        {t("portfolio.results.byYear")}
-      </h3>
-      <ul className="flex flex-col gap-3">
+    <Card title={t("portfolio.results.byYear")} titleId="results-by-year" data-testid="results">
+      <ul className="flex flex-col">
         {years.map((year) => (
-          <li key={year.year} className="flex flex-col gap-3 rounded-medium bg-elevated-background p-4" data-testid="results-year">
+          <li key={year.year} className="flex flex-col gap-3 border-b border-hairline py-3 first:pt-0 last:border-b-0 last:pb-0" data-testid="results-year">
             <div className="flex items-center gap-3">
-              <span className="flex-1 text-body font-semibold text-primary-text">{year.year}</span>
-              <Button kind="secondary" icon="document" className="w-auto! shrink-0" onClick={() => download(year.year)} data-testid="report-pdf">
+              <span className="flex-1 font-display text-body font-semibold text-primary-text">{year.year}</span>
+              <Button kind="outline" size="compact" icon="document" onClick={() => download(year.year)} data-testid="report-pdf">
                 {t("report.export")}
               </Button>
             </div>
             <dl className="grid grid-cols-2 gap-3">
-              <div className="flex flex-col gap-1">
-                <dt className="text-caption text-secondary-text">{t("common.realizedGain")}</dt>
-                <dd className={cn("text-body font-semibold tabular-nums", toneOf(year.realizedProfitLoss))}>
-                  <Private>{format.currency(year.realizedProfitLoss, { signed: true })}</Private>
-                </dd>
-              </div>
-              <div className="flex flex-col gap-1">
-                <dt className="text-caption text-secondary-text">{t("common.netIncome")}</dt>
-                <dd className="text-body font-semibold tabular-nums text-primary-text">
-                  <Private>{format.currency(year.netIncome)}</Private>
-                </dd>
-              </div>
+              <Metric title={t("common.realizedGain")} value={format.currency(year.realizedProfitLoss, { signed: true })} tone={toneOf(year.realizedProfitLoss)} />
+              <Metric title={t("common.netIncome")} value={format.currency(year.netIncome)} />
             </dl>
           </li>
         ))}
       </ul>
-    </section>
+    </Card>
   );
 }

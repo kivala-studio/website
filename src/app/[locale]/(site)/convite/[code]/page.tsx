@@ -9,6 +9,7 @@ import { InviteKeeper } from "@/features/site/invite-keeper";
 import { pageMetadata } from "@/features/site/metadata";
 import { ReadingPage } from "@/features/site/pages";
 import { StoreButton } from "@/features/site/visuals";
+import { Card } from "@/ui/components/layout";
 
 type Props = { params: Promise<{ locale: string; code: string }> };
 
@@ -38,12 +39,14 @@ export default function InvitePage({ params }: Props) {
   return (
     <ReadingPage title={t("referral.redeem.title")}>
       <InviteKeeper code={code} />
-      <p className="text-headline tracking-[0.12em] text-primary-text select-all">{code}</p>
-      <div className="flex flex-col gap-2">
-        <p className="text-body text-primary-text sm:text-price sm:font-normal">{t("site.invite.offer")}</p>
-        <p className="text-secondary text-secondary-text">{t("referral.error.notEligible")}</p>
-      </div>
-      <StoreButton className="w-full sm:w-auto sm:self-start" />
+      <Card className="flex flex-col gap-6">
+        <p className="font-display text-headline tracking-[0.12em] text-primary-text select-all">{code}</p>
+        <div className="flex flex-col gap-2">
+          <p className="text-body text-primary-text sm:text-price sm:font-normal">{t("site.invite.offer")}</p>
+          <p className="text-secondary text-secondary-text">{t("referral.error.notEligible")}</p>
+        </div>
+        <StoreButton className="w-full sm:w-auto sm:self-start" />
+      </Card>
     </ReadingPage>
   );
 }

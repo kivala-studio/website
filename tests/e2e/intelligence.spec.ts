@@ -68,17 +68,18 @@ test("@engines the watchlist reading opens its sources and leaves when dismissed
   expect(await serious(page, '[data-testid="watchlist-reading"]')).toEqual([]);
 });
 
-test("@engines portfolio tiles sit above each tab and open the detail", async ({ page, context }) => {
+test("@engines portfolio tiles sit in each dashboard section and open the detail", async ({ page, context }) => {
   await open(page, context, SATURDAY, "/carteira");
-  const reading = page.getByTestId("portfolio-reading");
-  await expect(reading.getByTestId("portfolio-insight").first()).toBeVisible();
-  expect(await reading.getByTestId("portfolio-insight").count()).toBeLessThanOrEqual(2);
-  await expect(reading.locator('[data-tile="weekly"]')).toBeVisible();
-
-  await page.getByRole("tab", { name: "Distribuição" }).click();
-  await expect(reading.locator('[data-tile="largest"]')).toBeVisible();
-  await page.getByRole("tab", { name: "Resumo" }).click();
-  await expect(reading.locator('[data-tile="strongest"], [data-tile="weekly"]').first()).toBeVisible();
+  const positions = page.locator('[data-testid="portfolio-reading"][data-section="0"]');
+  await expect(positions.getByTestId("portfolio-insight").first()).toBeVisible();
+  for (const section of ["0", "1", "2"]) {
+    expect(await page.locator(`[data-testid="portfolio-reading"][data-section="${section}"]`).getByTestId("portfolio-insight").count()).toBeLessThanOrEqual(2);
+  }
+  await expect(positions.locator('[data-tile="weekly"]')).toBeVisible();
+  await expect(page.locator('[data-testid="portfolio-reading"][data-section="1"]').locator('[data-tile="largest"]')).toBeVisible();
+  // Each tile appears once on the page.
+  await expect(page.locator('[data-tile="weekly"]')).toHaveCount(1);
+  const reading = positions;
   await page.screenshot({ path: `${EVIDENCE}/portfolio-tiles-${test.info().project.name}.png`, fullPage: true });
 
   await reading.getByTestId("portfolio-insight").first().click();
@@ -92,7 +93,7 @@ test("@engines portfolio tiles sit above each tab and open the detail", async ({
 test("@engines privacy mode hides the tiles and every personal row", async ({ page, context }) => {
   await open(page, context, SATURDAY, "/carteira", [["investao-privacy", "on"]]);
   await expect(page.getByTestId("portfolio")).toBeVisible();
-  await expect(page.getByRole("tab", { name: "Distribuição" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Distribuição" })).toBeVisible();
   await expect(page.getByTestId("portfolio-reading")).toHaveCount(0);
 
   await page.goto("/inicio");

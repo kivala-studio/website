@@ -4,9 +4,10 @@ import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
 import { cn } from "@/ui/cn";
-import { PageHeading } from "@/ui/components/layout";
+import { PAGE_CONTAINER, PageHeading, READING_COLUMN } from "@/ui/components/layout";
 
-export const SIGNED_IN_PAGE = "mx-auto w-full max-w-6xl px-4 pt-2 pb-16 sm:px-6 lg:pt-6";
+/** A signed-in page's `<main>`: the shared page column with the app's top and bottom spacing. */
+export const SIGNED_IN_PAGE = cn(PAGE_CONTAINER, "pt-4 pb-16 lg:pt-8");
 
 type Params = { params: Promise<{ locale: string }> };
 
@@ -19,12 +20,25 @@ export const signedInMetadata =
   };
 
 /** A signed-in destination whose content arrives in a later phase: its title, so navigation already works. */
-export async function SignedInPage({ titleKey, children, className }: { titleKey: string; children?: ReactNode; className?: string }) {
+export async function SignedInPage({
+  titleKey,
+  narrow = false,
+  children,
+  className,
+}: {
+  titleKey: string;
+  /** The centred reading column (settings, search) instead of the full container. */
+  narrow?: boolean;
+  children?: ReactNode;
+  className?: string;
+}) {
   const t = await getTranslations();
   return (
-    <main id="main" className={cn(SIGNED_IN_PAGE, "flex flex-col gap-8", className)}>
-      <PageHeading title={t(titleKey as never)} />
-      {children}
+    <main id="main" className={SIGNED_IN_PAGE}>
+      <div className={cn("flex flex-col gap-6", narrow ? READING_COLUMN : "w-full", className)}>
+        <PageHeading title={t(titleKey as never)} />
+        {children}
+      </div>
     </main>
   );
 }

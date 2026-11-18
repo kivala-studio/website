@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { usePathname as useRawPathname, useSearchParams } from "next/navigation";
-import { type ReactNode, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import {
   type DiscoveryQuery,
@@ -15,7 +15,6 @@ import {
   SORT_DIRECTION_LABEL_KEYS,
   applyDiscoveryQuery,
   hasUsableQuote,
-  kindLabelKey,
   securityDisplayName,
   isVisibleOutsideSearch,
   marketSecurity,
@@ -23,16 +22,16 @@ import {
 import { useMarketState } from "@/features/market/market-provider";
 import { useFormat } from "@/ui/format";
 import { Link, usePathname } from "@/i18n/navigation";
-import { cn } from "@/ui/cn";
-import { SearchField } from "@/ui/components/controls";
+import { buttonClass, iconButtonClass } from "@/ui/components/button-styles";
+import { NavTabs, SearchField } from "@/ui/components/controls";
+import { Card } from "@/ui/components/layout";
 import { SecurityLogo } from "@/ui/components/rows";
 import { EmptyState } from "@/ui/components/states";
+import { DataTable, TableCell, TableHead, TableNameCell, TableRow, TableSortHeader } from "@/ui/components/table";
 import { Icon } from "@/ui/icons/icon";
 
 import { type CatalogueRow, ChangeCell, PriceCell } from "./price-cell";
 import { MARKET_DEFAULT_QUERY, marketQueryParams, readMarketQuery } from "./query";
-
-const CHIP = "inline-flex min-h-11 items-center rounded-full px-4 text-secondary font-semibold whitespace-nowrap desk:px-3";
 
 /** The query the list is showing; links and the search keep it in the URL. */
 function useMarketQuery() {
@@ -48,12 +47,16 @@ function useMarketQuery() {
   return { query, updateSearch };
 }
 
+/** A trailing tab-row link to another page (Notícias, Aprender for signed-in visitors). */
+export type MarketBrowserLink = { href: string; title: string };
+
 /**
- * The market list (iOS Markets master): search, categories, sort, result count and rows. Filtering and
- * sorting are the W2 discovery rules, applied to the store's snapshot once it loads and to the server's
- * catalogue before that, so the list renders (and filters, as plain links and a GET form) without JavaScript.
+ * The market list (iOS Markets master): category tabs with the search and sort beside them, the result count and
+ * the table. Filtering and sorting are the W2 discovery rules, applied to the store's snapshot once it loads and to
+ * the server's catalogue before that, so the list renders (and filters, as plain links and a GET form) without
+ * JavaScript.
  */
-export function MarketBrowser({ rows, renderedAt }: { rows: CatalogueRow[]; renderedAt: number }) {
+export function MarketBrowser({ rows, renderedAt, links = [] }: { rows: CatalogueRow[]; renderedAt: number; links?: MarketBrowserLink[] }) {
   const t = useTranslations();
   const translate = (key: string) => t(key as never);
   const format = useFormat();
@@ -83,88 +86,83 @@ export function MarketBrowser({ rows, renderedAt }: { rows: CatalogueRow[]; rend
   const ariaSort = (key: MarketSortKey) => (key === query.sortKey ? query.direction : undefined);
 
   return (
-    <section aria-labelledby="market-list" className="flex min-w-0 flex-col gap-3 @container lg:gap-4">
-      <h1 id="market-list" className="text-display text-primary-text">
-        {t("common.market")}
-      </h1>
-      <div className="flex flex-col gap-3 @2xl:flex-row-reverse @2xl:items-center @2xl:justify-between">
-      <form
-        role="search"
-        action={rawPathname}
-        onSubmit={(event) => event.preventDefault()}
-        className="flex flex-col @2xl:w-64"
-      >
-        {hidden.map(([name, value]) => (
-          <input key={name} type="hidden" name={name} value={value} />
-        ))}
-        <SearchField name="q" value={query.searchText} onChange={updateSearch} placeholder={t("common.searchSymbolNameOrIssuer")} />
-      </form>
-
-      <nav aria-label={t("news.information.categoryLabel")}>
-        <ul className="flex flex-wrap gap-2 desk:gap-1.5">
-          {MARKET_CATEGORIES.map((category) => (
-            <li key={category}>
-              <Link
-                href={href({ category })}
-                prefetch={false}
-                scroll={false}
-                aria-current={category === query.category ? "true" : undefined}
-                className={cn(CHIP, category === query.category ? "bg-accent text-on-accent" : "bg-elevated-background text-primary-text lg:border lg:border-hairline")}
-              >
-                {translate(MARKET_CATEGORY_LABEL_KEYS[category])}
-              </Link>
-            </li>
+    <div className="flex min-w-0 flex-col gap-4">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-6">
+        <div className="flex min-w-0 flex-1 gap-6 overflow-x-auto border-b border-hairline [scrollbar-width:none]">
+          <NavTabs
+            bare
+            label={t("news.information.categoryLabel")}
+            linkProps={{ prefetch: false, scroll: false }}
+            items={MARKET_CATEGORIES.map((category) => ({
+              href: href({ category }),
+              title: translate(MARKET_CATEGORY_LABEL_KEYS[category]),
+              current: category === query.category,
+            }))}
+          />
+          {links.length > 0 ? (
+            <NavTabs
+              bare
+              label={t("common.market")}
+              linkProps={{ prefetch: false }}
+              items={links}
+              className="flex shrink-0 items-center gap-6 before:h-5 before:w-px before:bg-hairline before:content-['']"
+            />
+          ) : null}
+        </div>
+        <form role="search" action={rawPathname} onSubmit={(event) => event.preventDefault()} className="lg:w-80 lg:shrink-0">
+          {hidden.map(([name, value]) => (
+            <input key={name} type="hidden" name={name} value={value} />
           ))}
-        </ul>
-      </nav>
+          <SearchField name="q" value={query.searchText} onChange={updateSearch} placeholder={t("common.searchSymbolNameOrIssuer")} />
+        </form>
       </div>
 
-      <div className="flex items-center gap-2">
-        <p className="text-caption text-tertiary-text" aria-live="polite" data-testid="market-count">
+      <div className="flex min-h-11 items-center gap-2">
+        <p className="flex-1 text-caption text-tertiary-text" aria-live="polite" data-testid="market-count">
           {`${results.length} ${results.length === 1 ? t("legacy.titulo") : t("legacy.titulos")}`}
         </p>
-        <span className="flex-1" />
-        <details className="relative">
-          <summary
-            aria-label={t("markets.accessibility.sortBy", { arg1: translate(MARKET_SORT_LABEL_KEYS[query.sortKey]) })}
-            className="flex min-h-11 cursor-pointer list-none items-center gap-1 rounded-small px-2 text-caption font-semibold text-secondary-text [&::-webkit-details-marker]:hidden"
+        {/* From 768 px every column header is a sort link, so the menu and the direction button are for narrower lists. */}
+        <div className="flex shrink-0 items-center gap-2 md:hidden">
+          <details className="relative shrink-0">
+            <summary
+              aria-label={t("markets.accessibility.sortBy", { arg1: translate(MARKET_SORT_LABEL_KEYS[query.sortKey]) })}
+              className={buttonClass("outline", "cursor-pointer list-none gap-1! px-3! [&::-webkit-details-marker]:hidden", "compact")}
+            >
+              {translate(MARKET_SORT_LABEL_KEYS[query.sortKey])}
+              <Icon name="chevron-down" scale="s" className="text-secondary-text" />
+            </summary>
+            <ul
+              aria-label={t("markets.picker.sortBy")}
+              className="absolute right-0 z-20 mt-1 flex min-w-44 flex-col rounded-medium border border-card-border bg-card-background p-1 shadow-panel"
+            >
+              {MARKET_SORT_KEYS.map((key) => (
+                <li key={key}>
+                  <Link
+                    href={href({ sortKey: key })}
+                    prefetch={false}
+                    scroll={false}
+                    aria-current={key === query.sortKey ? "true" : undefined}
+                    onClick={(event) => event.currentTarget.closest("details")?.removeAttribute("open")}
+                    className="flex min-h-11 items-center justify-between gap-3 rounded-small px-3 text-secondary text-primary-text"
+                  >
+                    {translate(MARKET_SORT_LABEL_KEYS[key])}
+                    {key === query.sortKey ? <Icon name="check" className="text-accent" /> : null}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </details>
+          <Link
+            href={href({ direction: query.direction === "ascending" ? "descending" : "ascending" })}
+            prefetch={false}
+            scroll={false}
+            aria-label={t("markets.accessibility.order", { arg1: translate(SORT_DIRECTION_LABEL_KEYS[query.direction]) })}
+            aria-description={t("markets.accessibility.orderHint")}
+            className={iconButtonClass("outline")}
           >
-            {translate(MARKET_SORT_LABEL_KEYS[query.sortKey])}
-            <Icon name="chevron-down" scale="s" />
-          </summary>
-          <ul
-            aria-label={t("markets.picker.sortBy")}
-            className="absolute right-0 z-20 mt-1 flex min-w-44 flex-col rounded-medium border border-separator bg-elevated-background p-1 shadow-lg"
-          >
-            {MARKET_SORT_KEYS.map((key) => (
-              <li key={key}>
-                <Link
-                  href={href({ sortKey: key })}
-                  prefetch={false}
-                  scroll={false}
-                  aria-current={key === query.sortKey ? "true" : undefined}
-                  onClick={(event) => event.currentTarget.closest("details")?.removeAttribute("open")}
-                  className="flex min-h-11 items-center justify-between gap-3 rounded-small px-3 text-secondary text-primary-text"
-                >
-                  {translate(MARKET_SORT_LABEL_KEYS[key])}
-                  {key === query.sortKey ? <Icon name="check" className="text-accent" /> : null}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </details>
-        <Link
-          href={href({ direction: query.direction === "ascending" ? "descending" : "ascending" })}
-          prefetch={false}
-          scroll={false}
-          aria-label={t("markets.accessibility.order", { arg1: translate(SORT_DIRECTION_LABEL_KEYS[query.direction]) })}
-          aria-description={t("markets.accessibility.orderHint")}
-          className="flex size-11 items-center justify-center rounded-full text-accent"
-        >
-          <span className="flex size-9 items-center justify-center rounded-full bg-elevated-background">
-            <Icon name={query.direction === "ascending" ? "arrow-up" : "arrow-down"} scale="s" />
-          </span>
-        </Link>
+            <Icon name={query.direction === "ascending" ? "arrow-up" : "arrow-down"} scale="s" className="text-accent" />
+          </Link>
+        </div>
       </div>
 
       {results.length === 0 ? (
@@ -189,93 +187,62 @@ export function MarketBrowser({ rows, renderedAt }: { rows: CatalogueRow[]; rend
           />
         </div>
       ) : (
-        <div className="lg:panel lg:overflow-hidden">
-        <table className="w-full table-fixed border-collapse" data-testid="market-table">
-          <thead className="sr-only @lg:not-sr-only">
-            <tr className="text-caption text-secondary-text lg:border-b lg:border-hairline">
-              <SortHeader label={t("common.instrument")} sort={ariaSort("name")} href={sortLink("name")} align="left" className="w-auto lg:pl-4" />
-              <SortHeader label={t("common.price")} sort={ariaSort("price")} href={sortLink("price")} align="right" className="w-36" />
-              <SortHeader
+        <Card flush className="overflow-hidden panel">
+          <DataTable className="table-fixed" data-testid="market-table">
+            <TableHead>
+              <TableSortHeader label={t("common.instrument")} sort={ariaSort("name")} href={sortLink("name")} />
+              <TableSortHeader label={t("common.price")} sort={ariaSort("price")} href={sortLink("price")} align="right" className="w-36 sm:w-44" />
+              <TableSortHeader
                 label={t("common.change")}
                 sort={ariaSort("percentageChange")}
                 href={sortLink("percentageChange")}
                 align="right"
-                className="hidden w-28 @lg:table-cell @2xl:pr-0 @max-2xl:lg:pr-4"
+                className="hidden w-32 sm:table-cell"
               />
-              <SortHeader
+              <TableSortHeader
                 label={translate(MARKET_SORT_LABEL_KEYS.volume)}
                 sort={ariaSort("volume")}
                 href={sortLink("volume")}
                 align="right"
-                className="hidden w-32 @2xl:table-cell lg:pr-4"
+                className="hidden w-36 md:table-cell"
               />
-            </tr>
-          </thead>
-          <tbody>
-            {results.map((security) => {
-              const row = byID.get(security.id);
-              const live = snapshot ? security : undefined;
-              const volume = live && hasUsableQuote(live, at) ? format.count(live.volume) : undefined;
-              return (
-                <tr key={security.id} data-testid="market-row" className="relative border-b border-separator lg:border-hairline lg:last:border-b-0 lg:hover:bg-app-background">
-                  <th scope="row" className="py-3 pr-2 text-left font-normal desk:py-2 lg:pl-4">
-                    <Link
+            </TableHead>
+            <tbody>
+              {results.map((security) => {
+                const row = byID.get(security.id);
+                const live = snapshot ? security : undefined;
+                const volume = live && hasUsableQuote(live, at) ? format.count(live.volume) : undefined;
+                const name = securityDisplayName(security);
+                return (
+                  <TableRow key={security.id} data-testid="market-row">
+                    <TableNameCell
+                      logo={
+                        <span className="flex shrink-0 max-[22.5rem]:hidden">
+                          <SecurityLogo symbol={security.symbol} logoUrl={row?.logoURL ?? security.logoURL} brandColor={row?.bond ? "violet" : "blue"} size="s" />
+                        </span>
+                      }
+                      name={name ?? security.symbol}
+                      symbol={name ? security.symbol : undefined}
                       href={{ pathname: `/mercado/${encodeURIComponent(security.symbol)}`, query: marketQueryParams(query) }}
-                      prefetch={false}
-                      aria-description={t("common.openSecurityDetailsHint")}
-                      className="flex min-h-14 min-w-0 items-center gap-3 outline-none after:absolute after:inset-0 after:rounded-small after:content-[''] focus-visible:after:outline-2 focus-visible:after:-outline-offset-2 focus-visible:after:outline-accent desk:min-h-11"
-                    >
-                      <SecurityLogo symbol={security.symbol} logoUrl={row?.logoURL ?? security.logoURL} brandColor={row?.bond ? "violet" : "blue"} />
-                      <span className="flex min-w-0 flex-col gap-1 desk:gap-0">
-                        <span className="truncate text-body font-semibold text-primary-text">{security.symbol}</span>
-                        <span className="truncate text-secondary text-secondary-text">{securityDisplayName(security) ?? translate(kindLabelKey(security.kind))}</span>
-                      </span>
-                    </Link>
-                  </th>
-                  <td className="py-3 text-right align-middle desk:py-2">
-                    <PriceCell row={row} security={live} at={snapshot ? at : undefined} inlineChange="@lg:hidden" />
-                  </td>
-                  <td className="hidden py-3 pl-2 text-right align-middle desk:py-2 @lg:table-cell @max-2xl:lg:pr-4">
-                    <ChangeCell row={row} security={live} at={snapshot ? at : undefined} />
-                  </td>
-                  <td className="hidden py-3 pl-2 text-right align-middle text-body text-primary-text desk:py-2 @2xl:table-cell lg:pr-4">
-                    {volume ?? <span aria-hidden className="text-tertiary-text">—</span>}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-        </div>
+                      linkProps={{ "aria-description": t("common.openSecurityDetailsHint") }}
+                      stackOnPhone
+                    />
+                    <TableCell numeric>
+                      <PriceCell row={row} security={live} at={snapshot ? at : undefined} inlineChange="sm:hidden" />
+                    </TableCell>
+                    <TableCell numeric className="hidden sm:table-cell">
+                      <ChangeCell row={row} security={live} at={snapshot ? at : undefined} />
+                    </TableCell>
+                    <TableCell numeric className="hidden md:table-cell">
+                      {volume ?? <span aria-hidden className="text-tertiary-text">—</span>}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </tbody>
+          </DataTable>
+        </Card>
       )}
-    </section>
-  );
-}
-
-function SortHeader({
-  label,
-  sort,
-  href,
-  align,
-  className,
-}: {
-  label: string;
-  sort: "ascending" | "descending" | undefined;
-  href: { pathname: string; query: Record<string, string> };
-  align: "left" | "right";
-  className?: string;
-}): ReactNode {
-  return (
-    <th scope="col" aria-sort={sort} className={cn("pb-1 font-semibold", align === "right" ? "text-right" : "text-left", className)}>
-      <Link
-        href={href}
-        prefetch={false}
-        scroll={false}
-        className={cn("inline-flex min-h-11 items-center gap-1 rounded-small", align === "right" && "flex-row-reverse", sort && "text-primary-text")}
-      >
-        {label}
-        {sort ? <Icon name={sort === "ascending" ? "arrow-up" : "arrow-down"} scale="s" /> : null}
-      </Link>
-    </th>
+    </div>
   );
 }

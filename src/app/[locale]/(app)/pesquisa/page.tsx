@@ -9,8 +9,8 @@ export default async function Page() {
   const now = requestTime();
   const rows = await catalogueRows(now);
   return (
-    <SignedInPage titleKey="common.search" className="max-w-3xl">
-      <SearchPanel rows={rows ?? []} renderedAt={now} autoFocus />
+    <SignedInPage titleKey="common.search" narrow>
+      <SearchPanel rows={rows ?? []} renderedAt={now} autoFocus surface="page" />
     </SignedInPage>
   );
 }

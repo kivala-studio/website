@@ -7,6 +7,7 @@ import { serverRule } from "@/domain/errors";
 import { writableBookId } from "@/domain/portfolio/books";
 import { useAccount } from "@/features/account/account-provider";
 import { Button } from "@/ui/components/buttons";
+import { INPUT } from "@/ui/components/field-styles";
 import { Dialog } from "@/ui/components/dialog";
 import { Spinner } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
@@ -149,7 +150,7 @@ function NewShareForm({ onCancel, onCreate }: { onCancel: () => void; onCreate: 
         autoComplete="off"
         autoFocus
         data-testid="share-label"
-        className="min-h-11 w-full rounded-medium bg-elevated-background px-3 text-body text-primary-text outline-none focus:outline-2 focus:outline-accent"
+        className={INPUT}
       />
       <div className="grid grid-cols-2 gap-3">
         <Button kind="secondary" type="button" onClick={onCancel}>
@@ -169,7 +170,7 @@ function CreatedLink({ url }: { url: string }) {
   const [copied, setCopied] = useState(false);
   const canShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
   return (
-    <div className="flex flex-col gap-3 rounded-medium bg-elevated-background p-4">
+    <div className="flex flex-col gap-3 rounded-medium border border-hairline bg-app-background p-4">
       <output className="break-all font-mono text-secondary text-primary-text" data-testid="share-url">
         {url}
       </output>

@@ -1,31 +1,31 @@
-import Decimal from "decimal.js";
 import { getLocale, getTranslations } from "next-intl/server";
 
+import { currentAccount } from "@/data/auth/account";
 import { requestTime } from "@/data/clock";
 import { getPublicPulse } from "@/data/market/public-cache";
 import { type FormatLocale, createFormat } from "@/domain/format";
 import type { MarketIndex } from "@/domain/market";
 import { civilDate } from "@/domain/market/zone";
 import { catalogueRows } from "@/features/market/browse/catalogue";
-import { MarketBrowser } from "@/features/market/browse/market-browser";
-import { IndexInfo, Movers, SessionFacts, SessionStatus } from "@/features/market/browse/market-overview";
+import { MarketBrowser, type MarketBrowserLink } from "@/features/market/browse/market-browser";
+import { IndexInfo, MarketMovers, SessionFacts, SessionStatusTile } from "@/features/market/browse/market-overview";
 import { MarketInformationSummary } from "@/features/news/market-information";
 import { siteMetadata } from "@/features/site/metadata";
 import { INDEXABLE_PAGES } from "@/features/site/site";
-import { Link } from "@/i18n/navigation";
-import { cn } from "@/ui/cn";
-import { Panel } from "@/ui/components/layout";
+import { ChangeBadge } from "@/ui/components/financial";
+import { Card, StatTile } from "@/ui/components/layout";
 import { ErrorState } from "@/ui/components/states";
-import { Icon, type IconName } from "@/ui/icons/icon";
 
 export const generateMetadata = siteMetadata({ path: INDEXABLE_PAGES.market, image: "market" }, (t) => ({
   title: t("common.market"),
   description: t("site.meta.marketDescription"),
 }));
 
-const tone = (value: Decimal) => (value.gt(0) ? "text-positive bg-positive/10" : value.lt(0) ? "text-negative bg-negative/10" : "text-secondary-text bg-secondary-text/10");
-
-/** The market table, with the overview as a rail beside it from 1024 px and below it on smaller screens. */
+/**
+ * The market overview (the CoinStats list layout): a centred title, three summary cards (market status with the
+ * Indicador invest.ao, session data, movers), the category tabs with search and sort, then the table. The server
+ * renders dated verified closes; current quotes, the session figures and the movers arrive in the browser.
+ */
 export default async function MarketPage() {
   const t = await getTranslations();
   const locale = (await getLocale()) as FormatLocale;
@@ -38,69 +38,64 @@ export default async function MarketPage() {
   }
   const now = requestTime();
   const catalogue = await catalogueRows(now);
-  const rows = catalogue ?? [];
-  const links: { href: string; title: string; icon: IconName }[] = [
-    { href: INDEXABLE_PAGES.news, title: t("common.news"), icon: "news" },
-    { href: INDEXABLE_PAGES.learn, title: t("learn.title"), icon: "document" },
-  ];
+  // Visitors reach Notícias and Aprender from the top bar; the app shell has no such links, so the tab row carries them.
+  const links: MarketBrowserLink[] = (await currentAccount())
+    ? [
+        { href: INDEXABLE_PAGES.news, title: t("common.news") },
+        { href: INDEXABLE_PAGES.learn, title: t("learn.title") },
+      ]
+    : [];
 
   return (
-    <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:gap-6">
-      {catalogue ? <MarketBrowser rows={catalogue} renderedAt={now} /> : <ErrorState message={t("components.placeholder.loadFailed")} />}
-      <aside className="flex flex-col gap-10 lg:sticky lg:top-20 lg:gap-4">
-        <Panel aria-labelledby="index">
-          <div className="flex flex-col gap-4">
-            <SessionStatus />
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-1">
-                <h2 id="index" className="text-secondary font-medium text-secondary-text">
-                  {t("common.appIndicator")}
-                </h2>
-                <IndexInfo />
-              </div>
-              <p className="text-caption text-secondary-text">{t("widgets.market.calculatedNotOfficial")}</p>
-              {index?.value && index.tradingDate !== undefined ? (
+    <div className="flex flex-col gap-6 lg:gap-8">
+      <h1 className="pt-2 text-center text-display text-primary-text lg:pt-4">{t("common.market")}</h1>
+
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <Card title={t("settings.marketData.status")} titleId="market-status-title" className="flex flex-col" bodyClassName="flex-1">
+          <dl className="grid h-full grid-rows-[auto_1fr] gap-3">
+            <StatTile
+              size="large"
+              label={
                 <>
-                  <p className="mt-2 flex flex-wrap items-baseline gap-3" data-testid="market-index">
-                    <span className="text-headline text-primary-text">{format.number(index.value, { digits: 2 })}</span>
-                    {index.percentageChange ? (
-                      <span className={cn("rounded-full px-2 py-1 text-secondary font-semibold desk:rounded-md desk:py-0.5", tone(index.percentageChange))}>
-                        {format.percent(index.percentageChange)}
-                      </span>
-                    ) : null}
-                  </p>
-                  <p className="text-caption text-secondary-text">{t("market.index.closesOn", { arg1: format.civilDate(civilDate(index.tradingDate)) })}</p>
+                  {t("common.appIndicator")}
+                  <IndexInfo />
                 </>
-              ) : (
-                <p className="mt-2 text-section text-secondary-text">{t("market.index.unavailableTitle")}</p>
-              )}
-            </div>
-          </div>
-          <div className="flex flex-col gap-3 border-t border-hairline pt-4">
-            <h2 className="text-secondary font-semibold text-primary-text">{t("markets.details.sessionData")}</h2>
-            <SessionFacts />
-          </div>
-        </Panel>
+              }
+              value={
+                index?.value && index.tradingDate !== undefined ? (
+                  <span className="flex flex-wrap items-center gap-x-3 gap-y-1" data-testid="market-index">
+                    {format.number(index.value, { digits: 2 })}
+                    {index.percentageChange ? <ChangeBadge value={index.percentageChange.toString()} /> : null}
+                  </span>
+                ) : (
+                  <span className="text-body font-medium text-secondary-text">{t("market.index.unavailableTitle")}</span>
+                )
+              }
+              detail={
+                <>
+                  {index?.value && index.tradingDate !== undefined ? (
+                    <span className="block">{t("market.index.closesOn", { arg1: format.civilDate(civilDate(index.tradingDate)) })}</span>
+                  ) : null}
+                  <span className="block">{t("widgets.market.calculatedNotOfficial")}</span>
+                </>
+              }
+            />
+            <SessionStatusTile />
+          </dl>
+        </Card>
 
-        <Movers rows={rows} />
+        <Card title={t("markets.details.sessionData")} titleId="session-data-title" className="flex flex-col" bodyClassName="flex-1">
+          <SessionFacts />
+        </Card>
 
-        <MarketInformationSummary />
+        <div className="md:col-span-2 xl:col-span-1">
+          <MarketMovers rows={catalogue ?? []} />
+        </div>
+      </div>
 
-        <nav aria-label={t("common.market")} className="flex flex-col gap-3 sm:flex-row lg:flex-col lg:gap-0 lg:panel lg:overflow-hidden">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              prefetch={false}
-              className="flex min-h-14 flex-1 items-center gap-3 rounded-large bg-elevated-background px-4 text-secondary font-semibold text-primary-text lg:min-h-11 lg:rounded-none lg:bg-transparent lg:not-last:border-b lg:not-last:border-hairline"
-            >
-              <Icon name={link.icon} className="text-accent" />
-              <span className="flex-1">{link.title}</span>
-              <Icon name="chevron-right" className="text-secondary-text" />
-            </Link>
-          ))}
-        </nav>
-      </aside>
+      <MarketInformationSummary />
+
+      {catalogue ? <MarketBrowser rows={catalogue} renderedAt={now} links={links} /> : <ErrorState message={t("components.placeholder.loadFailed")} />}
     </div>
   );
 }

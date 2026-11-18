@@ -1,23 +1,28 @@
 "use client";
 
-import { type InputHTMLAttributes, useEffect, useLayoutEffect, useRef } from "react";
+import { type InputHTMLAttributes, type ReactNode, useEffect, useLayoutEffect, useRef } from "react";
 
 import { editAmount, formatCompletedAmount } from "@/domain/format/amount-input";
 
 import { cn } from "../cn";
+import { INPUT_BARE, INPUT_BOX } from "./field-styles";
 
 type AmountFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "type"> & {
   value: string;
   onValueChange: (text: string) => void;
+  /** Shown before the field, e.g. a minus sign. */
+  prefix?: ReactNode;
   /** Currency or unit shown after the field, e.g. "Kz". */
-  suffix?: string;
+  suffix?: ReactNode;
+  /** Classes for the box around the field (e.g. a taller headline field). */
+  boxClassName?: string;
 };
 
 /**
  * Decimal comma in every language, `.` typed as `,`, live thousands grouping, caret kept on the same digit.
  * The text is parsed with `parseAmount`; invalid keystrokes are rejected.
  */
-export function AmountField({ value, onValueChange, suffix, className, onBlur, ...props }: AmountFieldProps) {
+export function AmountField({ value, onValueChange, prefix, suffix, boxClassName, className, onBlur, ...props }: AmountFieldProps) {
   const input = useRef<HTMLInputElement>(null);
   const caret = useRef<number | null>(null);
 
@@ -68,7 +73,8 @@ export function AmountField({ value, onValueChange, suffix, className, onBlur, .
   }, [value]);
 
   return (
-    <span className="flex min-h-12 items-center gap-2 rounded-medium bg-elevated-background px-4 focus-within:outline-2 focus-within:outline-accent">
+    <span className={cn(INPUT_BOX, boxClassName)}>
+      {prefix ? <span aria-hidden className="text-body text-secondary-text">{prefix}</span> : null}
       <input
         ref={input}
         {...props}
@@ -83,7 +89,7 @@ export function AmountField({ value, onValueChange, suffix, className, onBlur, .
           onValueChange(formatCompletedAmount(event.target.value));
           onBlur?.(event);
         }}
-        className={cn("min-w-0 flex-1 bg-transparent py-3 text-body text-primary-text outline-none", className)}
+        className={cn(INPUT_BARE, className)}
       />
       {suffix ? <span className="text-body text-secondary-text">{suffix}</span> : null}
     </span>

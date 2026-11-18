@@ -8,6 +8,8 @@
 /* Type roles from ios-product §3.3 (iOS default Dynamic Type sizes), in rem so browser text size applies. */
 @theme {
   --font-sans: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Headings, financial values, table cells and navigation; Inter stays for body copy, buttons, fields and table headers. */
+  --font-display: var(--font-outfit), var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
   --text-headline: 2.75rem; /* 44 · hero price, portfolio value */
   --text-headline--line-height: 1.1;
@@ -37,31 +39,33 @@
   --radius-small: 0.75rem; /* 12 */
   --radius-medium: 1.125rem; /* 18 */
   --radius-large: 1.5rem; /* 24 */
+  --radius-card: 1.375rem; /* 22 · web cards (the panel surface) */
 }
 
-/* Web scale: 32 price · 24 title · 18 value · 17 section · 15 body · 13 secondary · 12 caption · 11 label. */
+/* Web scale: 36 price · 32 title · 22 section · 18 value · 16 body and table cells · 14 secondary, buttons and table headers · 12 caption · 11 label. */
 @media (min-width: 64rem) and (pointer: fine) {
   :root {
-    --text-headline: 2rem;
+    --text-headline: 2.25rem;
     --text-headline--letter-spacing: -0.025em;
-    --text-display: 1.5rem;
+    --text-display: 2rem;
+    --text-display--font-weight: 600;
     --text-display--letter-spacing: -0.015em;
     --text-price: 1.125rem;
-    --text-section: 1.0625rem;
-    --text-body: 0.9375rem;
+    --text-section: 1.375rem;
+    --text-body: 1rem;
     --text-body--line-height: 1.4;
-    --text-secondary: 0.8125rem;
+    --text-secondary: 0.875rem;
     --text-secondary--line-height: 1.4;
-    --radius-small: 0.5rem; /* 8 · controls */
-    --radius-medium: 0.625rem; /* 10 · fields, menus */
-    --radius-large: 0.75rem; /* 12 · panels */
+    --radius-small: 0.5rem; /* 8 · small controls */
+    --radius-medium: 0.75rem; /* 12 · fields, menus, segmented tracks */
+    --radius-large: 1.375rem; /* 22 · cards */
   }
 }
 
-/* A white panel with a hairline on the canvas: the web grouping surface. */
+/* A white card with a faint border and a soft shadow on the canvas (hairline only in dark): the web grouping surface. */
 @utility panel {
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-large);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-card);
   background: var(--card-background);
   box-shadow: var(--panel-shadow);
 }
@@ -80,7 +84,42 @@ body {
   line-height: var(--text-body--line-height);
 }
 
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+/* Headings use the display face; a utility on the element still wins. */
+@layer base {
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+  }
+}
+
+/* The focus ring for buttons, links, tabs and custom controls; in the base layer so a utility can replace it. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /*
+   * Text fields never show an outline, the browser's or ours: their shared classes (`field-styles.ts`) turn the
+   * border accent and add the `--focus-glow` ring instead. Checkboxes, radios, ranges, file pickers and button-type
+   * inputs keep the ring above.
+   */
+  :is(
+      input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="button"], [type="submit"], [type="reset"], [type="image"]),
+      textarea,
+      select,
+      [contenteditable]:not([contenteditable="false"])
+    ):is(:focus, :focus-visible) {
+    outline: none;
+  }
+
+  /* Safari draws search fields with its own rounded box and focus ring; the search field has its own clear button. */
+  input[type="search"] {
+    appearance: none;
+  }
+  input[type="search"]::-webkit-search-cancel-button {
+    appearance: none;
+    display: none;
+  }
 }

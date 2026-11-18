@@ -5,6 +5,7 @@ import { useId, useState } from "react";
 
 import { GROUP_NAME_LIMIT, groupName } from "@/domain/account/watchlist-ordering";
 import { Button } from "@/ui/components/buttons";
+import { INPUT } from "@/ui/components/field-styles";
 import { Dialog } from "@/ui/components/dialog";
 
 /** `Novo grupo` / `Mudar nome`: a trimmed name of 1–40 characters. Mounted while naming. */
@@ -56,7 +57,7 @@ export function GroupNameDialog({
           autoComplete="off"
           data-autofocus
           data-testid="group-name"
-          className="min-h-11 w-full rounded-medium bg-elevated-background px-3 text-body text-primary-text outline-none focus:outline-2 focus:outline-accent"
+          className={INPUT}
         />
       </form>
     </Dialog>

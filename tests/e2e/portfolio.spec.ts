@@ -38,13 +38,11 @@ test("full: totals equal the calculator's output at current quotes", async ({ pa
   await expect(page.getByTestId("holding-row")).toHaveCount(4);
   await expect(page.getByTestId("holding-row").first()).toContainText("BAIAAAAA");
 
-  await page.getByRole("tab", { name: "Resumo" }).click();
   const metrics = page.getByTestId("portfolio-metrics");
   expect(spaced(await metrics.textContent())).toContain("Valor investido2 299 700 Kz");
   expect(spaced(await metrics.textContent())).toContain("+165 340 Kz");
   await expect(page.getByRole("heading", { name: "Resultados por ano" })).toBeVisible();
 
-  await page.getByRole("tab", { name: "Distribuição" }).click();
   await expect(page.getByTestId("allocation").getByRole("listitem")).toHaveCount(4);
 
   await page.screenshot({ path: `${EVIDENCE}/dashboard-shown.png`, fullPage: true });
@@ -135,7 +133,6 @@ test("records can be edited and deleted", async ({ page, context }) => {
 test("an exported ledger imports unchanged into an empty one", async ({ page, context }) => {
   await signIn(context);
   await openDashboard(page);
-  await page.getByTestId("csv-menu").click();
   const [download] = await Promise.all([page.waitForEvent("download"), page.getByTestId("csv-export").click()]);
   expect(download.suggestedFilename()).toBe("invest-ao-carteira.csv");
   const exported = await readFile((await download.path())!, "utf8");
@@ -145,13 +142,11 @@ test("an exported ledger imports unchanged into an empty one", async ({ page, co
   await signIn(context, "empty");
   await page.goto("/carteira");
   await expect(page.getByTestId("portfolio-empty")).toBeVisible();
-  await page.getByTestId("csv-menu").click();
   await page.getByTestId("csv-file").setInputFiles({ name: "invest-ao-carteira.csv", mimeType: "text/csv", buffer: Buffer.from(exported) });
   await expect(page.getByTestId("csv-row")).toHaveCount(6);
   await page.getByTestId("csv-confirm").click();
   await expect(page.getByTestId("holding-row")).toHaveCount(4);
 
-  await page.getByTestId("csv-menu").click();
   const [again] = await Promise.all([page.waitForEvent("download"), page.getByTestId("csv-export").click()]);
   expect(await readFile((await again.path())!, "utf8")).toBe(exported);
 });
@@ -166,7 +161,13 @@ test("privacy mode hides every amount and orders holdings by id", async ({ page,
   const symbols = await page.getByTestId("holding-symbol").allTextContents();
   // By instrument id: 3c55… BAI, 51399… BDVA, 59c63… BAIODOFA, ec708… BCGA.
   expect(symbols).toEqual(["BAIAAAAA", "BDVAAAAA", "BAIODOFA", "BCGAAAAA"]);
-  expect(await page.getByTestId("portfolio").textContent()).not.toMatch(/\d\sKz/);
+  // Only the public current price column may show an amount.
+  const personal = await page.getByTestId("portfolio").evaluate((node) => {
+    const copy = node.cloneNode(true) as HTMLElement;
+    copy.querySelectorAll('[data-testid="holding-price"]').forEach((cell) => cell.remove());
+    return copy.textContent;
+  });
+  expect(personal).not.toMatch(/\d\sKz/);
   await page.screenshot({ path: `${EVIDENCE}/dashboard-hidden.png`, fullPage: true });
 
   await page.goto(`/carteira/${BAI}`);
@@ -175,18 +176,21 @@ test("privacy mode hides every amount and orders holdings by id", async ({ page,
   await expect(page.getByTestId("position-metrics")).toContainText("96 500,00 Kz");
 });
 
-test("the dashboard has two columns on desktop and one on phones", async ({ page, context }) => {
+test("the area's rail sits beside the dashboard on desktop and above it on phones", async ({ page, context }) => {
   await signIn(context);
   await page.setViewportSize({ width: 1280, height: 900 });
   await openDashboard(page);
-  const summary = await page.getByTestId("portfolio-summary").boundingBox();
-  const holdings = await page.getByTestId("holdings").boundingBox();
-  expect(holdings!.x).toBeGreaterThan(summary!.x + summary!.width);
+  const rail = page.getByRole("navigation", { name: "Carteira" });
+  await expect(rail.getByRole("link", { name: "Visão geral" })).toHaveAttribute("aria-current", "page");
+  const [side, summary, holdings] = [await rail.boundingBox(), await page.getByTestId("portfolio-summary").boundingBox(), await page.getByTestId("holdings").boundingBox()];
+  expect(summary!.x).toBeGreaterThan(side!.x + side!.width);
+  expect(holdings!.y).toBeGreaterThan(summary!.y + summary!.height);
 
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(async () => {
-    const [top, below] = [await page.getByTestId("portfolio-summary").boundingBox(), await page.getByTestId("holdings").boundingBox()];
-    expect(below!.y).toBeGreaterThan(top!.y + top!.height);
+    const [top, value, below] = [await rail.boundingBox(), await page.getByTestId("portfolio-summary").boundingBox(), await page.getByTestId("holdings").boundingBox()];
+    expect(value!.y).toBeGreaterThan(top!.y + top!.height);
+    expect(below!.y).toBeGreaterThan(value!.y + value!.height);
   }).toPass();
   await page.screenshot({ path: `${EVIDENCE}/dashboard-phone.png`, fullPage: true });
 });

@@ -61,7 +61,7 @@ test("/policy keeps its exact path and the landing page carries Organization dat
     "href",
     "https://apps.apple.com/app/id6812907673",
   );
-  await expect(page.getByRole("link", { name: "Iniciar sessão" })).toHaveAttribute("href", "/entrar");
+  await expect(page.getByRole("banner").getByRole("link", { name: "Iniciar sessão" })).toHaveAttribute("href", "/entrar");
 });
 
 for (const theme of ["light", "dark"] as const) {
@@ -84,13 +84,13 @@ for (const theme of ["light", "dark"] as const) {
 test("language and theme switches work from the keyboard", async ({ page, context }) => {
   await page.goto("/policy");
   await page.keyboard.press("Tab");
-  await expect(page.getByRole("link", { name: "invest.ao, início" })).toBeFocused();
+  await expect(page.getByRole("banner").getByRole("link", { name: "invest.ao, início" })).toBeFocused();
   for (const section of ["Mercado", "Notícias", "Aprender"]) {
     await page.keyboard.press("Tab");
-    await expect(page.getByRole("link", { name: section, exact: true })).toBeFocused();
+    await expect(page.getByRole("banner").getByRole("link", { name: section, exact: true })).toBeFocused();
   }
   await page.keyboard.press("Tab");
-  const english = page.getByRole("link", { name: "English" });
+  const english = page.getByRole("banner").getByRole("link", { name: "English" });
   await expect(english).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/\/en\/policy$/);

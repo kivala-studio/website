@@ -20,17 +20,19 @@ export default function LearnPage() {
   return (
     <ReadingPage title={t("learn.title")}>
       <AreaMessages area="learn">
-        <ul className="flex flex-col gap-3">
+        <ul className="panel flex flex-col overflow-hidden">
           {LESSONS.map((lesson) => (
-            <li key={lesson.id}>
+            <li key={lesson.id} className="border-b border-hairline last:border-b-0">
               <Link
                 href={`/aprender/${lesson.slug}`}
                 prefetch={false}
-                className="flex min-h-14 items-center gap-3 rounded-large bg-elevated-background p-4"
+                className="flex min-h-15 items-center gap-4 px-5 py-3 transition-colors outline-offset-[-2px] hover:bg-app-background/70 desk:px-6"
                 data-testid="lesson-row"
               >
-                <Icon name={lesson.icon} className="w-7 text-accent" />
-                <span className="flex-1 text-secondary font-semibold text-primary-text">{t(`learn.${lesson.id}.title`)}</span>
+                <span aria-hidden className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent">
+                  <Icon name={lesson.icon} scale="s" />
+                </span>
+                <span className="flex-1 font-display text-body font-medium text-primary-text">{t(`learn.${lesson.id}.title`)}</span>
                 <ReadMark id={lesson.id} />
                 <Icon name="chevron-right" className="text-secondary-text" />
               </Link>

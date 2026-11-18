@@ -6,6 +6,9 @@ import { useEffect, useState } from "react";
 import { usePathname } from "@/i18n/navigation";
 
 import type { CatalogueRow } from "@/features/market/browse/price-cell";
+import { cn } from "@/ui/cn";
+import { iconButtonClass } from "@/ui/components/buttons";
+import { FIELD, KeyHint } from "@/ui/components/controls";
 import { Dialog } from "@/ui/components/dialog";
 import { Icon } from "@/ui/icons/icon";
 
@@ -17,7 +20,7 @@ const isTyping = (target: EventTarget | null) =>
 
 /**
  * Search from anywhere in the app: `/` or Ctrl/⌘ K opens the search panel in a dialog, and the next page
- * closes it. The header button is the pointer way in on wide screens (phones have the Pesquisa tab).
+ * closes it. From 1024 px the top bar shows it as the search field (with the `/` hint); below, as a search button.
  */
 export function CommandPalette({ rows, renderedAt }: { rows: readonly CatalogueRow[]; renderedAt: number }) {
   const t = useTranslations();
@@ -54,14 +57,24 @@ export function CommandPalette({ rows, renderedAt }: { rows: readonly CatalogueR
         onClick={show}
         aria-keyshortcuts="/ Control+K Meta+K"
         aria-haspopup="dialog"
-        className="hidden min-h-11 w-full max-w-md items-center gap-2 rounded-medium border border-hairline bg-app-background px-3 text-secondary text-secondary-text hover:border-separator lg:flex"
+        // Looks like the search field, so it takes the field's focus (accent border and glow) instead of the outline.
+        className={cn(FIELD, "hidden w-full hover:border-control-outline focus-visible:border-accent focus-visible:shadow-focus focus-visible:outline-none lg:flex")}
         data-testid="search-palette-button"
       >
         <Icon name="search" />
-        <span className="flex-1 text-left">{t("common.search")}</span>
-        <kbd aria-hidden className="rounded-[0.3rem] border border-separator px-1.5 font-sans text-micro">
-          /
-        </kbd>
+        <span className="flex-1 truncate text-left text-secondary">{t("common.search")}</span>
+        <KeyHint>/</KeyHint>
+      </button>
+      <button
+        type="button"
+        onClick={show}
+        aria-label={t("common.search")}
+        aria-keyshortcuts="/ Control+K Meta+K"
+        aria-haspopup="dialog"
+        title={t("common.search")}
+        className={iconButtonClass("plain", "lg:hidden")}
+      >
+        <Icon name="search" scale="l" />
       </button>
       <Dialog variant="dialog" open={open} onClose={() => setOpen(false)} title={t("common.search")}>
         {open ? <SearchPanel rows={rows} renderedAt={renderedAt} autoFocus /> : null}
