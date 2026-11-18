@@ -7,7 +7,7 @@ import { type FormatLocale, createFormat } from "@/domain/format";
 import { MARKET_CATEGORY_LABEL_KEYS, type MarketCategory } from "@/domain/market";
 import { MARKET_DEFAULT_QUERY, marketQueryParams } from "@/features/market/browse/query";
 import { PalancaMark } from "@/features/site/chrome";
-import { Bento, BentoCard, FeatureRow, FeatureRows, HERO_TITLE, HOME_HEADING, HOME_SECTION, HeroBackdrop, HeroFigures, Showcase } from "@/features/site/home";
+import { Bento, BentoCard, CLOSING_TITLE, FeatureRow, FeatureRows, HERO_TITLE, HOME_HEADING, HOME_SECTION, HeroBackdrop, HeroFigures, Showcase } from "@/features/site/home";
 import { HeroSearch, MarketPreview } from "@/features/site/home-client";
 import { homeMarket } from "@/features/site/home-market";
 import { pageMetadata } from "@/features/site/metadata";
@@ -17,6 +17,7 @@ import {
   InstrumentVisual,
   LearnMiniature,
   NewsMiniature,
+  PlusVisual,
   PortfolioVisual,
   SimulatorMiniature,
   StoreButton,
@@ -51,8 +52,9 @@ const marketHref = (category: MarketCategory) => ({
 
 /**
  * The landing page: the hero (title, search, actions, coverage figures) with the market preview rising out of it as
- * the showcase; the product's other areas as a bento; three feature rows; Plus; a closing band. Market rows and counts
- * come from the cached catalogue (dated verified closes), the same server path as `/mercado`.
+ * the showcase; the product's other areas as a bento; three feature rows; then Plus and the closing line over the
+ * hero's light mirrored, rising onto the footer. Market rows and counts come from the cached catalogue (dated
+ * verified closes), the same server path as `/mercado`.
  */
 export default async function HomePage() {
   const t = await getTranslations();
@@ -177,43 +179,45 @@ export default async function HomePage() {
         />
       </FeatureRows>
 
-      <section aria-labelledby="plus" className={HOME_SECTION}>
-        <div className="panel grid items-center gap-10 overflow-hidden p-6 sm:p-10 md:grid-cols-[minmax(0,1fr)_auto] md:gap-16 md:p-14">
-          <div className="flex flex-col items-start gap-6">
-            <h2 id="plus" className={HOME_HEADING}>
-              {t("subscriptions.management.plusTitle")}
-            </h2>
-            <ul className="flex flex-col gap-4">
-              {(["benefitWatchlist", "benefitMovements", "benefitComparisons"] as const).map((key) => (
-                <li key={key} className="flex items-start gap-3 text-body font-medium text-primary-text">
-                  <Icon name="check-circle" className="mt-px text-[1.25rem] text-accent" />
-                  {t(`subscriptions.gift.${key}`)}
-                </li>
-              ))}
-            </ul>
-            <StoreButton className="mt-2 sm:w-auto!" />
+      <div className="relative isolate overflow-hidden">
+        <HeroBackdrop edge="bottom" />
+        <section aria-labelledby="plus" className={HOME_SECTION}>
+          <div className="panel relative isolate grid items-center gap-10 overflow-hidden border-accent/25 p-5 max-[22.5rem]:px-4 sm:p-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 lg:p-14">
+            <div aria-hidden className="bento-wash absolute inset-0 -z-10" />
+            <div aria-hidden className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,var(--accent),transparent)] opacity-50" />
+            <div className="flex flex-col items-start gap-6">
+              <h2 id="plus" className={HOME_HEADING}>
+                {t("subscriptions.management.plusTitle")}
+              </h2>
+              <ul className="flex flex-col gap-4">
+                {(["benefitWatchlist", "benefitMovements", "benefitComparisons"] as const).map((key) => (
+                  <li key={key} className="flex items-start gap-3 text-body font-medium text-primary-text">
+                    <Icon name="check-circle" className="mt-px text-[1.25rem] text-accent" />
+                    {t(`subscriptions.gift.${key}`)}
+                  </li>
+                ))}
+              </ul>
+              <StoreButton className="mt-2 sm:w-auto!" />
+            </div>
+            <PlusVisual label={t("site.home.plusAlt")} />
           </div>
-          <div aria-hidden className="hidden size-56 items-center justify-center rounded-full bg-accent-soft text-accent md:flex lg:size-64">
-            <PalancaMark className="size-1/2" />
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section aria-labelledby="download" className={cn(PAGE_CONTAINER, "pb-16 md:pb-24")}>
-        <div className="panel relative isolate flex flex-col items-center gap-6 overflow-hidden px-6 py-14 text-center md:py-20">
-          <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(60%_80%_at_50%_100%,var(--accent-soft),transparent)]" />
-          <PalancaMark className="size-14 text-primary-text" />
-          <h2 id="download" className={HOME_HEADING}>
-            {t("site.meta.homeTitle")}
+        <section aria-labelledby="download" className={cn(PAGE_CONTAINER, "flex flex-col items-center gap-8 pb-16 text-center md:pb-24")}>
+          <span className="flex size-16 items-center justify-center rounded-[1.25rem] bg-accent text-on-accent shadow-panel">
+            <PalancaMark className="size-10" />
+          </span>
+          <h2 id="download" className={cn(CLOSING_TITLE, "max-w-3xl")}>
+            {t("common.yourMarketUpClose")}
           </h2>
           <div className="flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row">
-            <StoreButton className="sm:w-auto!" />
-            <ButtonLink href={SIGN_IN_PATH} prefetch={false} kind="secondary" className="sm:w-auto!">
+            <StoreButton className="sm:w-auto! sm:min-w-48" />
+            <ButtonLink href={SIGN_IN_PATH} prefetch={false} kind="outline" className="bg-card-background! hover:bg-action-surface! sm:w-auto! sm:min-w-48">
               {signIn}
             </ButtonLink>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </main>
   );
 }

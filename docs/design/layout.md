@@ -55,7 +55,17 @@ Signed-in app only, below 1024 px: `fixed inset-x-0 bottom-0 z-20`, five tabs in
 
 ### Footer (`SiteFooter`)
 
-Public pages only (the app has none): a hairline, the logo and three link columns (two per row on phones, `2fr + 3 × 1fr` from 768 px), the standing disclaimers as captions, then `ThemeSwitch` and the language link.
+```
+──────────────────────────────────────────────────────────────── hairline
+◆ invest.ao                       Produto      Conta        Legal       one 44 px row (36 on desk)
+(Sistema|Claro|Escuro) (EN)       Mercado      Iniciar …    Política …
+                                  …            …            …
+──────────────────────────────────────────────────────────────── hairline
+disclaimers (captions, tertiary, ≤ 672 px)
+© 2026 invest.ao
+```
+
+Public pages only (the app has none). `SiteFooter({ theme, year })`: under a hairline, the brand block (the home link, then `ThemeSwitch` and the language link on one row) and the `nav` of three link columns; the logo row and the column headings share one height, so the columns start on the logo's line. From 1024 px the brand block takes 2 of 5 columns beside the links; at 768 px the logo and the controls share a row above three link columns; on phones everything stacks, the links in two columns. Then, under a second hairline, the standing disclaimers in `tertiary-text` captions and "© year invest.ao" (`common.appName`; `year` is the request's Luanda year, `civilDate(requestTime())`, passed by the layouts). The footer has no top margin of its own: the page's bottom padding is the gap above it.
 
 ## Page templates
 
@@ -93,11 +103,20 @@ Pick the template, then read the file it names.
  ╰───────────────────╯
    EXEMPLO ILUSTRATIVO
  ...
- ┌ panel: Plus ───────────────────┐
- ┌ panel: closing band ───────────┐
+ ┌ panel: Plus (accent edge, wash) ──────────────┐
+ │ invest.ao Plus     ┌ notice ──────┐           │  the Plus panel: text 5/12, PlusVisual 7/12
+ │ ✓ ✓ ✓              └┌ Comparar ─────────────┐ │  from 1024 px; stacked below
+ │ (App Store)         │ range · two lines     │ │
+ │                     │ BAI ━ +12 % · BFA ━ … │ │
+ ╰────────────────────────────────────────────────╯
+              ▣                          closing line on the canvas (no card):
+     O teu mercado, de perto.            CLOSING_TITLE, the app mark tile, two pills
+      (App Store) (Iniciar sessão)
+  ░ grid + glow, rising from below ░     HeroBackdrop edge="bottom"
+──────────────────────────────────────── footer hairline
 ```
 
-The hero and the market preview share one backdrop, so the table rises out of the hero: its tab row is above the fold at 1440 × 900, and on phones the title, subtitle, search and both pills fit the first screen. Sections below sit on the canvas with `HOME_SECTION` spacing, centred `HOME_HEADING` titles. The bento follows the showcase directly, with no rule between them, and shows the areas the feature rows do not (simulator, unusual activity, news, lessons, week ahead). Cards (`panel`) hold the table, the bento, the visuals, Plus and the closing band. The three feature rows sit in `FeatureRows`, which keeps one gap between rows and the same space against the bento and Plus (64 px on phones, 96 px from 768 px). Each row puts the icon squircle, heading, message and pill beside the visual from 1024 px (visual 7 of 12 columns, text vertically centred) and stacks them, text first, below; the visual's floating card leans out towards the text. Prices are the server's dated verified closes; the figures are the catalogue's visible counts.
+The hero and the market preview share one backdrop, so the table rises out of the hero: its tab row is above the fold at 1440 × 900, and on phones the title, subtitle, search and both pills fit the first screen. Sections below sit on the canvas with `HOME_SECTION` spacing, centred `HOME_HEADING` titles. The bento follows the showcase directly, with no rule between them, and shows the areas the feature rows do not (simulator, unusual activity, news, lessons, week ahead). Cards (`panel`) hold the table, the bento, the visuals and Plus. The three feature rows sit in `FeatureRows`, which keeps one gap between rows and the same space against the bento and Plus (64 px on phones, 96 px from 768 px). Each row puts the icon squircle, heading, message and pill beside the visual from 1024 px (visual 7 of 12 columns, text vertically centred) and stacks them, text first, below; the visual's floating card leans out towards the text. Plus is the page's one premium moment: a `panel` with an `accent` edge at 25 %, the `bento-wash` light from its top right and a faint accent line along its top, holding the heading, the three benefits, the App Store pill and `PlusVisual`. The page then closes the way it opens: Plus and the closing line share one block over `HeroBackdrop edge="bottom"`, the hero's glow and grid mirrored so the light rises onto the footer's hairline; the closing line is the hero's own (`common.yourMarketUpClose`) in `CLOSING_TITLE`, under the app mark in an accent tile, with the App Store and sign-in pills (the outline pill gets a card fill so it holds on the glow). Gaps stay 64 px on phones and 96 px from 768 px down to the footer. Prices are the server's dated verified closes; the figures are the catalogue's visible counts.
 
 ### 2. List / table page — `src/app/[locale]/(market)/mercado/page.tsx`, `src/features/market/browse/market-browser.tsx`
 

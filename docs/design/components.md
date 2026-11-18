@@ -219,7 +219,7 @@ All three share one look: text tabs in the display face on a hairline, the curre
 
 ### Site chrome (`@/features/site/chrome`)
 
-`SiteHeader({ theme })`, `SiteFooter({ theme })`, `BrandLockup()` (mark + wordmark, the wordmark hidden below 400 px), `PalancaMark({ className })` (the mark as a mask in `currentColor`), `LANGUAGE_CONTROL` (class string of the round language link).
+`SiteHeader({ theme })`, `SiteFooter({ theme, year })` (`year`: the request's Luanda year from the layout; see [layout.md](layout.md#footer-sitefooter)), `BrandLockup()` (mark + wordmark, the wordmark hidden below 400 px), `PalancaMark({ className })` (the mark as a mask in `currentColor`), `LANGUAGE_CONTROL` (class string of the round language link).
 
 ## Buttons and choices
 
@@ -522,7 +522,8 @@ Landing-only building blocks; reuse them for new marketing sections, not for app
 |---|---|
 | `HOME_SECTION`, `HOME_HEADING` | Section spacing (`py-16 md:py-24`) and the large centred section title (40 px from 1024 px) |
 | `HERO_TITLE` | The hero `h1`: display face, fluid 36 → 68 px, −0.02em (−0.025em from 640 px), balanced |
-| `HeroBackdrop` | Decorative accent glow (`hero-glow`) over a fine grid (`hero-grid`); first child of a `relative isolate overflow-hidden` block |
+| `CLOSING_TITLE` | The closing line's `h2`: the same face and tracking, fluid 34 → 56 px (between `HOME_HEADING` and `HERO_TITLE`) |
+| `HeroBackdrop` | `{ edge? }`: decorative accent glow (`hero-glow`) over a fine grid (`hero-grid`); first child of a `relative isolate overflow-hidden` block. `edge="bottom"` mirrors it so the light rises from the block's bottom edge (the landing's close, onto the footer hairline) |
 | `HeroFigures` | `{ items: { value; label }[] }`: a `<dl>` of counts (display face) beside their labels; only real catalogue counts |
 | `Showcase` | Centres the product under the hero (max 1024 px) on an accent halo (`showcase-halo`) behind and around it, in a translucent bezel from 640 px |
 | `MarketPreview` (`@/features/site/home-client`) | `{ tabs, label }`: one flush card with `SectionTabs` on top, a table of dated verified closes per kind and that kind's "Ver tudo" pill in the footer |
@@ -532,6 +533,7 @@ Landing-only building blocks; reuse them for new marketing sections, not for app
 | `FeatureRows` | The feature rows' column: `PAGE_CONTAINER`, 64 px between rows and above them (96 px from 768 px); Plus's own top padding gives the same space below |
 | `FeatureRow` | `{ id, icon, title, message, action, visual, flip? }`: the icon in a 48 px `accent-soft` squircle, the `h2` (`HOME_HEADING`), the message and the action, then the visual. Stacked, text first, below 1024 px; from there two columns, the visual taking 7 of 12 on the left (on the right with `flip`), the text vertically centred. Marks the row `data-flip` so the visual's floating card leans towards the text |
 | `InstrumentVisual`, `WatchlistVisual`, `PortfolioVisual` | Product visuals on a tinted stage (`feature-stage`, hairline border, `rounded-card`): a main card the stage's width and a smaller floating card (`border-field-border`, above it) that overlaps it and leans out by the stage's `--lean` (24 px from 640 px, 32 px from 1024 px) towards the text. Instrument: price, change, range track and a month's line under the opening and high (the high alone below 368 px); watchlist: a reached price alert over three rows of `/lista`; portfolio: the `/carteira` value, change and line under the allocation. Charts are SVG: an area fading to transparent, round caps, dashed grid, a dot with a soft halo on the last point. `{ label }` is the figure's accessible name; captioned "Exemplo ilustrativo" (`IllustrativeCaption`, `onboarding.preview.illustrativeExample`) |
+| `PlusVisual` | `{ label }`: what Plus adds, with no stage of its own (it sits on the Plus panel's light): a "Movimento relevante" notice (the activity centre's movements tint, `ChangeBadge`) lifted over a comparison card as in the instrument page's "Comparar" sheet (range track, one line per instrument from a shared start in `accent` and `brand-violet`, each instrument's `SecurityLogo`, line colour and change). From 1024 px the notice leans 32 px towards the text. Captioned "Exemplo ilustrativo" |
 | `StoreButton` | The App Store pill; `kind?`, `className?` |
 
 See [patterns.md](patterns.md#illustrative-visuals) for the visuals rule.

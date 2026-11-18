@@ -34,11 +34,21 @@ export function IllustrativeCaption() {
   return <figcaption className="text-micro font-medium uppercase text-secondary-text">{t("illustrativeExample")}</figcaption>;
 }
 
-/** The tinted stage, the label and the "exemplo ilustrativo" caption around a visual. */
-function ProductFigure({ label, children }: { label: string; children: ReactNode }) {
+/**
+ * The tinted stage, the label and the "exemplo ilustrativo" caption around a visual. `bare` drops the stage for a
+ * visual that already sits on a lit surface (the Plus panel).
+ */
+function ProductFigure({ label, bare = false, children }: { label: string; bare?: boolean; children: ReactNode }) {
   return (
     <figure className="flex w-full flex-col items-center gap-3">
-      <div role="img" aria-label={label} className="feature-stage w-full overflow-hidden rounded-card border border-card-border px-4 py-8 [--lean:0px] sm:p-10 sm:[--lean:1.5rem] lg:px-12 lg:py-14 lg:[--lean:2rem]">
+      <div
+        role="img"
+        aria-label={label}
+        className={cn(
+          "w-full",
+          !bare && "feature-stage overflow-hidden rounded-card border border-card-border px-4 py-8 [--lean:0px] sm:p-10 sm:[--lean:1.5rem] lg:px-12 lg:py-14 lg:[--lean:2rem]",
+        )}
+      >
         {/* Sample values never "arrive": no value roll, which a layout change (a badge hidden below 400 px and shown again) would replay. */}
         <div aria-hidden className="flex flex-col select-none [&_.motion-value]:animate-none">
           {children}
@@ -62,9 +72,24 @@ const LEAD_FIGURE = "font-display text-[1.625rem] leading-tight font-semibold tr
 
 /**
  * A line through `points` on a 320 × 120 box, stretched to the box's size, over an area that fades out, with a dot and
- * a soft halo on its last point (`end`). `id` names the area's gradient and must be unique on the page.
+ * a soft halo on its last point (`end`; `dot` places it, as static classes: the page has no inline styles). `id` names
+ * the area's gradient and must be unique on the page.
  */
-function SampleChart({ id, points, end, tone, className }: { id: string; points: string; end: [number, number]; tone: "positive" | "accent"; className?: string }) {
+function SampleChart({
+  id,
+  points,
+  end,
+  dot,
+  tone,
+  className,
+}: {
+  id: string;
+  points: string;
+  end: [number, number];
+  dot: string;
+  tone: "positive" | "accent";
+  className?: string;
+}) {
   const colour = tone === "positive" ? "var(--color-positive)" : "var(--color-accent)";
   return (
     <div className={cn("relative", className)}>
@@ -92,8 +117,8 @@ function SampleChart({ id, points, end, tone, className }: { id: string; points:
         className={cn(
           "absolute size-3 -translate-1/2 rounded-full border-2 border-card-background ring-6",
           tone === "positive" ? "bg-positive ring-positive/20" : "bg-accent ring-accent/20",
+          dot,
         )}
-        style={{ left: `${(end[0] / 320) * 100}%`, top: `${(end[1] / 120) * 100}%` }}
       />
     </div>
   );
@@ -144,6 +169,7 @@ export function InstrumentVisual({ label }: { label: string }) {
           id="feature-instrument"
           tone="positive"
           end={[320, 14]}
+          dot="left-full top-[11.667%]"
           className="mt-1 h-32 sm:h-36 lg:h-40"
           points="0 92 C20 90 30 72 50 74 S80 96 100 84 S130 52 150 60 S180 82 200 66 S240 40 260 46 S300 24 320 14"
         />
@@ -221,6 +247,7 @@ export function PortfolioVisual({ label }: { label: string }) {
           id="feature-portfolio"
           tone="accent"
           end={[320, 22]}
+          dot="left-full top-[18.333%]"
           className="mt-1 h-36 sm:h-40 lg:h-44"
           points="0 100 C24 98 36 90 54 92 S84 84 104 80 S136 86 158 72 S196 62 214 64 S250 46 270 44 S304 30 320 22"
         />
@@ -238,6 +265,102 @@ export function PortfolioVisual({ label }: { label: string }) {
               <span className={cn("size-2 rounded-full", part.tone)} />
               <span>{t(part.key)}</span>
               <span className="font-display font-semibold text-primary-text">{format.percent(part.share, { digits: 0, signed: false })}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </ProductFigure>
+  );
+}
+
+/** Two stocks compared over three months: the series colour, the path on a 320 × 120 box and where it ends. */
+const COMPARISON = [
+  {
+    symbol: "BAI",
+    change: 12,
+    line: "stroke-accent",
+    swatch: "bg-accent",
+    dot: "ring-accent/20",
+    at: "left-full top-[16.667%]",
+    points: "0 92 C16 90 26 80 42 82 S68 94 86 86 S114 64 134 68 S164 82 184 70 S218 44 240 48 S284 30 302 26 S316 22 320 20",
+  },
+  {
+    symbol: "BFA",
+    change: 6,
+    line: "stroke-brand-violet",
+    swatch: "bg-brand-violet",
+    dot: "ring-brand-violet/20",
+    at: "left-full top-[46.667%]",
+    points: "0 92 C18 94 30 98 48 94 S78 80 98 84 S128 98 148 90 S178 72 198 76 S234 70 254 64 S296 60 320 56",
+  },
+] as const;
+
+const COMPARISON_RANGES = ["oneWeek", "oneMonth", "threeMonths", "sixMonths", "oneYear"] as const;
+
+/**
+ * Plus: a significant-movement notice over a comparison of two stocks as in the instrument page's "Comparar" sheet
+ * (the range track, one line each from a shared start, then each instrument with its line's colour and change). No
+ * stage: it sits on the Plus panel's light.
+ */
+export function PlusVisual({ label }: { label: string }) {
+  const t = useTranslations();
+  const format = useFormat();
+  const [, mover] = COMPARISON;
+  return (
+    <ProductFigure label={label} bare>
+      <div className="panel relative z-10 flex w-[94%] flex-row items-center gap-3 self-start border-field-border p-3 sm:w-[62%] sm:p-4 lg:-ml-8">
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-medium bg-comparison-orange/12 text-comparison-orange">
+          <Icon name="chart" />
+        </span>
+        <span className="flex min-w-0 flex-col gap-1">
+          <span className="truncate font-display text-secondary font-semibold text-primary-text">{t("common.significantMovement")}</span>
+          <span className="flex items-center gap-2 text-caption text-secondary-text">
+            {mover.symbol}
+            <ChangeBadge value="4" />
+          </span>
+        </span>
+      </div>
+      <div className={cn(MAIN_CARD, "-mt-8 pt-14 sm:pt-16 lg:pt-16")}>
+        <p className="font-display text-secondary font-semibold text-primary-text">{t("common.compare")}</p>
+        <div className={cn(SEGMENT_TRACK, "text-caption font-medium")}>
+          {COMPARISON_RANGES.map((range) => (
+            <span key={range} className={cn("flex min-h-7 flex-1 items-center justify-center rounded-small desk:rounded-[0.5rem]", segmentTone(range === "threeMonths"))}>
+              {t(`market.range.${range}`)}
+            </span>
+          ))}
+        </div>
+        <div className="relative h-32 sm:h-36 lg:h-40">
+          <svg viewBox="0 0 320 120" preserveAspectRatio="none" focusable="false" className="absolute inset-0 size-full overflow-visible">
+            {[30, 60].map((y) => (
+              <line key={y} x1="0" x2="320" y1={y} y2={y} strokeDasharray="3 5" vectorEffect="non-scaling-stroke" className="stroke-chart-grid" />
+            ))}
+            <line x1="0" x2="320" y1="92" y2="92" strokeDasharray="3 4" vectorEffect="non-scaling-stroke" className="stroke-separator" />
+            {COMPARISON.map((series) => (
+              <path
+                key={series.symbol}
+                d={`M${series.points}`}
+                strokeWidth={2.5}
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                vectorEffect="non-scaling-stroke"
+                className={cn("fill-none", series.line)}
+              />
+            ))}
+          </svg>
+          {COMPARISON.map((series) => (
+            <span
+              key={series.symbol}
+              className={cn("absolute size-3 -translate-1/2 rounded-full border-2 border-card-background ring-6", series.swatch, series.dot, series.at)}
+            />
+          ))}
+        </div>
+        <ul className="flex flex-col">
+          {COMPARISON.map((series) => (
+            <li key={series.symbol} className="flex min-h-13 items-center gap-3 border-b border-hairline last:border-b-0">
+              <SecurityLogo symbol={series.symbol} size="s" />
+              <span className="min-w-0 flex-1 truncate font-display text-secondary font-medium text-primary-text">{series.symbol}</span>
+              <span className={cn("h-1 w-5 shrink-0 rounded-full", series.swatch)} />
+              <span className="font-display text-secondary font-semibold whitespace-nowrap text-primary-text">{format.percent(series.change)}</span>
             </li>
           ))}
         </ul>

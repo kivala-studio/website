@@ -2,11 +2,12 @@
 
 import { useTranslations } from "next-intl";
 
-import { Bento, BentoCard, FeatureRow, HERO_TITLE, HeroBackdrop, HeroFigures } from "@/features/site/home";
+import { Bento, BentoCard, CLOSING_TITLE, FeatureRow, HERO_TITLE, HeroBackdrop, HeroFigures } from "@/features/site/home";
 import {
   InstrumentVisual,
   LearnMiniature,
   NewsMiniature,
+  PlusVisual,
   PortfolioVisual,
   SimulatorMiniature,
   StoreButton,
@@ -82,6 +83,20 @@ export function Landing() {
               <WeekAheadMiniature />
             </BentoCard>
           </Bento>
+        </div>
+      </Specimen>
+
+      <Specimen name="PlusVisual (no stage)">
+        <div className="panel w-full max-w-xl p-5 sm:p-8">
+          <PlusVisual label={t("site.home.plusAlt")} />
+        </div>
+      </Specimen>
+
+      <Specimen name="HeroBackdrop edge=bottom · CLOSING_TITLE">
+        <div className="relative isolate flex w-full flex-col items-center gap-6 overflow-hidden rounded-card px-4 pt-6 pb-16 text-center">
+          <HeroBackdrop edge="bottom" />
+          <p className={CLOSING_TITLE}>{t("common.yourMarketUpClose")}</p>
+          <StoreButton className="sm:w-auto!" />
         </div>
       </Specimen>
 

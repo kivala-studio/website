@@ -67,10 +67,15 @@ export function SiteHeader({ theme }: { theme: Theme }) {
 }
 
 const FOOTER_LINK =
-  "inline-flex min-h-11 items-center text-secondary text-secondary-text transition-colors hover:text-primary-text desk:min-h-9";
+  "inline-flex min-h-11 items-center rounded-small text-secondary text-secondary-text transition-colors hover:text-primary-text desk:min-h-9";
+/** The logo row and the column headings share one height, so the columns start on the logo's line. */
+const FOOTER_ROW = "flex min-h-11 items-center desk:min-h-9";
 
-/** Link columns, the standing disclaimers, then the theme and the language. */
-export function SiteFooter({ theme }: { theme: Theme }) {
+/**
+ * The brand (logo, then the theme and the language), three link columns on the logo's line, then the standing
+ * disclaimers and the copyright under a hairline. `year` is the server's (Luanda) year.
+ */
+export function SiteFooter({ theme, year }: { theme: Theme; year: string }) {
   const t = useTranslations();
   const columns = [
     {
@@ -99,38 +104,45 @@ export function SiteFooter({ theme }: { theme: Theme }) {
     },
   ];
   return (
-    <footer className="mt-auto pt-10">
-      <div className={cn(PAGE_CONTAINER, "flex flex-col gap-10 border-t border-hairline py-12")}>
-        <nav aria-label={t("site.footer.label")} className="grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-[minmax(0,2fr)_repeat(3,minmax(0,1fr))]">
-          <Link href="/" prefetch={false} aria-label={t("site.header.homeLabel")} className="col-span-2 inline-flex min-h-11 items-center gap-2 self-start justify-self-start rounded-small text-primary-text md:col-span-1">
-            <PalancaMark className="size-8" />
-            <span className="font-display text-[1.1875rem] font-semibold tracking-tight">{t("common.appName")}</span>
-          </Link>
-          {columns.map((column) => (
-            <div key={column.title} className="flex flex-col gap-1">
-              <h2 className="text-secondary font-semibold text-primary-text">{column.title}</h2>
-              <ul className="flex flex-col">
-                {column.links.map((link) => (
-                  <li key={link.href}>
-                    <Link href={link.href} prefetch={false} className={FOOTER_LINK}>
-                      {link.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+    <footer className="mt-auto">
+      <div className={cn(PAGE_CONTAINER, "flex flex-col gap-8 border-t border-hairline pt-8 pb-8 md:gap-10 md:pt-12 md:pb-10")}>
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-6">
+          <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between lg:flex-col lg:items-start lg:justify-start">
+            <Link href="/" prefetch={false} aria-label={t("site.header.homeLabel")} className={cn(FOOTER_ROW, "gap-2 rounded-small text-primary-text")}>
+              <PalancaMark className="size-8" />
+              <span className="font-display text-[1.1875rem] font-semibold tracking-tight">{t("common.appName")}</span>
+            </Link>
+            <div className="flex w-full max-w-sm items-center gap-2">
+              <div className="min-w-0 flex-1">
+                <ThemeSwitch initial={theme} />
+              </div>
+              <LanguageSwitch className={cn(LANGUAGE_CONTROL, "bg-action-surface")} />
             </div>
-          ))}
-        </nav>
-        <div className="flex max-w-3xl flex-col gap-2 text-caption text-secondary-text">
-          <p>{t("site.footer.independence")}</p>
-          <p>{t("settings.marketData.disclaimer")}</p>
-          <p>{t("onboarding.caption.simulationDisclaimer")}</p>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="w-full max-w-xs">
-            <ThemeSwitch initial={theme} />
           </div>
-          <LanguageSwitch className={cn(LANGUAGE_CONTROL, "bg-action-surface")} />
+          <nav aria-label={t("site.footer.label")} className="grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-3">
+            {columns.map((column) => (
+              <div key={column.title} className="flex min-w-0 flex-col">
+                <h2 className={cn(FOOTER_ROW, "text-secondary font-semibold text-primary-text")}>{column.title}</h2>
+                <ul className="flex flex-col">
+                  {column.links.map((link) => (
+                    <li key={link.href}>
+                      <Link href={link.href} prefetch={false} className={FOOTER_LINK}>
+                        {link.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
+        </div>
+        <div className="flex flex-col gap-4 border-t border-hairline pt-6 text-caption md:pt-8">
+          <div className="flex max-w-2xl flex-col gap-1.5 text-tertiary-text">
+            <p>{t("site.footer.independence")}</p>
+            <p>{t("settings.marketData.disclaimer")}</p>
+            <p>{t("onboarding.caption.simulationDisclaimer")}</p>
+          </div>
+          <p className="text-secondary-text">{`© ${year} ${t("common.appName")}`}</p>
         </div>
       </div>
     </footer>

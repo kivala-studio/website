@@ -58,7 +58,7 @@ No iOS counterpart. They draw the web card system.
 | `--raised-shadow` | `shadow-raised` | `0 1px 2px rgb(24 34 49 / 0.1), 0 1px 1px rgb(24 34 49 / 0.04)` | `none` | | With `bg-raised` |
 | `--bar-shadow` | `shadow-bar` | `0 1px 0 rgb(24 34 49 / 0.08)` | `0 1px 0 #232933` | | The top bar's bottom edge |
 | `--focus-glow` | `shadow-focus` | `0 0 0 3px` accent at 18 % | accent at 30 % | accent at 45 % | A focused text field |
-| `--hero-glow` | `hero-glow`, `showcase-halo`, `bento-wash`, `feature-stage` | accent at 11 % | accent at 22 % | | Peak of the landing's accent light. The utilities (`globals.css`; `bento-wash` lights the largest bento card from its top right; `feature-stage` is the feature visuals' stage: `accent-soft` at 38 % over the canvas, the light from the top and a fine grid fading out before its lower half) are radial gradients with eased stops that end transparent inside their box; `hero-grid` is the fine grid that fades out before the edges |
+| `--hero-glow` | `hero-glow`, `showcase-halo`, `bento-wash`, `feature-stage` | accent at 11 % | accent at 22 % | | Peak of the landing's accent light. The utilities (`globals.css`; `bento-wash` lights the largest bento card and the Plus panel from the top right; `feature-stage` is the feature visuals' stage: `accent-soft` at 38 % over the canvas, the light from the top and a fine grid fading out before its lower half) are radial gradients with eased stops that end transparent inside their box; `hero-grid` is the fine grid that fades out before the edges; `HeroBackdrop edge="bottom"` mirrors glow and grid for the landing's close |
 
 ### Gain and loss
 
@@ -93,7 +93,7 @@ Each role is one utility that sets size, line height and, where listed, weight a
 | `text-caption` | 12 px | 12 px | 400 | 1.33 | Labels, dates under prices, footnotes |
 | `text-micro` | 11 px | 11 px | 400 | 1.2, 0.06em | Tab-bar labels, uppercase captions (`uppercase`) |
 
-Pages that need a larger marketing size use arbitrary values on top of a role: the landing hero (`HERO_TITLE`, fluid `clamp(2.25rem, 1.2rem + 4.4vw, 4.25rem)`, −0.02em, −0.025em from 640 px) and `HOME_HEADING` (`lg:text-[2.5rem]`). The lead figure of a card or a sidebar uses 26–28 px (`text-[1.625rem]`, `text-[1.75rem]`); see Known gaps in [layout.md](layout.md#known-gaps).
+Pages that need a larger marketing size use arbitrary values on top of a role: the landing hero (`HERO_TITLE`, fluid `clamp(2.25rem, 1.2rem + 4.4vw, 4.25rem)`, −0.02em, −0.025em from 640 px), the closing line (`CLOSING_TITLE`, fluid `clamp(2.125rem, 1.4rem + 2.8vw, 3.5rem)`, same tracking) and `HOME_HEADING` (`lg:text-[2.5rem]`). The lead figure of a card or a sidebar uses 26–28 px (`text-[1.625rem]`, `text-[1.75rem]`); see Known gaps in [layout.md](layout.md#known-gaps).
 
 Weights in use: 400 (text), 500 (`font-medium`: desk pills, idle tabs, table names), 600 (`font-semibold`: values, titles, current tab), 700 (`font-bold`: monograms, uppercase eyebrows).
 
@@ -142,6 +142,8 @@ Tailwind's 4 px step (`1` = 4 px … `10` = 40 px, iOS `space4`…`space40`). St
 | Dialog | header `pt-4 pr-3 pl-5`, body `px-5 py-4` | header `desk:pt-5 desk:pr-4 desk:pl-6`, body `desk:px-6 desk:pb-6` |
 | Landing sections (`HOME_SECTION`) | `py-16` | `md:py-24` |
 | Landing feature rows (`FeatureRows`) | `gap-16 pt-8` (64 px between rows and from the bento) | `md:gap-24 md:pt-14` (96 px) |
+| Landing close (Plus, the closing line, the footer) | `HOME_SECTION` for Plus, then `pb-16` under the closing pills | `md:pb-24`: 96 px from Plus to the closing line and from the pills to the footer hairline |
+| Footer (`SiteFooter`) | `pt-8 pb-8`, `gap-8`; no top margin (the page's bottom padding is the gap) | `md:pt-12 md:pb-10`, `md:gap-10` |
 
 ## Motion
 

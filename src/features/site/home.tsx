@@ -22,13 +22,18 @@ export const HOME_HEADING = "text-display text-primary-text text-balance lg:text
 export const HERO_TITLE =
   "font-display text-[clamp(2.25rem,1.2rem+4.4vw,4.25rem)] leading-[1.04] font-semibold tracking-[-0.02em] sm:tracking-[-0.025em] text-balance text-primary-text";
 
+/** The closing line: display face, fluid from 34 px on phones to 56 px, between `HOME_HEADING` and `HERO_TITLE`. */
+export const CLOSING_TITLE =
+  "font-display text-[clamp(2.125rem,1.4rem+2.8vw,3.5rem)] leading-[1.06] font-semibold tracking-[-0.02em] sm:tracking-[-0.025em] text-balance text-primary-text";
+
 /**
- * The hero backdrop: an accent glow from the top over a fine grid that fades out towards the edges. Decorative; place
- * it first inside a `relative isolate overflow-hidden` block.
+ * The hero backdrop: an accent glow from the top over a fine grid that fades out towards the edges; `edge="bottom"`
+ * mirrors it so the light rises from the block's bottom edge (the page's close, onto the footer's hairline).
+ * Decorative; place it first inside a `relative isolate overflow-hidden` block.
  */
-export function HeroBackdrop() {
+export function HeroBackdrop({ edge = "top" }: { edge?: "top" | "bottom" }) {
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+    <div aria-hidden className={cn("pointer-events-none absolute inset-0 -z-10", edge === "bottom" && "-scale-y-100")}>
       <div className="hero-grid absolute inset-0" />
       <div className="hero-glow absolute inset-x-0 top-0 h-[26rem] sm:h-[40rem]" />
     </div>

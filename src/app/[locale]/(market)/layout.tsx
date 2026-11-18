@@ -2,6 +2,8 @@ import { cookies } from "next/headers";
 import type { ReactNode } from "react";
 
 import { currentAccount } from "@/data/auth/account";
+import { requestTime } from "@/data/clock";
+import { civilDate } from "@/domain/market/zone";
 import { SiteFooter, SiteHeader } from "@/features/site/chrome";
 import { SignedInFrame } from "@/features/shell/signed-in-frame";
 import { parseTheme, THEME_COOKIE } from "@/ui/theme/theme";
@@ -18,7 +20,7 @@ export default async function MarketAreaLayout({ children }: Readonly<{ children
     <>
       <SiteHeader theme={theme} />
       {children}
-      <SiteFooter theme={theme} />
+      <SiteFooter theme={theme} year={civilDate(requestTime()).slice(0, 4)} />
     </>
   );
 }
