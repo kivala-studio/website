@@ -29,6 +29,7 @@ async function closeUpgrade(page: Page) {
 for (const scenario of ["open", "closed", "partial", "empty"] as const) {
   test(`/inicio ${scenario}: sections, light and dark, phone and desktop`, async ({ page, context }, testInfo) => {
     await signIn(context, "plus", scenario);
+    await context.addCookies([{ name: "theme", value: "system", domain: "localhost", path: "/" }]);
     for (const width of [375, 1440]) {
       await page.setViewportSize({ width, height: width === 375 ? 812 : 1000 });
       for (const scheme of ["light", "dark"] as const) {

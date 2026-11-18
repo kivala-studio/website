@@ -165,6 +165,6 @@ Colour and border changes use `transition-colors` or `transition-[border-color,b
 
 ## Theme switching
 
-- `<html data-theme="system|light|dark">` is rendered on the server from the `theme` cookie (`THEME_COOKIE` in `src/ui/theme/theme.ts`; `parseTheme` falls back to `system`), so a page never flashes the wrong theme.
+- `<html data-theme="system|light|dark">` is rendered on the server from the `theme` cookie (`THEME_COOKIE` in `src/ui/theme/theme.ts`; `parseTheme` falls back to `dark`), so a page never flashes the wrong theme. Dark is the default whatever the OS; `system` follows it.
 - `ThemeSwitch` (segmented) and `ThemeMenu` (icon menu) share one store in `controls.tsx`: choosing writes `data-theme`, sets the cookie for a year (`path=/; samesite=lax`) and fires an `investao:theme` event so every theme control on the page updates.
-- The browser chrome colour comes from `viewport.themeColor` in the locale layout (`#f2f3f5` light, `#090b0f` dark).
+- The browser chrome colour comes from `generateViewport` in the locale layout, from the same cookie: `#f2f3f5` light, `#090b0f` dark, and both keyed on `prefers-color-scheme` for `system`.
