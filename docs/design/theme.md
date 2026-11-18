@@ -157,8 +157,13 @@ Utilities in `src/ui/theme/motion.css`. Every one has a `prefers-reduced-motion`
 | `motion-press` | On `:active`: opacity 0.76, scale 0.98, 160 ms | opacity only | Pills, icon buttons, chips, tiles |
 | `motion-pulse` | Opacity 0.9 ↔ 0.5, 0.9 s | none | `Skeleton` |
 | `motion-shimmer` | A light band across, 1.6 s | none | `ChartShimmer` |
+| `motion-entrance` | Once on load: fade in and rise 0.75rem, 550 ms `ease-reveal`, after `entrance-delay-<ms>` (`backwards` fill: nothing stays applied) | none | The landing hero's subtitle, search and pills, figures and showcase (70, 140, 210, 280 ms) |
+| `motion-entrance-lift` | Once on load: rise 0.5rem with no fade and no delay, 500 ms | none | The landing `h1` (no fade, so the largest paint is the first) |
+| Scroll reveal (`data-reveal`) | Once as it enters the viewport: fade in and rise 0.875rem, 550 ms `ease-reveal`; targets entering together 60 ms apart, a `data-reveal="stagger"` group's children 100 ms apart; `reveal-line` wipes a chart line in from the left, `reveal-after` fades the area and dot in after it | nothing hidden, no movement | Landing sections below the hero (`Reveal`, see [components.md](components.md#landing-pieces-featuressitehome-featuressitevisuals)) |
 
-Colour and border changes use `transition-colors` or `transition-[border-color,box-shadow]` with `motion-reduce:transition-none`. Spinners use `animate-spin motion-reduce:animate-none`.
+`--ease-reveal` (`cubic-bezier(0.22, 1, 0.36, 1)`, `ease-reveal` in Tailwind) is the calm ease-out for entrances. The reveal's start state exists only on a screen that allows motion, after the `Reveal` script has marked a target still below the fold (`data-reveal-state="pending"`); without JavaScript, before hydration, in print, with reduced motion and for a focused target, every section is simply there. Motion moves `transform` and `opacity` only, so it never shifts layout.
+
+Hover feedback lives behind Tailwind's `hover:` (pointer devices only): a lift of 2–4 px with `motion-safe:`, or a border or fill change. Colour and border changes use `transition-colors` or `transition-[border-color,box-shadow]` with `motion-reduce:transition-none`. Spinners use `animate-spin motion-reduce:animate-none`.
 
 ## Dark mode and increased contrast
 

@@ -12,6 +12,7 @@ import { HeroSearch, MarketPreview } from "@/features/site/home-client";
 import { homeMarket } from "@/features/site/home-market";
 import { pageMetadata } from "@/features/site/metadata";
 import { INDEXABLE_PAGES, SIGN_IN_PATH } from "@/features/site/site";
+import { Reveal } from "@/features/site/reveal";
 import { OrganizationData } from "@/features/site/structured-data";
 import {
   InstrumentVisual,
@@ -54,7 +55,8 @@ const marketHref = (category: MarketCategory) => ({
  * The landing page: the hero (title, search, actions, coverage figures) with the market preview rising out of it as
  * the showcase; the product's other areas as a bento; three feature rows; then Plus and the closing line over the
  * hero's light mirrored, rising onto the footer. Market rows and counts come from the cached catalogue (dated
- * verified closes), the same server path as `/mercado`.
+ * verified closes), the same server path as `/mercado`. The hero comes in once on load (`motion-entrance`); the
+ * sections below ease in as they enter the viewport (`data-reveal`, driven by `Reveal`).
  */
 export default async function HomePage() {
   const t = await getTranslations();
@@ -67,15 +69,16 @@ export default async function HomePage() {
   return (
     <main id="main">
       <OrganizationData />
+      <Reveal />
 
       <div className="relative isolate overflow-hidden">
         <HeroBackdrop />
         <section className={cn(PAGE_CONTAINER, "flex flex-col items-center gap-6 pt-10 pb-10 text-center sm:gap-8 md:pt-20 md:pb-14 lg:pt-24")}>
           <div className="flex max-w-4xl flex-col items-center gap-4 sm:gap-5">
-            <h1 className={HERO_TITLE}>{t("common.yourMarketUpClose")}</h1>
-            <p className="max-w-xl text-body text-balance text-secondary-text sm:text-[1.1875rem] sm:leading-normal">{t("site.home.heroSubtitle")}</p>
+            <h1 className={cn(HERO_TITLE, "motion-entrance-lift")}>{t("common.yourMarketUpClose")}</h1>
+            <p className="max-w-xl motion-entrance entrance-delay-70 text-body text-balance text-secondary-text sm:text-[1.1875rem] sm:leading-normal">{t("site.home.heroSubtitle")}</p>
           </div>
-          <div className="flex w-full max-w-xl flex-col items-center gap-4">
+          <div className="flex w-full max-w-xl motion-entrance entrance-delay-140 flex-col items-center gap-4">
             <HeroSearch
               action={getPathname({ locale, href: INDEXABLE_PAGES.market })}
               hidden={{ categoria: marketQueryParams({ ...MARKET_DEFAULT_QUERY, category: "all" }).categoria }}
@@ -89,6 +92,7 @@ export default async function HomePage() {
           </div>
           {market ? (
             <HeroFigures
+              className="motion-entrance entrance-delay-210"
               items={[
                 { value: format.count(market.total), label: t("common.instruments") },
                 ...market.categories.map(({ category, count }) => ({ value: format.count(count), label: translate(MARKET_CATEGORY_LABEL_KEYS[category]) })),
@@ -98,7 +102,7 @@ export default async function HomePage() {
         </section>
 
         {market && market.categories.length > 0 ? (
-          <section aria-labelledby="home-market" className={cn(PAGE_CONTAINER, "pb-16 md:pb-24")}>
+          <section aria-labelledby="home-market" className={cn(PAGE_CONTAINER, "motion-entrance entrance-delay-280 pb-16 md:pb-24")}>
             <h2 id="home-market" className="sr-only">
               {t("common.market")}
             </h2>
@@ -117,7 +121,7 @@ export default async function HomePage() {
       </div>
 
       <section aria-labelledby="all-in-one" className={cn(PAGE_CONTAINER, "flex flex-col gap-10 pb-8 md:gap-12 md:pb-10")}>
-        <h2 id="all-in-one" className={cn(HOME_HEADING, "mx-auto max-w-2xl text-center")}>
+        <h2 id="all-in-one" data-reveal className={cn(HOME_HEADING, "mx-auto max-w-2xl text-center")}>
           {t("site.home.allInOneTitle")}
         </h2>
         <Bento>
@@ -182,7 +186,7 @@ export default async function HomePage() {
       <div className="relative isolate overflow-hidden">
         <HeroBackdrop edge="bottom" />
         <section aria-labelledby="plus" className={HOME_SECTION}>
-          <div className="panel relative isolate grid items-center gap-10 overflow-hidden border-accent/25 p-5 max-[22.5rem]:px-4 sm:p-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 lg:p-14">
+          <div data-reveal className="panel relative isolate grid items-center gap-10 overflow-hidden border-accent/25 p-5 max-[22.5rem]:px-4 sm:p-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 lg:p-14">
             <div aria-hidden className="bento-wash absolute inset-0 -z-10" />
             <div aria-hidden className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,var(--accent),transparent)] opacity-50" />
             <div className="flex flex-col items-start gap-6">
@@ -203,7 +207,7 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section aria-labelledby="download" className={cn(PAGE_CONTAINER, "flex flex-col items-center gap-8 pb-16 text-center md:pb-24")}>
+        <section aria-labelledby="download" data-reveal="stagger" className={cn(PAGE_CONTAINER, "flex flex-col items-center gap-8 pb-16 text-center md:pb-24")}>
           <span className="flex size-16 items-center justify-center rounded-[1.25rem] bg-accent text-on-accent shadow-panel">
             <PalancaMark className="size-10" />
           </span>

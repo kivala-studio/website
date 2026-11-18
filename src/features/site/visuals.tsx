@@ -45,8 +45,9 @@ function ProductFigure({ label, bare = false, children }: { label: string; bare?
         role="img"
         aria-label={label}
         className={cn(
-          "w-full",
-          !bare && "feature-stage overflow-hidden rounded-card border border-card-border px-4 py-8 [--lean:0px] sm:p-10 sm:[--lean:1.5rem] lg:px-12 lg:py-14 lg:[--lean:2rem]",
+          "group/stage w-full",
+          !bare &&
+            "feature-stage overflow-hidden rounded-card border border-card-border px-4 py-8 transition-[border-color] duration-300 ease-out [--lean:0px] hover:border-field-border motion-reduce:transition-none sm:p-10 sm:[--lean:1.5rem] lg:px-12 lg:py-14 lg:[--lean:2rem]",
         )}
       >
         {/* Sample values never "arrive": no value roll, which a layout change (a badge hidden below 400 px and shown again) would replay. */}
@@ -59,6 +60,9 @@ function ProductFigure({ label, bare = false, children }: { label: string; bare?
   );
 }
 
+/** A floating card rises 4 px while the pointer is over its visual (pointer devices; none with reduced motion). */
+const FLOAT_HOVER = "transition-[translate] duration-300 ease-out motion-safe:group-hover/stage:-translate-y-1";
+
 /** The card that leads a visual; it fills the stage's width. */
 const MAIN_CARD = "panel flex flex-col gap-4 p-4 sm:gap-5 sm:p-5 lg:p-6";
 /**
@@ -66,7 +70,8 @@ const MAIN_CARD = "panel flex flex-col gap-4 p-4 sm:gap-5 sm:p-5 lg:p-6";
  * `--lean` (from 640 px), to the right, or to the left in a flipped `FeatureRow` (from 1024 px). Each visual sets the overlap.
  */
 const FLOAT_CARD =
-  "panel relative z-10 flex w-[84%] flex-col self-end border-field-border translate-x-(--lean) sm:w-[62%] lg:group-data-flip/feature:self-start lg:group-data-flip/feature:-translate-x-(--lean)";
+  "panel relative z-10 flex w-[84%] flex-col self-end border-field-border translate-x-(--lean) sm:w-[62%] lg:group-data-flip/feature:self-start lg:group-data-flip/feature:-translate-x-(--lean) " +
+  FLOAT_HOVER;
 /** The lead figure of a main card. */
 const LEAD_FIGURE = "font-display text-[1.625rem] leading-tight font-semibold tracking-tight whitespace-nowrap text-primary-text sm:text-[1.75rem] lg:text-[2rem]";
 
@@ -103,19 +108,19 @@ function SampleChart({
         {[30, 60, 90].map((y) => (
           <line key={y} x1="0" x2="320" y1={y} y2={y} strokeDasharray="3 5" vectorEffect="non-scaling-stroke" className="stroke-chart-grid" />
         ))}
-        <path d={`M${points} L${end[0]} 120 L0 120 Z`} fill={`url(#${id})`} />
+        <path d={`M${points} L${end[0]} 120 L0 120 Z`} fill={`url(#${id})`} className="reveal-after" />
         <path
           d={`M${points}`}
           strokeWidth={2.5}
           strokeLinejoin="round"
           strokeLinecap="round"
           vectorEffect="non-scaling-stroke"
-          className={cn("fill-none", tone === "positive" ? "stroke-positive" : "stroke-accent")}
+          className={cn("reveal-line fill-none", tone === "positive" ? "stroke-positive" : "stroke-accent")}
         />
       </svg>
       <span
         className={cn(
-          "absolute size-3 -translate-1/2 rounded-full border-2 border-card-background ring-6",
+          "reveal-after absolute size-3 -translate-1/2 rounded-full border-2 border-card-background ring-6",
           tone === "positive" ? "bg-positive ring-positive/20" : "bg-accent ring-accent/20",
           dot,
         )}
@@ -308,7 +313,7 @@ export function PlusVisual({ label }: { label: string }) {
   const [, mover] = COMPARISON;
   return (
     <ProductFigure label={label} bare>
-      <div className="panel relative z-10 flex w-[94%] flex-row items-center gap-3 self-start border-field-border p-3 sm:w-[62%] sm:p-4 lg:-ml-8">
+      <div className={cn("panel relative z-10 flex w-[94%] flex-row items-center gap-3 self-start border-field-border p-3 sm:w-[62%] sm:p-4 lg:-ml-8", FLOAT_HOVER)}>
         <span className="flex size-10 shrink-0 items-center justify-center rounded-medium bg-comparison-orange/12 text-comparison-orange">
           <Icon name="chart" />
         </span>
@@ -339,18 +344,18 @@ export function PlusVisual({ label }: { label: string }) {
               <path
                 key={series.symbol}
                 d={`M${series.points}`}
-                strokeWidth={2.5}
+                      strokeWidth={2.5}
                 strokeLinejoin="round"
                 strokeLinecap="round"
                 vectorEffect="non-scaling-stroke"
-                className={cn("fill-none", series.line)}
+                className={cn("reveal-line fill-none", series.line)}
               />
             ))}
           </svg>
           {COMPARISON.map((series) => (
             <span
               key={series.symbol}
-              className={cn("absolute size-3 -translate-1/2 rounded-full border-2 border-card-background ring-6", series.swatch, series.dot, series.at)}
+              className={cn("reveal-after absolute size-3 -translate-1/2 rounded-full border-2 border-card-background ring-6", series.swatch, series.dot, series.at)}
             />
           ))}
         </div>

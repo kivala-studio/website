@@ -41,9 +41,9 @@ export function HeroBackdrop({ edge = "top" }: { edge?: "top" | "bottom" }) {
 }
 
 /** Coverage figures under the hero actions: each count in the display face beside its label. */
-export function HeroFigures({ items }: { items: { value: string; label: string }[] }) {
+export function HeroFigures({ items, className }: { items: { value: string; label: string }[]; className?: string }) {
   return (
-    <dl className="flex flex-wrap items-baseline justify-center gap-x-4 gap-y-1.5 sm:gap-x-8">
+    <dl className={cn("flex flex-wrap items-baseline justify-center gap-x-4 gap-y-1.5 sm:gap-x-8", className)}>
       {items.map((item) => (
         <div key={item.label} className="flex flex-row-reverse items-baseline gap-1.5">
           <dt className="text-caption text-secondary-text sm:text-secondary">{item.label}</dt>
@@ -88,7 +88,7 @@ export function Bento({ children }: { children: ReactNode }) {
 /**
  * One bento card, a whole-card link: the title, then the miniature in a frame that bleeds off the bottom edge (and the
  * right one with `bleed="corner"`) under a fade. `wide` spans four of six columns (the whole row at 768 px); `wash` adds
- * the soft accent light. The miniature is decorative: the link's name is the title.
+ * the soft accent light. The miniature is decorative: the link's name is the title. A scroll-reveal target.
  */
 export function BentoCard({
   href,
@@ -106,7 +106,7 @@ export function BentoCard({
   children: ReactNode;
 }) {
   return (
-    <li className={cn("flex min-w-0", wide ? "md:col-span-2 lg:col-span-4" : "lg:col-span-2")}>
+    <li data-reveal className={cn("flex min-w-0", wide ? "md:col-span-2 lg:col-span-4" : "lg:col-span-2")}>
       <Link
         href={href}
         prefetch={false}
@@ -151,7 +151,8 @@ export function FeatureRows({ children }: { children: ReactNode }) {
 /**
  * A feature row: the icon in an accent squircle, the heading, the message and a pill, then the product visual (a piece
  * of the web product on a tinted stage). Stacked, text first, below 1024 px; from there two columns, the visual taking
- * 7 of 12, on the left unless `flip`, its floating card leaning towards the text.
+ * 7 of 12, on the left unless `flip`, its floating card leaning towards the text. A scroll-reveal group: the text eases
+ * in, then the visual.
  */
 export function FeatureRow({
   id,
@@ -174,6 +175,7 @@ export function FeatureRow({
     <section
       aria-labelledby={id}
       data-flip={flip || undefined}
+      data-reveal="stagger"
       className={cn(
         "group/feature grid items-center gap-10 lg:gap-16",
         flip ? "lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]" : "lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]",
