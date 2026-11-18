@@ -27,6 +27,7 @@ export const ICON_PACK = {
   "add": { label: "Adicionar", body: "<path d=\"M12 3.5V20.5M3.5 12H20.5\"/>" },
   "remove": { label: "Remover", body: "<path d=\"M4 12H20\"/>" },
   "close": { label: "Fechar", body: "<path d=\"M5 5 19 19M19 5 5 19\"/>" },
+  "menu": { label: "Menu", body: "<path d=\"M4 6.5H20M4 12H20M4 17.5H20\"/>" },
   "check": { label: "Confirmar", body: "<path d=\"M4.5 12.5 9.5 17.5 19.5 6.5\"/>" },
   "check-circle": { label: "Concluído", body: "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M7.5 12 10.5 15 16.5 8.5\"/>" },
   "info": { label: "Informação", body: "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 11V16\"/><circle cx=\"12\" cy=\"7.5\" r=\"1\" fill=\"currentColor\" stroke=\"none\"/>" },

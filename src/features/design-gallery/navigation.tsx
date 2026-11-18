@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { BrandLockup, LANGUAGE_CONTROL } from "@/features/site/chrome";
+import { BrandLockup, LANGUAGE_CONTROL, SiteControls } from "@/features/site/chrome";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
 import { ButtonLink, iconButtonClass } from "@/ui/components/buttons";
@@ -30,33 +30,37 @@ export function Navigation({ initialTheme }: { initialTheme: Theme }) {
 
   return (
     <GallerySection id="navigation" title="Navigation">
-      <Specimen name='TopBar mobileNav="row" (public site)'>
-        <div className="overflow-hidden rounded-large border border-hairline">
+      <Specimen name='TopBar mobileNav="menu" (public site)'>
+        {/* No clipping here, so the menu can open below the sample at phone widths. */}
+        <div className="rounded-large border border-hairline [&>header]:rounded-large">
           <TopBar
             home={{ href: HERE, label: t("site.header.homeLabel") }}
-            logo={<BrandLockup />}
+            logo={<BrandLockup wordmarkFrom={360} />}
             navLabel="Site sample"
-            mobileNav="row"
+            mobileNav="menu"
+            menu={{ label: t("site.header.menuLabel"), content: <SiteControls theme={initialTheme} /> }}
             nav={[
               { href: HERE, label: t("common.market") },
               { href: "/noticias", label: t("common.news") },
               { href: "/aprender", label: t("learn.title") },
             ]}
-            actions={
+            wideActions={
               <>
                 <span className={LANGUAGE_CONTROL}>EN</span>
                 <ThemeMenu initial={initialTheme} />
-                <ButtonLink href={HERE} size="compact" className="ml-1">
-                  {t("onboarding.navigation.signIn")}
-                </ButtonLink>
               </>
+            }
+            actions={
+              <ButtonLink href={HERE} size="compact" className="ml-1">
+                {t("onboarding.navigation.signIn")}
+              </ButtonLink>
             }
           />
         </div>
       </Specimen>
 
       <Specimen name='TopBar mobileNav="none" (signed-in app)'>
-        <div className="overflow-hidden rounded-large border border-hairline">
+        <div className="isolate overflow-hidden rounded-large border border-hairline">
           <TopBar
             home={{ href: HERE, label: t("site.header.homeLabel") }}
             logo={<BrandLockup />}

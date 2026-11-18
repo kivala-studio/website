@@ -2,7 +2,8 @@
 //
 //   node scripts/generate-icons.mjs
 //
-// design/icon-pack/masters.json is an unchanged copy of iOS Tools/IconPack/masters.json.
+// design/icon-pack/masters.json is a copy of iOS Tools/IconPack/masters.json plus the web-only `menu` (the public
+// header's menu button), drawn on the same grid.
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 

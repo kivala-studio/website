@@ -162,6 +162,12 @@
     "category": "Ações e estados"
   },
   {
+    "name": "menu",
+    "label": "Menu",
+    "body": "<path d=\"M4 6.5H20M4 12H20M4 17.5H20\"/>",
+    "category": "Ações e estados"
+  },
+  {
     "name": "check",
     "label": "Confirmar",
     "body": "<path d=\"M4.5 12.5 9.5 17.5 19.5 6.5\"/>",

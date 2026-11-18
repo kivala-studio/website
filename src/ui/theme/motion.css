@@ -146,3 +146,38 @@
 @media (prefers-reduced-motion: reduce) {
   .motion-entrance, .motion-entrance-lift { animation: none; }
 }
+
+/*
+ * The top bar's menu (`TopBar mobileNav="menu"`): the panel slides out from under the bar, clipped at the bar's edge
+ * so it never covers it, and the page dims behind it. The clip leaves room for the panel's shadow. Closing is
+ * quicker than opening. Reduced motion keeps the fades only.
+ */
+@keyframes drop-in {
+  from { opacity: 0; transform: translateY(-0.5rem); clip-path: inset(0.5rem -1rem -1rem); }
+  to { clip-path: inset(0 -1rem -1rem); }
+}
+@keyframes drop-out {
+  from { clip-path: inset(0 -1rem -1rem); }
+  to { opacity: 0; transform: translateY(-0.5rem); clip-path: inset(0.5rem -1rem -1rem); }
+}
+@keyframes fade-out {
+  to { opacity: 0; }
+}
+
+@utility motion-drop-in {
+  animation: drop-in 0.3s var(--ease-reveal) backwards;
+}
+@utility motion-drop-out {
+  animation: drop-out 0.18s ease-in forwards;
+}
+@utility motion-dim-in {
+  animation: fade-in 0.3s var(--ease-reveal) backwards;
+}
+@utility motion-dim-out {
+  animation: fade-out 0.18s ease-in forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-drop-in { animation: fade-in 0.15s ease-out backwards; }
+  .motion-drop-out { animation: fade-out 0.15s ease-out forwards; }
+}
