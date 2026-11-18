@@ -322,7 +322,7 @@ export function WatchlistView({ rows, renderedAt }: { rows: readonly CatalogueRo
               title={t("watchlist.emptyState.title")}
               message={t("watchlist.emptyState.message")}
               action={
-                <Button icon="add" className="w-auto" onClick={() => setAdding(true)}>
+                <Button icon="add" className="w-auto!" onClick={() => setAdding(true)}>
                   {t("common.addInstruments")}
                 </Button>
               }

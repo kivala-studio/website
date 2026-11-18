@@ -59,7 +59,7 @@ export function PriceCell({
   const figure = rowFigure(row, security, at);
   const bond = row?.bond ?? false;
   const code = row?.currency ?? security?.currency ?? "AOA";
-  if (figure.kind === "none") return <span className={cn("text-secondary text-secondary-text", className)}>{t("common.priceUnconfirmed")}</span>;
+  if (figure.kind === "none") return <span className={cn("text-secondary whitespace-normal text-secondary-text", className)}>{t("common.priceUnconfirmed")}</span>;
   return (
     <span className={cn("flex flex-col items-end gap-1", className)}>
       <FinancialValue value={figure.price} bond={bond} code={code} className={compact ? "text-secondary font-semibold" : "text-body font-semibold"} />

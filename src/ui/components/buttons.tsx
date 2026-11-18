@@ -20,7 +20,10 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   loading?: boolean;
 };
 
-/** Full-width pill button (iOS InvestButtonStyle + ActionButton); `className="w-auto"` sizes it to its title. */
+/**
+ * Full-width pill button (iOS InvestButtonStyle + ActionButton). `className="w-auto!"` sizes it to its title (`cn` does not
+ * merge classes, and Tailwind emits `w-full` after `w-auto`); `sm:w-auto` does so from 640 px.
+ */
 export function Button({ kind = "primary", size, icon, loading = false, className, children, onClick, ...props }: ButtonProps) {
   const t = useTranslations("components.button");
   return (

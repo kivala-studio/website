@@ -77,7 +77,7 @@ export function ToastHost({ children }: { children: ReactNode }) {
       {children}
       <div aria-live="polite" className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-2">
         {toast ? (
-          <div key={toast.id} className="motion-toast pointer-events-auto flex w-full max-w-140 items-start gap-3 rounded-card border border-card-border bg-card-background py-4 pr-2 pl-5 shadow-lg">
+          <div key={toast.id} className="motion-toast pointer-events-auto flex w-full max-w-140 items-start gap-3 rounded-card border border-card-border bg-card-background py-4 pr-2 pl-5 shadow-panel">
             <div className="flex min-w-0 flex-1 flex-col gap-1">
               <p className="line-clamp-2 text-secondary font-semibold text-primary-text">{toast.title}</p>
               <p className="line-clamp-3 text-secondary text-secondary-text">{toast.message}</p>

@@ -100,7 +100,7 @@ export function UnusualActivityView({ rows }: { rows: readonly CatalogueRow[] })
         <ErrorState
           message={t("components.placeholder.loadFailed")}
           action={
-            <Button kind="secondary" className="w-auto" loading={refreshing} onClick={refresh}>
+            <Button kind="secondary" className="w-auto!" loading={refreshing} onClick={refresh}>
               {t("common.tryAgain")}
             </Button>
           }

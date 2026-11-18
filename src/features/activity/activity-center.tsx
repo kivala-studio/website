@@ -110,7 +110,7 @@ export function ActivityCenter({ symbols, renderedAt }: { symbols: Readonly<Reco
           <IconButton icon="refresh" label={t("common.refresh")} onClick={() => void store.load()} />
           <Button
             kind="secondary"
-            className="w-auto"
+            className="w-auto!"
             disabled={!unread}
             onClick={() => {
               local.markRead(local.rows.filter((row) => !row.read && filterOf(row.category) === filter && isVisible(row, now)));
@@ -154,7 +154,7 @@ export function ActivityCenter({ symbols, renderedAt }: { symbols: Readonly<Reco
           <ErrorState
             message={t("components.placeholder.loadFailed")}
             action={
-              <Button kind="secondary" className="w-auto" onClick={() => void store.load()}>
+              <Button kind="secondary" className="w-auto!" onClick={() => void store.load()}>
                 {t("common.tryAgain")}
               </Button>
             }

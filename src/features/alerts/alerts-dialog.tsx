@@ -192,7 +192,7 @@ function AlertList({ target, onEdit }: { target: AlertTarget; onEdit: (rule: Ale
         ) : alerts.status === "failed" ? (
           <div className="flex flex-col items-start gap-2">
             <p className="text-secondary text-secondary-text">{t("errors.notification.loadAlertsFailed")}</p>
-            <Button kind="secondary" icon="refresh" className="w-auto" onClick={() => void stores.alerts.load(undefined, true)}>
+            <Button kind="secondary" icon="refresh" className="w-auto!" onClick={() => void stores.alerts.load(undefined, true)}>
               {t("common.tryAgain")}
             </Button>
           </div>

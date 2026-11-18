@@ -133,7 +133,7 @@ export function MarketBrowser({ rows, renderedAt, links = [] }: { rows: Catalogu
             </summary>
             <ul
               aria-label={t("markets.picker.sortBy")}
-              className="absolute right-0 z-20 mt-1 flex min-w-44 flex-col rounded-medium border border-separator bg-elevated-background p-1 shadow-lg"
+              className="absolute right-0 z-20 mt-1 flex min-w-44 flex-col rounded-medium border border-card-border bg-card-background p-1 shadow-panel"
             >
               {MARKET_SORT_KEYS.map((key) => (
                 <li key={key}>

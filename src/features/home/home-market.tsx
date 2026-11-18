@@ -68,7 +68,7 @@ export function HomeView({
           onClick={() => void store.load({ force: true })}
           disabled={state.isRefreshing}
           aria-busy={state.isRefreshing || undefined}
-          className={cn(state.isRefreshing && "motion-spin")}
+          className={cn(state.isRefreshing && "[&>svg]:animate-spin motion-reduce:[&>svg]:animate-none")}
           data-testid="home-refresh"
         />
       </div>
