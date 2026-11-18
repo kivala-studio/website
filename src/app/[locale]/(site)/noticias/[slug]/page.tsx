@@ -13,11 +13,12 @@ import { RelatedInstruments } from "@/features/news/related-instruments";
 import { ArticleMetadata } from "@/features/news/article-metadata";
 import { NewsMarkdown } from "@/features/news/markdown";
 import { pageMetadata } from "@/features/site/metadata";
+import { SITE_PAGE } from "@/features/site/pages";
 import { JsonLd } from "@/features/site/structured-data";
 import { getPathname } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
 import { cn } from "@/ui/cn";
-import { PAGE_CONTAINER, SectionHeader } from "@/ui/components/layout";
+import { Card, READING_COLUMN } from "@/ui/components/layout";
 import { ErrorState } from "@/ui/components/states";
 import { Icon } from "@/ui/icons/icon";
 
@@ -48,7 +49,7 @@ export default async function ArticlePage({ params }: Props) {
   if (found === undefined) notFound();
   if (found === null) {
     return (
-      <main id="main" className={cn(PAGE_CONTAINER, "pt-6 pb-16")}>
+      <main id="main" className={SITE_PAGE}>
         <ErrorState title={t("news.article.unavailableTitle")} message={t("news.article.loadFailed")} />
       </main>
     );
@@ -63,7 +64,7 @@ export default async function ArticlePage({ params }: Props) {
   const url = `${serverEnv.siteUrl}${getPathname({ locale: locale as AppLocale, href: `/noticias/${found.slug}` })}`;
 
   return (
-    <main id="main" className={cn(PAGE_CONTAINER, "pt-6 pb-16")}>
+    <main id="main" className={SITE_PAGE}>
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -80,7 +81,7 @@ export default async function ArticlePage({ params }: Props) {
           ...(sources.length ? { citation: sources.map((source) => source.url) } : {}),
         }}
       />
-      <article className="mx-auto flex max-w-3xl flex-col gap-6">
+      <article className={cn(READING_COLUMN, "gap-6")}>
         <header className="flex flex-col gap-4">
           <ArticleMetadata article={found} />
           <h1 lang={ARTICLE_LANGUAGE} className="text-display text-primary-text">
@@ -94,17 +95,15 @@ export default async function ArticlePage({ params }: Props) {
         <div lang={ARTICLE_LANGUAGE} data-testid="article-body">
           <NewsMarkdown markdown={found.bodyMarkdown ?? ""} />
         </div>
-        <hr className="border-separator" />
-        <section aria-labelledby="sources" className="flex flex-col gap-1">
-          <SectionHeader id="sources" title={t("news.article.sources")} />
-          <ul className="flex flex-col">
+        <Card title={t("news.article.sources")} titleId="sources" flush className="overflow-hidden">
+          <ul className="flex flex-col pb-2">
             {sources.map((source) => (
-              <li key={source.url}>
+              <li key={source.url} className="border-t border-hairline first:border-t-0">
                 <a
                   href={source.url}
                   rel="noopener noreferrer external"
                   target="_blank"
-                  className="flex min-h-11 items-center justify-between gap-3 rounded-small py-2"
+                  className="flex min-h-14 items-center justify-between gap-3 px-5 py-2 transition-colors hover:bg-app-background/70 desk:px-6"
                 >
                   <span className="flex flex-col gap-1">
                     <span className="text-body font-medium text-primary-text">{source.name}</span>
@@ -115,7 +114,7 @@ export default async function ArticlePage({ params }: Props) {
               </li>
             ))}
           </ul>
-        </section>
+        </Card>
         <RelatedInstruments article={found} rows={rows} now={now} />
       </article>
     </main>

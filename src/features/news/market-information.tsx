@@ -17,7 +17,8 @@ import { useMarketState, useMarketStore } from "@/features/market/market-provide
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
 import { Button } from "@/ui/components/buttons";
-import { Card, Panel, SectionHeader } from "@/ui/components/layout";
+import { FilterTabs } from "@/ui/components/controls";
+import { Card, Panel } from "@/ui/components/layout";
 import { SeeAll } from "@/ui/components/see-all";
 import { AssetRow } from "@/ui/components/rows";
 import { EmptyState, ErrorState, InstrumentRowSkeleton, Skeleton } from "@/ui/components/states";
@@ -61,8 +62,8 @@ function IconTile({ category, large = false }: { category: MarketUpdateCategory;
     <span
       aria-hidden
       className={cn(
-        "flex shrink-0 items-center justify-center rounded-medium bg-accent/10 text-accent",
-        large ? "min-h-30 w-full bg-elevated-background" : "size-12",
+        "flex shrink-0 items-center justify-center bg-accent/10 text-accent",
+        large ? "min-h-30 w-full rounded-large" : "size-12 rounded-medium",
       )}
     >
       <Icon name={ICONS[category]} scale={large ? "l" : undefined} />
@@ -180,39 +181,25 @@ export function MarketInformationView() {
     );
   }
   return (
-    <section className="flex flex-col gap-3" aria-labelledby="market-updates-heading" data-testid="market-information">
+    <section className="flex flex-col gap-4" aria-labelledby="market-updates-heading" data-testid="market-information">
       <h2 id="market-updates-heading" className="sr-only">
         {t("common.marketInformation")}
       </h2>
-      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 [scrollbar-width:none]" role="group" aria-label={t("news.information.categoryLabel")}>
-        {chips.map((chip) => (
-          <button
-            key={chip.value}
-            type="button"
-            aria-pressed={selected === chip.value}
-            onClick={() => setSelected(chip.value)}
-            className={cn(
-              "min-h-11 shrink-0 rounded-full px-4 text-secondary font-semibold transition-colors motion-reduce:transition-none",
-              selected === chip.value ? "bg-accent text-on-accent" : "bg-elevated-background text-secondary-text",
-            )}
-            data-testid="market-information-chip"
-          >
-            {chip.title}
-          </button>
-        ))}
-      </div>
+      <FilterTabs options={chips} value={selected} onChange={setSelected} label={t("news.information.categoryLabel")} testID="market-information-chip" />
       {shown.length === 0 ? (
-        <div className="py-8" data-testid="market-information-empty">
+        <Card data-testid="market-information-empty">
           <EmptyState icon="document" title={t("news.information.emptyTitle")} message={t("news.information.emptyMessage")} />
-        </div>
+        </Card>
       ) : (
-        <ul className="flex flex-col divide-y divide-separator">
-          {shown.map((update) => (
-            <li key={update.id}>
-              <UpdateRow update={update} />
-            </li>
-          ))}
-        </ul>
+        <Card className="py-1!">
+          <ul className="flex flex-col divide-y divide-hairline">
+            {shown.map((update) => (
+              <li key={update.id}>
+                <UpdateRow update={update} />
+              </li>
+            ))}
+          </ul>
+        </Card>
       )}
     </section>
   );
@@ -256,38 +243,37 @@ export function MarketUpdateDetail({ id }: { id: string }) {
           {update.source} · <time dateTime={new Date(update.timestamp).toISOString()}>{format.timestamp(update.timestamp)}</time>
         </p>
       </header>
-      <IconTile category={update.category} large />
-      <div className="flex flex-col gap-4 text-body leading-relaxed text-primary-text">
-        {update.body.map((paragraph, index) => (
-          <p key={index}>{paragraph}</p>
-        ))}
-      </div>
+      <Card className="flex flex-col gap-6">
+        <IconTile category={update.category} large />
+        <div className="flex flex-col gap-4 text-body leading-relaxed text-primary-text">
+          {update.body.map((paragraph, index) => (
+            <p key={index}>{paragraph}</p>
+          ))}
+        </div>
+      </Card>
       {related.length > 0 ? (
-        <section aria-labelledby="market-update-related" className="flex flex-col gap-2">
-          <SectionHeader id="market-update-related" title={t("common.relatedSecurities")} />
-          <Card compact className="py-0!">
-            <ul className="flex flex-col divide-y divide-separator">
-              {related.map((security) => {
-                const bond = isBondKind(security.kind);
-                return (
-                  <li key={security.id}>
-                    <AssetRow
-                      symbol={security.symbol}
-                      name={security.name}
-                      price={displayPrice(security, at) ?? null}
-                      change={displayPriceChange(security, at)}
-                      bond={bond}
-                      code={security.currency}
-                      logoUrl={security.logoURL}
-                      brandColor={bond ? "violet" : "blue"}
-                      href={`/mercado/${encodeURIComponent(security.symbol)}`}
-                    />
-                  </li>
-                );
-              })}
-            </ul>
-          </Card>
-        </section>
+        <Card title={t("common.relatedSecurities")} titleId="market-update-related" bodyClassName="pt-0! pb-1!">
+          <ul className="flex flex-col divide-y divide-hairline">
+            {related.map((security) => {
+              const bond = isBondKind(security.kind);
+              return (
+                <li key={security.id}>
+                  <AssetRow
+                    symbol={security.symbol}
+                    name={security.name}
+                    price={displayPrice(security, at) ?? null}
+                    change={displayPriceChange(security, at)}
+                    bond={bond}
+                    code={security.currency}
+                    logoUrl={security.logoURL}
+                    brandColor={bond ? "violet" : "blue"}
+                    href={`/mercado/${encodeURIComponent(security.symbol)}`}
+                  />
+                </li>
+              );
+            })}
+          </ul>
+        </Card>
       ) : null}
     </article>
   );
@@ -296,7 +282,7 @@ export function MarketUpdateDetail({ id }: { id: string }) {
 function BackLink() {
   const t = useTranslations();
   return (
-    <Link href="/mercado/informacao" className="inline-flex min-h-11 items-center gap-1 self-start text-secondary font-semibold text-accent">
+    <Link href="/mercado/informacao" className="-mb-2 -ml-1 inline-flex min-h-11 items-center gap-1 self-start rounded-small px-1 text-secondary font-semibold text-accent">
       <Icon name="chevron-left" />
       {t("common.marketInformation")}
     </Link>

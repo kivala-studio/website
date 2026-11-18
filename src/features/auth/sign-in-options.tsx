@@ -48,7 +48,7 @@ export function SignInOptions({ next, available, failed: initiallyFailed }: { ne
     {
       provider: "google",
       label: t("authentication.signIn.google"),
-      className: "bg-action-surface text-primary-text border-[length:var(--control-outline-width)] border-control-outline",
+      className: "border border-field-border bg-card-background text-primary-text hover:bg-action-surface",
       mark: <GoogleMark />,
     },
     { provider: "apple", label: t("authentication.signIn.apple"), className: "bg-primary-text text-app-background", mark: <AppleMark /> },
