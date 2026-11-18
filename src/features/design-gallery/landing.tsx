@@ -2,8 +2,19 @@
 
 import { useTranslations } from "next-intl";
 
-import { Bento, BentoCard, HERO_TITLE, HeroBackdrop, HeroFigures } from "@/features/site/home";
-import { InstrumentVisual, LearnMiniature, NewsMiniature, PortfolioVisual, SimulatorMiniature, StoreButton, UnusualActivityMiniature, WeekAheadMiniature } from "@/features/site/visuals";
+import { Bento, BentoCard, FeatureRow, HERO_TITLE, HeroBackdrop, HeroFigures } from "@/features/site/home";
+import {
+  InstrumentVisual,
+  LearnMiniature,
+  NewsMiniature,
+  PortfolioVisual,
+  SimulatorMiniature,
+  StoreButton,
+  UnusualActivityMiniature,
+  WatchlistVisual,
+  WeekAheadMiniature,
+} from "@/features/site/visuals";
+import { ButtonLink } from "@/ui/components/buttons";
 
 import { GallerySection, SPECIMEN_GRID, Specimen } from "./specimen";
 
@@ -26,9 +37,26 @@ export function Landing() {
         </div>
       </Specimen>
 
+      <Specimen name="FeatureRow · InstrumentVisual (stage, caption)">
+        <div className="w-full">
+          <FeatureRow
+            id="gallery-feature-row"
+            icon="markets"
+            title={t("onboarding.page.marketTitle")}
+            message={t("onboarding.page.marketMessage")}
+            action={
+              <ButtonLink href="/mercado" prefetch={false} className="sm:w-auto!">
+                {t("common.explore")}
+              </ButtonLink>
+            }
+            visual={<InstrumentVisual label={t("site.home.instrumentAlt")} />}
+          />
+        </div>
+      </Specimen>
+
       <div className={SPECIMEN_GRID}>
-        <Specimen name="InstrumentVisual (stage, caption)">
-          <InstrumentVisual label={t("site.home.instrumentAlt")} />
+        <Specimen name="WatchlistVisual">
+          <WatchlistVisual label={t("site.home.alertsAlt")} />
         </Specimen>
         <Specimen name="PortfolioVisual">
           <PortfolioVisual label={t("site.home.portfolioAlt")} />

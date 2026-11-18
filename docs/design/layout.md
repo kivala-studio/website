@@ -8,8 +8,8 @@ Tailwind's defaults plus one custom variant (`src/app/globals.css`):
 |---|---|---|
 | `max-[20rem]:` … `min-[26rem]:` | 320–416 px | Narrow-phone fixes: hide a logo, a wordmark or a column (see [Tables on phones](#tables-on-phones)) |
 | `sm:` | 640 px | 24 px gutters, wider table columns, the landing showcase gets its bezel |
-| `md:` | 768 px | Two-column landing rows, two summary cards per row, the side sheet, every table header sorts |
-| `lg:` | 1024 px | **Page layout**: top-bar navigation, no bottom tab bar, sidebars, rails, sticky columns, `Panel` becomes a card |
+| `md:` | 768 px | Two summary cards per row, the side sheet, every table header sorts |
+| `lg:` | 1024 px | **Page layout**: top-bar navigation, no bottom tab bar, sidebars, rails, sticky columns, `Panel` becomes a card, two-column landing feature rows |
 | `xl:` | 1280 px | Three summary cards on `/mercado`, two card columns on the portfolio dashboard, the widest table columns |
 | `desk:` | 1024 px **and** `pointer: fine` | **Web scale**: type, radii, pill and field heights, card padding |
 
@@ -85,13 +85,19 @@ Pick the template, then read the file it names.
 ┌ Notícias ›┐┌ Aprender ›┐┌ Semana ›┐    bottom (and right, `bleed="corner"`) under a fade
 │╭─────────╮││╭─────────╮││╭───────╮│
        EXEMPLO ILUSTRATIVO              one caption for the grid
- visual stage │ icon, title, line, (pill)   FeatureRow, alternating with `flip`
+ ░ stage ░──────────╮  ▣              FeatureRows: 6rem apart (4rem on phones)
+ │┌ main card ─────┐ │  Title           FeatureRow: visual 7/12 from 1024 px,
+ ││ value, chart ● │ │  message         alternating with `flip`; stacked below,
+ │└────┌ float ────┴┐│  (pill)          text first
+ │     └────────────┘│
+ ╰───────────────────╯
+   EXEMPLO ILUSTRATIVO
  ...
  ┌ panel: Plus ───────────────────┐
  ┌ panel: closing band ───────────┐
 ```
 
-The hero and the market preview share one backdrop, so the table rises out of the hero: its tab row is above the fold at 1440 × 900, and on phones the title, subtitle, search and both pills fit the first screen. Sections below sit on the canvas with `HOME_SECTION` spacing, centred `HOME_HEADING` titles. The bento follows the showcase directly, with no rule between them, and shows the areas the feature rows do not (simulator, unusual activity, news, lessons, week ahead). Cards (`panel`) hold the table, the bento, the visuals, Plus and the closing band. Prices are the server's dated verified closes; the figures are the catalogue's visible counts.
+The hero and the market preview share one backdrop, so the table rises out of the hero: its tab row is above the fold at 1440 × 900, and on phones the title, subtitle, search and both pills fit the first screen. Sections below sit on the canvas with `HOME_SECTION` spacing, centred `HOME_HEADING` titles. The bento follows the showcase directly, with no rule between them, and shows the areas the feature rows do not (simulator, unusual activity, news, lessons, week ahead). Cards (`panel`) hold the table, the bento, the visuals, Plus and the closing band. The three feature rows sit in `FeatureRows`, which keeps one gap between rows and the same space against the bento and Plus (64 px on phones, 96 px from 768 px). Each row puts the icon squircle, heading, message and pill beside the visual from 1024 px (visual 7 of 12 columns, text vertically centred) and stacks them, text first, below; the visual's floating card leans out towards the text. Prices are the server's dated verified closes; the figures are the catalogue's visible counts.
 
 ### 2. List / table page — `src/app/[locale]/(market)/mercado/page.tsx`, `src/features/market/browse/market-browser.tsx`
 

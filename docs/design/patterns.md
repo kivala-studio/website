@@ -65,8 +65,9 @@ The landing's product visuals (`InstrumentVisual`, `WatchlistVisual`, `Portfolio
 - Captioned "Exemplo ilustrativo" (`IllustrativeCaption`): under each visual's stage, and once under the whole bento grid, never per card.
 - Sample values only: the iOS onboarding's sample instruments (BAI, BFA) and round invented figures; sample text is catalogue wording with sample arguments. Never market data, never a live or current price.
 - Built from the real primitives (`StatTile`, `ChangeBadge`, `SecurityLogo`, chips, the segmented track) so they match the product.
+- Composed, not pasted: on the feature rows the main card fills the stage and the floating card overlaps it without covering text (it sits over a chart's faded area or the main card's padding), so no strip of the stage is left empty and nothing is cut mid-content.
 
-Decorative backgrounds (`HeroBackdrop`, the `Showcase` halo, `bento-wash`) are `aria-hidden`.
+Decorative backgrounds (`HeroBackdrop`, the `Showcase` halo, `bento-wash`) are `aria-hidden`; the `feature-stage` light and grid are backgrounds of the figure itself.
 
 ## Icons
 

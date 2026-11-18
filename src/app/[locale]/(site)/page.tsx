@@ -7,7 +7,7 @@ import { type FormatLocale, createFormat } from "@/domain/format";
 import { MARKET_CATEGORY_LABEL_KEYS, type MarketCategory } from "@/domain/market";
 import { MARKET_DEFAULT_QUERY, marketQueryParams } from "@/features/market/browse/query";
 import { PalancaMark } from "@/features/site/chrome";
-import { Bento, BentoCard, FeatureRow, HERO_TITLE, HOME_HEADING, HOME_SECTION, HeroBackdrop, HeroFigures, Showcase } from "@/features/site/home";
+import { Bento, BentoCard, FeatureRow, FeatureRows, HERO_TITLE, HOME_HEADING, HOME_SECTION, HeroBackdrop, HeroFigures, Showcase } from "@/features/site/home";
 import { HeroSearch, MarketPreview } from "@/features/site/home-client";
 import { homeMarket } from "@/features/site/home-market";
 import { pageMetadata } from "@/features/site/metadata";
@@ -137,7 +137,7 @@ export default async function HomePage() {
         </Bento>
       </section>
 
-      <div className="flex flex-col py-4 md:py-8">
+      <FeatureRows>
         <FeatureRow
           id="theme-market"
           icon="markets"
@@ -175,7 +175,7 @@ export default async function HomePage() {
           }
           visual={<PortfolioVisual label={t("site.home.portfolioAlt")} />}
         />
-      </div>
+      </FeatureRows>
 
       <section aria-labelledby="plus" className={HOME_SECTION}>
         <div className="panel grid items-center gap-10 overflow-hidden p-6 sm:p-10 md:grid-cols-[minmax(0,1fr)_auto] md:gap-16 md:p-14">

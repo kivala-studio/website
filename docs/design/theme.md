@@ -32,7 +32,7 @@ Transcribed from iOS `SemanticColors.swift`; `src/ui/theme/tokens.test.ts` keeps
 | `selected-tab-background` | `#e2eafa` | `#303238` | | iOS selected tab fill (gallery only today) |
 | `widget-background` | `#f2f3f5` | `#090b0f` | | iOS widget background (gallery only today) |
 | `action-surface` | `#e5e9ef` | `#171e2b` | | Secondary pill, filled icon button, the current top-bar pill, hover fill of plain controls, skeletons |
-| `accent-soft` | `#e2eafa` | `#192d4b` | | Selected chip, icon discs, the profile initials, the landing glow |
+| `accent-soft` | `#e2eafa` | `#192d4b` | | Selected chip, icon discs, the profile initials, the landing glow, the feature rows' icon squircles and stage tint |
 | `comparison-orange` | `#a34e00` | `#ff9400` | | The movements category tint in the activity centre |
 | `comparison-purple` | `#7935b5` | `#ad52e0` | | The portfolio category tint in the activity centre |
 
@@ -58,7 +58,7 @@ No iOS counterpart. They draw the web card system.
 | `--raised-shadow` | `shadow-raised` | `0 1px 2px rgb(24 34 49 / 0.1), 0 1px 1px rgb(24 34 49 / 0.04)` | `none` | | With `bg-raised` |
 | `--bar-shadow` | `shadow-bar` | `0 1px 0 rgb(24 34 49 / 0.08)` | `0 1px 0 #232933` | | The top bar's bottom edge |
 | `--focus-glow` | `shadow-focus` | `0 0 0 3px` accent at 18 % | accent at 30 % | accent at 45 % | A focused text field |
-| `--hero-glow` | `hero-glow`, `showcase-halo`, `bento-wash` | accent at 11 % | accent at 22 % | | Peak of the landing's accent light. The three utilities (`globals.css`; `bento-wash` lights the largest bento card from its top right) are radial gradients with eased stops that end transparent inside their box; `hero-grid` is the fine grid that fades out before the edges |
+| `--hero-glow` | `hero-glow`, `showcase-halo`, `bento-wash`, `feature-stage` | accent at 11 % | accent at 22 % | | Peak of the landing's accent light. The utilities (`globals.css`; `bento-wash` lights the largest bento card from its top right; `feature-stage` is the feature visuals' stage: `accent-soft` at 38 % over the canvas, the light from the top and a fine grid fading out before its lower half) are radial gradients with eased stops that end transparent inside their box; `hero-grid` is the fine grid that fades out before the edges |
 
 ### Gain and loss
 
@@ -141,6 +141,7 @@ Tailwind's 4 px step (`1` = 4 px … `10` = 40 px, iOS `space4`…`space40`). St
 | Table first and last cell | 16 px | 24 px (`desk:`) |
 | Dialog | header `pt-4 pr-3 pl-5`, body `px-5 py-4` | header `desk:pt-5 desk:pr-4 desk:pl-6`, body `desk:px-6 desk:pb-6` |
 | Landing sections (`HOME_SECTION`) | `py-16` | `md:py-24` |
+| Landing feature rows (`FeatureRows`) | `gap-16 pt-8` (64 px between rows and from the bento) | `md:gap-24 md:pt-14` (96 px) |
 
 ## Motion
 

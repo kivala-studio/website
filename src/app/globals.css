@@ -106,6 +106,35 @@
     transparent 100%
   );
 }
+/*
+ * The stage under a landing feature visual: a soft accent tint, the accent light from the top and a fine grid that
+ * fades out before the lower half (`::before`, behind the stage's content). Pair it with a border and `rounded-card`.
+ */
+@utility feature-stage {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(
+      ellipse 80% 75% at 50% 0%,
+      var(--hero-glow) 0%,
+      color-mix(in srgb, var(--hero-glow) 50%, transparent) 45%,
+      color-mix(in srgb, var(--hero-glow) 15%, transparent) 75%,
+      transparent 100%
+    ),
+    color-mix(in srgb, var(--accent-soft) 38%, var(--app-background));
+  &::before {
+    --grid-line: color-mix(in srgb, var(--primary-text) 6%, transparent);
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: linear-gradient(to right, var(--grid-line) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: 2rem 2rem;
+    background-position: center top;
+    mask-image: radial-gradient(ellipse 75% 65% at 50% 0%, black 0%, rgb(0 0 0 / 0.5) 50%, transparent 100%);
+  }
+}
 @utility hero-grid {
   --grid-line: color-mix(in srgb, var(--primary-text) 7%, transparent);
   background-image: linear-gradient(to right, var(--grid-line) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);

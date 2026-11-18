@@ -24,7 +24,7 @@ export function StoreButton({ kind = "primary", className }: { kind?: ButtonKind
 
 /*
  * Landing feature visuals (the CoinStats landing look): a cropped piece of the web product, built from the same
- * primitives, floating on a soft stage. Decorative: one accessible label per figure, everything inside hidden and
+ * primitives, composed on a tinted stage. Decorative: one accessible label per figure, everything inside hidden and
  * inert. Sample values only (the iOS onboarding's sample instruments and round invented figures), never market data.
  */
 
@@ -34,12 +34,11 @@ export function IllustrativeCaption() {
   return <figcaption className="text-micro font-medium uppercase text-secondary-text">{t("illustrativeExample")}</figcaption>;
 }
 
-/** The stage, the label and the "exemplo ilustrativo" caption around a visual. */
+/** The tinted stage, the label and the "exemplo ilustrativo" caption around a visual. */
 function ProductFigure({ label, children }: { label: string; children: ReactNode }) {
   return (
     <figure className="flex w-full flex-col items-center gap-3">
-      <div role="img" aria-label={label} className="relative isolate w-full overflow-hidden rounded-card border border-card-border px-4 py-6 sm:px-8 sm:py-10">
-        <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(75%_65%_at_15%_10%,var(--accent-soft),transparent)]" />
+      <div role="img" aria-label={label} className="feature-stage w-full overflow-hidden rounded-card border border-card-border px-4 py-8 [--lean:0px] sm:p-10 sm:[--lean:1.5rem] lg:px-12 lg:py-14 lg:[--lean:2rem]">
         <div aria-hidden className="flex flex-col select-none">
           {children}
         </div>
@@ -49,23 +48,53 @@ function ProductFigure({ label, children }: { label: string; children: ReactNode
   );
 }
 
-/** The leading card of a visual; its bottom padding leaves room for the card that overlaps it. */
-const MAIN_CARD = "panel flex w-[94%] flex-col gap-4 self-start p-4 pb-14 sm:w-[86%] sm:p-5 sm:pb-16";
-/** The smaller card lifted over the lower right of the main one. */
-const FLOAT_CARD = "panel relative -mt-10 flex w-[82%] flex-col gap-3 self-end p-4 sm:w-[62%]";
+/** The card that leads a visual; it fills the stage's width. */
+const MAIN_CARD = "panel flex flex-col gap-4 p-4 sm:gap-5 sm:p-5 lg:p-6";
+/**
+ * The smaller card lifted over the main one, on the side of the text: it leans out of the main card by the stage's
+ * `--lean` (from 640 px), to the right, or to the left in a flipped `FeatureRow` (from 1024 px). Each visual sets the overlap.
+ */
+const FLOAT_CARD =
+  "panel relative z-10 flex w-[84%] flex-col self-end border-field-border translate-x-(--lean) sm:w-[62%] lg:group-data-flip/feature:self-start lg:group-data-flip/feature:-translate-x-(--lean)";
+/** The lead figure of a main card. */
+const LEAD_FIGURE = "font-display text-[1.625rem] leading-tight font-semibold tracking-tight whitespace-nowrap text-primary-text sm:text-[1.75rem] lg:text-[2rem]";
 
-/** A line (and its area) through `points` on a 320 × 120 box, stretched to the card's width. */
-function SampleChart({ points, tone, className }: { points: string; tone: "positive" | "accent"; className?: string }) {
-  const stroke = tone === "positive" ? "stroke-positive" : "stroke-accent";
-  const fill = tone === "positive" ? "fill-positive/10" : "fill-accent/12";
+/**
+ * A line through `points` on a 320 × 120 box, stretched to the box's size, over an area that fades out, with a dot and
+ * a soft halo on its last point (`end`). `id` names the area's gradient and must be unique on the page.
+ */
+function SampleChart({ id, points, end, tone, className }: { id: string; points: string; end: [number, number]; tone: "positive" | "accent"; className?: string }) {
+  const colour = tone === "positive" ? "var(--color-positive)" : "var(--color-accent)";
   return (
-    <svg viewBox="0 0 320 120" preserveAspectRatio="none" focusable="false" className={cn("block w-full overflow-visible", className)}>
-      {[30, 60, 90].map((y) => (
-        <line key={y} x1="0" x2="320" y1={y} y2={y} strokeDasharray="3 5" vectorEffect="non-scaling-stroke" className="stroke-chart-grid" />
-      ))}
-      <path d={`M${points} L320 120 L0 120 Z`} className={fill} />
-      <path d={`M${points}`} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" className={cn("fill-none", stroke)} />
-    </svg>
+    <div className={cn("relative", className)}>
+      <svg viewBox="0 0 320 120" preserveAspectRatio="none" focusable="false" className="absolute inset-0 size-full overflow-visible">
+        <defs>
+          <linearGradient id={id} x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor={colour} stopOpacity="0.24" />
+            <stop offset="100%" stopColor={colour} stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        {[30, 60, 90].map((y) => (
+          <line key={y} x1="0" x2="320" y1={y} y2={y} strokeDasharray="3 5" vectorEffect="non-scaling-stroke" className="stroke-chart-grid" />
+        ))}
+        <path d={`M${points} L${end[0]} 120 L0 120 Z`} fill={`url(#${id})`} />
+        <path
+          d={`M${points}`}
+          strokeWidth={2.5}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+          className={cn("fill-none", tone === "positive" ? "stroke-positive" : "stroke-accent")}
+        />
+      </svg>
+      <span
+        className={cn(
+          "absolute size-3 -translate-1/2 rounded-full border-2 border-card-background ring-6",
+          tone === "positive" ? "bg-positive ring-positive/20" : "bg-accent ring-accent/20",
+        )}
+        style={{ left: `${(end[0] / 320) * 100}%`, top: `${(end[1] / 120) * 100}%` }}
+      />
+    </div>
   );
 }
 
@@ -82,9 +111,15 @@ function SampleInstrument({ symbol, kind, brandColor = "blue" }: { symbol: strin
   );
 }
 
+/** A statistic in a floating card: no frame of its own, the value a size down on phones. */
+const FLOAT_STAT = "rounded-none border-0 px-2.5 py-1 sm:px-4 [&>dd]:text-secondary sm:[&>dd]:text-body";
+
 const RANGES = ["oneDay", "oneWeek", "oneMonth", "threeMonths", "sixMonths", "oneYear"] as const;
 
-/** Market row: an instrument card as on `/mercado/[symbol]` (price, change, a month's line, the range track) and two statistics. */
+/**
+ * Market row: an instrument card as on `/mercado/[symbol]` (price, change, the range track, a month's line) under the
+ * session's opening and high (the high alone below 368 px).
+ */
 export function InstrumentVisual({ label }: { label: string }) {
   const t = useTranslations();
   const format = useFormat();
@@ -94,12 +129,9 @@ export function InstrumentVisual({ label }: { label: string }) {
       <div className={MAIN_CARD}>
         <SampleInstrument symbol={symbol} kind={t("common.stocks")} />
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <span className="font-display text-[1.625rem] leading-tight font-semibold tracking-tight whitespace-nowrap text-primary-text sm:text-[1.75rem]">
-            {format.securityPrice(65000)}
-          </span>
+          <span className={LEAD_FIGURE}>{format.securityPrice(65000)}</span>
           <ChangeBadge value="2" />
         </div>
-        <SampleChart tone="positive" className="h-24 sm:h-28" points="0 92 C20 90 30 72 50 74 S80 96 100 84 S130 52 150 60 S180 82 200 66 S240 40 260 46 S300 24 320 14" />
         <div className={cn(SEGMENT_TRACK, "text-caption font-medium")}>
           {[...RANGES, "all" as const].map((range) => (
             <span key={range} className={cn("flex min-h-7 flex-1 items-center justify-center rounded-small desk:rounded-[0.5rem]", segmentTone(range === "oneMonth"))}>
@@ -107,10 +139,17 @@ export function InstrumentVisual({ label }: { label: string }) {
             </span>
           ))}
         </div>
+        <SampleChart
+          id="feature-instrument"
+          tone="positive"
+          end={[320, 14]}
+          className="mt-1 h-32 sm:h-36 lg:h-40"
+          points="0 92 C20 90 30 72 50 74 S80 96 100 84 S130 52 150 60 S180 82 200 66 S240 40 260 46 S300 24 320 14"
+        />
       </div>
-      <dl className={cn(FLOAT_CARD, "grid gap-2 sm:grid-cols-2")}>
-        <StatTile label={t("assetDetails.statistics.open")} value={format.securityPrice(64000)} className="[&>dd]:text-body" />
-        <StatTile label={t("common.high")} value={format.securityPrice(66000)} className="[&>dd]:text-body" />
+      <dl className={cn(FLOAT_CARD, "-mt-12 grid w-[94%] grid-cols-2 divide-x divide-hairline py-3 sm:w-[68%] max-[23rem]:grid-cols-1")}>
+        <StatTile label={t("assetDetails.statistics.open")} value={format.securityPrice(64000)} className={cn(FLOAT_STAT, "max-[23rem]:hidden")} />
+        <StatTile label={t("common.high")} value={format.securityPrice(66000)} className={FLOAT_STAT} />
       </dl>
     </ProductFigure>
   );
@@ -122,18 +161,27 @@ const WATCHLIST: { symbol: string; price: number; change: string; bond?: boolean
   { symbol: "OT", price: 100, change: "0.5", bond: true },
 ];
 
-/** Watchlist row: three rows of `/lista` (logo, symbol, price, change, bell) under a reached price alert. */
+/** Watchlist row: a reached price alert arriving over three rows of `/lista` (logo, symbol, price, change, bell). */
 export function WatchlistVisual({ label }: { label: string }) {
   const t = useTranslations();
   const format = useFormat();
   const [first] = WATCHLIST;
   return (
     <ProductFigure label={label}>
-      <div className={cn(MAIN_CARD, "gap-2")}>
+      <div className={cn(FLOAT_CARD, "flex-row items-center gap-3 p-3 sm:p-4")}>
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-medium bg-accent-soft text-accent">
+          <Icon name="alert" />
+        </span>
+        <span className="flex min-w-0 flex-col gap-0.5">
+          <span className="font-display text-secondary font-semibold text-primary-text">{t("formatting.notification.targetReached")}</span>
+          <span className="text-caption text-secondary-text">{`${first.symbol} · ${format.securityPrice(first.price)}`}</span>
+        </span>
+      </div>
+      <div className={cn(MAIN_CARD, "-mt-8 gap-2 pt-14 sm:gap-2 sm:pt-16 lg:pt-16")}>
         <p className="font-display text-secondary font-semibold text-primary-text">{t("common.watchlistTab")}</p>
         <ul className="flex flex-col">
           {WATCHLIST.map((row) => (
-            <li key={row.symbol} className="flex min-h-12 items-center gap-2 border-b border-hairline last:border-b-0 sm:gap-3">
+            <li key={row.symbol} className="flex min-h-13 items-center gap-2 border-b border-hairline last:border-b-0 sm:gap-3 lg:min-h-15">
               <SecurityLogo symbol={row.symbol} brandColor={row.bond ? "violet" : "blue"} size="s" />
               <span className="min-w-0 flex-1 truncate font-display text-secondary font-medium text-primary-text">{row.symbol}</span>
               <span className="font-display text-secondary font-semibold whitespace-nowrap text-primary-text">
@@ -147,15 +195,6 @@ export function WatchlistVisual({ label }: { label: string }) {
           ))}
         </ul>
       </div>
-      <div className={cn(FLOAT_CARD, "flex-row items-center")}>
-        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
-          <Icon name="alert" />
-        </span>
-        <span className="flex min-w-0 flex-col gap-0.5">
-          <span className="font-display text-secondary font-semibold text-primary-text">{t("formatting.notification.targetReached")}</span>
-          <span className="text-caption text-secondary-text">{`${first.symbol} · ${format.securityPrice(first.price)}`}</span>
-        </span>
-      </div>
     </ProductFigure>
   );
 }
@@ -165,7 +204,7 @@ const ALLOCATION = [
   { key: "common.bonds", share: 30, grow: "grow-3", tone: "bg-accent/35" },
 ] as const;
 
-/** Portfolio row: the `/carteira` value card (value, change, trend) and the allocation by kind. */
+/** Portfolio row: the `/carteira` value card (value, change, trend) under the allocation by kind. */
 export function PortfolioVisual({ label }: { label: string }) {
   const t = useTranslations();
   const format = useFormat();
@@ -173,28 +212,30 @@ export function PortfolioVisual({ label }: { label: string }) {
     <ProductFigure label={label}>
       <div className={MAIN_CARD}>
         <div className="flex flex-col gap-1">
-          <span className="text-caption text-secondary-text">{t("common.portfolio")}</span>
-          <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span className="font-display text-[1.625rem] leading-tight font-semibold tracking-tight whitespace-nowrap text-primary-text sm:text-[1.75rem]">
-              {format.currency(1250000)}
-            </span>
-            <ChangeBadge value="4" />
-          </span>
+          <span className="text-caption text-secondary-text desk:text-secondary">{t("common.portfolioValue")}</span>
+          <span className={LEAD_FIGURE}>{format.currency(1300000)}</span>
+          <span className="font-display text-secondary font-semibold whitespace-nowrap text-positive">{`${format.currency(50000, { signed: true })} (${format.percent(4)})`}</span>
         </div>
-        <SampleChart tone="accent" className="h-24 sm:h-28" points="0 100 L27 96 L53 98 L80 86 L107 88 L133 74 L160 78 L187 64 L213 66 L240 54 L267 58 L293 42 L320 34" />
+        <SampleChart
+          id="feature-portfolio"
+          tone="accent"
+          end={[320, 22]}
+          className="mt-1 h-36 sm:h-40 lg:h-44"
+          points="0 100 C24 98 36 90 54 92 S84 84 104 80 S136 86 158 72 S196 62 214 64 S250 46 270 44 S304 30 320 22"
+        />
       </div>
-      <div className={FLOAT_CARD}>
+      <div className={cn(FLOAT_CARD, "-mt-12 gap-3 p-4")}>
         <p className="font-display text-secondary font-semibold text-primary-text">{t("common.allocation")}</p>
         <div className="flex h-2 gap-1">
           {ALLOCATION.map((part) => (
             <span key={part.key} className={cn("rounded-full", part.grow, part.tone)} />
           ))}
         </div>
-        <ul className="flex flex-col gap-1.5">
+        <ul className="flex flex-wrap gap-x-5 gap-y-1.5">
           {ALLOCATION.map((part) => (
             <li key={part.key} className="flex items-center gap-2 text-caption text-secondary-text">
               <span className={cn("size-2 rounded-full", part.tone)} />
-              <span className="flex-1">{t(part.key)}</span>
+              <span>{t(part.key)}</span>
               <span className="font-display font-semibold text-primary-text">{format.percent(part.share, { digits: 0, signed: false })}</span>
             </li>
           ))}

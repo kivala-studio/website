@@ -136,8 +136,17 @@ export function BentoCard({
 }
 
 /**
- * A feature row: the product visual (a piece of the web product on a soft stage) on one side; icon, heading, message and a pill on the other.
- * `flip` puts the visual on the right from 768 px.
+ * The feature rows' column: one gap between rows, and the same space against the bento above and Plus below
+ * (4rem on phones, 6rem from 768 px).
+ */
+export function FeatureRows({ children }: { children: ReactNode }) {
+  return <div className={cn(PAGE_CONTAINER, "flex flex-col gap-16 pt-8 md:gap-24 md:pt-14")}>{children}</div>;
+}
+
+/**
+ * A feature row: the icon in an accent squircle, the heading, the message and a pill, then the product visual (a piece
+ * of the web product on a tinted stage). Stacked, text first, below 1024 px; from there two columns, the visual taking
+ * 7 of 12, on the left unless `flip`, its floating card leaning towards the text.
  */
 export function FeatureRow({
   id,
@@ -157,16 +166,25 @@ export function FeatureRow({
   flip?: boolean;
 }) {
   return (
-    <section aria-labelledby={id} className={cn(PAGE_CONTAINER, "grid items-center gap-8 py-12 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-16 md:py-16")}>
-      <div className={cn("flex min-w-0 justify-center", flip && "md:order-2")}>{visual}</div>
-      <div className="flex max-w-md flex-col items-start gap-4">
-        <Icon name={icon} className="text-[2rem] text-accent" />
-        <h2 id={id} className={HOME_HEADING}>
+    <section
+      aria-labelledby={id}
+      data-flip={flip || undefined}
+      className={cn(
+        "group/feature grid items-center gap-10 lg:gap-16",
+        flip ? "lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]" : "lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]",
+      )}
+    >
+      <div className={cn("flex min-w-0 flex-col items-start", !flip && "lg:order-last")}>
+        <span className="mb-6 flex size-12 items-center justify-center rounded-medium bg-accent-soft text-accent">
+          <Icon name={icon} className="text-[1.5rem]" />
+        </span>
+        <h2 id={id} className={cn(HOME_HEADING, "max-w-lg")}>
           {title}
         </h2>
-        <p className="text-body text-secondary-text">{message}</p>
-        <div className="mt-2 w-full sm:w-auto">{action}</div>
+        <p className="mt-4 max-w-md text-body text-secondary-text lg:text-[1.125rem] lg:leading-normal">{message}</p>
+        <div className="mt-8 w-full sm:w-auto">{action}</div>
       </div>
+      <div className="flex min-w-0 justify-center">{visual}</div>
     </section>
   );
 }
