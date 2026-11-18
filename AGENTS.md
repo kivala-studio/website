@@ -2,9 +2,24 @@
 
 invest.ao website: Next.js App Router, TypeScript strict, Tailwind. Plan: `docs/plan/WEBSITE_IMPLEMENTATION_PLAN.md`. References: `docs/reference/`. Golden fixtures: `tests/fixtures/` (unchanged copies; never edit).
 
-Commands: `npm run check` (lint, typecheck, unit tests), `npm run build` (build + client bundle scan), `npm run e2e` (Playwright, demo mode), `npm run lhci` (Lighthouse budgets), `npm run messages` (regenerate `messages/*.json` from the iOS catalogue), `npm run icons` (regenerate the icon pack). Design gallery: `/dev/design` (not in production builds). Web layer: `lg:` for page layout and the `panel` surface, `desk:` (≥ 1024 px with a mouse or trackpad) for the web type scale and tighter padding; colour tokens stay the iOS ones. Copy `.env.example` to `.env.local` for development.
+Commands: `npm run check` (lint, typecheck, unit tests), `npm run build` (build + client bundle scan), `npm run e2e` (Playwright, demo mode), `npm run lhci` (Lighthouse budgets), `npm run messages` (regenerate `messages/*.json` from the iOS catalogue), `npm run icons` (regenerate the icon pack). Design gallery: `/dev/design` (not in production builds). Web layer: content grouped in cards under a top bar, no sidebar; `lg:` for page layout and the `panel` surface, `desk:` (≥ 1024 px with a mouse or trackpad) for the web type scale and tighter padding; colour tokens stay the iOS ones. Copy `.env.example` to `.env.local` for development.
 
-The sections below are copied word for word from the plan (sections 1.2 to 1.5).
+## Design system
+
+`docs/design/` describes how the web looks and is built: principles and the new-page checklist (`README.md`), tokens (`theme.md`), page templates and responsive rules (`layout.md`), every component with its props (`components.md`), and prices, states and copy (`patterns.md`). `/dev/design` shows the same components live, in the same order. Read them before building a page or a component.
+
+- Use an existing primitive before writing a new one.
+- A new primitive goes into `components.md` and the gallery in the same PR.
+- Tokens only: no raw hex, no arbitrary colours.
+- Group content in `Card` or `Panel`.
+- Actions are pills (`Button`, `ButtonLink`, `buttonClass`).
+- `font-display` for headings and values.
+- Fields never show an outline: accent border and `shadow-focus` instead.
+- Targets ≥ 44 px.
+- Check light and dark.
+- Strings come from the catalogue.
+
+The sections below are copied word for word from the plan (sections 1.2 to 1.5). Rule 12 was amended by the design system on 2026-11-18.
 
 ### 1.2 Routes
 
@@ -36,7 +51,7 @@ Portuguese slugs for both languages; English lives under `/en/…`.
 9. **No automatic request retries.** Only the market poll loop retries, with full-jitter backoff and `retry_after_seconds`. Polling pauses while the tab is hidden; current quotes are revoked when the tab is hidden or offline. Re-check the signed-in user id after every await before applying a result.
 10. **Privacy.** Telemetry is cookieless, allow-listed and never identified; it reports route templates, not concrete paths. Share tokens, account data and amounts never appear in analytics, logs, referrers or cached responses.
 11. **Copy.** Angolan Portuguese addressing the user as "tu", sentence case; reuse iOS wording verbatim from the message catalogue; cut taglines, helper text and secondary labels.
-12. **Design.** Financial values are the hero. Do not turn every section into a card. Gain/loss colour applies to changes only. Light and dark are first-class. Every control is reachable by keyboard with a visible focus ring; targets ≥ 44 px; layouts hold at 200 % zoom and 320 px width.
+12. **Design.** Cards are the web grouping surface; financial values stay the hero. Gain/loss colour applies to changes only. Light and dark are first-class. Every control is reachable by keyboard with a visible focus ring; targets ≥ 44 px; layouts hold at 200 % zoom and 320 px width.
 13. **Backend changes are never worked around.** If a phase needs something the backend lacks, stop and report.
 14. **Git.** One task branch per phase, Conventional Commits, push, open a PR to `main` with the verification performed. No mention of AI tooling in commits, code or docs.
 15. **Tests are proportional.** Golden fixtures and contract tests for logic; one flow or screenshot for UI.
