@@ -178,10 +178,11 @@ export function CompactRow({ security, row, children, className }: { security: M
 }
 
 /** A movers row: the price (or, on the Volume tab, the session volume) and the change badge. */
-function MoverRow({ security, row, at, volume }: { security: MarketSecurity; row: CatalogueRow | undefined; at: number; volume: boolean }) {
+/** A movers row (here and on the signed-in Home): the price, or the traded volume under Volume, and the change. */
+export function MoverRow({ security, row, at, volume, className }: { security: MarketSecurity; row: CatalogueRow | undefined; at: number; volume: boolean; className?: string }) {
   const format = useFormat();
   return (
-    <CompactRow security={security} row={row}>
+    <CompactRow security={security} row={row} className={className}>
       {volume ? (
         <span className="font-display text-secondary font-semibold whitespace-nowrap text-primary-text">{format.count(security.volume)}</span>
       ) : (

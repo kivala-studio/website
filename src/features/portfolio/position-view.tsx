@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
+import { nameBeyondSymbol } from "@/domain/market";
 import type { CatalogueRow } from "@/features/market/browse/price-cell";
 import { PrivacyModeButton } from "@/features/privacy/privacy-mode";
 import { cn } from "@/ui/cn";
@@ -82,6 +83,7 @@ export function PositionView({ securityId, rows, renderedAt }: { securityId: str
     <StatTile key={title} label={title} value={<span className={cn("tabular-nums", tone)}>{personal ? <Private>{value}</Private> : value}</span>} />
   );
 
+  const subtitle = instrument ? nameBeyondSymbol(instrument.name, instrument.symbol) : t("common.instrumentUnavailable");
   return (
     <div className="flex flex-col gap-6" data-testid="position">
       {header}
@@ -89,7 +91,7 @@ export function PositionView({ securityId, rows, renderedAt }: { securityId: str
         <SecurityLogo symbol={instrument?.symbol ?? "—"} logoUrl={instrument?.logoURL} brandColor={bond ? "violet" : "blue"} size="l" />
         <span className="flex min-w-0 flex-col">
           <h1 className="text-display text-primary-text">{instrument?.symbol ?? t("portfolio.positionDetail.title")}</h1>
-          <span className="truncate text-secondary text-secondary-text">{instrument?.name ?? t("common.instrumentUnavailable")}</span>
+          {subtitle ? <span className="truncate text-secondary text-secondary-text">{subtitle}</span> : null}
         </span>
       </div>
       {position ? (

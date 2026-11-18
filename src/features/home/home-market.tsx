@@ -6,7 +6,7 @@ import { type ReactNode, useMemo, useState } from "react";
 import type { MarketStoreState } from "@/data/market/store";
 import { type MarketSecurity, type MarketSnapshot, hasUsableQuote, hasUsableStatistics, marketMovers, visibleOutsideSearch } from "@/domain/market";
 import { useAccount } from "@/features/account/account-provider";
-import { CompactRow } from "@/features/market/browse/market-overview";
+import { CompactRow, MoverRow } from "@/features/market/browse/market-overview";
 import { type CatalogueRow, PriceCell, rowFigure } from "@/features/market/browse/price-cell";
 import { useMarketState, useMarketStore } from "@/features/market/market-provider";
 import { HomeMarketUpdates } from "@/features/news/market-information";
@@ -322,9 +322,7 @@ function MovementFeed({ loaded, rows }: { loaded: Loaded | undefined; rows: Map<
           {items.map((security, index) => {
             const row = rows.get(security.id);
             return (
-              <CompactRow key={security.id} security={security} row={row} className={cn(index >= 3 && "max-lg:hidden")}>
-                <RowFigures security={security} row={row} at={loaded!.at} />
-              </CompactRow>
+              <MoverRow key={security.id} security={security} row={row} at={loaded!.at} volume={tab === "volume"} className={cn(index >= 3 && "max-lg:hidden")} />
             );
           })}
         </ul>

@@ -4,7 +4,7 @@ import Decimal from "decimal.js";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
-import { type PricePoint, TIME_RANGE_LINE_WIDTH, tradingDateNoon } from "@/domain/market";
+import { type PricePoint, TIME_RANGE_LINE_WIDTH, nameBeyondSymbol, tradingDateNoon } from "@/domain/market";
 import type { ValuePoint } from "@/domain/portfolio";
 import { type BenchmarkQuote, type BenchmarkQuoteWire, fromQuoteWire } from "@/domain/portfolio/benchmark";
 import { orderWhileHidden } from "@/domain/privacy/privacy";
@@ -369,6 +369,7 @@ function Holdings({ model }: { model: PortfolioModel }) {
             const bond = instrument?.bond ?? false;
             const { position } = valuation;
             const quantity = quantityText(position.quantity, instrument);
+            const name = instrument ? nameBeyondSymbol(instrument.name, instrument.symbol) : undefined;
             return (
               <TableRow key={id} data-testid="holding-row">
                 <TableNameCell
@@ -378,7 +379,7 @@ function Holdings({ model }: { model: PortfolioModel }) {
                   name={<span data-testid="holding-symbol">{instrument?.symbol ?? t("common.instrumentUnavailable")}</span>}
                   detail={
                     <>
-                      {instrument?.name ? <span className="truncate">{instrument.name}</span> : null}
+                      {name ? <span className="truncate">{name}</span> : null}
                       <Private className="md:hidden">{quantity}</Private>
                     </>
                   }
@@ -455,12 +456,10 @@ function AllocationList({ model }: { model: PortfolioModel }) {
   const top = model.allocations.slice(0, 5);
   const rest = model.allocations.slice(5);
   const rows = [
-    ...top.map((item) => ({
-      key: item.securityId,
-      title: model.instruments.get(item.securityId)?.symbol ?? "—",
-      subtitle: model.instruments.get(item.securityId)?.name ?? "",
-      ...item,
-    })),
+    ...top.map((item) => {
+      const instrument = model.instruments.get(item.securityId);
+      return { key: item.securityId, title: instrument?.symbol ?? "—", subtitle: instrument ? nameBeyondSymbol(instrument.name, instrument.symbol) : undefined, ...item };
+    }),
     ...(rest.length
       ? [
           {
@@ -480,7 +479,7 @@ function AllocationList({ model }: { model: PortfolioModel }) {
           <div className="flex items-baseline gap-3">
             <span className="flex min-w-0 flex-1 flex-col">
               <span className="font-display text-body font-semibold text-primary-text">{row.title}</span>
-              <span className="truncate text-caption text-secondary-text">{row.subtitle}</span>
+              {row.subtitle ? <span className="truncate text-caption text-secondary-text">{row.subtitle}</span> : null}
             </span>
             <span className="flex flex-col items-end">
               <span className="font-display text-body font-semibold text-primary-text">{format.number(row.percentage, { digits: 1 })}%</span>
