@@ -17,9 +17,9 @@ export const HOME_SECTION = cn(PAGE_CONTAINER, "py-16 md:py-24");
 /** Large section heading in the display face (CoinStats' 40 px section titles on desk). */
 export const HOME_HEADING = "text-display text-primary-text text-balance lg:text-[2.5rem] lg:leading-[1.15] lg:tracking-[-0.02em]";
 
-/** The hero title: fluid from 36 px on phones to 68 px on wide screens, tight tracking. */
+/** The hero title: fluid from 36 px on phones to 68 px on wide screens, tracking −0.02em (−0.025em from 640 px). */
 export const HERO_TITLE =
-  "font-display text-[clamp(2.25rem,1.2rem+4.4vw,4.25rem)] leading-[1.04] font-semibold tracking-[-0.035em] text-balance text-primary-text";
+  "font-display text-[clamp(2.25rem,1.2rem+4.4vw,4.25rem)] leading-[1.04] font-semibold tracking-[-0.02em] sm:tracking-[-0.025em] text-balance text-primary-text";
 
 /**
  * The hero backdrop: an accent glow from the top over a fine grid that fades out towards the edges. Decorative; place
@@ -28,8 +28,8 @@ export const HERO_TITLE =
 export function HeroBackdrop() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,color-mix(in_srgb,var(--primary-text)_7%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_srgb,var(--primary-text)_7%,transparent)_1px,transparent_1px)] bg-[size:2.5rem_2.5rem] sm:bg-[size:3.5rem_3.5rem] bg-center [mask-image:radial-gradient(ellipse_60%_65%_at_50%_0%,black_25%,transparent_100%)]" />
-      <div className="absolute inset-x-0 top-0 h-[44rem] bg-[radial-gradient(ellipse_50%_55%_at_50%_0%,color-mix(in_srgb,var(--accent)_24%,transparent),transparent)]" />
+      <div className="hero-grid absolute inset-0" />
+      <div className="hero-glow absolute inset-x-0 top-0 h-[26rem] sm:h-[40rem]" />
     </div>
   );
 }
@@ -57,7 +57,7 @@ export function Showcase({ children }: { children: ReactNode }) {
     <div className="relative mx-auto w-full max-w-5xl">
       <div
         aria-hidden
-        className="pointer-events-none absolute -inset-x-4 -top-48 -z-10 h-[26rem] bg-[radial-gradient(ellipse_50%_50%_at_50%_50%,color-mix(in_srgb,var(--accent)_32%,transparent),transparent)] sm:-inset-x-32"
+        className="showcase-halo pointer-events-none absolute -inset-x-[15%] -top-32 -z-10 h-[34rem] sm:-inset-x-[18%]"
       />
       <div className="sm:rounded-[calc(var(--radius-card)+0.5rem)] sm:border sm:border-card-border sm:bg-[color-mix(in_srgb,var(--card-background)_45%,transparent)] sm:p-2 sm:backdrop-blur-md">
         {children}

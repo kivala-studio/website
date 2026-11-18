@@ -58,6 +58,7 @@ No iOS counterpart. They draw the web card system.
 | `--raised-shadow` | `shadow-raised` | `0 1px 2px rgb(24 34 49 / 0.1), 0 1px 1px rgb(24 34 49 / 0.04)` | `none` | | With `bg-raised` |
 | `--bar-shadow` | `shadow-bar` | `0 1px 0 rgb(24 34 49 / 0.08)` | `0 1px 0 #232933` | | The top bar's bottom edge |
 | `--focus-glow` | `shadow-focus` | `0 0 0 3px` accent at 18 % | accent at 30 % | accent at 45 % | A focused text field |
+| `--hero-glow` | `hero-glow`, `showcase-halo` | accent at 11 % | accent at 22 % | | Peak of the landing's accent light. The two utilities (`globals.css`) are radial gradients with eased stops that end transparent inside their box; `hero-grid` is the fine grid that fades out before the edges |
 
 ### Gain and loss
 
@@ -92,7 +93,7 @@ Each role is one utility that sets size, line height and, where listed, weight a
 | `text-caption` | 12 px | 12 px | 400 | 1.33 | Labels, dates under prices, footnotes |
 | `text-micro` | 11 px | 11 px | 400 | 1.2, 0.06em | Tab-bar labels, uppercase captions (`uppercase`) |
 
-Pages that need a larger marketing size use arbitrary values on top of a role: the landing hero (`HERO_TITLE`, fluid `clamp(2.25rem, 1.2rem + 4.4vw, 4.25rem)`, −0.035em) and `HOME_HEADING` (`lg:text-[2.5rem]`). The lead figure of a card or a sidebar uses 26–28 px (`text-[1.625rem]`, `text-[1.75rem]`); see Known gaps in [layout.md](layout.md#known-gaps).
+Pages that need a larger marketing size use arbitrary values on top of a role: the landing hero (`HERO_TITLE`, fluid `clamp(2.25rem, 1.2rem + 4.4vw, 4.25rem)`, −0.02em, −0.025em from 640 px) and `HOME_HEADING` (`lg:text-[2.5rem]`). The lead figure of a card or a sidebar uses 26–28 px (`text-[1.625rem]`, `text-[1.75rem]`); see Known gaps in [layout.md](layout.md#known-gaps).
 
 Weights in use: 400 (text), 500 (`font-medium`: desk pills, idle tabs, table names), 600 (`font-semibold`: values, titles, current tab), 700 (`font-bold`: monograms, uppercase eyebrows).
 

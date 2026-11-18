@@ -521,10 +521,10 @@ Landing-only building blocks; reuse them for new marketing sections, not for app
 | Export | |
 |---|---|
 | `HOME_SECTION`, `HOME_HEADING` | Section spacing (`py-16 md:py-24`) and the large centred section title (40 px from 1024 px) |
-| `HERO_TITLE` | The hero `h1`: display face, fluid 36 → 68 px, −0.035em, balanced |
-| `HeroBackdrop` | Decorative accent glow over a fine masked grid; first child of a `relative isolate overflow-hidden` block |
+| `HERO_TITLE` | The hero `h1`: display face, fluid 36 → 68 px, −0.02em (−0.025em from 640 px), balanced |
+| `HeroBackdrop` | Decorative accent glow (`hero-glow`) over a fine grid (`hero-grid`); first child of a `relative isolate overflow-hidden` block |
 | `HeroFigures` | `{ items: { value; label }[] }`: a `<dl>` of counts (display face) beside their labels; only real catalogue counts |
-| `Showcase` | Centres the product under the hero (max 1024 px) on an accent halo, in a translucent bezel from 640 px |
+| `Showcase` | Centres the product under the hero (max 1024 px) on an accent halo (`showcase-halo`) behind and around it, in a translucent bezel from 640 px |
 | `MarketPreview` (`@/features/site/home-client`) | `{ tabs, label }`: one flush card with `SectionTabs` on top, a table of dated verified closes per kind and that kind's "Ver tudo" pill in the footer |
 | `FactItem` | Icon disc, title, one line, in a `<ul>` |
 | `HubDiagram` | Decorative diagram (`aria-hidden`) |
