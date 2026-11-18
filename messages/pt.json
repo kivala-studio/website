@@ -2852,10 +2852,7 @@
       "alertsAlt": "Lista de acompanhamento com preços e variações, e um alerta de preço alvo atingido.",
       "portfolioAlt": "Carteira de exemplo com valor, variação, evolução e distribuição.",
       "heroSubtitle": "Acompanha a bolsa de Angola num só sítio.",
-      "allInOneTitle": "Tudo o que precisas para seguir a bolsa",
-      "instrumentsLine": "Ações, obrigações, fundos e Tesouro, com o último fecho verificado.",
-      "alertsLine": "Guarda instrumentos e recebe um aviso quando o preço chega ao teu valor.",
-      "portfolioLine": "Regista compras, vendas e rendimentos e acompanha o valor estimado."
+      "allInOneTitle": "Tudo o que precisas para seguir a bolsa"
     },
     "legal": {
       "draft": "Rascunho. O texto final está a ser preparado.",

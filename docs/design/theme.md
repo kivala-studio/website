@@ -58,7 +58,7 @@ No iOS counterpart. They draw the web card system.
 | `--raised-shadow` | `shadow-raised` | `0 1px 2px rgb(24 34 49 / 0.1), 0 1px 1px rgb(24 34 49 / 0.04)` | `none` | | With `bg-raised` |
 | `--bar-shadow` | `shadow-bar` | `0 1px 0 rgb(24 34 49 / 0.08)` | `0 1px 0 #232933` | | The top bar's bottom edge |
 | `--focus-glow` | `shadow-focus` | `0 0 0 3px` accent at 18 % | accent at 30 % | accent at 45 % | A focused text field |
-| `--hero-glow` | `hero-glow`, `showcase-halo` | accent at 11 % | accent at 22 % | | Peak of the landing's accent light. The two utilities (`globals.css`) are radial gradients with eased stops that end transparent inside their box; `hero-grid` is the fine grid that fades out before the edges |
+| `--hero-glow` | `hero-glow`, `showcase-halo`, `bento-wash` | accent at 11 % | accent at 22 % | | Peak of the landing's accent light. The three utilities (`globals.css`; `bento-wash` lights the largest bento card from its top right) are radial gradients with eased stops that end transparent inside their box; `hero-grid` is the fine grid that fades out before the edges |
 
 ### Gain and loss
 

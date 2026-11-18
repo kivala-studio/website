@@ -2852,10 +2852,7 @@
       "alertsAlt": "A watchlist with prices and changes, and a target price reached alert.",
       "portfolioAlt": "Example portfolio with its value, change, trend and allocation.",
       "heroSubtitle": "Follow Angola''s stock exchange in one place.",
-      "allInOneTitle": "Everything you need to follow the market",
-      "instrumentsLine": "Stocks, bonds, funds and Treasury, with the last verified close.",
-      "alertsLine": "Save instruments and get notified when the price reaches your level.",
-      "portfolioLine": "Record purchases, sales and income and track the estimated value."
+      "allInOneTitle": "Everything you need to follow the market"
     },
     "legal": {
       "draft": "Draft. The final text is being prepared.",

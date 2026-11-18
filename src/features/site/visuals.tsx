@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 
+import { LESSONS } from "@/features/learn/lessons";
 import { cn } from "@/ui/cn";
 import { type ButtonKind, buttonClass, SEGMENT_TRACK, segmentTone } from "@/ui/components/button-styles";
 import { ChangeBadge } from "@/ui/components/financial";
@@ -27,9 +28,14 @@ export function StoreButton({ kind = "primary", className }: { kind?: ButtonKind
  * inert. Sample values only (the iOS onboarding's sample instruments and round invented figures), never market data.
  */
 
+/** The "Exemplo ilustrativo" caption under a visual, or under the whole bento grid. */
+export function IllustrativeCaption() {
+  const t = useTranslations("onboarding.preview");
+  return <figcaption className="text-micro font-medium uppercase text-secondary-text">{t("illustrativeExample")}</figcaption>;
+}
+
 /** The stage, the label and the "exemplo ilustrativo" caption around a visual. */
 function ProductFigure({ label, children }: { label: string; children: ReactNode }) {
-  const t = useTranslations("onboarding.preview");
   return (
     <figure className="flex w-full flex-col items-center gap-3">
       <div role="img" aria-label={label} className="relative isolate w-full overflow-hidden rounded-card border border-card-border px-4 py-6 sm:px-8 sm:py-10">
@@ -38,7 +44,7 @@ function ProductFigure({ label, children }: { label: string; children: ReactNode
           {children}
         </div>
       </div>
-      <figcaption className="text-micro font-medium uppercase text-secondary-text">{t("illustrativeExample")}</figcaption>
+      <IllustrativeCaption />
     </figure>
   );
 }
@@ -195,5 +201,179 @@ export function PortfolioVisual({ label }: { label: string }) {
         </ul>
       </div>
     </ProductFigure>
+  );
+}
+
+/*
+ * Bento miniatures: a few rows of a product area at small size, drawn inside `BentoCard`'s frame (which hides them
+ * from assistive technology and makes them unselectable). Same rules as the visuals above: sample values, no controls.
+ */
+
+/** A small product card inside a miniature. */
+const MINI_SURFACE = "rounded-[0.875rem] border border-card-border bg-card-background shadow-(--panel-shadow)";
+/** A row inside a miniature's surface. */
+const MINI_ROW = "flex min-h-11 items-center gap-3 border-b border-hairline last:border-b-0";
+/** A preset chip as in the simulator, at miniature size. */
+const miniChip = (selected: boolean) =>
+  cn(
+    "inline-flex min-h-7 items-center rounded-full border px-2.5 text-caption font-medium whitespace-nowrap",
+    selected ? "border-transparent bg-accent-soft text-accent" : "border-field-border text-primary-text",
+  );
+
+/** `/simulador`: the projected value for a sample scenario, the horizon presets and the estimated evolution. */
+export function SimulatorMiniature() {
+  const t = useTranslations();
+  const format = useFormat();
+  const horizons = [t("common.oneYear"), ...[3, 5, 10].map((years) => t("simulation.duration.years", { arg1: String(years) }))];
+  return (
+    <div className={cn(MINI_SURFACE, "grid gap-x-6 gap-y-4 p-4 sm:p-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]")}>
+      <div className="flex min-w-0 flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <span className="text-caption text-secondary-text">{t("simulation.result.estimatedFinalValue")}</span>
+          <span className="font-display text-[1.625rem] leading-tight font-semibold tracking-tight whitespace-nowrap text-primary-text sm:text-[1.875rem]">
+            {format.currency(1600000)}
+          </span>
+          <span className="flex flex-wrap gap-x-1.5 text-caption">
+            <span className="font-semibold whitespace-nowrap text-positive">{`${format.currency(600000, { signed: true })} (${format.percent(60, { digits: 0 })})`}</span>
+            <span className="text-secondary-text">{t("simulation.result.ofInvested", { arg1: format.currency(1000000) })}</span>
+          </span>
+        </div>
+        <div className="hidden flex-wrap gap-1.5 sm:flex">
+          {horizons.map((label, index) => (
+            <span key={label} className={miniChip(index === 2)}>
+              {label}
+            </span>
+          ))}
+        </div>
+      </div>
+      <svg viewBox="0 0 320 140" preserveAspectRatio="none" focusable="false" className="block h-28 w-full self-end overflow-visible md:h-full md:min-h-32">
+        <defs>
+          <linearGradient id="bento-simulation" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="var(--color-accent)" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="var(--color-accent)" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        {[35, 70, 105].map((y) => (
+          <line key={y} x1="0" x2="320" y1={y} y2={y} strokeDasharray="3 5" vectorEffect="non-scaling-stroke" className="stroke-chart-grid" />
+        ))}
+        <path d="M0 104 C70 100 130 90 190 74 S280 38 320 22 L320 140 L0 140 Z" fill="url(#bento-simulation)" />
+        <path d="M0 104 H320" strokeWidth={1.5} strokeDasharray="5 4" vectorEffect="non-scaling-stroke" className="fill-none stroke-secondary-text" />
+        <path d="M0 104 C70 100 130 90 190 74 S280 38 320 22" strokeWidth={2.5} strokeLinecap="round" vectorEffect="non-scaling-stroke" className="fill-none stroke-accent" />
+      </svg>
+    </div>
+  );
+}
+
+/** Daily volumes as bar heights; the last session is the unusual one. */
+const VOLUME_BARS = ["h-[30%]", "h-[42%]", "h-[24%]", "h-[36%]", "h-[46%]", "h-[28%]", "h-[38%]", "h-[32%]", "h-[44%]", "h-[26%]", "h-[34%]", "h-full"];
+
+/** `/atividade-invulgar`: one instrument's signals and its volume against the usual sessions. */
+export function UnusualActivityMiniature() {
+  const t = useTranslations();
+  const format = useFormat();
+  const times = (value: number) => `${format.number(value, { digits: 1 })}×`;
+  return (
+    <div className={cn(MINI_SURFACE, "flex flex-col gap-4 p-4")}>
+      <SampleInstrument symbol={t("onboarding.preview.symbol")} kind={t("common.stocks")} />
+      <ul className="flex flex-col gap-1.5 text-caption">
+        <li>
+          <span className="font-semibold text-primary-text">{times(3.2)}</span> <span className="text-secondary-text">{t("unusualActivity.signal.volume")}</span>
+        </li>
+        <li>
+          <span className="font-semibold text-positive">{format.percent(4, { digits: 1 })}</span>{" "}
+          <span className="text-secondary-text">{t("unusualActivity.signal.priceMove", { arg1: times(2.5) })}</span>
+        </li>
+      </ul>
+      <div className="flex h-20 items-end gap-1">
+        {VOLUME_BARS.map((height, index) => (
+          <span key={index} className={cn("flex-1 rounded-[0.1875rem]", height, index === VOLUME_BARS.length - 1 ? "bg-accent" : "bg-accent/20")} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** `/noticias`: the feed's rows (kind, day, title), with sample titles in the app's own wording. */
+export function NewsMiniature() {
+  const t = useTranslations();
+  const format = useFormat();
+  const rows = [
+    { kind: t("news.kind.weeklyRecap"), day: t("common.today"), title: t("intelligence.weeklyClose.headline", { arg1: format.count(6), arg2: format.count(10) }) },
+    { kind: t("news.kind.article"), day: t("common.today"), title: t("intelligence.watchlistMover.headline", { arg1: t("onboarding.preview.symbol"), arg2: format.percent(2, { digits: 0 }) }) },
+    { kind: t("news.kind.dailyRecap"), day: t("common.yesterday"), title: t("watchlist.breadth.headline", { arg1: format.count(4), arg2: format.count(2) }) },
+  ];
+  return (
+    <ul className={cn(MINI_SURFACE, "flex flex-col px-4")}>
+      {rows.map((row) => (
+        <li key={row.kind} className="flex flex-col gap-1 border-b border-hairline py-3 last:border-b-0">
+          <span className="text-caption text-secondary-text">{`${row.kind} · ${row.day}`}</span>
+          <span className="line-clamp-2 font-display text-secondary font-medium text-primary-text">{row.title}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** `/aprender`: the first lessons, two of them read. */
+export function LearnMiniature() {
+  const t = useTranslations();
+  return (
+    <ul className={cn(MINI_SURFACE, "flex flex-col px-3")}>
+      {LESSONS.slice(0, 4).map((lesson, index) => (
+        <li key={lesson.id} className={MINI_ROW}>
+          <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent">
+            <Icon name={lesson.icon} className="text-[0.9375rem]" />
+          </span>
+          <span className="min-w-0 flex-1 truncate font-display text-secondary font-medium text-primary-text">{t(`learn.${lesson.id}.title`)}</span>
+          {index < 2 ? <Icon name="check-circle" className="text-[1.0625rem] text-positive" /> : <Icon name="chevron-right" className="text-[1rem] text-tertiary-text" />}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** A sample week (Monday to Friday) and its dividend dates: day index → event. */
+const SAMPLE_WEEK = { year: 2026, month: 10, firstDay: 23 };
+const WEEK_EVENTS = [
+  { day: 2, title: "market.event.exDividendDate", symbol: "BAI" },
+  { day: 4, title: "market.event.dividendPayment", symbol: "BFA" },
+] as const;
+
+/** `/semana`: the week's days with their dated events marked, and the events. */
+export function WeekAheadMiniature() {
+  const t = useTranslations();
+  const format = useFormat();
+  const weekday = new Intl.DateTimeFormat(format.locale === "en" ? "en-GB" : "pt-AO", { weekday: "short", timeZone: "UTC" });
+  const [selected] = WEEK_EVENTS;
+  return (
+    <div className="flex flex-col gap-3">
+      <div className={cn(MINI_SURFACE, "grid grid-cols-5 gap-1 p-1.5")}>
+        {[0, 1, 2, 3, 4].map((day) => {
+          const date = SAMPLE_WEEK.firstDay + day;
+          const active = day === selected.day;
+          const marked = WEEK_EVENTS.some((event) => event.day === day);
+          return (
+            <span key={day} className={cn("flex flex-col items-center gap-0.5 rounded-[0.625rem] py-1.5", active ? "bg-accent-soft text-accent" : "text-primary-text")}>
+              <span className={cn("text-micro uppercase", active ? "text-accent" : "text-secondary-text")}>
+                {weekday.format(new Date(Date.UTC(SAMPLE_WEEK.year, SAMPLE_WEEK.month, date))).replace(".", "").slice(0, 3)}
+              </span>
+              <span className="font-display text-secondary font-semibold">{format.count(date)}</span>
+              <span className={cn("size-1 rounded-full", marked ? "bg-accent" : "bg-transparent")} />
+            </span>
+          );
+        })}
+      </div>
+      <ul className={cn(MINI_SURFACE, "flex grow flex-col px-3")}>
+        {WEEK_EVENTS.map((event) => (
+          <li key={event.day} className={MINI_ROW}>
+            <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
+              <Icon name="calendar" className="text-[0.9375rem]" />
+            </span>
+            <span className="min-w-0 flex-1 py-2 font-display text-secondary font-medium text-primary-text">{t(event.title)}</span>
+            <span className="font-display text-caption font-semibold text-secondary-text">{event.symbol}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

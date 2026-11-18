@@ -1,14 +1,15 @@
 import type { ReactNode } from "react";
 
+import { Link } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
 import { PAGE_CONTAINER } from "@/ui/components/layout";
 import { Icon, type IconName } from "@/ui/icons/icon";
 
-import { PalancaMark } from "./chrome";
+import { IllustrativeCaption } from "./visuals";
 
 /*
  * Landing page building blocks: a centred hero on a glow and grid with its coverage figures and the market showcase,
- * centred section headings, alternating feature rows and a closing band. Server components only.
+ * centred section headings, the bento, alternating feature rows and a closing band. Server components only.
  */
 
 /** Section spacing on the canvas. */
@@ -66,64 +67,71 @@ export function Showcase({ children }: { children: ReactNode }) {
   );
 }
 
-/** One fact in the "all in one" list: icon disc, bold title, one short line. */
-export function FactItem({ icon, title, children }: { icon: IconName; title: string; children: ReactNode }) {
+/**
+ * The "all in one" bento: product areas the feature rows do not cover, one card each, under one "Exemplo ilustrativo"
+ * caption. Six columns from 1024 px, two from 768 px, one on phones.
+ */
+export function Bento({ children }: { children: ReactNode }) {
   return (
-    <li className="flex flex-col gap-2">
-      <h3 className="flex items-center gap-3 font-display text-section text-primary-text">
-        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
-          <Icon name={icon} />
-        </span>
-        {title}
-      </h3>
-      <p className="max-w-sm text-body text-secondary-text">{children}</p>
-    </li>
+    <figure className="flex flex-col items-center gap-3">
+      <ul className="grid w-full grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2 lg:grid-cols-6 lg:gap-5">{children}</ul>
+      <IllustrativeCaption />
+    </figure>
   );
 }
 
-const NODES: { icon: IconName; position: string }[] = [
-  { icon: "trend-up", position: "left-[6%] top-[12%]" },
-  { icon: "bond", position: "left-[6%] bottom-[12%]" },
-  { icon: "dividend", position: "right-[6%] top-[12%]" },
-  { icon: "shield-check", position: "right-[6%] bottom-[12%]" },
-];
-
 /**
- * The "all in one" diagram: the four kinds of instrument wired into one portfolio ring with the palanca at its centre.
- * Decorative; the list beside it says the same in words.
+ * One bento card, a whole-card link: the title, then the miniature in a frame that bleeds off the bottom edge (and the
+ * right one with `bleed="corner"`) under a fade. `wide` spans four of six columns (the whole row at 768 px); `wash` adds
+ * the soft accent light. The miniature is decorative: the link's name is the title.
  */
-export function HubDiagram({ className }: { className?: string }) {
+export function BentoCard({
+  href,
+  title,
+  wide = false,
+  wash = false,
+  bleed = "bottom",
+  children,
+}: {
+  href: string;
+  title: string;
+  wide?: boolean;
+  wash?: boolean;
+  bleed?: "bottom" | "corner";
+  children: ReactNode;
+}) {
   return (
-    <div aria-hidden className={cn("@container relative mx-auto aspect-[4/3] w-full max-w-[32rem]", className)}>
-      <svg viewBox="0 0 400 300" className="absolute inset-0 size-full fill-none stroke-hairline" focusable="false">
-        {/* Circuit lines from each node to the ring. */}
-        <path d="M58 64 H120 Q140 64 140 84 V120 Q140 140 160 140" strokeWidth="2" />
-        <path d="M58 236 H120 Q140 236 140 216 V180 Q140 160 160 160" strokeWidth="2" />
-        <path d="M342 64 H280 Q260 64 260 84 V120 Q260 140 240 140" strokeWidth="2" />
-        <path d="M342 236 H280 Q260 236 260 216 V180 Q260 160 240 160" strokeWidth="2" />
-        {/* Allocation ring: four arcs. */}
-        <g transform="rotate(-90 200 150)" strokeWidth="18">
-          <circle cx="200" cy="150" r="52" className="stroke-accent" strokeDasharray="130 197" />
-          <circle cx="200" cy="150" r="52" className="stroke-accent/55" strokeDasharray="0 132 82 113" />
-          <circle cx="200" cy="150" r="52" className="stroke-accent/30" strokeDasharray="0 216 56 55" />
-          <circle cx="200" cy="150" r="52" className="stroke-accent-soft" strokeDasharray="0 274 51 2" />
-        </g>
-      </svg>
-      <span className="absolute top-1/2 left-1/2 flex size-[16%] -translate-x-1/2 -translate-y-1/2 items-center justify-center text-primary-text">
-        <PalancaMark className="size-full" />
-      </span>
-      {NODES.map((node) => (
-        <span
-          key={node.icon}
-          className={cn(
-            "panel absolute flex size-[14%] items-center justify-center rounded-[28%] text-[7cqw] text-accent",
-            node.position,
-          )}
-        >
-          <Icon name={node.icon} />
-        </span>
-      ))}
-    </div>
+    <li className={cn("flex min-w-0", wide ? "md:col-span-2 lg:col-span-4" : "lg:col-span-2")}>
+      <Link
+        href={href}
+        prefetch={false}
+        className="group motion-press flex w-full rounded-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      >
+        <div className="panel relative isolate flex w-full flex-col overflow-hidden transition-[border-color,translate] duration-200 ease-out group-hover:border-field-border motion-safe:group-hover:-translate-y-0.5 motion-reduce:transition-none">
+          {wash ? <div aria-hidden className="bento-wash absolute inset-0 -z-10" /> : null}
+          <h3 className="flex items-center justify-between gap-3 px-5 pt-5 font-display text-section text-primary-text desk:px-6 desk:pt-6">
+            {title}
+            <Icon name="chevron-right" className="shrink-0 text-[1.125rem] text-tertiary-text transition-[translate,color] duration-200 group-hover:text-primary-text motion-safe:group-hover:translate-x-0.5" />
+          </h3>
+          <div
+            aria-hidden
+            className={cn(
+              "mt-5 h-56 overflow-hidden select-none mask-b-from-70%",
+              bleed === "corner" ? "ml-5 desk:ml-6" : "mx-5 desk:mx-6",
+            )}
+          >
+            <div
+              className={cn(
+                "flex h-full flex-col rounded-t-[1.125rem] border border-b-0 border-card-border bg-app-background p-2.5 *:grow",
+                bleed === "corner" && "rounded-tr-none border-r-0 pr-0 *:rounded-r-none *:border-r-0",
+              )}
+            >
+              {children}
+            </div>
+          </div>
+        </div>
+      </Link>
+    </li>
   );
 }
 

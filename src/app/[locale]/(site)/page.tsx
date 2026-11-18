@@ -7,13 +7,23 @@ import { type FormatLocale, createFormat } from "@/domain/format";
 import { MARKET_CATEGORY_LABEL_KEYS, type MarketCategory } from "@/domain/market";
 import { MARKET_DEFAULT_QUERY, marketQueryParams } from "@/features/market/browse/query";
 import { PalancaMark } from "@/features/site/chrome";
-import { FactItem, FeatureRow, HERO_TITLE, HOME_HEADING, HOME_SECTION, HeroBackdrop, HeroFigures, HubDiagram, Showcase } from "@/features/site/home";
+import { Bento, BentoCard, FeatureRow, HERO_TITLE, HOME_HEADING, HOME_SECTION, HeroBackdrop, HeroFigures, Showcase } from "@/features/site/home";
 import { HeroSearch, MarketPreview } from "@/features/site/home-client";
 import { homeMarket } from "@/features/site/home-market";
 import { pageMetadata } from "@/features/site/metadata";
 import { INDEXABLE_PAGES, SIGN_IN_PATH } from "@/features/site/site";
 import { OrganizationData } from "@/features/site/structured-data";
-import { InstrumentVisual, PortfolioVisual, StoreButton, WatchlistVisual } from "@/features/site/visuals";
+import {
+  InstrumentVisual,
+  LearnMiniature,
+  NewsMiniature,
+  PortfolioVisual,
+  SimulatorMiniature,
+  StoreButton,
+  UnusualActivityMiniature,
+  WatchlistVisual,
+  WeekAheadMiniature,
+} from "@/features/site/visuals";
 import { getPathname } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
 import { ButtonLink } from "@/ui/components/buttons";
@@ -41,8 +51,8 @@ const marketHref = (category: MarketCategory) => ({
 
 /**
  * The landing page: the hero (title, search, actions, coverage figures) with the market preview rising out of it as
- * the showcase; the product in one view; three feature rows; Plus; a closing band. Market rows and counts come from
- * the cached catalogue (dated verified closes), the same server path as `/mercado`.
+ * the showcase; the product's other areas as a bento; three feature rows; Plus; a closing band. Market rows and counts
+ * come from the cached catalogue (dated verified closes), the same server path as `/mercado`.
  */
 export default async function HomePage() {
   const t = await getTranslations();
@@ -104,26 +114,27 @@ export default async function HomePage() {
         ) : null}
       </div>
 
-      <section aria-labelledby="all-in-one" className="border-t border-hairline">
-        <div className={cn(HOME_SECTION, "flex flex-col gap-12 md:gap-16")}>
-          <h2 id="all-in-one" className={cn(HOME_HEADING, "mx-auto max-w-2xl text-center")}>
-            {t("site.home.allInOneTitle")}
-          </h2>
-          <div className="grid items-center gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:gap-16">
-            <ul className="flex flex-col gap-8">
-              <FactItem icon="markets" title={market ? t("common.instrumentsCount", { arg1: String(market.total) }) : t("common.instruments")}>
-                {t("site.home.instrumentsLine")}
-              </FactItem>
-              <FactItem icon="alert" title={t("onboarding.preview.priceAlerts")}>
-                {t("site.home.alertsLine")}
-              </FactItem>
-              <FactItem icon="portfolio" title={t("common.portfolio")}>
-                {t("site.home.portfolioLine")}
-              </FactItem>
-            </ul>
-            <HubDiagram />
-          </div>
-        </div>
+      <section aria-labelledby="all-in-one" className={cn(PAGE_CONTAINER, "flex flex-col gap-10 pb-8 md:gap-12 md:pb-10")}>
+        <h2 id="all-in-one" className={cn(HOME_HEADING, "mx-auto max-w-2xl text-center")}>
+          {t("site.home.allInOneTitle")}
+        </h2>
+        <Bento>
+          <BentoCard href="/simulador" title={t("common.simulateInvestment")} wide wash bleed="corner">
+            <SimulatorMiniature />
+          </BentoCard>
+          <BentoCard href="/atividade-invulgar" title={t("unusualActivity.title")}>
+            <UnusualActivityMiniature />
+          </BentoCard>
+          <BentoCard href={INDEXABLE_PAGES.news} title={t("common.news")}>
+            <NewsMiniature />
+          </BentoCard>
+          <BentoCard href={INDEXABLE_PAGES.learn} title={t("learn.title")}>
+            <LearnMiniature />
+          </BentoCard>
+          <BentoCard href="/semana" title={t("weekAhead.header.navigationTitle")}>
+            <WeekAheadMiniature />
+          </BentoCard>
+        </Bento>
       </section>
 
       <div className="flex flex-col py-4 md:py-8">

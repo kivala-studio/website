@@ -78,17 +78,20 @@ Pick the template, then read the file it names.
  ││          (Ver tudo)          ││       the kind's outline pill in the footer
  │└──────────────────────────────┘│
  ╰────────────────────────────────╯
-─────────────────────────────────────
    Section title (centred)
- facts list        │  diagram
-─────────────────────────────────────
+┌ Simular ──────────── ›┐┌ Ativid. ›┐  Bento: BentoCard links, 6 columns from 1024 px
+│╭──────────────────────││╭────────╮│    (4 + 2, then 2 + 2 + 2), 2 at 768 px, 1 on phones;
+││ miniature ░ fade ░   │││ mini ░ ││    title, then a miniature that bleeds off the
+┌ Notícias ›┐┌ Aprender ›┐┌ Semana ›┐    bottom (and right, `bleed="corner"`) under a fade
+│╭─────────╮││╭─────────╮││╭───────╮│
+       EXEMPLO ILUSTRATIVO              one caption for the grid
  visual stage │ icon, title, line, (pill)   FeatureRow, alternating with `flip`
  ...
  ┌ panel: Plus ───────────────────┐
  ┌ panel: closing band ───────────┐
 ```
 
-The hero and the market preview share one backdrop, so the table rises out of the hero: its tab row is above the fold at 1440 × 900, and on phones the title, subtitle, search and both pills fit the first screen. Sections below sit on the canvas with `HOME_SECTION` spacing, centred `HOME_HEADING` titles. Cards (`panel`) hold the table, the visuals, Plus and the closing band. Prices are the server's dated verified closes; the figures are the catalogue's visible counts.
+The hero and the market preview share one backdrop, so the table rises out of the hero: its tab row is above the fold at 1440 × 900, and on phones the title, subtitle, search and both pills fit the first screen. Sections below sit on the canvas with `HOME_SECTION` spacing, centred `HOME_HEADING` titles. The bento follows the showcase directly, with no rule between them, and shows the areas the feature rows do not (simulator, unusual activity, news, lessons, week ahead). Cards (`panel`) hold the table, the bento, the visuals, Plus and the closing band. Prices are the server's dated verified closes; the figures are the catalogue's visible counts.
 
 ### 2. List / table page — `src/app/[locale]/(market)/mercado/page.tsx`, `src/features/market/browse/market-browser.tsx`
 

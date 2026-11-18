@@ -96,6 +96,16 @@
     transparent 100%
   );
 }
+/* The soft accent light in the landing's largest bento card, from the top right corner. */
+@utility bento-wash {
+  background: radial-gradient(
+    ellipse 70% 95% at 88% 0%,
+    var(--hero-glow) 0%,
+    color-mix(in srgb, var(--hero-glow) 55%, transparent) 45%,
+    color-mix(in srgb, var(--hero-glow) 18%, transparent) 75%,
+    transparent 100%
+  );
+}
 @utility hero-grid {
   --grid-line: color-mix(in srgb, var(--primary-text) 7%, transparent);
   background-image: linear-gradient(to right, var(--grid-line) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);

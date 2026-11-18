@@ -2,8 +2,8 @@
 
 import { useTranslations } from "next-intl";
 
-import { FactItem, HERO_TITLE, HeroBackdrop, HeroFigures } from "@/features/site/home";
-import { InstrumentVisual, PortfolioVisual, StoreButton } from "@/features/site/visuals";
+import { Bento, BentoCard, HERO_TITLE, HeroBackdrop, HeroFigures } from "@/features/site/home";
+import { InstrumentVisual, LearnMiniature, NewsMiniature, PortfolioVisual, SimulatorMiniature, StoreButton, UnusualActivityMiniature, WeekAheadMiniature } from "@/features/site/visuals";
 
 import { GallerySection, SPECIMEN_GRID, Specimen } from "./specimen";
 
@@ -35,19 +35,32 @@ export function Landing() {
         </Specimen>
       </div>
 
-      <div className={SPECIMEN_GRID}>
-        <Specimen name="FactItem">
-          <ul className="flex flex-col gap-8">
-            <FactItem icon="alert" title={t("onboarding.preview.priceAlerts")}>
-              {t("site.home.alertsLine")}
-            </FactItem>
-          </ul>
-        </Specimen>
-        <Specimen name="StoreButton">
-          <StoreButton className="sm:w-auto!" />
-          <StoreButton kind="secondary" className="sm:w-auto!" />
-        </Specimen>
-      </div>
+      <Specimen name="Bento · BentoCard (wide, wash, bleed corner) · miniatures">
+        <div className="w-full">
+          <Bento>
+            <BentoCard href="/simulador" title={t("common.simulateInvestment")} wide wash bleed="corner">
+              <SimulatorMiniature />
+            </BentoCard>
+            <BentoCard href="/atividade-invulgar" title={t("unusualActivity.title")}>
+              <UnusualActivityMiniature />
+            </BentoCard>
+            <BentoCard href="/noticias" title={t("common.news")}>
+              <NewsMiniature />
+            </BentoCard>
+            <BentoCard href="/aprender" title={t("learn.title")}>
+              <LearnMiniature />
+            </BentoCard>
+            <BentoCard href="/semana" title={t("weekAhead.header.navigationTitle")}>
+              <WeekAheadMiniature />
+            </BentoCard>
+          </Bento>
+        </div>
+      </Specimen>
+
+      <Specimen name="StoreButton">
+        <StoreButton className="sm:w-auto!" />
+        <StoreButton kind="secondary" className="sm:w-auto!" />
+      </Specimen>
     </GallerySection>
   );
 }

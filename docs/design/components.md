@@ -526,10 +526,11 @@ Landing-only building blocks; reuse them for new marketing sections, not for app
 | `HeroFigures` | `{ items: { value; label }[] }`: a `<dl>` of counts (display face) beside their labels; only real catalogue counts |
 | `Showcase` | Centres the product under the hero (max 1024 px) on an accent halo (`showcase-halo`) behind and around it, in a translucent bezel from 640 px |
 | `MarketPreview` (`@/features/site/home-client`) | `{ tabs, label }`: one flush card with `SectionTabs` on top, a table of dated verified closes per kind and that kind's "Ver tudo" pill in the footer |
-| `FactItem` | Icon disc, title, one line, in a `<ul>` |
-| `HubDiagram` | Decorative diagram (`aria-hidden`) |
+| `Bento` | The "all in one" grid: a `<figure>` with a `<ul>` of `BentoCard`s (6 columns from 1024 px, 2 from 768 px, 1 on phones) and one "Exemplo ilustrativo" caption for the whole grid |
+| `BentoCard` | `{ href, title, wide?, wash?, bleed?, children }`: a whole-card `Link` (`prefetch={false}`, focus ring, `motion-press`, border to `field-border` and a 2 px lift on hover, no lift with reduced motion) holding a `panel` with the title (the link's name) and the miniature in an `aria-hidden`, unselectable frame that bleeds off the bottom under a fade (`bleed="corner"`: the right edge too). `wide` spans 4 of 6 columns (the whole row at 768 px); `wash` adds the accent light (`bento-wash`), for the largest card only |
+| `SimulatorMiniature`, `UnusualActivityMiniature`, `NewsMiniature`, `LearnMiniature`, `WeekAheadMiniature` (`@/features/site/visuals`) | A few rows of `/simulador`, `/atividade-invulgar`, `/noticias`, `/aprender` and `/semana` at small size, built from the real pieces (`SecurityLogo`, chips, lesson icons, the simulator's projected and invested lines); sample values and catalogue wording only, no controls |
 | `FeatureRow` | Visual on one side; icon, `h2`, message and an action on the other; `flip` swaps sides from 768 px |
-| `InstrumentVisual`, `WatchlistVisual`, `PortfolioVisual` | Product visuals on a soft stage, `{ label }` is the figure's accessible name; captioned "Exemplo ilustrativo" (`onboarding.preview.illustrativeExample`) |
+| `InstrumentVisual`, `WatchlistVisual`, `PortfolioVisual` | Product visuals on a soft stage, `{ label }` is the figure's accessible name; captioned "Exemplo ilustrativo" (`IllustrativeCaption`, `onboarding.preview.illustrativeExample`) |
 | `StoreButton` | The App Store pill; `kind?`, `className?` |
 
 See [patterns.md](patterns.md#illustrative-visuals) for the visuals rule.
