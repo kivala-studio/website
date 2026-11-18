@@ -9,6 +9,7 @@ import { cn } from "../cn";
 import { Icon, type IconName } from "../icons/icon";
 import { parseTheme, THEME_COOKIE, type Theme, THEMES } from "../theme/theme";
 import { SEGMENT_TRACK, segmentTone } from "./button-styles";
+import { FIELD_FOCUS_WITHIN } from "./field-styles";
 import { Menu } from "./menu";
 
 /** Arrow, Home and End keys move between options and select them (WAI-ARIA tabs and radio groups). */
@@ -276,7 +277,7 @@ export function TimeRangePicker({
 
 /** The search field look: 44 px, 12 px corners, a hairline border, the magnifier first. Shared with the palette button. */
 export const FIELD =
-  "flex min-h-12 items-center gap-2 rounded-medium border border-field-border bg-card-background pl-4 pr-1 text-secondary-text desk:min-h-11 desk:pl-3";
+  "flex min-h-12 items-center gap-2 rounded-medium border border-field-border bg-card-background pl-4 pr-1 text-secondary-text transition-[border-color,box-shadow] motion-reduce:transition-none desk:min-h-11 desk:pl-3";
 
 /** The keyboard hint chip at the end of a search field (`/`). */
 export function KeyHint({ children }: { children: ReactNode }) {
@@ -317,7 +318,7 @@ export function SearchField({
   const input = useRef<HTMLInputElement>(null);
   const prompt = placeholder ?? t("prompt");
   return (
-    <div className={cn(FIELD, "focus-within:border-accent focus-within:outline-2 focus-within:outline-accent/30", className)}>
+    <div className={cn(FIELD, FIELD_FOCUS_WITHIN, className)}>
       <Icon name="search" />
       <input
         ref={input}
@@ -333,7 +334,7 @@ export function SearchField({
         aria-label={prompt}
         enterKeyHint="search"
         autoComplete="off"
-        className="min-w-0 flex-1 bg-transparent py-3 desk:py-2 text-body text-primary-text outline-none placeholder:text-secondary-text [&::-webkit-search-cancel-button]:hidden"
+        className="min-w-0 flex-1 bg-transparent py-3 desk:py-2 text-body text-primary-text placeholder:text-secondary-text"
       />
       {value ? (
         <button

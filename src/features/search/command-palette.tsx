@@ -57,7 +57,8 @@ export function CommandPalette({ rows, renderedAt }: { rows: readonly CatalogueR
         onClick={show}
         aria-keyshortcuts="/ Control+K Meta+K"
         aria-haspopup="dialog"
-        className={cn(FIELD, "hidden w-full transition-colors hover:border-control-outline lg:flex")}
+        // Looks like the search field, so it takes the field's focus (accent border and glow) instead of the outline.
+        className={cn(FIELD, "hidden w-full hover:border-control-outline focus-visible:border-accent focus-visible:shadow-focus focus-visible:outline-none lg:flex")}
         data-testid="search-palette-button"
       >
         <Icon name="search" />

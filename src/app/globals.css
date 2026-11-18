@@ -93,10 +93,33 @@ body {
   }
 }
 
-/* In the base layer so a utility (a field box's own ring, `outline-none` on an input inside one) can replace it. */
+/* The focus ring for buttons, links, tabs and custom controls; in the base layer so a utility can replace it. */
 @layer base {
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
+  }
+
+  /*
+   * Text fields never show an outline, the browser's or ours: their shared classes (`field-styles.ts`) turn the
+   * border accent and add the `--focus-glow` ring instead. Checkboxes, radios, ranges, file pickers and button-type
+   * inputs keep the ring above.
+   */
+  :is(
+      input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="button"], [type="submit"], [type="reset"], [type="image"]),
+      textarea,
+      select,
+      [contenteditable]:not([contenteditable="false"])
+    ):is(:focus, :focus-visible) {
+    outline: none;
+  }
+
+  /* Safari draws search fields with its own rounded box and focus ring; the search field has its own clear button. */
+  input[type="search"] {
+    appearance: none;
+  }
+  input[type="search"]::-webkit-search-cancel-button {
+    appearance: none;
+    display: none;
   }
 }
