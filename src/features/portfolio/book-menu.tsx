@@ -10,6 +10,7 @@ import { INPUT } from "@/ui/components/field-styles";
 import { Dialog } from "@/ui/components/dialog";
 import { Menu, type MenuEntry } from "@/ui/components/menu";
 import { Icon } from "@/ui/icons/icon";
+import { usePresenceValue } from "@/ui/motion/use-presence";
 
 import { ShareDialog } from "./share-dialog";
 import type { PortfolioModel } from "./use-portfolio";
@@ -34,6 +35,8 @@ export function BookMenu({ model }: { model: PortfolioModel }) {
   const account = useAccount();
   const [naming, setNaming] = useState<Naming | null>(null);
   const [managing, setManaging] = useState(false);
+  const named = usePresenceValue(naming);
+  const managed = usePresenceValue(managing);
   const { books } = model;
 
   const create = () => {
@@ -71,9 +74,11 @@ export function BookMenu({ model }: { model: PortfolioModel }) {
           </>
         }
       />
-      {naming ? <BookNameDialog naming={naming} books={books} onClose={() => setNaming(null)} onSave={save} /> : null}
-      {managing ? (
+      {named.value ? <BookNameDialog key={named.key} open={named.open} naming={named.value} books={books} onClose={() => setNaming(null)} onSave={save} /> : null}
+      {managed.value ? (
         <ManageBooksDialog
+          key={managed.key}
+          open={managed.open}
           model={model}
           onClose={() => setManaging(false)}
           onRename={(book) => {
@@ -91,6 +96,7 @@ export function ShareButton({ model }: { model: PortfolioModel }) {
   const t = useTranslations();
   const account = useAccount();
   const [sharing, setSharing] = useState(false);
+  const shared = usePresenceValue(sharing);
   if (!model.singlePortfolio) return null;
   const share = () => {
     if (account && !account.unlocksPlus) return account.requestUpgrade("clientViews");
@@ -101,18 +107,20 @@ export function ShareButton({ model }: { model: PortfolioModel }) {
       <Button kind="secondary" size="compact" icon="share" onClick={share} data-testid="book-share">
         {t("portfolioShare.menu")}
       </Button>
-      {sharing ? <ShareDialog model={model} onClose={() => setSharing(false)} /> : null}
+      {shared.value ? <ShareDialog key={shared.key} open={shared.open} model={model} onClose={() => setSharing(false)} /> : null}
     </>
   );
 }
 
 /** `Nova carteira` / `Mudar nome`: a trimmed name of 1–40 characters, unique (any case). */
 function BookNameDialog({
+  open,
   naming,
   books,
   onClose,
   onSave,
 }: {
+  open: boolean;
   naming: Naming;
   books: readonly PortfolioBook[];
   onClose: () => void;
@@ -135,7 +143,7 @@ function BookNameDialog({
   return (
     <Dialog
       variant="dialog"
-      open
+      open={open}
       onClose={onClose}
       title={t(naming.mode === "rename" ? "portfolioBooks.rename" : "portfolioBooks.new")}
       footer={
@@ -176,7 +184,7 @@ function BookNameDialog({
           className={INPUT}
         />
         {duplicate ? (
-          <p id={`${id}-error`} role="alert" className="text-secondary text-negative">
+          <p id={`${id}-error`} role="alert" className="motion-presence text-secondary text-negative">
             {t("portfolioBooks.duplicate")}
           </p>
         ) : null}
@@ -186,9 +194,20 @@ function BookNameDialog({
 }
 
 /** `Gerir carteiras`: rename, or delete with its records after a confirmation. */
-function ManageBooksDialog({ model, onClose, onRename }: { model: PortfolioModel; onClose: () => void; onRename: (book: PortfolioBook) => void }) {
+function ManageBooksDialog({
+  open,
+  model,
+  onClose,
+  onRename,
+}: {
+  open: boolean;
+  model: PortfolioModel;
+  onClose: () => void;
+  onRename: (book: PortfolioBook) => void;
+}) {
   const t = useTranslations();
   const [deleting, setDeleting] = useState<PortfolioBook | null>(null);
+  const confirming = usePresenceValue(open && deleting);
   const [busy, setBusy] = useState(false);
   const remove = async (book: PortfolioBook) => {
     setBusy(true);
@@ -202,7 +221,7 @@ function ManageBooksDialog({ model, onClose, onRename }: { model: PortfolioModel
   };
   return (
     <>
-      <Dialog open={!deleting} onClose={() => !deleting && onClose()} title={t("portfolioBooks.manage")}>
+      <Dialog open={open && !deleting} onClose={() => !deleting && onClose()} title={t("portfolioBooks.manage")}>
         <ul className="flex flex-col divide-y divide-separator" data-testid="book-list">
           {model.books.map((book) => (
             <li key={book.id} className="flex min-h-14 items-center gap-2">
@@ -216,15 +235,16 @@ function ManageBooksDialog({ model, onClose, onRename }: { model: PortfolioModel
           ))}
         </ul>
       </Dialog>
-      {deleting ? (
+      {confirming.value ? (
         <Dialog
+          key={confirming.key}
           variant="dialog"
-          open
+          open={confirming.open}
           onClose={() => setDeleting(null)}
-          title={t("portfolioBooks.deleteTitle", { arg1: deleting.name })}
+          title={t("portfolioBooks.deleteTitle", { arg1: confirming.value.name })}
           footer={
             <div className="flex flex-col gap-3">
-              <Button kind="destructive" loading={busy} onClick={() => void remove(deleting)} data-testid="book-delete-confirm">
+              <Button kind="destructive" loading={busy} onClick={() => deleting && void remove(deleting)} data-testid="book-delete-confirm">
                 {t("portfolioBooks.deleteConfirm")}
               </Button>
               <Button kind="secondary" onClick={() => setDeleting(null)}>

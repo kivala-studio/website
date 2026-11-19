@@ -9,6 +9,7 @@ import { useAccount } from "@/features/account/account-provider";
 import { Button } from "@/ui/components/buttons";
 import { INPUT } from "@/ui/components/field-styles";
 import { Dialog } from "@/ui/components/dialog";
+import { FlipList } from "@/ui/components/flip-list";
 import { Spinner } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
 
@@ -24,7 +25,7 @@ const LABEL_MAX = 40;
  * `Partilhar {portfolio}` (iOS `PortfolioShareSheet`, Plus): the selected portfolio's read-only links. A new
  * link's token is shown once, here, and lives only in this dialog's state: it is never stored or logged.
  */
-export function ShareDialog({ model, onClose }: { model: PortfolioModel; onClose: () => void }) {
+export function ShareDialog({ open, model, onClose }: { open: boolean; model: PortfolioModel; onClose: () => void }) {
   const t = useTranslations();
   const format = useFormat();
   const account = useAccount()!;
@@ -79,7 +80,7 @@ export function ShareDialog({ model, onClose }: { model: PortfolioModel; onClose
 
   return (
     <Dialog
-      open
+      open={open}
       onClose={onClose}
       title={t("portfolioShare.title", { arg1: title })}
       footer={
@@ -92,7 +93,7 @@ export function ShareDialog({ model, onClose }: { model: PortfolioModel; onClose
     >
       <div className="flex flex-col gap-4" data-testid="share-dialog">
         {message ? (
-          <p role="alert" className="text-secondary text-negative">
+          <p role="alert" className="motion-presence text-secondary text-negative">
             {message}
           </p>
         ) : null}
@@ -101,11 +102,11 @@ export function ShareDialog({ model, onClose }: { model: PortfolioModel; onClose
         {shares === null && !message ? (
           <Spinner className="mx-auto size-6 text-secondary-text" />
         ) : shares?.length === 0 && !created ? (
-          <p className="py-4 text-center text-body text-secondary-text">{t("portfolioShare.empty")}</p>
+          <p className="motion-fade-in py-4 text-center text-body text-secondary-text">{t("portfolioShare.empty")}</p>
         ) : (
-          <ul className="flex flex-col divide-y divide-separator" data-testid="share-list">
+          <FlipList className="flex flex-col divide-y divide-separator" data-testid="share-list">
             {(shares ?? []).map((share) => (
-              <li key={share.id} className="flex min-h-14 items-center gap-3 py-2" data-testid="share-row">
+              <li key={share.id} data-flip-key={share.id} className="flex min-h-14 items-center gap-3 py-2" data-testid="share-row">
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className="truncate text-body text-primary-text">{share.label}</span>
                   <span className="text-caption text-secondary-text">{format.date(Date.parse(share.createdAt))}</span>
@@ -115,7 +116,7 @@ export function ShareDialog({ model, onClose }: { model: PortfolioModel; onClose
                 </Button>
               </li>
             ))}
-          </ul>
+          </FlipList>
         )}
       </div>
     </Dialog>
@@ -130,7 +131,7 @@ function NewShareForm({ onCancel, onCreate }: { onCancel: () => void; onCreate: 
   const label = text.trim();
   return (
     <form
-      className="flex flex-col gap-3"
+      className="motion-presence flex flex-col gap-3"
       onSubmit={async (event) => {
         event.preventDefault();
         if (!label) return;
@@ -170,7 +171,7 @@ function CreatedLink({ url }: { url: string }) {
   const [copied, setCopied] = useState(false);
   const canShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
   return (
-    <div className="flex flex-col gap-3 rounded-medium border border-hairline bg-app-background p-4">
+    <div className="motion-presence flex flex-col gap-3 rounded-medium border border-hairline bg-app-background p-4">
       <output className="break-all font-mono text-secondary text-primary-text" data-testid="share-url">
         {url}
       </output>

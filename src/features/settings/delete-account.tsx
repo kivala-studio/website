@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import { Button } from "@/ui/components/buttons";
 import { Dialog } from "@/ui/components/dialog";
+import { usePresenceValue } from "@/ui/motion/use-presence";
 
 /**
  * "Eliminar conta" and its confirmation (iOS account management). Confirming posts a plain form: the server
@@ -16,15 +17,17 @@ export function DeleteAccount({ userID, email, apple }: { userID: string; email:
   const locale = useLocale();
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const confirm = usePresenceValue(open);
   return (
     <>
       <Button kind="destructive" className="sm:w-auto sm:self-start" onClick={() => setOpen(true)} data-testid="delete-account">
         {t("common.deleteAccount")}
       </Button>
-      {open ? (
+      {confirm.value ? (
         <Dialog
+          key={confirm.key}
           variant="dialog"
-          open
+          open={confirm.open}
           onClose={() => {
             if (!submitting) setOpen(false);
           }}

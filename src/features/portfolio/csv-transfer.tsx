@@ -12,6 +12,8 @@ import { useToast } from "@/ui/components/feedback";
 import { useFormat } from "@/ui/format";
 import { Spinner } from "@/ui/components/states";
 import { Icon } from "@/ui/icons/icon";
+import { cn } from "@/ui/cn";
+import { usePresence, usePresenceValue } from "@/ui/motion/use-presence";
 
 import { Private } from "./portfolio-ui";
 import type { PortfolioModel } from "./use-portfolio";
@@ -44,6 +46,8 @@ export function CsvTransfer({ model }: { model: PortfolioModel }) {
   const statementInput = useRef<HTMLInputElement>(null);
   const [rows, setRows] = useState<CsvRow[] | null>(null);
   const [reading, setReading] = useState(false);
+  const review = usePresenceValue(rows);
+  const readingOverlay = usePresence(reading);
 
   const download = () => {
     const csv = exportCsv(model.transactions, [...model.instruments.values()]);
@@ -110,8 +114,14 @@ export function CsvTransfer({ model }: { model: PortfolioModel }) {
           event.target.value = "";
         }}
       />
-      {reading ? (
-        <div role="status" aria-label={t("statement.read")} className="fixed inset-0 z-50 flex items-center justify-center bg-black/30" data-testid="statement-reading">
+      {readingOverlay.mounted ? (
+        <div
+          role="status"
+          aria-label={t("statement.read")}
+          {...readingOverlay.presenceProps}
+          className={cn("fixed inset-0 z-50 flex items-center justify-center bg-black/30", readingOverlay.state === "closing" ? "motion-dim-out" : "motion-dim-in")}
+          data-testid="statement-reading"
+        >
           <Spinner className="size-10 text-white" />
         </div>
       ) : null}
@@ -126,13 +136,13 @@ export function CsvTransfer({ model }: { model: PortfolioModel }) {
           event.target.value = "";
         }}
       />
-      {rows ? <ImportReview rows={rows} model={model} onClose={() => setRows(null)} /> : null}
+      {review.value ? <ImportReview key={review.key} open={review.open} rows={review.value} model={model} onClose={() => setRows(null)} /> : null}
     </>
   );
 }
 
 /** `Importar registos`: every line with its reason or what it records; saves the valid ones oldest first. */
-function ImportReview({ rows, model, onClose }: { rows: CsvRow[]; model: PortfolioModel; onClose: () => void }) {
+function ImportReview({ open, rows, model, onClose }: { open: boolean; rows: CsvRow[]; model: PortfolioModel; onClose: () => void }) {
   const t = useTranslations();
   const format = useFormat();
   const toast = useToast();
@@ -155,7 +165,7 @@ function ImportReview({ rows, model, onClose }: { rows: CsvRow[]; model: Portfol
 
   return (
     <Dialog
-      open
+      open={open}
       onClose={onClose}
       title={t("portfolio.csvTransfer.importRecords")}
       footer={
