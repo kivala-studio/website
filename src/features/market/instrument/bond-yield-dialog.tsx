@@ -12,6 +12,8 @@ import { Button } from "@/ui/components/buttons";
 import { AmountField } from "@/ui/components/amount-field";
 import { OptionGroup } from "@/ui/components/controls";
 import { Dialog } from "@/ui/components/dialog";
+import { AnimatedText } from "@/ui/components/animated-value";
+import { usePresenceValue } from "@/ui/motion/use-presence";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
 
@@ -83,6 +85,7 @@ export function BondYieldRows({ id, symbol }: { id: string; symbol: string }) {
   const maturityInstant = bodivaMaturityDate(symbol);
   const maturity = maturityInstant === undefined ? undefined : civilDate(maturityInstant);
   const today = at === undefined ? undefined : civilDate(at);
+  const dialog = usePresenceValue(open && maturity !== undefined && today !== undefined);
   const result = saved && quoted && maturity && today ? calculateBondYield({ cleanPrice: quoted, terms: saved, maturity, settlement: today }) : undefined;
 
   return (
@@ -114,8 +117,17 @@ export function BondYieldRows({ id, symbol }: { id: string; symbol: string }) {
           </button>
         </dd>
       </div>
-      {maturity && today && open ? (
-        <BondYieldDialog open onClose={() => setOpen(false)} symbol={symbol} maturity={maturity} settlement={today} price={quoted} saved={saved} />
+      {dialog.value && maturity && today ? (
+        <BondYieldDialog
+          key={dialog.key}
+          open={dialog.open}
+          onClose={() => setOpen(false)}
+          symbol={symbol}
+          maturity={maturity}
+          settlement={today}
+          price={quoted}
+          saved={saved}
+        />
       ) : null}
     </>
   );
@@ -204,11 +216,13 @@ function BondYieldDialog({
           <span className="text-body text-primary-text">{t("bondYield.saveTerms")}</span>
         </label>
         {facts.length > 0 ? (
-          <dl className="flex flex-col" aria-live="polite" data-testid="bond-yield-result">
+          <dl className="motion-presence flex flex-col" aria-live="polite" data-testid="bond-yield-result">
             {facts.map(([title, value]) => (
               <div key={title} className="flex items-baseline justify-between gap-5 border-b border-separator py-3">
                 <dt className="text-secondary text-secondary-text">{title}</dt>
-                <dd className="text-secondary font-semibold text-primary-text tabular-nums">{value}</dd>
+                <dd className="text-secondary font-semibold text-primary-text tabular-nums">
+                  <AnimatedText text={value} className="inline-block" />
+                </dd>
               </div>
             ))}
           </dl>

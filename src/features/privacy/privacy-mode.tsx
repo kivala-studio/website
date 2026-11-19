@@ -6,6 +6,8 @@ import { type ReactNode, createContext, useContext, useEffect, useState, useSync
 import { parsePrivacyMode, privacyCookie, PRIVACY_COOKIE } from "@/domain/privacy/privacy";
 import { Button, IconButton } from "@/ui/components/buttons";
 import { Dialog } from "@/ui/components/dialog";
+import { crossFadePage } from "@/ui/motion/theme-transition";
+import { usePresenceValue } from "@/ui/motion/use-presence";
 
 import { PrivacyModeStore } from "./privacy-store";
 
@@ -68,8 +70,8 @@ function rememberExplained(): void {
 }
 
 /**
- * The eye button (iOS `PrivacyModeButton`): hides or shows personal values everywhere in this browser. The first
- * time it hides them it explains what changes; screen readers hear the new state.
+ * The eye button (iOS `PrivacyModeButton`): hides or shows personal values everywhere in this browser, in one quick
+ * cross-fade of the page. The first time it hides them it explains what changes; screen readers hear the new state.
  */
 export function PrivacyModeButton({ className }: { className?: string }) {
   const t = useTranslations("components.privacy");
@@ -77,12 +79,13 @@ export function PrivacyModeButton({ className }: { className?: string }) {
   const store = useContext(Context);
   const enabled = usePrivacyMode();
   const [explaining, setExplaining] = useState(false);
+  const explanation = usePresenceValue(explaining);
   const [announcement, setAnnouncement] = useState("");
   if (!store) return null;
 
   const toggle = () => {
     const next = !enabled;
-    store.set(next);
+    crossFadePage(() => store.set(next));
     setAnnouncement(t(next ? "enabledAnnouncement" : "disabledAnnouncement"));
     if (next && !explainedBefore()) {
       rememberExplained();
@@ -102,10 +105,11 @@ export function PrivacyModeButton({ className }: { className?: string }) {
       <span role="status" className="sr-only">
         {announcement}
       </span>
-      {explaining ? (
+      {explanation.value ? (
         <Dialog
+          key={explanation.key}
           variant="dialog"
-          open
+          open={explanation.open}
           onClose={() => setExplaining(false)}
           title={common("hiddenValues")}
           footer={

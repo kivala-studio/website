@@ -24,3 +24,4 @@ export * from "./liquidity";
 export * from "./order-book";
 export * from "./price-history-csv";
 export * from "./listing";
+export * from "./logo";

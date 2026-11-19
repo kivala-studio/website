@@ -1,6 +1,8 @@
 import AxeBuilder from "@axe-core/playwright";
 import { type BrowserContext, type Page, expect as baseExpect, test } from "@playwright/test";
 
+import { settled } from "./settled";
+
 /*
  * W13 market information in demo mode. No live source sends market updates yet, so the entry points stay hidden
  * with the usual scenarios and appear with `demo-scenario=updates`.
@@ -17,6 +19,7 @@ async function setScenario(context: BrowserContext, scenario: string, signedIn =
 }
 
 async function expectAccessible(page: Page) {
+  await settled(page);
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations.map((violation) => violation.id)).toEqual([]);
 }

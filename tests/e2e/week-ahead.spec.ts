@@ -1,6 +1,8 @@
 import AxeBuilder from "@axe-core/playwright";
 import { type BrowserContext, type Page, expect as baseExpect, test } from "@playwright/test";
 
+import { settled } from "./settled";
+
 /*
  * W13 `/semana` in demo mode: next week's dividend dates relative to the request time (BAI held in the demo ledger,
  * BFA on the default list, Standard Bank market-only), an empty source (`empty`) and a calendar that cannot vouch
@@ -51,6 +53,7 @@ test("lists the week's sourced dates by day, related ones first", async ({ page,
   await expect(page.getByRole("heading", { name: "Sobre esta agenda" })).toBeVisible();
 
   await page.screenshot({ path: `${EVIDENCE}/week-ahead-content.png`, fullPage: true });
+  await settled(page);
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });
 
@@ -70,6 +73,7 @@ test("an empty source says so without claiming there is nothing", async ({ page,
   await expect(events(page)).toHaveCount(0);
   await page.screenshot({ path: `${EVIDENCE}/week-ahead-empty.png`, fullPage: true });
   // The shared state title is an h3 straight under the page h1 (moderate, as on Home and the simulator).
+  await settled(page);
   expect(serious((await new AxeBuilder({ page }).analyze()).violations)).toEqual([]);
 });
 
@@ -88,5 +92,6 @@ test("an unverified calendar withholds the whole week", async ({ page, context }
   await expect(page.locator("main").getByRole("alert")).toContainText("Agenda indisponível");
   await page.screenshot({ path: `${EVIDENCE}/week-ahead-unavailable.png`, fullPage: true });
   // The shared state title is an h3 straight under the page h1 (moderate, as on Home and the simulator).
+  await settled(page);
   expect(serious((await new AxeBuilder({ page }).analyze()).violations)).toEqual([]);
 });

@@ -42,11 +42,15 @@ The web card surface: `border: 1px solid var(--card-border)`, `rounded-card` (22
 
 The pack is generated from `design/icon-pack/masters.json` (the iOS masters plus the web-only `menu`) by `npm run icons`; never edit `icon-pack.ts`. 24 × 24 grid, 2 px round strokes, `currentColor`. Icons are decorative by default: the control around them carries the name.
 
+### `LanguageFlag` (`@/ui/icons/flags`)
+
+`<LanguageFlag locale="pt" />`: the flag that stands for a language, a 20 px disc with a faint inner ring (`primary-text` at 15 %) so its edge holds on either canvas. Portuguese is the flag of Angola, English the Union Jack. Always `aria-hidden`: it sits before the language's name or code, never alone. Flags keep their own colours in both themes, so they are drawn in `flags.tsx` with fixed hex values (like the Google mark), outside the single-colour pack; the only hex values allowed in a component.
+
 ## Layout and surfaces (`@/ui/components/layout`)
 
 ### `PAGE_CONTAINER`, `READING_COLUMN`
 
-Class strings, not components. See [layout.md](layout.md#the-page-column). Page wrappers built on them: `SITE_PAGE`, `ReadingPage`, `MessagePage` (`@/features/site/pages`), `SIGNED_IN_PAGE`, `SignedInPage` (`@/features/shell/placeholder-page`).
+Class strings, not components. See [layout.md](layout.md#the-page-column). `TopBar` puts its row (and its menu panel's content) in `PAGE_CONTAINER` too, so the bar lines up with the page. Page wrappers built on them: `SITE_PAGE`, `ReadingPage`, `MessagePage` (`@/features/site/pages`), `SIGNED_IN_PAGE`, `SignedInPage` (`@/features/shell/placeholder-page`).
 
 ### `Card`
 
@@ -160,21 +164,21 @@ The one top bar. Use it through `SiteHeader` (`@/features/site/chrome`) or `Shel
 | `logo` | `ReactNode` | `<BrandLockup />` |
 | `nav` | `{ href: string; label: string }[]` | Pill links; the current one (path match) gets `aria-current` and the grey pill |
 | `navLabel` | `string` | The `<nav>` name |
-| `mobileNav` | `"menu" \| "none"` | Below 1024 px: the links move into a menu behind a button at the end of the bar, or nothing (the bottom tab bar has them) |
+| `mobileNav` | `"menu" \| "none"` | Below 1024 px: the links move into a menu behind a button at the start of the bar, before the logo, or nothing (the bottom tab bar has them) |
 | `menu` | `{ label: string; content: ReactNode }` | With `"menu"` (required): the button's accessible name (`site.header.menuLabel`) and what follows the links in the menu, under a hairline (`<SiteControls />`) |
 | `wideActions` | `ReactNode` | With `"menu"`: actions shown only from 1024 px, before `actions` (the language, `ThemeMenu`); below that they belong in `menu.content` |
 | `search` | `ReactNode` | From 1024 px a 288–320 px slot |
 | `actions` | `ReactNode` | Icon buttons and one compact pill, right-aligned, at every width |
 
-`TOP_BAR_PILL` is the pill link's class string. Actions are 44 px: `IconButton variant="plain"`, `iconButtonClass("plain")` on links, `LANGUAGE_CONTROL`, `ThemeMenu`, a `size="compact"` pill. The menu button is `iconButtonClass("plain")` (48 px on phones).
+`TOP_BAR_PILL` is the pill link's class string. Actions are 44 px: `IconButton variant="plain"`, `iconButtonClass("plain")` on links, `LANGUAGE_CONTROL` (a pill: flag and code), `ThemeMenu`, a `size="compact"` pill (the public sign-in pill adds `SIGN_IN_PILL`: below 1024 px it is drawn at 36 px with 12 px padding and an `::after` keeps the 44 px target). The menu button is `iconButtonClass("plain")` (48 px on phones), first in the bar with `-ml-4` so its glyph sits on the gutter; its icon turns from menu to close (`IconSwap`). The current pill's grey fill glides to the new pill on navigation, also across a route change (`useSlidingIndicator` with `memory`).
 
 ### `ShellNav` (`@/features/shell/shell-nav`)
 
-The bottom tab bar below 1024 px. Props: `items: { href; label; icon }[]`, `label: string`. Rendered by `AppShell`; pages never render it.
+The bottom tab bar below 1024 px. Props: `items: { href; label; icon }[]`, `label: string`. Rendered by `AppShell`; pages never render it. The current tab sits on a soft accent capsule that glides to the next tab on navigation; tabs press (`motion-press`); the unread dot grows in and out (`motion-appear`).
 
 ### `SectionRail` (`@/ui/components/section-rail`)
 
-A section's own navigation: icon-over-label tiles in a 96 px vertical rail from 1024 px (sticky at `lg:top-20`), a horizontally scrolling strip below. The current tile is raised (`bg-raised shadow-raised`, accent icon) with `aria-current`.
+A section's own navigation: icon-over-label tiles in a 96 px vertical rail from 1024 px (sticky at `lg:top-20`), a horizontally scrolling strip below. The current tile is raised (`bg-raised shadow-raised`, accent icon) with `aria-current`; the raised fill glides to the next tile on navigation.
 
 | Prop | Type | |
 |---|---|---|
@@ -197,7 +201,7 @@ Place it in a `lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-8` grid beside t
 
 ### Tabs: `SectionTabs`, `NavTabs`, `FilterTabs` (`@/ui/components/controls`)
 
-All three share one look: text tabs in the display face on a hairline, the current one semibold with a 2 px accent underline; idle tabs `secondary-text`. 48 px tall on phones, 44 on desk. The row scrolls sideways when it runs out of width.
+All three share one look: text tabs in the display face on a hairline, the current one semibold with a 2 px accent underline; idle tabs `secondary-text`. 48 px tall on phones, 44 on desk. The row scrolls sideways when it runs out of width. The underline glides to the new tab (`::after`, `useSlidingIndicator`).
 
 | Component | Semantics | Props |
 |---|---|---|
@@ -221,7 +225,7 @@ All three share one look: text tabs in the display face on a hairline, the curre
 
 ### Site chrome (`@/features/site/chrome`)
 
-`SiteHeader({ theme })`, `SiteFooter({ theme, year })` (`year`: the request's Luanda year from the layout; see [layout.md](layout.md#footer-sitefooter)), `SiteControls({ theme, className? })` (`ThemeSwitch` and the language link on one row: the footer and the header's menu), `BrandLockup({ wordmarkFrom? })` (mark + wordmark; the wordmark shows from `400` px by default, from `360` in the public bar), `PalancaMark({ className })` (the mark as a mask in `currentColor`), `LANGUAGE_CONTROL` (class string of the round language link).
+`SiteHeader({ theme })`, `SiteFooter({ year })` (`year`: the request's Luanda year from the layout; see [layout.md](layout.md#footer-sitefooter)), `SiteControls({ theme })` (`ThemeSwitch` and the language link on one row, in the header's menu), `BrandLockup({ wordmarkFrom? })` (mark + wordmark; the wordmark shows from `400` px by default, from `360` in the public bar), `PalancaMark({ className })` (the mark as a mask in `currentColor`), `SIGN_IN_PILL` (extra classes for the header's compact sign-in `ButtonLink`: 36 px drawn, 44 px target below 1024 px; unchanged from 1024 px), `LANGUAGE_CONTROL` (class string of the language link: a 44 px pill with the `LanguageFlag` and the code of the language it switches to, "EN" on Portuguese pages, "PT" on English ones; the accessible name is the language's name).
 
 ## Buttons and choices
 
@@ -248,6 +252,7 @@ A regular pill is `w-full`. To size it to its title write `w-auto!` (or `sm:w-au
 - One `primary` per view. Everything else is `secondary` or `outline`.
 - `destructive` for delete and sign-out confirmations only.
 - Disabled pills are at 42 % opacity; prefer `loading` over disabling during a request.
+- Pills press (`motion-press`: 98 %, dimmed) and fade between states; the spinner fades in rather than flashing.
 
 `buttonClass(kind?, className?, size?)` gives the same classes for elements that are not `Button`/`ButtonLink`: external links (`StoreButton`), `<summary>`, a server form's submit. It lives in `button-styles.ts`, which server components can import.
 
@@ -262,7 +267,7 @@ Round icon-only button: 48 px on phones, 44 on desk. `label` is required (it is 
 | `variant` | `"filled" \| "plain" \| "outline"` | `"filled"` | Grey disc · bare icon with a hover disc (top bar, toolbars, dialog close) · hairline ring |
 | … | `button` attributes | | |
 
-`iconButtonClass(variant?, className?)` styles a link as an icon button (the top bar's activity links). Mark the current one with `aria-current` and `aria-[current=page]:bg-action-surface`.
+When `icon` changes (eye ↔ eye-off), the new glyph grows in. `iconButtonClass(variant?, className?)` styles a link as an icon button (the top bar's activity links). Mark the current one with `aria-current` and `aria-[current=page]:bg-action-surface`.
 
 ### `ActionTile`
 
@@ -270,7 +275,7 @@ Icon over a label in a tile (`aria-pressed` toggle; selected: soft accent fill a
 
 ### `chipClass(selected, className?)` (`button-styles.ts`)
 
-A choice chip: 44 px hairline pill, the chosen one in `accent-soft` with accent text. Use on `<button aria-pressed>` for presets and filters inside forms (alert presets, simulator amounts).
+A choice chip: 44 px hairline pill, the chosen one in `accent-soft` with accent text. Use on `<button aria-pressed>` for presets and filters inside forms (alert presets, simulator amounts). The fill is the chosen chip's `::before`, so a single-choice group can glide it with `useSlidingIndicator(value, { selector: '[aria-pressed="true"]' })` on the group (see the gallery's Motion section); idle chips carry `INDICATOR_IDLE` so the fill passes under them.
 
 ```tsx
 <button type="button" aria-pressed={value === preset} onClick={() => setValue(preset)} className={chipClass(value === preset)}>{label}</button>
@@ -278,11 +283,11 @@ A choice chip: 44 px hairline pill, the chosen one in `accent-soft` with accent 
 
 ### `SegmentedControl`, `OptionGroup`, `TimeRangePicker` (`controls.tsx`)
 
-A WAI-ARIA `radiogroup` with roving focus. The segmented look is a `track` groove with the selected segment raised (`SEGMENT_TRACK`, `segmentTone(selected)` in `button-styles.ts`).
+A WAI-ARIA `radiogroup` with roving focus. The segmented look is a `track` groove with the selected segment raised (`SEGMENT_TRACK`, `segmentTone(selected)` in `button-styles.ts`). The raised fill (or the `ranges` pill) glides to the new option.
 
 | Component | Props |
 |---|---|
-| `SegmentedControl<T>` | `options: { value: T; title; spoken?; disabled? }[]`, `value`, `onChange`, `label` |
+| `SegmentedControl<T>` | `options: { value: T; title; spoken?; disabled?; leading? }[]`, `value`, `onChange`, `label` |
 | `OptionGroup<T>` | the same, plus `variant?: "segmented" \| "ranges"` (`ranges`: small pills, the chosen one in `accent-soft`) and `scroll?` (each option keeps 44 px and the track scrolls) |
 | `TimeRangePicker` | `value: TimeRange`, `onChange`, `label`, `ranges?` (default `TIME_RANGES`: 1D · 1S · 1M · 3M · 6M · 1A · Tudo), `isEnabled?` (disabled ranges stay visible and inert; arrows skip them), `variant?: "ranges" \| "segmented"` (`segmented` is the chart card's range track) |
 
@@ -291,15 +296,15 @@ A WAI-ARIA `radiogroup` with roving focus. The segmented look is a `track` groov
 <TimeRangePicker variant="segmented" label={t("components.chart.priceAccessibility")} value={range} onChange={setRange} />
 ```
 
-`spoken` is the option's accessible name when the title is an abbreviation (`1M` → "One month").
+`spoken` is the option's accessible name when the title is an abbreviation (`1M` → "One month"). `leading` is a decorative mark before the title: the settings' language choice (`LanguageChoice`) puts each language's `LanguageFlag` there.
 
 ### `SwitchRow` (`@/ui/components/menu`)
 
-An on/off switch with its visible label; the whole 44 px row is the target (`role="switch"`). Props: `label`, `checked`, `onChange`, `disabled?`, `testID?`, `children?` (a value line under the label).
+An on/off switch with its visible label; the whole 44 px row is the target (`role="switch"`). Props: `label`, `checked`, `onChange`, `disabled?`, `testID?`, `children?` (a value line under the label). The thumb slides and the track colour fades.
 
 ### `ThemeSwitch`, `ThemeMenu` (`controls.tsx`)
 
-`<ThemeSwitch initial={theme} />` (Sistema · Claro · Escuro as a segmented control, in the footer) and `<ThemeMenu initial={theme} icon? />` (the same as a check menu, in the top bar). `initial` is the server's `parseTheme(cookie)`.
+`<ThemeSwitch initial={theme} />` (Sistema · Claro · Escuro as a segmented control, in the public menu) and `<ThemeMenu initial={theme} icon? />` (the same as a check menu, in the top bar). `initial` is the server's `parseTheme(cookie)`. A change cross-fades the whole page (`switchTheme`).
 
 ### `Menu` (`@/ui/components/menu`)
 
@@ -315,7 +320,7 @@ A WAI-ARIA menu button. Enter, Space or the arrows open it on the first or last 
 | `triggerClassName` | `string` | | Replaces the trigger's look (a rail tile) |
 | `testID`, `className` | | | |
 
-Menu items show a soft `action-surface` fill on focus instead of the ring.
+Menu items show a soft `action-surface` fill on focus instead of the ring. The menu grows from its trigger's corner and shrinks back on close; a check grows in and out.
 
 ### `PrivacyModeButton` (`@/features/privacy/privacy-mode`)
 
@@ -375,14 +380,14 @@ Decimal amounts: comma decimal separator in every language (`.` typed as `,`), l
 
 ### Table primitives (`@/ui/components/table`)
 
-60 px rows divided by hairlines, no zebra, a muted 14 px header in Inter, cells in the display face, numeric columns right-aligned, a faint hover. The first and last cells carry the card's inset (16 px, 24 on desk).
+60 px rows divided by hairlines, no zebra, a muted 14 px header in Inter, cells in the display face, numeric columns right-aligned, a faint hover that deepens while a row link is pressed. The first and last cells carry the card's inset (16 px, 24 on desk).
 
 | Component | Props |
 |---|---|
 | `DataTable` | `table` attributes (`className="table-fixed"` with fixed numeric widths) |
 | `TableHead` | `children` (header cells), `className?`: one header row with a hairline under it |
 | `TableHeaderCell` | `align?: "left" \| "right" \| "center"`, `th` attributes (`scope="col"`) |
-| `TableSortHeader` | `label`, `sort: "ascending" \| "descending" \| undefined`, `href` (the URL with the new sort), `align?`, `className?`: the label is a link; the sorted column has `aria-sort`, primary text and an arrow |
+| `TableSortHeader` | `label`, `sort: "ascending" \| "descending" \| undefined`, `href` (the URL with the new sort), `align?`, `className?`: the label is a link; the sorted column has `aria-sort`, primary text and an arrow that grows in and turns with the direction |
 | `TableRow` | `tr` attributes |
 | `TableCell` | `numeric?` (right-aligned, no wrap), `td` attributes |
 | `TableNameCell` | `logo?`, `name`, `symbol?` (a muted "• SYM"), `href?` (the whole row becomes the link through an overlay that carries the focus ring), `linkProps?`, `stackOnPhone?` (symbol under the name below 640 px), `detail?` (a caption line under the name), `className?`. Renders `th scope="row"` |
@@ -407,6 +412,7 @@ Decimal amounts: comma decimal separator in every language (`.` typed as `,`), l
 ```
 
 - Row actions go in the last cell with `relative z-10`, above the row link.
+- To glide rows on a sort, render the body as `<FlipList as="tbody">` with `data-flip-key` on each `TableRow`.
 - Fold columns on phones instead of scrolling ([layout.md](layout.md#tables-on-phones)).
 
 ### `CompactRow`, `MoverRow` (`@/features/market/browse/market-overview`)
@@ -426,7 +432,7 @@ Pass `security={undefined}` and `at={undefined}` on cached pages (the landing): 
 
 ### `FinancialValue` (`@/ui/components/financial`)
 
-A formatted instrument value in the display face, always `primary-text`, animated when it changes.
+A formatted instrument value in the display face, always `primary-text`. When the value changes it rolls in: up when it rises, down when it falls (`AnimatedText`); nothing plays on load.
 
 | Prop | Type | Default | |
 |---|---|---|---|
@@ -439,7 +445,7 @@ A formatted instrument value in the display face, always `primary-text`, animate
 
 ### `ChangeBadge`
 
-`<ChangeBadge value={change} />`: a signed percentage capsule with an arrow, in the gain/loss colour with a 12 % tint; zero is grey. Read as "Variação: Subiu 2,14 %". 28 px tall on phones, 24 on desk. Props: `value: Numeric`, `className?`.
+`<ChangeBadge value={change} />`: a signed percentage capsule with an arrow, in the gain/loss colour with a 12 % tint; zero is grey. Read as "Variação: Subiu 2,14 %". 28 px tall on phones, 24 on desk. Props: `value: Numeric`, `className?`. The figure rolls and the tint fades when the value changes.
 
 ### `MarketStatusIndicator`
 
@@ -451,18 +457,53 @@ Label, value and an optional caption and icon, "—" when the value is `null`. P
 
 ### `SecurityLogo` (`@/ui/components/rows`)
 
-Circular issuer logo; a coloured monogram when there is no image or it fails. Decorative (`aria-hidden`): the row names the instrument.
+Circular issuer logo; a coloured monogram when there is no image or it fails. Decorative (`aria-hidden`): the row names the instrument. The circle is white with a hairline edge in both themes.
+
+The component reads each logo once in a small canvas (same-origin, so allowed) and picks its fit, cached per URL for the page:
+
+| Logo | Fit |
+|---|---|
+| Near-square, opaque to its edges, not mostly white (a solid badge) | Fills the circle (`object-cover`), clipped round |
+| The same with a thin white strip on an edge (a loosely cropped favicon) | Fills it enlarged 10 %, so the strip falls outside |
+| Transparent edges, a wide wordmark, a mark on white, or anything the canvas can't read | Contained with 12 % padding on the white |
+
+The image stays transparent until its fit is known, then fades in, so it never jumps between fits; without scripting it shows contained.
+
+Logos come only from the site's origin, so `img-src` stays `'self'`: `issuerLogoURL(issuerID)` (`@/data/market/logos`) gives `/api/logos/{issuer}` (nothing in demo mode), and market rows, catalogue rows and the instrument and admission pages already carry it as `logoURL`. The route resolves the issuer's curated `logo_url`, else the Google favicon of its `website_url` (`resolvedLogoURL`, as iOS), fetches it on the server (HTTPS, 4 s, 512 KB, PNG, JPEG, WebP, GIF or ICO; never SVG) and answers it with a day of CDN caching, or a 404 cached for an hour, which shows the monogram. Never pass a third-party URL.
 
 | Prop | Type | Default | |
 |---|---|---|---|
 | `symbol` | `string` | | Monogram: up to four characters, hyphens dropped |
-| `logoUrl` | `string \| null` | | |
+| `logoUrl` | `string \| null` | | A same-origin `/api/logos/{issuer}` path (`logoURL` on rows) |
 | `brandColor` | `"blue" \| "gold" \| "green" \| "red" \| "violet"` | `"blue"` | Pages use `violet` for bonds and `blue` otherwise |
 | `size` | `"s" \| "m" \| "l" \| "header"` | `"m"` | 32 px · 48/36 desk · 64/48 desk · 48 px everywhere |
 
 ### `AssetRow`, `FeatureRow` (`rows.tsx`)
 
 `AssetRow({ symbol, name, price: Numeric | null, change?, bond?, code?, logoUrl?, brandColor?, href? })`: the iOS instrument row (logo, symbol over name, price over change badge, or "Preço por confirmar" when `price` is null); stacks below 320 px. Used in the market information list. `FeatureRow({ icon, title, subtitle })`: an icon tile beside a title and a line; no page uses it yet.
+
+## Motion (`@/ui/components/motion`, `@/ui/motion`)
+
+The patterns and when to use each are in [theme.md](theme.md#motion); the Motion section of `/dev/design` shows them all.
+
+| Piece | Props | |
+|---|---|---|
+| `IconSwap` | `icons: [IconName, IconName]`, `show: 0 \| 1`, `turn?`, `scale?`, `className?` | Two icons in one place, the shown one growing in as the other shrinks away; `turn` adds a quarter turn (menu ↔ close). Decorative; server-safe |
+| `Collapse` | `open`, `children`, `className?` (the inner box), `div` attributes (`id`) | A region that grows open and folds closed; closed, it is inert. Pair it with a button with `aria-expanded` and `aria-controls`. Server-safe. For `<details>`, add `motion-details` (and `group` + `motion-turn group-open:rotate-180` on the chevron) |
+| `AnimatedText` (`@/ui/components/animated-value`) | `text`, `numeric?` (the raw value as a string, for the direction), `live?`, `className?` | A figure that rolls when it changes. `live` (a current quote; `FinancialValue live`): a tint of the direction fades out behind it as well, through `playLive` |
+| `Meter` (`@/ui/components/meter`) | `value` (0–100), `label`, `className?` | A share as a thin accent bar on the track (`role="meter"`): it grows or shrinks from where it was. An SVG rect sized by its attribute: no inline width |
+| `FadeIn` (`@/ui/components/states`) | `rise?`, `div` attributes | Content replacing a skeleton or another state: fades (`rise`: and rises) in when mounted after hydration, simply there when the server rendered it. Key it to replay on a swap |
+| `FlipList` (`@/ui/components/flip-list`) | `as?: "ul" \| "ol" \| "tbody" \| "div"`, list attributes; each item a direct child with `data-flip-key` | Items glide to their new places on a sort or reorder; new items fade in. Lists of more than 60 moving items just change |
+| `INDICATOR_FILL`, `INDICATOR_IDLE` (`button-styles.ts`) | | The selected item draws its fill as `before:` (add `before:bg-…`); idle items keep their labels above a passing fill |
+| `useSlidingIndicator(selection, { selector, pseudo?, memory? })` | | On a group: glides the selected item's `::before` (or `::after`) from the previous selection. `memory` (a stable key) keeps the place across a route change that renders the group again |
+| `usePresence(open, { timeout? })` | | `{ mounted, state, presenceProps }` for anything with an exit: render while `mounted`, spread `presenceProps` on the element with `motion-pop` (or a utility keyed on `data-state="closing"`) |
+| `usePresenceValue(value, { timeout? })` | | `{ value, open, key }` for a dialog that shows a value: `{shown.value ? <Details key={shown.key} open={shown.open} item={shown.value} /> : null}`. The dialog leaves with its content, then unmounts; each opening is a fresh mount. Pass a stable value or a boolean |
+| `useChangeAnimation(ref, value, animation, isSame?, schedule?)` | | Plays one or more Web Animations when `value` changes, never on mount; `valueRoll`, `valueFlash`, `barGrow`, `stepSlide`, `ICON_IN`, `FADE_IN`. `schedule`: `playLive` for figures a poll changes |
+| `useChartMotion(plot, ghost, key, { draw })` | | A chart's line wiping in once (`draw`: mounted after hydration) and cross-fading to another series. `plot`: the group React draws into; `ghost`: an empty group after it; `key`: the drawn content as a string |
+| `PageTransition` (`@/ui/motion/page-transition`) | `children` | The page dissolve on navigation (React `<ViewTransition exit>`). Already in each route group's `template.tsx` and layout; nothing else uses it |
+| `crossFadePage(update)` | | Runs a page-wide change of figures (privacy mode) inside a View Transition cross-fade |
+| `useEntrance()` | | `true` when the component mounted after hydration: only then add an entrance class |
+| `switchTheme(update)` | | Runs a theme change inside a View Transition cross-fade |
 
 ## Overlays
 
@@ -486,13 +527,15 @@ A modal on `<dialog>`: focus is trapped, Escape and a backdrop click close it, f
 
 Use `sheet` for tasks and long content (forms, alerts, methodology), `dialog` for a short confirmation or explanation. The body is already padded; don't add horizontal padding inside.
 
+A sheet slides in from the bottom (from the right at 768 px and up), a dialog rises and grows; both leave the same way and the backdrop fades. Keep `Dialog` mounted and drive `open`: a dialog rendered only while open has no exit.
+
 ## Feedback (`@/ui/components/feedback`)
 
 | Component | Props | |
 |---|---|---|
-| `ToastHost` | `children` | Wrap the tree once; one toast at a time from the top, announced politely, auto-dismissed after 7 s unless it has a retry |
+| `ToastHost` | `children` | Wrap the tree once; one toast at a time from the top, announced politely, auto-dismissed after 7 s unless it has a retry; it slides in and lifts away, and a new toast replaces the shown one in the same place |
 | `useToast()` | | `{ show(toast), dismiss() }`; `toast: { title, message, actionTitle?, onRetry?, onDismiss? }` |
-| `OfflineBanner` | `forceVisible?` | "Sem ligação à Internet" while offline (`role="status"`). Put it first on pages that show market data |
+| `OfflineBanner` | `forceVisible?` | "Sem ligação à Internet" while offline (`role="status"`). Put it first on pages that show market data; it fades and rises in when the connection drops |
 | `useOnline()` | | `navigator.onLine` as state |
 | `HiddenValue` | `className?` | Six dots for a personal value, read as "Valor oculto"; the value is not in the page |
 | `SensitiveValue` | `hidden`, `children`, `className?` | Masks a value but keeps its footprint (the value stays in the DOM, inert). No page uses it yet |
@@ -503,7 +546,7 @@ Use `sheet` for tasks and long content (forms, alerts, methodology), `dialog` fo
 
 | Component | Props | Use |
 |---|---|---|
-| `Spinner` | `className?` | 1 em ring in `currentColor`; inside buttons and `LoadingState` |
+| `Spinner` | `className?` | 1 em ring in `currentColor`; inside buttons and `LoadingState`. Fades in as it starts |
 | `LoadingState` | `message?` | A whole view loading (`role="status"`) |
 | `EmptyState` | `title`, `message?`, `icon?` (`"info"`), `action?` | Nothing to show; offer the next step as the action |
 | `ErrorState` | `title?` ("Dados indisponíveis"), `message`, `action?` | A view failed (`role="alert"`); the action is "Tentar novamente" |
@@ -512,9 +555,11 @@ Use `sheet` for tasks and long content (forms, alerts, methodology), `dialog` fo
 | `ChartShimmer` | `className?` | A chart's place while it loads; never fake data |
 | `SectionPlaceholder` | `title`, `failed?`, `onRetry?` | A section keeps its place while loading or after it fails |
 
+`LoadingState`, `EmptyState`, `ErrorState` and a failed `SectionPlaceholder` fade in when they replace content after hydration; rendered by the server, they are simply there. Content that replaces a skeleton fades in with `motion-fade-in` when `useEntrance()` is true.
+
 ## Settings rows (`@/features/settings/settings-ui`)
 
-`SettingsGroup({ id, title, children, className? })`: a titled `Card` whose rows are divided by hairlines. Rows: `LinkRow({ href, icon?, label, value?, external? })` (chevron or external arrow), `ValueRow({ icon?, label, children })`, `ControlRow({ icon?, label, children })` (the control under the label on phones, beside it from 640 px), `DisclosureRow({ icon?, label, children })` (an expandable `<details>`). All work without JavaScript.
+`SettingsGroup({ id, title, children, className? })`: a titled `Card` whose rows are divided by hairlines. Rows: `LinkRow({ href, icon?, label, value?, external? })` (chevron or external arrow), `ValueRow({ icon?, label, children })`, `ControlRow({ icon?, label, children })` (the control under the label on phones, beside it from 640 px), `DisclosureRow({ icon?, label, children })` (an expandable `<details>` that grows open and folds closed, its chevron turning). All work without JavaScript.
 
 ## Landing pieces (`@/features/site/home`, `@/features/site/visuals`)
 
@@ -530,7 +575,7 @@ Landing-only building blocks; reuse them for new marketing sections, not for app
 | `Showcase` | Centres the product under the hero (max 1024 px) on an accent halo (`showcase-halo`) behind and around it, in a translucent bezel from 640 px |
 | `MarketPreview` (`@/features/site/home-client`) | `{ tabs, label }`: one flush card with `SectionTabs` on top, a table of dated verified closes per kind and that kind's "Ver tudo" pill in the footer |
 | `Bento` | The "all in one" grid: a `<figure>` with a `<ul>` of `BentoCard`s (6 columns from 1024 px, 2 from 768 px, 1 on phones) and one "Exemplo ilustrativo" caption for the whole grid |
-| `BentoCard` | `{ href, title, wide?, wash?, bleed?, children }`: a whole-card `Link` (`prefetch={false}`, focus ring, `motion-press`, border to `field-border` and a 2 px lift on hover, no lift with reduced motion; a scroll-reveal target) holding a `panel` with the title (the link's name) and the miniature in an `aria-hidden`, unselectable frame that bleeds off the bottom under a fade (`bleed="corner"`: the right edge too). `wide` spans 4 of 6 columns (the whole row at 768 px); `wash` adds the accent light (`bento-wash`), for the largest card only |
+| `BentoCard` | `{ href, title, wide?, wash?, bleed?, children }`: a whole-card `Link` (`prefetch={false}`, focus ring, `motion-press`, border to `field-border` and a 1 px lift on hover (the `motion-lift` timing), no lift with reduced motion; a scroll-reveal target) holding a `panel` with the title (the link's name) and the miniature in an `aria-hidden`, unselectable frame that bleeds off the bottom under a fade (`bleed="corner"`: the right edge too). `wide` spans 4 of 6 columns (the whole row at 768 px); `wash` adds the accent light (`bento-wash`), for the largest card only |
 | `SimulatorMiniature`, `UnusualActivityMiniature`, `NewsMiniature`, `LearnMiniature`, `WeekAheadMiniature` (`@/features/site/visuals`) | A few rows of `/simulador`, `/atividade-invulgar`, `/noticias`, `/aprender` and `/semana` at small size, built from the real pieces (`SecurityLogo`, chips, lesson icons, the simulator's projected and invested lines); sample values and catalogue wording only, no controls |
 | `FeatureRows` | The feature rows' column: `PAGE_CONTAINER`, 64 px between rows and above them (96 px from 768 px); Plus's own top padding gives the same space below |
 | `FeatureRow` | `{ id, icon, title, message, action, visual, flip? }`: the icon in a 48 px `accent-soft` squircle, the `h2` (`HOME_HEADING`), the message and the action, then the visual. Stacked, text first, below 1024 px; from there two columns, the visual taking 7 of 12 on the left (on the right with `flip`), the text vertically centred. Marks the row `data-flip` so the visual's floating card leans towards the text, and `data-reveal="stagger"` so the text eases in before the visual |

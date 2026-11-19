@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { PublicInstrument } from "@/data/market/public";
+import { issuerLogoURL } from "@/data/market/logos";
 import { getPublicCatalogue } from "@/data/market/public-cache";
 import { isBondKind } from "@/domain/market";
 import { civilDate } from "@/domain/market/zone";
@@ -18,6 +19,7 @@ export function catalogueRow(instrument: PublicInstrument): CatalogueRow {
     kind: instrument.kind,
     bond: isBondKind(instrument.kind),
     currency: instrument.currency ?? "AOA",
+    logoURL: issuerLogoURL(instrument.issuerID),
     close: close && {
       price: close.price.toString(),
       date: civilDate(close.tradingDate),

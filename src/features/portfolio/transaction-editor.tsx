@@ -19,6 +19,7 @@ import { SecurityLogo } from "@/ui/components/rows";
 import { EmptyState } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
+import { usePresenceValue } from "@/ui/motion/use-presence";
 
 import type { SaveResult } from "./portfolio-store";
 import type { PortfolioInstrument, PortfolioModel } from "./use-portfolio";
@@ -56,11 +57,21 @@ const MESSAGES: Record<RecordIssue | Exclude<SaveResult, "saved" | "failed">, { 
 const draft = (value: Decimal | undefined, fallback: string) => (value ? formatAmountForInput(value).replace(/,0+$/, "") : fallback);
 
 export function TransactionEditor({ request, model, onClose }: { request: EditorRequest | null; model: PortfolioModel; onClose: () => void }) {
-  // A new instance per request: one id per editor, so retrying a save never stores a second record.
-  return request ? <EditorSheet key={request.mode === "edit" ? request.record.id : `${request.mode}-${"securityId" in request ? request.securityId : ""}`} request={request} model={model} onClose={onClose} /> : null;
+  // Kept for its exit once closed. A new instance per request: one id per editor, so retrying a save never stores a second record.
+  const shown = usePresenceValue(request);
+  const value = shown.value;
+  return value ? (
+    <EditorSheet
+      key={`${shown.key}:${value.mode === "edit" ? value.record.id : `${value.mode}-${"securityId" in value ? value.securityId : ""}`}`}
+      open={shown.open}
+      request={value}
+      model={model}
+      onClose={onClose}
+    />
+  ) : null;
 }
 
-function EditorSheet({ request, model, onClose }: { request: EditorRequest; model: PortfolioModel; onClose: () => void }) {
+function EditorSheet({ open, request, model, onClose }: { open: boolean; request: EditorRequest; model: PortfolioModel; onClose: () => void }) {
   const t = useTranslations();
   const format = useFormat();
   const record = request.mode === "edit" ? request.record : undefined;
@@ -132,7 +143,7 @@ function EditorSheet({ request, model, onClose }: { request: EditorRequest; mode
 
   const title = t((record ? TITLES.edit : TITLES.new)[kind]);
   if (!instrument) {
-    return <InstrumentPicker model={model} onPick={setSecurityId} onClose={onClose} />;
+    return <InstrumentPicker open={open} model={model} onPick={setSecurityId} onClose={onClose} />;
   }
 
   const field = (name: "quantity" | "price" | "fees", label: string, suffix: string, big = false) => (
@@ -170,7 +181,7 @@ function EditorSheet({ request, model, onClose }: { request: EditorRequest; mode
   return (
     <>
       <Dialog
-        open
+        open={open}
         onClose={close}
         title={title}
         footer={
@@ -245,7 +256,7 @@ function EditorSheet({ request, model, onClose }: { request: EditorRequest; mode
       </Dialog>
       <Dialog
         variant="dialog"
-        open={discarding}
+        open={open && discarding}
         onClose={() => setDiscarding(false)}
         title={t("portfolio.discardConfirmation.title")}
         footer={
@@ -273,7 +284,7 @@ const PICKER_TABS = [
 ] as const;
 
 /** `Escolher instrumento`: listed instruments a ledger may hold, by symbol, with search and kind tabs. */
-function InstrumentPicker({ model, onPick, onClose }: { model: PortfolioModel; onPick: (id: string) => void; onClose: () => void }) {
+function InstrumentPicker({ open, model, onPick, onClose }: { open: boolean; model: PortfolioModel; onPick: (id: string) => void; onClose: () => void }) {
   const t = useTranslations();
   const format = useFormat();
   const [query, setQuery] = useState("");
@@ -288,7 +299,7 @@ function InstrumentPicker({ model, onPick, onClose }: { model: PortfolioModel; o
   }, [model.securities, model.asOf, query, tab]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Dialog open onClose={onClose} title={t("common.chooseInstrument")}>
+    <Dialog open={open} onClose={onClose} title={t("common.chooseInstrument")}>
       <div className="flex flex-col gap-3" data-testid="instrument-picker">
         <SearchField value={query} onChange={setQuery} placeholder={t("portfolio.picker.searchInstruments")} controls={resultsID} autoFocus />
         {query.trim() === "" ? <SectionTabs label={t("common.chooseInstrument")} titles={PICKER_TABS.map((item) => t(item.key))} selected={tab} onSelect={setTab} /> : null}

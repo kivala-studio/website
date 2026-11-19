@@ -4,11 +4,12 @@ import { useLocale } from "next-intl";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { SegmentedControl } from "@/ui/components/controls";
+import { LanguageFlag } from "@/ui/icons/flags";
 
-// Each language by its own name, as the iOS row shows it.
+// Each language by its own name, as the iOS row shows it, after its flag.
 const LANGUAGES = [
-  { value: "pt", title: "Português" },
-  { value: "en", title: "English" },
+  { value: "pt", title: "Português", leading: <LanguageFlag locale="pt" /> },
+  { value: "en", title: "English", leading: <LanguageFlag locale="en" /> },
 ] as const;
 
 /** The page language; the same page reloads in the other one. */

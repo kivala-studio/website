@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { Link, usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
+import { LanguageFlag } from "@/ui/icons/flags";
 
 /** Links the same page in the other language. */
 export function LanguageSwitch({ className }: { className?: string }) {
@@ -13,7 +14,8 @@ export function LanguageSwitch({ className }: { className?: string }) {
   const other = routing.locales.find((candidate) => candidate !== locale) ?? routing.defaultLocale;
   return (
     <Link href={pathname} prefetch={false} locale={other} hrefLang={other} lang={other} className={className}>
-      {/* The short code fits a 320 px header; assistive technology reads the language name. */}
+      {/* The flag and the short code name the language it switches to; assistive technology reads its name. */}
+      <LanguageFlag locale={other} />
       <span aria-hidden>{t("languageCode")}</span>
       <span className="sr-only">{t("languageName")}</span>
     </Link>

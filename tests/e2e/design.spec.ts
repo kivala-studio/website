@@ -37,7 +37,7 @@ for (const theme of ["light", "dark"] as const) {
 test("tabs, radio groups and dialogs work from the keyboard", async ({ page }) => {
   await openGallery(page, "light", "/en/dev/design");
 
-  const tabs = page.getByRole("tab");
+  const tabs = page.getByRole("region", { name: "Navigation" }).getByRole("tab");
   await tabs.first().focus();
   await page.keyboard.press("ArrowRight");
   await expect(tabs.nth(1)).toBeFocused();
@@ -54,7 +54,7 @@ test("tabs, radio groups and dialogs work from the keyboard", async ({ page }) =
   await page.keyboard.press("End");
   await expect(ranges.getByRole("radio", { name: "All history" })).toHaveAttribute("aria-checked", "false");
 
-  const opener = page.getByRole("button", { name: "Dialog", exact: true });
+  const opener = page.getByRole("region", { name: "Overlays" }).getByRole("button", { name: "Dialog", exact: true });
   await opener.click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();

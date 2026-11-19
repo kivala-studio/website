@@ -1,20 +1,50 @@
-/* Motion from ios-product §3.6. Every pattern has a reduced-motion fallback. */
+/*
+ * Motion: one vocabulary for every state change (docs/design/theme.md#motion). Tokens first, then one utility per
+ * pattern. Every pattern has a reduced-motion fallback: movement goes, a short fade or an instant change stays.
+ * Only transform-type properties, opacity, clip-path, colours and shadows move; disclosures also animate their
+ * height (grid rows, `::details-content`). Nothing loops except the loading placeholders.
+ */
 
-@keyframes presence-in {
-  from { opacity: 0; transform: translateY(0.5rem); }
-  to { opacity: 1; transform: none; }
+/*
+ * Durations: `fast` for hover, press, colour and small exits; `base` for small moves (indicators, chevrons, menus);
+ * `slow` for panels and large moves (sheets, disclosures, the theme cross-fade). `reveal` is the landing's one-time
+ * scroll reveal only; `flash` is the tint behind a live figure that changed, fading out. Curves: `standard` (calm ease-out) for colour and state changes, `emphasized` (fast start, long
+ * settle) for anything that moves or enters, `exit` (accelerates away) for anything that leaves.
+ * Tailwind: `duration-fast|base|slow`, `ease-standard|emphasized|exit`; a bare `transition-*` utility is fast and
+ * standard. Scripts read the same values through `src/ui/motion/tokens.ts`.
+ */
+@theme static {
+  --duration-fast: 140ms;
+  --duration-base: 220ms;
+  --duration-slow: 340ms;
+  --duration-reveal: 550ms;
+  --duration-flash: 900ms;
+  --transition-duration-fast: var(--duration-fast);
+  --transition-duration-base: var(--duration-base);
+  --transition-duration-slow: var(--duration-slow);
+  --ease-standard: cubic-bezier(0.25, 0.8, 0.25, 1);
+  --ease-emphasized: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  /* The landing's name for the emphasized curve. */
+  --ease-reveal: var(--ease-emphasized);
+  --default-transition-duration: var(--duration-fast);
+  --default-transition-timing-function: var(--ease-standard);
 }
+
 @keyframes fade-in {
   from { opacity: 0; }
-  to { opacity: 1; }
+}
+@keyframes fade-out {
+  to { opacity: 0; }
+}
+@keyframes presence-in {
+  from { opacity: 0; transform: translateY(0.5rem); }
 }
 @keyframes toast-in {
   from { opacity: 0; transform: translateY(-100%); }
-  to { opacity: 1; transform: none; }
 }
-@keyframes value-roll {
-  from { opacity: 0; transform: translateY(0.35em); }
-  to { opacity: 1; transform: none; }
+@keyframes toast-out {
+  to { opacity: 0; transform: translateY(-0.75rem) scale(0.98); }
 }
 @keyframes skeleton-pulse {
   from { opacity: 0.9; }
@@ -24,24 +54,321 @@
   from { background-position: 150% 0; }
   to { background-position: -50% 0; }
 }
+@keyframes spinner-turn {
+  to { rotate: 1turn; }
+}
 
-@utility motion-presence {
-  animation: presence-in 0.24s ease-out both;
-}
-@utility motion-value {
-  animation: value-roll 0.25s ease-out both;
-}
-@utility motion-toast {
-  /* Spring response 0.42 / damping 0.86 approximated with an overshoot-free curve. */
-  animation: toast-in 0.42s cubic-bezier(0.2, 0.9, 0.25, 1) both;
-}
+/* ---------------------------------------------------------------------------------------------------------------
+ * Feedback on what the pointer does
+ * ------------------------------------------------------------------------------------------------------------- */
+
+/* Press: pills, icon buttons, chips, tiles, segments. Owns the control's colour, opacity and shadow transitions too. */
 @utility motion-press {
-  transition: opacity 0.16s ease-out, transform 0.16s ease-out;
-  &:active:not(:disabled) {
+  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, filter, scale;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-standard);
+  &:active:not(:disabled, [aria-disabled="true"]) {
     opacity: 0.76;
-    transform: scale(0.98);
+    scale: 0.98;
   }
 }
+
+/* Tap: whole rows and large surfaces, where a scale would move the edges. A dim, plus the hover fill the row sets. */
+@utility motion-tap {
+  transition-property: color, background-color, border-color, opacity, box-shadow;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-standard);
+  &:active:not(:disabled, [aria-disabled="true"]) {
+    opacity: 0.72;
+  }
+}
+
+/* Lift: an interactive card rises 1 px under a mouse (never on touch) and dims when pressed. */
+@utility motion-lift {
+  transition-property: color, background-color, border-color, opacity, box-shadow, translate;
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-emphasized);
+  @media (hover: hover) {
+    &:hover {
+      translate: 0 -1px;
+    }
+  }
+  &:active {
+    translate: none;
+    opacity: 0.85;
+    transition-duration: var(--duration-fast);
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+ * Small state changes: chevrons, icon swaps, dots
+ * ------------------------------------------------------------------------------------------------------------- */
+
+/* Turn: a chevron or a sort arrow that rotates with its state (`group-open:rotate-180`, `rotate-180`). */
+@utility motion-turn {
+  transition-property: rotate, transform;
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-emphasized);
+}
+
+/*
+ * Swap: two icons stacked in one cell, the shown one picked by `data-swap="a|b"` (`IconSwap`). The other shrinks and
+ * fades; `data-turn` adds a quarter turn (menu ↔ close).
+ */
+@utility motion-swap {
+  display: inline-grid;
+  place-items: center;
+  & > * {
+    grid-area: 1 / 1;
+    transition-property: opacity, scale, rotate;
+    transition-duration: var(--duration-fast), var(--duration-base), var(--duration-base);
+    transition-timing-function: var(--ease-standard), var(--ease-emphasized), var(--ease-emphasized);
+  }
+  &[data-swap="a"] > :last-child,
+  &[data-swap="b"] > :first-child {
+    opacity: 0;
+    scale: 0.6;
+  }
+  &[data-turn][data-swap="a"] > :last-child {
+    rotate: -90deg;
+  }
+  &[data-turn][data-swap="b"] > :first-child {
+    rotate: 90deg;
+  }
+}
+
+/*
+ * Appear: a dot, badge, check or arrow that comes and goes in place (`data-hidden` hides it): it grows in and
+ * shrinks out. A rotation class on it turns smoothly too (a sort arrow flipping).
+ */
+@utility motion-appear {
+  transition-property: opacity, scale, rotate;
+  transition-duration: var(--duration-fast), var(--duration-base), var(--duration-base);
+  transition-timing-function: var(--ease-standard), var(--ease-emphasized), var(--ease-emphasized);
+  &[data-hidden] {
+    opacity: 0;
+    scale: 0.4;
+    pointer-events: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+ * Content that arrives
+ * ------------------------------------------------------------------------------------------------------------- */
+
+/* Fade in once when mounted: content replacing a skeleton, a state swap. Client-mounted content only (`useEntrance`). */
+@utility motion-fade-in {
+  animation: fade-in var(--duration-base) var(--ease-standard) backwards;
+}
+/* Fade in and rise 0.5rem once when mounted: a validation message, an inline notice. */
+@utility motion-presence {
+  animation: presence-in var(--duration-base) var(--ease-emphasized) backwards;
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+ * Overlays
+ * ------------------------------------------------------------------------------------------------------------- */
+
+/*
+ * Pop: menus and popovers. Grows from its trigger's corner (set `origin-top-right` / `origin-top-left`) on mount
+ * (`@starting-style`); `data-state="closing"` (`usePresence`) sends it back before it unmounts. Transitions, so a
+ * reopen mid-exit turns around smoothly.
+ */
+@utility motion-pop {
+  transition-property: opacity, scale, translate;
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-emphasized);
+  @starting-style {
+    opacity: 0;
+    scale: 0.96;
+    translate: 0 -0.25rem;
+  }
+  &[data-state="closing"] {
+    opacity: 0;
+    scale: 0.96;
+    translate: 0 -0.25rem;
+    pointer-events: none;
+    transition-duration: var(--duration-fast);
+    transition-timing-function: var(--ease-exit);
+  }
+}
+
+/*
+ * Modal and sheet: a `<dialog>` that enters from `@starting-style` and, where the browser keeps a closing dialog in
+ * the top layer (`overlay`), leaves with the same motion after `close()`; elsewhere it leaves at once. The page is
+ * usable again the moment it closes. `motion-modal` rises 0.5rem and grows from 96 %; `motion-sheet` slides up from
+ * the bottom on phones and in from the right from 768 px. The backdrop fades with it.
+ */
+@utility motion-modal {
+  transition-property: opacity, scale, translate, display, overlay;
+  transition-behavior: allow-discrete;
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-emphasized);
+  &:not([open]) {
+    opacity: 0;
+    scale: 0.96;
+    translate: 0 0.5rem;
+    pointer-events: none;
+    transition-duration: var(--duration-fast);
+    transition-timing-function: var(--ease-exit);
+  }
+  @starting-style {
+    &[open] {
+      opacity: 0;
+      scale: 0.96;
+      translate: 0 0.5rem;
+    }
+  }
+  &::backdrop {
+    transition-property: opacity, display, overlay;
+    transition-behavior: allow-discrete;
+    transition-duration: var(--duration-base);
+    transition-timing-function: var(--ease-standard);
+  }
+  &:not([open])::backdrop {
+    opacity: 0;
+  }
+  @starting-style {
+    &[open]::backdrop {
+      opacity: 0;
+    }
+  }
+}
+@utility motion-sheet {
+  transition-property: opacity, translate, display, overlay;
+  transition-behavior: allow-discrete;
+  transition-duration: var(--duration-slow);
+  transition-timing-function: var(--ease-emphasized);
+  &:not([open]) {
+    translate: 0 100%;
+    pointer-events: none;
+    transition-duration: var(--duration-base);
+    transition-timing-function: var(--ease-exit);
+  }
+  @starting-style {
+    &[open] {
+      translate: 0 100%;
+    }
+  }
+  @media (width >= 48rem) {
+    &:not([open]) {
+      translate: 100% 0;
+    }
+    @starting-style {
+      &[open] {
+        translate: 100% 0;
+      }
+    }
+  }
+  &::backdrop {
+    transition-property: opacity, display, overlay;
+    transition-behavior: allow-discrete;
+    transition-duration: var(--duration-slow);
+    transition-timing-function: var(--ease-standard);
+  }
+  &:not([open])::backdrop {
+    opacity: 0;
+  }
+  @starting-style {
+    &[open]::backdrop {
+      opacity: 0;
+    }
+  }
+}
+/* Without `overlay` a closed dialog leaves the top layer at once: close it at once rather than fade it in the page. */
+@supports not (overlay: auto) {
+  .motion-modal,
+  .motion-sheet {
+    transition-property: opacity, scale, translate;
+  }
+  .motion-modal::backdrop,
+  .motion-sheet::backdrop {
+    transition-property: opacity;
+  }
+}
+
+/* Toast: slides down from the top on mount; `motion-toast-out` lifts and fades the one leaving. */
+@utility motion-toast {
+  animation: toast-in var(--duration-slow) var(--ease-emphasized) backwards;
+}
+@utility motion-toast-out {
+  animation: toast-out var(--duration-base) var(--ease-exit) forwards;
+}
+
+/*
+ * The top bar's menu (`TopBar mobileNav="menu"`): the panel slides out from under the bar, clipped at the bar's edge
+ * so it never covers it, and the page dims behind it. The clip leaves room for the panel's shadow.
+ */
+@keyframes drop-in {
+  from { opacity: 0; transform: translateY(-0.5rem); clip-path: inset(0.5rem -1rem -1rem); }
+  to { clip-path: inset(0 -1rem -1rem); }
+}
+@keyframes drop-out {
+  from { clip-path: inset(0 -1rem -1rem); }
+  to { opacity: 0; transform: translateY(-0.5rem); clip-path: inset(0.5rem -1rem -1rem); }
+}
+@utility motion-drop-in {
+  animation: drop-in var(--duration-slow) var(--ease-emphasized) backwards;
+}
+@utility motion-drop-out {
+  animation: drop-out var(--duration-base) var(--ease-exit) forwards;
+}
+@utility motion-dim-in {
+  animation: fade-in var(--duration-slow) var(--ease-standard) backwards;
+}
+@utility motion-dim-out {
+  animation: fade-out var(--duration-base) var(--ease-exit) forwards;
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+ * Disclosures
+ * ------------------------------------------------------------------------------------------------------------- */
+
+/*
+ * Collapse: a React-controlled region (`Collapse`) whose height follows its content through the grid-rows trick.
+ * `data-state="closed"` folds it to nothing and hides it from focus and assistive technology once folded.
+ */
+@utility motion-collapse {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition-property: grid-template-rows, opacity, visibility;
+  transition-duration: var(--duration-slow), var(--duration-base), var(--duration-slow);
+  transition-timing-function: var(--ease-emphasized), var(--ease-standard), linear;
+  & > * {
+    min-height: 0;
+    overflow: clip;
+    overflow-clip-margin: 0.25rem;
+  }
+  &[data-state="closed"] {
+    grid-template-rows: 0fr;
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/*
+ * A native `<details>` whose content grows open and folds closed (`::details-content` with `interpolate-size`).
+ * Browsers without either open and close it at once, as before.
+ */
+@utility motion-details {
+  interpolate-size: allow-keywords;
+  &::details-content {
+    block-size: 0;
+    overflow: clip;
+    transition-property: block-size, content-visibility;
+    transition-behavior: allow-discrete;
+    transition-duration: var(--duration-slow);
+    transition-timing-function: var(--ease-emphasized);
+  }
+  &[open]::details-content {
+    block-size: auto;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+ * Loading
+ * ------------------------------------------------------------------------------------------------------------- */
+
 @utility motion-pulse {
   animation: skeleton-pulse 0.9s ease-in-out infinite alternate;
 }
@@ -55,23 +382,91 @@
   background-size: 200% 100%;
   animation: shimmer 1.6s linear infinite;
 }
+/* The spinner turns and fades in, so a quick request never flashes it. */
+@utility motion-spin {
+  animation:
+    spinner-turn 0.8s linear infinite,
+    fade-in var(--duration-base) var(--ease-standard) backwards;
+}
 
-@media (prefers-reduced-motion: reduce) {
-  .motion-presence { animation: fade-in 0.15s ease-out both; }
-  .motion-value { animation: none; }
-  .motion-toast { animation: fade-in 0.2s ease-out both; }
-  .motion-press { transition: opacity 0.16s ease-out; }
-  .motion-press:active:not(:disabled) { transform: none; }
-  .motion-pulse, .motion-shimmer { animation: none; }
+/* ---------------------------------------------------------------------------------------------------------------
+ * Theme: the light ↔ dark cross-fade (`switchTheme`), and no per-element colour transitions while it switches
+ * ------------------------------------------------------------------------------------------------------------- */
+
+:root[data-theme-switching] *,
+:root[data-theme-switching] *::before,
+:root[data-theme-switching] *::after {
+  transition: none !important;
+}
+:root[data-theme-switching]::view-transition-old(root),
+:root[data-theme-switching]::view-transition-new(root) {
+  animation-duration: var(--duration-slow);
+  animation-timing-function: var(--ease-standard);
+}
+/* A page-wide change of figures (privacy mode, `crossFadePage`): the same cross-fade, quicker. */
+:root[data-cross-fade]::view-transition-old(root),
+:root[data-cross-fade]::view-transition-new(root) {
+  animation-duration: var(--duration-base);
+  animation-timing-function: var(--ease-standard);
 }
 
 /*
- * Landing motion: the hero's entrance on load and the scroll reveal below it. One calm ease-out curve for both.
- * Everything ends on the element's natural state (`backwards` fill, no lasting animated values).
+ * Navigation to another page (`PageTransition`): the new page is live at once and a snapshot of the old one fades
+ * out over it. The root does not cross-fade during it (the theme switch and `crossFadePage` keep theirs), so what
+ * both pages share stays put. Clicks pass through to the new page. Off with reduced motion.
  */
-@theme {
-  --ease-reveal: cubic-bezier(0.22, 1, 0.36, 1);
+::view-transition {
+  pointer-events: none;
 }
+::view-transition-group(.page-exit) {
+  animation: none;
+}
+::view-transition-old(.page-exit) {
+  animation: fade-out var(--duration-base) var(--ease-standard) both;
+}
+:root:not([data-theme-switching], [data-cross-fade])::view-transition-old(root),
+:root:not([data-theme-switching], [data-cross-fade])::view-transition-new(root) {
+  animation: none;
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+ * Reduced motion: no movement; fades and colour changes stay.
+ * ------------------------------------------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-press:active:not(:disabled, [aria-disabled="true"]) { scale: none; }
+  .motion-lift:hover { translate: none; }
+  .motion-turn { transition: none; }
+  .motion-swap > * { transition-property: opacity; }
+  .motion-appear { transition-property: opacity; }
+  .motion-presence { animation: fade-in var(--duration-fast) var(--ease-standard) backwards; }
+  .motion-pop,
+  .motion-pop[data-state="closing"] { scale: none; translate: none; transition-property: opacity; }
+  .motion-modal,
+  .motion-modal:not([open]),
+  .motion-sheet,
+  .motion-sheet:not([open]) { scale: none; translate: none; }
+  .motion-sheet:not([open]) { opacity: 0; }
+  @starting-style {
+    .motion-sheet[open] { opacity: 0; }
+  }
+  .motion-toast { animation: fade-in var(--duration-base) var(--ease-standard) backwards; }
+  .motion-toast-out { animation: fade-out var(--duration-fast) var(--ease-exit) forwards; }
+  .motion-drop-in { animation: fade-in var(--duration-fast) var(--ease-standard) backwards; }
+  .motion-drop-out { animation: fade-out var(--duration-fast) var(--ease-exit) forwards; }
+  .motion-collapse { transition-property: opacity, visibility; transition-duration: var(--duration-fast); }
+  .motion-details::details-content { transition: none; }
+  .motion-pulse, .motion-shimmer { animation: none; }
+  .motion-spin { animation: fade-in var(--duration-base) var(--ease-standard) backwards; }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) { animation: none; }
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+ * Landing: the hero's entrance on load and the scroll reveal below it. Everything ends on the element's natural
+ * state (`backwards` fill, no lasting animated values).
+ * ------------------------------------------------------------------------------------------------------------- */
 
 @keyframes entrance-rise {
   from { opacity: 0; transform: translateY(0.75rem); }
@@ -87,12 +482,12 @@
 
 /* A hero part fading and rising in once on load; `entrance-delay-<ms>` stages the parts. */
 @utility motion-entrance {
-  animation: entrance-rise 0.55s var(--ease-reveal) backwards;
+  animation: entrance-rise var(--duration-reveal) var(--ease-emphasized) backwards;
   animation-delay: var(--entrance-delay, 0ms);
 }
 /* The hero title: a rise with no fade and no delay, so the largest paint is the first one. */
 @utility motion-entrance-lift {
-  animation: entrance-lift 0.5s var(--ease-reveal) backwards;
+  animation: entrance-lift 0.5s var(--ease-emphasized) backwards;
 }
 @utility entrance-delay-* {
   --entrance-delay: calc(--value(integer) * 1ms);
@@ -116,8 +511,8 @@
   [data-reveal="stagger"][data-reveal-state="shown"] > * {
     --reveal-delay: calc(var(--reveal-step, 0ms) + var(--reveal-order, 0ms));
     transition:
-      opacity 0.55s var(--ease-reveal) var(--reveal-delay),
-      transform 0.55s var(--ease-reveal) var(--reveal-delay);
+      opacity var(--duration-reveal) var(--ease-emphasized) var(--reveal-delay),
+      transform var(--duration-reveal) var(--ease-emphasized) var(--reveal-delay);
   }
   /* Targets that enter together (bento cards on one row) follow each other by 60 ms… */
   [data-reveal-step="1"] { --reveal-step: 60ms; }
@@ -136,7 +531,7 @@
     opacity: 0;
   }
   [data-reveal-state="shown"] .reveal-line {
-    animation: line-draw 1s var(--ease-reveal) 0.35s backwards;
+    animation: line-draw 1s var(--ease-emphasized) 0.35s backwards;
   }
   [data-reveal-state="shown"] .reveal-after {
     animation: fade-in 0.4s ease-out 1.05s backwards;
@@ -145,39 +540,4 @@
 
 @media (prefers-reduced-motion: reduce) {
   .motion-entrance, .motion-entrance-lift { animation: none; }
-}
-
-/*
- * The top bar's menu (`TopBar mobileNav="menu"`): the panel slides out from under the bar, clipped at the bar's edge
- * so it never covers it, and the page dims behind it. The clip leaves room for the panel's shadow. Closing is
- * quicker than opening. Reduced motion keeps the fades only.
- */
-@keyframes drop-in {
-  from { opacity: 0; transform: translateY(-0.5rem); clip-path: inset(0.5rem -1rem -1rem); }
-  to { clip-path: inset(0 -1rem -1rem); }
-}
-@keyframes drop-out {
-  from { clip-path: inset(0 -1rem -1rem); }
-  to { opacity: 0; transform: translateY(-0.5rem); clip-path: inset(0.5rem -1rem -1rem); }
-}
-@keyframes fade-out {
-  to { opacity: 0; }
-}
-
-@utility motion-drop-in {
-  animation: drop-in 0.3s var(--ease-reveal) backwards;
-}
-@utility motion-drop-out {
-  animation: drop-out 0.18s ease-in forwards;
-}
-@utility motion-dim-in {
-  animation: fade-in 0.3s var(--ease-reveal) backwards;
-}
-@utility motion-dim-out {
-  animation: fade-out 0.18s ease-in forwards;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .motion-drop-in { animation: fade-in 0.15s ease-out backwards; }
-  .motion-drop-out { animation: fade-out 0.15s ease-out forwards; }
 }

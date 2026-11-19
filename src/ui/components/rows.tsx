@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { type ComponentProps, useEffect, useRef, useState } from "react";
+import { type ComponentProps, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import type { Numeric } from "@/domain/format";
 import { Link } from "@/i18n/navigation";
@@ -29,7 +29,70 @@ const LOGO_SIZE = {
   header: { box: "size-12", monogram: "text-caption" },
 } as const;
 
-/** Circular issuer logo; falls back to a coloured monogram when there is no image or it fails. */
+type LogoFit = "cover" | "trim" | "contain";
+
+const FIT_CLASS: Record<LogoFit, string> = {
+  cover: "object-cover",
+  trim: "scale-110 object-cover",
+  contain: "object-contain p-[12%]",
+};
+
+/** Each logo URL's fit, shared by every `SecurityLogo` on the page: a list measures a logo once and never flickers. */
+const logoFits = new Map<string, LogoFit>();
+const logoFitListeners = new Set<() => void>();
+const subscribeToLogoFits = (listener: () => void) => {
+  logoFitListeners.add(listener);
+  return () => void logoFitListeners.delete(listener);
+};
+
+const FIT_SAMPLE = 32;
+
+/**
+ * `cover` for a (near-)square logo that is opaque to its edges and not mostly white: a solid badge that fills the
+ * circle. `trim` is the same badge with a thin white strip along an edge (a loosely cropped favicon), enlarged 10 %
+ * so the strip falls outside the circle. Transparent edges, a wide wordmark, a mark on white or an image the canvas
+ * can't read stay contained, so the mark is never cut. Logos are same-origin, so reading the canvas is allowed.
+ */
+function measureLogoFit(image: HTMLImageElement): LogoFit {
+  const { naturalWidth: width, naturalHeight: height } = image;
+  if (!width || !height || Math.abs(width / height - 1) > 0.1) return "contain";
+  try {
+    const canvas = document.createElement("canvas");
+    canvas.width = canvas.height = FIT_SAMPLE;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (!context) return "contain";
+    context.drawImage(image, 0, 0, FIT_SAMPLE, FIT_SAMPLE);
+    const { data } = context.getImageData(0, 0, FIT_SAMPLE, FIT_SAMPLE);
+    const last = FIT_SAMPLE - 1;
+    let white = 0;
+    let whiteEdge = false;
+    for (let pixel = 0; pixel < FIT_SAMPLE * FIT_SAMPLE; pixel++) {
+      const [red = 0, green = 0, blue = 0, alpha = 0] = data.subarray(pixel * 4, pixel * 4 + 4);
+      const x = pixel % FIT_SAMPLE;
+      const y = Math.floor(pixel / FIT_SAMPLE);
+      const edge = x === 0 || y === 0 || x === last || y === last;
+      if (edge && alpha < 250) return "contain";
+      if (Math.min(red, green, blue) < 235) continue;
+      white++;
+      whiteEdge ||= edge;
+    }
+    if (white >= (FIT_SAMPLE * FIT_SAMPLE) / 2) return "contain";
+    return whiteEdge ? "trim" : "cover";
+  } catch {
+    return "contain";
+  }
+}
+
+function settleLogoFit(url: string, image: HTMLImageElement) {
+  if (logoFits.has(url)) return;
+  logoFits.set(url, measureLogoFit(image));
+  for (const listener of logoFitListeners) listener();
+}
+
+/**
+ * Circular issuer logo from `/api/logos/{issuer}`; falls back to a coloured monogram when there is no image or it fails.
+ * A solid square logo fills the circle; any other logo sits contained on white. The image fades in once its fit is known.
+ */
 export function SecurityLogo({
   symbol,
   logoUrl,
@@ -44,10 +107,18 @@ export function SecurityLogo({
   const [failed, setFailed] = useState<string | null>(null);
   const image = useRef<HTMLImageElement>(null);
   const showImage = logoUrl && failed !== logoUrl;
-  // An image that fails before hydration never fires React's onError.
+  // Undecided on the server and during hydration, so the markup matches; known at once on client navigation.
+  const fit = useSyncExternalStore(
+    subscribeToLogoFits,
+    () => (logoUrl ? logoFits.get(logoUrl) : undefined),
+    () => undefined,
+  );
+  // An image that loads or fails before hydration never fires React's onLoad or onError.
   useEffect(() => {
     const element = image.current;
-    if (logoUrl && element?.complete && element.naturalWidth === 0) setFailed(logoUrl);
+    if (!logoUrl || !element?.complete) return;
+    if (element.naturalWidth === 0) setFailed(logoUrl);
+    else settleLogoFit(logoUrl, element);
   }, [logoUrl]);
   return (
     <span
@@ -55,12 +126,25 @@ export function SecurityLogo({
       className={cn(
         "inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full",
         LOGO_SIZE[size].box,
-        showImage ? "bg-white" : BRAND[brandColor],
+        // White under the logo in both themes (iOS); the hairline keeps the circle on white cards.
+        showImage ? "border border-hairline bg-white" : BRAND[brandColor],
       )}
     >
       {showImage ? (
-        // eslint-disable-next-line @next/next/no-img-element -- remote issuer logos, cached by the browser
-        <img ref={image} src={logoUrl} alt="" className="size-full object-contain p-[12%]" onError={() => setFailed(logoUrl)} />
+        // eslint-disable-next-line @next/next/no-img-element -- same-origin issuer logos (`/api/logos/{issuer}`), cached by the CDN
+        <img
+          ref={image}
+          src={logoUrl}
+          alt=""
+          className={cn(
+            "size-full transition-opacity duration-base",
+            FIT_CLASS[fit ?? "contain"],
+            // Hidden until measured, so it never jumps from one fit to the other; without scripting it shows contained.
+            !fit && "[@media(scripting:enabled)]:opacity-0",
+          )}
+          onLoad={(event) => settleLogoFit(logoUrl, event.currentTarget)}
+          onError={() => setFailed(logoUrl)}
+        />
       ) : (
         <span className={cn("font-bold", LOGO_SIZE[size].monogram)}>
           {symbol.replaceAll("-", "").slice(0, 4)}
@@ -109,7 +193,7 @@ export function AssetRow({ symbol, name, price, change, bond, code, logoUrl, bra
   );
   const layout = "flex min-h-20 w-full items-center gap-2 py-3 desk:min-h-14 desk:py-2 max-[20rem]:flex-col max-[20rem]:items-start";
   return href ? (
-    <Link href={href} className={cn(layout, "rounded-small")} aria-description={t("openSecurityDetailsHint")}>
+    <Link href={href} className={cn(layout, "motion-tap rounded-small")} aria-description={t("openSecurityDetailsHint")}>
       {content}
     </Link>
   ) : (

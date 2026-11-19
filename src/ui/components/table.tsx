@@ -16,7 +16,9 @@ const ALIGN: Record<Align, string> = { left: "text-left", right: "text-right", c
 const EDGE = "first:pl-4 last:pr-4 desk:first:pl-6 desk:last:pr-6";
 
 export const TABLE_HEADER_CELL = cn("h-12 px-3 font-sans text-secondary font-normal whitespace-nowrap text-secondary-text", EDGE);
-export const TABLE_ROW = "relative border-b border-hairline last:border-b-0 transition-colors hover:bg-app-background/70";
+/** A faint fill under the pointer, a firmer one while a row link is pressed. */
+export const TABLE_ROW =
+  "relative border-b border-hairline last:border-b-0 transition-colors hover:bg-app-background/70 has-[a:active]:bg-app-background";
 export const TABLE_CELL = cn("h-15 px-3 align-middle font-display text-body text-primary-text", EDGE);
 
 export function DataTable({ className, ...props }: HTMLAttributes<HTMLTableElement>) {
@@ -38,7 +40,8 @@ export function TableHeaderCell({ align = "left", className, ...props }: ThHTMLA
 
 /**
  * A header cell whose label is a link that sorts by its column (state in the URL, so it works without JavaScript).
- * The sorted column carries `aria-sort`, the primary text colour and an arrow for the direction.
+ * The sorted column carries `aria-sort`, the primary text colour and an arrow for the direction. Every column keeps
+ * the arrow's place, so the arrow grows in on the sorted column and turns over when the direction flips.
  */
 export function TableSortHeader({
   label,
@@ -66,7 +69,7 @@ export function TableSortHeader({
         )}
       >
         {label}
-        {sort ? <Icon name={sort === "ascending" ? "arrow-up" : "arrow-down"} scale="s" /> : null}
+        <Icon name="arrow-up" scale="s" data-hidden={sort ? undefined : true} className={cn("motion-appear", sort === "descending" && "rotate-180")} />
       </Link>
     </th>
   );

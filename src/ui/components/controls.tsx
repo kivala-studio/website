@@ -7,8 +7,11 @@ import { Link, usePathname } from "@/i18n/navigation";
 
 import { cn } from "../cn";
 import { Icon, type IconName } from "../icons/icon";
+import { switchTheme } from "../motion/theme-transition";
+import { useEntrance } from "../motion/use-entrance";
+import { useSlidingIndicator } from "../motion/use-sliding-indicator";
 import { parseTheme, THEME_COOKIE, type Theme, THEMES } from "../theme/theme";
-import { SEGMENT_TRACK, segmentTone } from "./button-styles";
+import { INDICATOR_FILL, INDICATOR_IDLE, SEGMENT_TRACK, segmentTone } from "./button-styles";
 import { FIELD_FOCUS_WITHIN } from "./field-styles";
 import { Menu } from "./menu";
 
@@ -37,10 +40,13 @@ function useRovingKeys(
   return { refs, onKeyDown };
 }
 
-/** The page-level tab look (CoinStats): text tabs on a hairline, the current one bold with a 2 px accent underline. */
+/**
+ * The page-level tab look (CoinStats): text tabs on a hairline, the current one bold with a 2 px accent underline.
+ * The underline is the current tab's `::after`; `useSlidingIndicator` glides it to the next tab.
+ */
 const TAB_ROW = "flex gap-6";
 const TAB_LIST = cn(TAB_ROW, "overflow-x-auto border-b border-hairline [scrollbar-width:none]");
-const TAB = "relative inline-flex min-h-12 shrink-0 items-center font-display text-body desk:min-h-11";
+const TAB = "relative inline-flex min-h-12 shrink-0 items-center font-display text-body transition-colors desk:min-h-11";
 const TAB_CURRENT = "font-semibold text-primary-text after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:rounded-full after:bg-accent";
 const TAB_OTHER = "font-medium text-secondary-text hover:text-primary-text";
 
@@ -62,8 +68,9 @@ export function SectionTabs({
   className?: string;
 }) {
   const { refs, onKeyDown } = useRovingKeys(titles.length, selected, onSelect);
+  const list = useSlidingIndicator<HTMLDivElement>(selected, { selector: '[aria-selected="true"]', pseudo: "::after" });
   return (
-    <div role="tablist" aria-label={label} onKeyDown={onKeyDown} className={cn(TAB_LIST, className)}>
+    <div ref={list} role="tablist" aria-label={label} onKeyDown={onKeyDown} className={cn(TAB_LIST, className)}>
       {titles.map((title, index) => (
         <button
           key={title}
@@ -102,8 +109,9 @@ export function FilterTabs<T extends string>({
   /** Test id on each button. */
   testID?: string;
 }) {
+  const group = useSlidingIndicator<HTMLDivElement>(value, { selector: '[aria-pressed="true"]', pseudo: "::after" });
   return (
-    <div role="group" aria-label={label} className={TAB_LIST}>
+    <div ref={group} role="group" aria-label={label} className={TAB_LIST}>
       {options.map((option) => (
         <button
           key={option.value}
@@ -139,6 +147,7 @@ type NavTab = {
 /**
  * Text tabs that are links to sibling pages (page-level sections) or to filtered views of one page. The current one
  * carries `aria-current`. `bare` drops the list's own hairline, for a tab row that draws one under more than the tabs.
+ * The underline glides to the new tab, also when a route change renders the tabs again (remembered by `label`).
  */
 export function NavTabs({
   items,
@@ -154,12 +163,15 @@ export function NavTabs({
   className?: string;
 }) {
   const current = useLinkCurrent();
+  const states = items.map((item) =>
+    item.current !== undefined ? (item.current ? "true" : undefined) : typeof item.href === "string" ? current(item.href, item.exact) : undefined,
+  );
+  const list = useSlidingIndicator<HTMLUListElement>(states.join(), { selector: "[aria-current]", pseudo: "::after", memory: `tabs:${label}` });
   return (
     <nav aria-label={label} className={className}>
-      <ul className={bare ? TAB_ROW : TAB_LIST}>
-        {items.map((item) => {
-          const state =
-            item.current !== undefined ? (item.current ? "true" : undefined) : typeof item.href === "string" ? current(item.href, item.exact) : undefined;
+      <ul ref={list} className={bare ? TAB_ROW : TAB_LIST}>
+        {items.map((item, index) => {
+          const state = states[index];
           return (
             <li key={item.title} className="flex shrink-0">
               <Link {...linkProps} href={item.href} aria-current={state} className={cn(TAB, state ? TAB_CURRENT : TAB_OTHER)}>
@@ -173,7 +185,8 @@ export function NavTabs({
   );
 }
 
-type Option<T extends string> = { value: T; title: string; spoken?: string; disabled?: boolean };
+/** `leading`: a decorative mark before the title (a language's flag). */
+type Option<T extends string> = { value: T; title: string; spoken?: string; disabled?: boolean; leading?: ReactNode };
 
 export function OptionGroup<T extends string>({
   options,
@@ -198,8 +211,11 @@ export function OptionGroup<T extends string>({
     (index) => onChange(options[index].value),
     (index) => !options[index].disabled,
   );
+  // The selected fill (the raised segment, the soft range pill) glides from option to option.
+  const group = useSlidingIndicator<HTMLDivElement>(selected, { selector: '[aria-checked="true"]' });
   return (
     <div
+      ref={group}
       role="radiogroup"
       aria-label={label}
       onKeyDown={onKeyDown}
@@ -222,13 +238,23 @@ export function OptionGroup<T extends string>({
             tabIndex={isSelected ? 0 : -1}
             onClick={() => !option.disabled && !isSelected && onChange(option.value)}
             className={cn(
-              "min-h-11 px-2 transition-colors duration-200 motion-reduce:transition-none aria-disabled:opacity-42",
+              "motion-press min-h-11 px-2 aria-disabled:opacity-42",
               variant === "segmented"
                 ? cn("flex-1 rounded-small text-secondary font-semibold desk:rounded-[0.5rem] desk:font-medium", scroll && "min-w-11 shrink-0", segmentTone(isSelected), !isSelected && "hover:text-primary-text")
-                : cn("min-w-11 shrink-0 rounded-full text-caption font-semibold", isSelected ? "bg-accent-soft text-accent" : "text-secondary-text hover:text-primary-text"),
+                : cn(
+                    "min-w-11 shrink-0 rounded-full text-caption font-semibold",
+                    isSelected ? cn(INDICATOR_FILL, "text-accent before:bg-accent-soft") : cn(INDICATOR_IDLE, "text-secondary-text hover:text-primary-text"),
+                  ),
             )}
           >
-            {option.title}
+            {option.leading ? (
+              <span className="inline-flex items-center justify-center gap-2">
+                {option.leading}
+                {option.title}
+              </span>
+            ) : (
+              option.title
+            )}
           </button>
         );
       })}
@@ -279,7 +305,7 @@ export function TimeRangePicker({
 
 /** The search field look: 44 px, 12 px corners, a hairline border, the magnifier first. Shared with the palette button. */
 export const FIELD =
-  "flex min-h-12 items-center gap-2 rounded-medium border border-field-border bg-card-background pl-4 pr-1 text-secondary-text transition-[border-color,box-shadow] motion-reduce:transition-none desk:min-h-11 desk:pl-3";
+  "flex min-h-12 items-center gap-2 rounded-medium border border-field-border bg-card-background pl-4 pr-1 text-secondary-text transition-[border-color,box-shadow] desk:min-h-11 desk:pl-3";
 
 /** The keyboard hint chip at the end of a search field (`/`). */
 export function KeyHint({ children }: { children: ReactNode }) {
@@ -339,21 +365,32 @@ export function SearchField({
         className="min-w-0 flex-1 bg-transparent py-3 desk:py-2 text-body text-primary-text placeholder:text-secondary-text"
       />
       {value ? (
-        <button
-          type="button"
-          aria-label={t("clearAccessibility")}
-          onClick={() => {
+        <ClearButton
+          label={t("clearAccessibility")}
+          onClear={() => {
             onChange("");
             input.current?.focus();
           }}
-          className="flex size-11 items-center justify-center rounded-full"
-        >
-          <Icon name="close" scale="s" />
-        </button>
+        />
       ) : hint ? (
         <KeyHint>{hint}</KeyHint>
       ) : null}
     </div>
+  );
+}
+
+/** The search field's clear button: it grows in when typing starts (not when the page loads with a query). */
+function ClearButton({ label, onClear }: { label: string; onClear: () => void }) {
+  const entrance = useEntrance();
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      onClick={onClear}
+      className={cn("motion-press flex size-11 items-center justify-center rounded-full hover:text-primary-text", entrance && "motion-fade-in")}
+    >
+      <Icon name="close" scale="s" />
+    </button>
   );
 }
 
@@ -367,9 +404,12 @@ const subscribeTheme = (listener: () => void) => {
 function useTheme(initial: Theme): [Theme, (next: Theme) => void] {
   const theme = useSyncExternalStore(subscribeTheme, () => parseTheme(document.documentElement.dataset.theme), () => initial);
   const set = (next: Theme) => {
-    document.documentElement.dataset.theme = next;
     document.cookie = `${THEME_COOKIE}=${next}; path=/; max-age=31536000; samesite=lax`;
-    window.dispatchEvent(new Event(THEME_EVENT));
+    // One cross-fade of the whole page where the browser can (instant otherwise).
+    switchTheme(() => {
+      document.documentElement.dataset.theme = next;
+      window.dispatchEvent(new Event(THEME_EVENT));
+    });
   };
   return [theme, set];
 }

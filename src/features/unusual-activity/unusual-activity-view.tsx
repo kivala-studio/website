@@ -17,7 +17,9 @@ import { Button, IconButton } from "@/ui/components/buttons";
 import { Dialog } from "@/ui/components/dialog";
 import { Card, READING_COLUMN } from "@/ui/components/layout";
 import { SecurityLogo } from "@/ui/components/rows";
-import { EmptyState, ErrorState, LoadingState, SectionPlaceholder } from "@/ui/components/states";
+import { FlipList } from "@/ui/components/flip-list";
+import { EmptyState, ErrorState, FadeIn, LoadingState, SectionPlaceholder } from "@/ui/components/states";
+import { usePresenceValue } from "@/ui/motion/use-presence";
 import { useFormat } from "@/ui/format";
 
 import { UnusualActivityStore } from "./unusual-activity-store";
@@ -46,6 +48,7 @@ export function UnusualActivityView({ rows }: { rows: readonly CatalogueRow[] })
   const { state: load, refresh } = useUnusualActivity();
   const { refreshing } = load;
   const [settings, setSettings] = useState(false);
+  const sheet = usePresenceValue(settings);
 
   const snapshot = market.load.kind === "loaded" ? market.load.snapshot : undefined;
   const securities = useMemo(() => new Map((snapshot?.securities ?? []).map((security) => [security.id, security])), [snapshot]);
@@ -64,7 +67,7 @@ export function UnusualActivityView({ rows }: { rows: readonly CatalogueRow[] })
             {title}
           </h2>
         ) : null}
-        <ul className="flex flex-col divide-y divide-hairline">
+        <FlipList className="flex flex-col divide-y divide-hairline">
           {list.map((group) => (
             <GroupRow
               key={group.securityID}
@@ -75,7 +78,7 @@ export function UnusualActivityView({ rows }: { rows: readonly CatalogueRow[] })
               line={(event) => ({ signal: unusualSignal(event, tools), sentence: unusualSentence(event, tools) })}
             />
           ))}
-        </ul>
+        </FlipList>
       </section>
     );
 
@@ -87,7 +90,14 @@ export function UnusualActivityView({ rows }: { rows: readonly CatalogueRow[] })
           {sessionDate ? <p className="text-secondary text-secondary-text">{format.civilDate(sessionDate)}</p> : null}
         </div>
         <div className="order-first ml-auto flex items-center gap-2 sm:order-none">
-          <IconButton icon="refresh" label={t("common.refresh")} disabled={refreshing} onClick={refresh} data-testid="unusual-refresh" />
+          <IconButton
+            icon="refresh"
+            label={t("common.refresh")}
+            disabled={refreshing}
+            onClick={refresh}
+            className={cn(refreshing && "[&>svg]:motion-spin")}
+            data-testid="unusual-refresh"
+          />
           {account ? (
             <IconButton icon="notification" label={t("unusualActivity.settings.notifications")} onClick={() => setSettings(true)} data-testid="unusual-settings" />
           ) : null}
@@ -108,20 +118,22 @@ export function UnusualActivityView({ rows }: { rows: readonly CatalogueRow[] })
       ) : groups.length === 0 ? (
         <EmptyState icon="chart" title={t("unusualActivity.empty")} message={t("unusualActivity.disclaimer")} />
       ) : (
-        <Card className="flex flex-col gap-2 py-2!" data-testid="unusual-activity">
-          {followed.length > 0 ? (
-            <>
-              {section(t("common.watchlist"), followed, "unusual-followed")}
-              {section(t("common.market"), others, "unusual-market")}
-            </>
-          ) : (
-            section(null, others, "unusual-market")
-          )}
-        </Card>
+        <FadeIn>
+          <Card className="flex flex-col gap-2 py-2!" data-testid="unusual-activity">
+            {followed.length > 0 ? (
+              <>
+                {section(t("common.watchlist"), followed, "unusual-followed")}
+                {section(t("common.market"), others, "unusual-market")}
+              </>
+            ) : (
+              section(null, others, "unusual-market")
+            )}
+          </Card>
+        </FadeIn>
       )}
       {load.status === "loaded" && groups.length > 0 ? <p className="text-caption text-tertiary-text">{t("unusualActivity.disclaimer")}</p> : null}
 
-      {settings ? <NotificationSheet onClose={() => setSettings(false)} /> : null}
+      {sheet.value ? <NotificationSheet key={sheet.key} open={sheet.open} onClose={() => setSettings(false)} /> : null}
     </div>
   );
 }
@@ -150,7 +162,7 @@ function GroupRow({
     </span>
   );
   return (
-    <li className="flex flex-col pb-4" data-testid="unusual-group" data-security={group.securityID}>
+    <li className="flex flex-col pb-4" data-testid="unusual-group" data-security={group.securityID} data-flip-key={group.securityID}>
       {known ? (
         <Link href={`/mercado/${encodeURIComponent(group.symbol)}`} prefetch={false} className="flex min-h-16 min-w-0 items-center gap-3 rounded-small py-3 desk:py-2">
           <SecurityLogo symbol={group.symbol} logoUrl={row?.logoURL ?? security?.logoURL} brandColor={row?.bond ? "violet" : "blue"} />
@@ -191,7 +203,7 @@ function GroupRow({
 }
 
 /** The bell: the same switches as Settings → Notificações. */
-function NotificationSheet({ onClose }: { onClose: () => void }) {
+function NotificationSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const t = useTranslations();
   const store = useAccountStores()!.preferences;
   const state = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
@@ -203,7 +215,7 @@ function NotificationSheet({ onClose }: { onClose: () => void }) {
   }, [store]);
 
   return (
-    <Dialog open onClose={onClose} title={t("unusualActivity.title")}>
+    <Dialog open={open} onClose={onClose} title={t("unusualActivity.title")}>
       <div className="flex flex-col" data-testid="unusual-notification-settings">
         {state.preferences ? (
           <UnusualActivitySwitches preferences={state.preferences.unusual} store={store} />

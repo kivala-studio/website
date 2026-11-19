@@ -9,6 +9,7 @@ export interface PickerInstrument {
   readonly name: string;
   readonly issuer: string;
   readonly kind: SecurityKind;
+  readonly logoURL?: string;
 }
 
 /** Without a search the picker shows this many, in name order (iOS). */

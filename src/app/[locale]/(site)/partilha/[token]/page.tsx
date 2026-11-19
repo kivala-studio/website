@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { requestTime } from "@/data/clock";
+import { issuerLogoURL } from "@/data/market/logos";
 import { getPublicCatalogue } from "@/data/market/public-cache";
 import { fetchSharedPortfolio, isShareToken } from "@/data/portfolio/shared-portfolio";
 import { isBondKind } from "@/domain/market";
@@ -66,6 +67,7 @@ export default async function SharedPortfolioPage({ params }: Props) {
       securityType: instrument.securityType,
       bond: isBondKind(instrument.kind),
       currency: instrument.currency ?? "AOA",
+      logoURL: issuerLogoURL(instrument.issuerID),
     }));
 
   return (

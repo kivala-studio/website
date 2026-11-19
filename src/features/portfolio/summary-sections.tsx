@@ -3,7 +3,7 @@
 import Decimal from "decimal.js";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useId, useMemo, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 
 import { parseAmount } from "@/domain/format/amount-input";
 import { luandaCivilDate } from "@/domain/format/date";
@@ -23,6 +23,11 @@ import { Dialog } from "@/ui/components/dialog";
 import { HiddenValue } from "@/ui/components/feedback";
 import { Card, StatTile } from "@/ui/components/layout";
 import { useFormat } from "@/ui/format";
+import { AnimatedText } from "@/ui/components/animated-value";
+import { FlipList } from "@/ui/components/flip-list";
+import { usePresenceValue } from "@/ui/motion/use-presence";
+import { useChartMotion } from "@/ui/motion/use-chart-motion";
+import { useEntrance } from "@/ui/motion/use-entrance";
 
 import { useSelectionTitle } from "./book-menu";
 import { Private, toneOf } from "./portfolio-ui";
@@ -30,14 +35,16 @@ import type { PortfolioModel } from "./use-portfolio";
 
 const CASH_TITLES: Record<CashKind, string> = { deposit: "cash.kind.deposit", withdrawal: "cash.kind.withdrawal", fee: "cash.kind.fee" };
 
-/** A personal figure in a stat tile; `tone` colours a change. */
+/** A personal figure in a stat tile; `tone` colours a change. The figure rolls when it changes. */
 export function Metric({ title, value, tone, testID }: { title: string; value: string; tone?: string; testID?: string }) {
   return (
     <StatTile
       label={title}
       value={
-        <Private className={cn("tabular-nums", tone)}>
-          <span data-testid={testID}>{value}</span>
+        <Private className={cn("tabular-nums transition-colors", tone)}>
+          <span data-testid={testID}>
+            <AnimatedText text={value} className="inline-block" />
+          </span>
         </Private>
       }
     />
@@ -53,6 +60,8 @@ export function CashSection({ model }: { model: PortfolioModel }) {
   const account = useAccount();
   const [editing, setEditing] = useState(false);
   const [listing, setListing] = useState(false);
+  const editor = usePresenceValue(editing);
+  const movements = usePresenceValue(listing);
   const { cash, cashSummary, summary, valueState } = model;
   const noQuotes = valueState === "unavailable" || valueState === "pending";
   const total = summary.currentValue.plus(cashSummary.balance);
@@ -91,14 +100,14 @@ export function CashSection({ model }: { model: PortfolioModel }) {
           />
         </dl>
       )}
-      {editing ? <CashEditor model={model} onClose={() => setEditing(false)} /> : null}
-      {listing ? <MovementsDialog model={model} onAdd={add} onClose={() => setListing(false)} /> : null}
+      {editor.value ? <CashEditor key={editor.key} open={editor.open} model={model} onClose={() => setEditing(false)} /> : null}
+      {movements.value ? <MovementsDialog key={movements.key} open={movements.open} model={model} onAdd={add} onClose={() => setListing(false)} /> : null}
     </Card>
   );
 }
 
 /** `Registar dinheiro`: deposit, withdrawal or fee; one id per editor, so a repeated save stores one movement. */
-function CashEditor({ model, onClose }: { model: PortfolioModel; onClose: () => void }) {
+function CashEditor({ open, model, onClose }: { open: boolean; model: PortfolioModel; onClose: () => void }) {
   const t = useTranslations();
   const ids = { amount: useId(), date: useId() };
   const [id] = useState(() => crypto.randomUUID());
@@ -121,7 +130,7 @@ function CashEditor({ model, onClose }: { model: PortfolioModel; onClose: () => 
   };
   return (
     <Dialog
-      open
+      open={open}
       onClose={onClose}
       title={t("cash.add")}
       footer={
@@ -167,12 +176,12 @@ function CashEditor({ model, onClose }: { model: PortfolioModel; onClose: () => 
 }
 
 /** `Movimentos`: newest first, signed amounts, each with `Apagar`. */
-function MovementsDialog({ model, onAdd, onClose }: { model: PortfolioModel; onAdd: () => void; onClose: () => void }) {
+function MovementsDialog({ open, model, onAdd, onClose }: { open: boolean; model: PortfolioModel; onAdd: () => void; onClose: () => void }) {
   const t = useTranslations();
   const format = useFormat();
   return (
     <Dialog
-      open
+      open={open}
       onClose={onClose}
       title={t("cash.movements")}
       footer={
@@ -181,9 +190,9 @@ function MovementsDialog({ model, onAdd, onClose }: { model: PortfolioModel; onA
         </Button>
       }
     >
-      <ul className="flex flex-col divide-y divide-separator" data-testid="cash-list">
+      <FlipList className="flex flex-col divide-y divide-separator" data-testid="cash-list">
         {model.cash.map((movement) => (
-          <li key={movement.id} className="flex min-h-14 items-center gap-3 py-2" data-testid="cash-row">
+          <li key={movement.id} data-flip-key={movement.id} className="flex min-h-14 items-center gap-3 py-2" data-testid="cash-row">
             <span className="flex min-w-0 flex-1 flex-col">
               <span className="text-body text-primary-text">{t(CASH_TITLES[movement.kind] as never)}</span>
               <span className="text-caption text-secondary-text">{format.civilDate(movement.occurredOn)}</span>
@@ -194,7 +203,7 @@ function MovementsDialog({ model, onAdd, onClose }: { model: PortfolioModel; onA
             </Button>
           </li>
         ))}
-      </ul>
+      </FlipList>
     </Dialog>
   );
 }
@@ -260,19 +269,19 @@ export function BenchmarkSection({ model, points, quotes }: { model: PortfolioMo
                     <span aria-hidden className="h-0.5 w-4 bg-accent" />
                     {t("common.portfolio")}
                   </dt>
-                  <dd className="tabular-nums text-primary-text">{hidden ? <HiddenValue /> : format.currency(last!.value)}</dd>
+                  <dd className="tabular-nums text-primary-text">{hidden ? <HiddenValue /> : <AnimatedText text={format.currency(last!.value)} numeric={last!.value.toString()} className="inline-block" />}</dd>
                 </div>
                 <div className="flex items-baseline justify-between gap-3">
                   <dt className="flex items-center gap-2 text-primary-text">
                     <span aria-hidden className="w-4 border-t-2 border-dashed border-secondary-text" />
                     {`${t(RATE_TITLES[quote!.rate] as never)} · ${format.percent(quote!.value, { signed: false })}`}
                   </dt>
-                  <dd className="tabular-nums text-primary-text">{hidden ? <HiddenValue /> : format.currency(reference!.value)}</dd>
+                  <dd className="tabular-nums text-primary-text">{hidden ? <HiddenValue /> : <AnimatedText text={format.currency(reference!.value)} numeric={reference!.value.toString()} className="inline-block" />}</dd>
                 </div>
                 <div className="flex items-baseline justify-between gap-3">
                   <dt className="text-primary-text">{t("benchmark.difference")}</dt>
-                  <dd className={cn("font-semibold tabular-nums", difference && difference.gte(0) ? "text-positive" : "text-negative")} data-testid="benchmark-difference">
-                    {hidden ? <HiddenValue /> : format.currency(difference!, { signed: true })}
+                  <dd className={cn("font-semibold tabular-nums transition-colors", difference && difference.gte(0) ? "text-positive" : "text-negative")} data-testid="benchmark-difference">
+                    {hidden ? <HiddenValue /> : <AnimatedText text={format.currency(difference!, { signed: true })} numeric={difference!.toString()} className="inline-block" />}
                   </dd>
                 </div>
               </dl>
@@ -286,10 +295,12 @@ export function BenchmarkSection({ model, points, quotes }: { model: PortfolioMo
 
 const CHART = { width: 320, height: 160, axis: 52 };
 
-/** Portfolio (solid, accent) against the benchmark (dashed); compact value labels on the trailing edge. */
+/** Portfolio (solid, accent) against the benchmark (dashed); compact value labels on the trailing edge. Another rate cross-fades the lines. */
 function BenchmarkChart({ portfolio, benchmark }: { portfolio: readonly ValuePoint[]; benchmark: readonly ValuePoint[] }) {
   const t = useTranslations();
   const format = useFormat();
+  const series = useRef<SVGGElement>(null);
+  const ghost = useRef<SVGGElement>(null);
   const { paths, ticks } = useMemo(() => {
     const values = [...portfolio, ...benchmark].map((point) => point.value);
     let low = Decimal.min(...values);
@@ -306,15 +317,19 @@ function BenchmarkChart({ portfolio, benchmark }: { portfolio: readonly ValuePoi
       ticks: [high, low.plus(span.div(2)), low].map((value) => ({ y: y(value).toFixed(2), label: format.chartAxis(value) })),
     };
   }, [portfolio, benchmark, format]);
+  useChartMotion(series, ghost, paths.join(), { draw: useEntrance() });
   return (
     <svg role="img" aria-label={t("benchmark.title")} viewBox={`0 0 ${CHART.width} ${CHART.height}`} className="h-40 w-full" data-testid="benchmark-chart">
-      {ticks.map((tick) => (
-        <text key={tick.y} x={CHART.width} y={tick.y} textAnchor="end" dominantBaseline="middle" className="fill-secondary-text text-[10px]">
-          {tick.label}
-        </text>
-      ))}
-      <path d={paths[1]} fill="none" strokeWidth={1.5} strokeDasharray="4 3" vectorEffect="non-scaling-stroke" className="stroke-secondary-text" />
-      <path d={paths[0]} fill="none" strokeWidth={2} vectorEffect="non-scaling-stroke" className="stroke-accent" />
+      <g ref={series}>
+        {ticks.map((tick) => (
+          <text key={tick.y} x={CHART.width} y={tick.y} textAnchor="end" dominantBaseline="middle" className="fill-secondary-text text-[10px]">
+            {tick.label}
+          </text>
+        ))}
+        <path d={paths[1]} fill="none" strokeWidth={1.5} strokeDasharray="4 3" vectorEffect="non-scaling-stroke" className="stroke-secondary-text" />
+        <path d={paths[0]} fill="none" strokeWidth={2} vectorEffect="non-scaling-stroke" className="stroke-accent" />
+      </g>
+      <g ref={ghost} />
     </svg>
   );
 }

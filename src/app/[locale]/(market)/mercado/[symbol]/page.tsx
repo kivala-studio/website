@@ -4,8 +4,9 @@ import { notFound } from "next/navigation";
 
 import { serverEnv } from "@/config/server-env";
 import { encodePoints } from "@/data/market/history-wire";
+import { issuerLogoURL } from "@/data/market/logos";
 import { getPublicDailyHistory, getPublicDividend, getPublicIssuer, getPublicReports } from "@/data/market/public-cache";
-import { isBondKind } from "@/domain/market";
+import { isBondKind, resolvedLogoURL } from "@/domain/market";
 import { civilDate } from "@/domain/market/zone";
 import { AboutPanel, BondFacts, type IssuerData } from "@/features/market/instrument/instrument-sections";
 import { type InstrumentData, InstrumentView } from "@/features/market/instrument/instrument-view";
@@ -69,7 +70,7 @@ export default async function InstrumentPage({ params }: Props) {
     currency: instrument.currency ?? "AOA",
     isin: instrument.isin,
     issuerName: issuer?.name,
-    logoURL: issuer?.logoURL,
+    logoURL: issuer && resolvedLogoURL(issuer) ? issuerLogoURL(issuer.id) : undefined,
     close: close && {
       price: close.price.toString(),
       date: civilDate(close.tradingDate),

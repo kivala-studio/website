@@ -6,6 +6,7 @@ import type { Insight } from "@/domain/intelligence/models";
 import type { PortfolioTransaction } from "@/domain/portfolio/models";
 import { usePrivacyMode } from "@/features/privacy/privacy-mode";
 import { Dialog } from "@/ui/components/dialog";
+import { usePresenceValue } from "@/ui/motion/use-presence";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
 
@@ -31,8 +32,9 @@ export function PortfolioInsights({ transactions, section }: { transactions: rea
   const intelligence = useIntelligence();
   const reading = usePortfolioReading(transactions);
   const [open, setOpen] = useState<PortfolioTile | null>(null);
+  const detail = usePresenceValue(open);
   const tiles = portfolioTiles(reading.insights, section, hides, format, t).filter((tile) => SECTION_TILES[section].includes(tile.id));
-  if (!intelligence || hides || (tiles.length === 0 && !open)) return null;
+  if (!intelligence || hides || (tiles.length === 0 && !detail.value)) return null;
   const show = (tile: PortfolioTile) => {
     setOpen(tile);
     void intelligence.coordinator.consume(tile.insight, "portfolio");
@@ -51,7 +53,7 @@ export function PortfolioInsights({ transactions, section }: { transactions: rea
             onClick={() => show(tile)}
             data-testid="portfolio-insight"
             data-tile={tile.id}
-            className="flex min-h-11 flex-col items-start gap-1 rounded-medium border border-hairline px-4 py-3 text-left transition-colors hover:bg-app-background/70"
+            className="flex min-h-11 flex-col items-start gap-1 rounded-medium border border-hairline px-4 py-3 text-left motion-tap hover:bg-app-background/70"
           >
             <span className="text-caption text-secondary-text">{tile.title}</span>
             <span className="text-headline text-primary-text tabular-nums">{tile.value}</span>
@@ -59,20 +61,20 @@ export function PortfolioInsights({ transactions, section }: { transactions: rea
           </button>
         ))}
       </div>
-      {open ? <PortfolioInsightDetail tile={open} onClose={() => setOpen(null)} /> : null}
+      {detail.value ? <PortfolioInsightDetail key={detail.key} open={detail.open} tile={detail.value} onClose={() => setOpen(null)} /> : null}
     </section>
   );
 }
 
 /** "Detalhe da carteira" (iOS `PortfolioInsightDetails`): the positions behind a tile, the closes it used and its limits. */
-function PortfolioInsightDetail({ tile, onClose }: { tile: PortfolioTile; onClose: () => void }) {
+function PortfolioInsightDetail({ open, tile, onClose }: { open: boolean; tile: PortfolioTile; onClose: () => void }) {
   const t = useTranslate();
   const format = useFormat();
   const hides = usePrivacyMode();
   const fact = tile.insight.fact;
 
   return (
-    <Dialog open onClose={onClose} title={t("portfolio.insightDetails.title")}>
+    <Dialog open={open} onClose={onClose} title={t("portfolio.insightDetails.title")}>
       <div className="flex flex-col gap-6" data-testid="portfolio-insight-detail">
         {hides ? (
           <p className="text-body text-primary-text">{t("portfolio.insightDetails.privacyHidden")}</p>
@@ -172,10 +174,10 @@ function Approximate({ insight }: { insight: Insight }) {
         </p>
         <p className="text-caption text-secondary-text">{t("portfolio.insightDetails.approximateMessage")}</p>
       </section>
-      <details className="group flex flex-col gap-2" data-testid="portfolio-insight-sources">
+      <details className="motion-details group flex flex-col gap-2" data-testid="portfolio-insight-sources">
         <summary className="flex min-h-11 cursor-pointer items-center justify-between gap-3 text-body font-semibold text-primary-text">
           {t("portfolio.insightDetails.sourcesTitle")}
-          <Icon name="chevron-down" className="transition-transform group-open:rotate-180" />
+          <Icon name="chevron-down" className="motion-turn group-open:rotate-180" />
         </summary>
         <p className="text-caption text-secondary-text">{t("portfolio.insightDetails.sourcesRecords")}</p>
         <p className="text-caption text-secondary-text">{t("portfolio.insightDetails.sourcesExclusions")}</p>

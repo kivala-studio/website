@@ -26,7 +26,8 @@ import { buttonClass, iconButtonClass } from "@/ui/components/button-styles";
 import { NavTabs, SearchField } from "@/ui/components/controls";
 import { Card } from "@/ui/components/layout";
 import { SecurityLogo } from "@/ui/components/rows";
-import { EmptyState } from "@/ui/components/states";
+import { FlipList } from "@/ui/components/flip-list";
+import { EmptyState, FadeIn } from "@/ui/components/states";
 import { DataTable, TableCell, TableHead, TableNameCell, TableRow, TableSortHeader } from "@/ui/components/table";
 import { Icon } from "@/ui/icons/icon";
 
@@ -54,7 +55,7 @@ export type MarketBrowserLink = { href: string; title: string };
  * The market list (iOS Markets master): category tabs with the search and sort beside them, the result count and
  * the table. Filtering and sorting are the W2 discovery rules, applied to the store's snapshot once it loads and to
  * the server's catalogue before that, so the list renders (and filters, as plain links and a GET form) without
- * JavaScript.
+ * JavaScript. Another sort, category or search: rows that stay glide to their new places and new ones fade in.
  */
 export function MarketBrowser({ rows, renderedAt, links = [] }: { rows: CatalogueRow[]; renderedAt: number; links?: MarketBrowserLink[] }) {
   const t = useTranslations();
@@ -123,17 +124,17 @@ export function MarketBrowser({ rows, renderedAt, links = [] }: { rows: Catalogu
         </p>
         {/* From 768 px every column header is a sort link, so the menu and the direction button are for narrower lists. */}
         <div className="flex shrink-0 items-center gap-2 md:hidden">
-          <details className="relative shrink-0">
+          <details className="group relative shrink-0">
             <summary
               aria-label={t("markets.accessibility.sortBy", { arg1: translate(MARKET_SORT_LABEL_KEYS[query.sortKey]) })}
               className={buttonClass("outline", "cursor-pointer list-none gap-1! px-3! [&::-webkit-details-marker]:hidden", "compact")}
             >
               {translate(MARKET_SORT_LABEL_KEYS[query.sortKey])}
-              <Icon name="chevron-down" scale="s" className="text-secondary-text" />
+              <Icon name="chevron-down" scale="s" className="motion-turn text-secondary-text group-open:rotate-180" />
             </summary>
             <ul
               aria-label={t("markets.picker.sortBy")}
-              className="absolute right-0 z-20 mt-1 flex min-w-44 flex-col rounded-medium border border-card-border bg-card-background p-1 shadow-panel"
+              className="motion-pop absolute right-0 z-20 origin-top-right mt-1 flex min-w-44 flex-col rounded-medium border border-card-border bg-card-background p-1 shadow-panel"
             >
               {MARKET_SORT_KEYS.map((key) => (
                 <li key={key}>
@@ -166,7 +167,7 @@ export function MarketBrowser({ rows, renderedAt, links = [] }: { rows: Catalogu
       </div>
 
       {results.length === 0 ? (
-        <div className="py-10">
+        <FadeIn className="py-10">
           <EmptyState
             icon={!hasListed && !hasSearch ? "chart" : "search"}
             title={!hasListed && !hasSearch ? t("common.noInstruments") : t("common.noResults")}
@@ -185,7 +186,7 @@ export function MarketBrowser({ rows, renderedAt, links = [] }: { rows: Catalogu
               ) : undefined
             }
           />
-        </div>
+        </FadeIn>
       ) : (
         <Card flush className="overflow-hidden panel">
           <DataTable className="table-fixed" data-testid="market-table">
@@ -207,14 +208,14 @@ export function MarketBrowser({ rows, renderedAt, links = [] }: { rows: Catalogu
                 className="hidden w-36 md:table-cell"
               />
             </TableHead>
-            <tbody>
+            <FlipList as="tbody">
               {results.map((security) => {
                 const row = byID.get(security.id);
                 const live = snapshot ? security : undefined;
                 const volume = live && hasUsableQuote(live, at) ? format.count(live.volume) : undefined;
                 const name = securityDisplayName(security);
                 return (
-                  <TableRow key={security.id} data-testid="market-row">
+                  <TableRow key={security.id} data-flip-key={security.id} data-testid="market-row">
                     <TableNameCell
                       logo={
                         <span className="flex shrink-0 max-[22.5rem]:hidden">
@@ -239,7 +240,7 @@ export function MarketBrowser({ rows, renderedAt, links = [] }: { rows: Catalogu
                   </TableRow>
                 );
               })}
-            </tbody>
+            </FlipList>
           </DataTable>
         </Card>
       )}

@@ -11,7 +11,7 @@ import { MARKET_CATEGORY_LABEL_KEYS } from "@/domain/market";
 import { reauthenticate } from "@/features/auth/reauthenticate";
 import { SignOutForm } from "@/features/auth/sign-out-form";
 import { cn } from "@/ui/cn";
-import { chipClass } from "@/ui/components/button-styles";
+import { INDICATOR_FILL, chipClass } from "@/ui/components/button-styles";
 import { Button, IconButton } from "@/ui/components/buttons";
 import { SearchField } from "@/ui/components/controls";
 import { Dialog } from "@/ui/components/dialog";
@@ -19,6 +19,10 @@ import { INPUT } from "@/ui/components/field-styles";
 import { SecurityLogo } from "@/ui/components/rows";
 import { EmptyState, ErrorState } from "@/ui/components/states";
 import { Icon } from "@/ui/icons/icon";
+import { FlipList } from "@/ui/components/flip-list";
+import { IconSwap } from "@/ui/components/motion";
+import { stepSlide, useChangeAnimation } from "@/ui/motion/use-change-animation";
+import { useSlidingIndicator } from "@/ui/motion/use-sliding-indicator";
 
 import { type SetupResult, completeSetup, saveSetupName, saveSetupWatchlist } from "./actions";
 
@@ -75,6 +79,17 @@ export function AccountSetup({ userID, initialName, instruments, watchedIDs }: P
     const timer = setTimeout(() => setAppliedSearch(search), SEARCH_DELAY_MS);
     return () => clearTimeout(timer);
   }, [search]);
+
+  // The step slides in from its side; the stored draft replacing the server's first render right after hydration does not.
+  const stepBody = useRef<HTMLDivElement>(null);
+  const settled = useRef(false);
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => (settled.current = true));
+    return () => cancelAnimationFrame(frame);
+  }, []);
+  useChangeAnimation(stepBody, draft.step, (_before, after) => (settled.current ? stepSlide(after === "name" ? -1 : 1) : null));
+  const progress = useSlidingIndicator<HTMLSpanElement>(draft.step, { selector: "[data-current]" });
+  const chips = useSlidingIndicator<HTMLDivElement>(draft.category, { selector: '[aria-pressed="true"]' });
 
   const step = useRef(draft.step);
   useEffect(() => {
@@ -149,10 +164,17 @@ export function AccountSetup({ userID, initialName, instruments, watchedIDs }: P
           <IconButton icon="arrow-left" label={t("onboarding.accessibility.backToName")} disabled={isWorking} onClick={() => flow.back()} className="bg-transparent" />
         )}
         <span className="flex-1" />
-        <span aria-hidden className="flex gap-2">
-          {[0, 1].map((index) => (
-            <span key={index} className={cn("h-1 w-6 rounded-full", index === (onName ? 0 : 1) ? "bg-accent" : "bg-separator")} />
-          ))}
+        <span ref={progress} aria-hidden className="flex gap-2">
+          {[0, 1].map((index) => {
+            const current = index === (onName ? 0 : 1);
+            return (
+              <span
+                key={index}
+                data-current={current || undefined}
+                className={cn("h-1 w-6 rounded-full bg-separator", current && cn(INDICATOR_FILL, "z-[1] before:bg-accent"))}
+              />
+            );
+          })}
         </span>
         <span className="text-caption text-secondary-text">
           <span aria-hidden>{t(onName ? "onboarding.step.progressFirst" : "onboarding.step.progressSecond")}</span>
@@ -167,7 +189,7 @@ export function AccountSetup({ userID, initialName, instruments, watchedIDs }: P
           void (onName ? advanceName(false) : finish(false));
         }}
       >
-        <div className="flex flex-1 flex-col gap-6 pt-8 pb-6">
+        <div ref={stepBody} className="flex flex-1 flex-col gap-6 pt-8 pb-6">
           <h1 ref={heading} tabIndex={-1} className="text-display text-primary-text outline-none">
             {t(onName ? "onboarding.step.nameTitle" : "onboarding.step.watchlistTitle")}
           </h1>
@@ -200,7 +222,7 @@ export function AccountSetup({ userID, initialName, instruments, watchedIDs }: P
           ) : (
             <div className="flex flex-col gap-4">
               <SearchField value={search} onChange={setSearch} placeholder={t("common.searchInstruments")} />
-              <div role="group" aria-label={t("news.information.categoryLabel")} className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+              <div ref={chips} role="group" aria-label={t("news.information.categoryLabel")} className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
                 {categories.map((category) => {
                   const chosen = category === draft.category;
                   return (
@@ -224,12 +246,12 @@ export function AccountSetup({ userID, initialName, instruments, watchedIDs }: P
               {results.length === 0 ? (
                 <EmptyState title={t("common.noResults")} message={t("onboarding.emptyState.noResultsMessage")} icon="search" />
               ) : (
-                <ul className="flex flex-col divide-y divide-hairline">
+                <FlipList className="flex flex-col divide-y divide-hairline">
                   {results.map((item) => {
                     const isWatched = watched.has(item.id);
                     const isSelected = draft.selectedIDs.includes(item.id);
                     return (
-                      <li key={item.id}>
+                      <li key={item.id} data-flip-key={item.id}>
                         <button
                           type="button"
                           aria-pressed={isSelected || isWatched}
@@ -240,22 +262,23 @@ export function AccountSetup({ userID, initialName, instruments, watchedIDs }: P
                             isSelected ? "bg-accent-soft" : "enabled:hover:bg-action-surface",
                           )}
                         >
-                          <SecurityLogo symbol={item.symbol} size="s" />
+                          <SecurityLogo symbol={item.symbol} logoUrl={item.logoURL} size="s" />
                           <span className="flex min-w-0 flex-1 flex-col">
                             <span className="font-display text-body font-semibold text-primary-text">{item.symbol}</span>
                             <span className="truncate text-secondary text-primary-text">{item.name}</span>
                             {isWatched ? <span className="text-caption text-secondary-text">{t("common.alreadyOnWatchlist")}</span> : null}
                           </span>
-                          <Icon
-                            name={isSelected || isWatched ? "check-circle" : "add"}
+                          <IconSwap
+                            icons={["add", "check-circle"]}
+                            show={isSelected || isWatched ? 1 : 0}
                             scale="l"
-                            className={isSelected || isWatched ? "text-accent" : "text-secondary-text"}
+                            className={cn("transition-colors", isSelected || isWatched ? "text-accent" : "text-secondary-text")}
                           />
                         </button>
                       </li>
                     );
                   })}
-                </ul>
+                </FlipList>
               )}
             </div>
           )}
@@ -263,7 +286,7 @@ export function AccountSetup({ userID, initialName, instruments, watchedIDs }: P
 
         <div className="sticky bottom-0 flex flex-col gap-2 bg-app-background pt-3 pb-4">
           {errorKey ? (
-            <p role="alert" className="flex items-start gap-2 text-secondary text-negative">
+            <p role="alert" className="motion-presence flex items-start gap-2 text-secondary text-negative">
               <Icon name="warning" className="mt-0.5" />
               <span>{t(errorKey as never)}</span>
             </p>

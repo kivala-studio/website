@@ -153,6 +153,18 @@ export async function readPublicIssuer(client: SupabaseClient, issuerID: string)
   };
 }
 
+/** Where an active issuer's logo comes from: its curated logo and its website, `https` only. */
+export type IssuerLogoSource = Pick<PublicIssuer, "id" | "logoURL" | "websiteURL">;
+
+/** Every active issuer's logo source (a handful of rows), so the logo route never queries per image. */
+export async function readIssuerLogoSources(client: SupabaseClient): Promise<IssuerLogoSource[]> {
+  const rows = unwrap(await client.from("issuers").select("id,logo_url,website_url").eq("is_active", true).limit(1000)) as Row[];
+  return rows.flatMap((row) => {
+    const id = text(row.id);
+    return id ? [{ id, logoURL: https(row.logo_url), websiteURL: https(row.website_url) }] : [];
+  });
+}
+
 /** M19: the latest declared dividend; the amount stays exact text. */
 export async function readPublicDividend(client: SupabaseClient, issuerID: string): Promise<PublicDividend | undefined> {
   const rows = unwrap(

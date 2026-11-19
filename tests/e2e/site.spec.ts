@@ -1,6 +1,8 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
+import { settled } from "./settled";
+
 // Portuguese is the default locale; without this, locale detection sends the browser to /en.
 test.use({ locale: "pt-AO" });
 
@@ -26,6 +28,8 @@ const FUNCTIONAL_COOKIES = ["theme", "NEXT_LOCALE"];
 async function seriousAxeIssues(page: Page) {
   // A value that changes rolls in over 0.25 s; axe would sample its contrast mid-animation.
   await page.emulateMedia({ reducedMotion: "reduce" });
+  // Content that arrives after load (the movers, a list) fades in, also with reduced motion.
+  await settled(page);
   const { violations } = await new AxeBuilder({ page }).analyze();
   return violations.filter((violation) => ["serious", "critical"].includes(violation.impact ?? "")).map((violation) => violation.id);
 }
@@ -96,8 +100,8 @@ test("language and theme switches work from the keyboard", async ({ page, contex
   await expect(page).toHaveURL(/\/en\/policy$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Privacy policy");
 
-  const theme = page.getByRole("radiogroup", { name: "Theme" });
-  await theme.getByRole("radio", { name: "Light" }).click();
+  await page.getByRole("banner").getByRole("button", { name: "Theme" }).click();
+  await page.getByRole("menuitemcheckbox", { name: "Light" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   expect((await context.cookies()).find((cookie) => cookie.name === "theme")?.value).toBe("light");
 });

@@ -23,6 +23,10 @@ import { DataTable, TableCell, TableHead, TableHeaderCell, TableNameCell, TableR
 import { ErrorState, InstrumentRowSkeleton, Skeleton } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
+import { AnimatedText } from "@/ui/components/animated-value";
+import { FlipList } from "@/ui/components/flip-list";
+import { Meter } from "@/ui/components/meter";
+import { useEntrance } from "@/ui/motion/use-entrance";
 
 import { BookMenu, ShareButton, useSelectionTitle } from "./book-menu";
 import { CsvTransfer } from "./csv-transfer";
@@ -133,8 +137,9 @@ function DashboardSkeleton() {
 
 function EmptyPortfolio({ onRecord }: { onRecord: () => void }) {
   const t = useTranslations();
+  const entrance = useEntrance();
   return (
-    <Card>
+    <Card className={entrance ? "motion-fade-in" : undefined}>
       <section className="mx-auto flex max-w-[480px] flex-col items-center gap-4 py-8 text-center" data-testid="portfolio-empty">
         <span className="flex size-18 items-center justify-center rounded-full bg-accent/12 text-accent">
           <Icon name="portfolio" className="size-8" />
@@ -158,13 +163,14 @@ function EmptyPortfolio({ onRecord }: { onRecord: () => void }) {
  * other tabs and sections as cards, two columns from 1280 px.
  */
 function Dashboard({ model, quotes }: { model: PortfolioModel; quotes: readonly BenchmarkQuote[] | null }) {
+  const entrance = useEntrance();
   const [range, setRange] = useState<RangeName>("oneMonth");
   const domainRange = RANGE_OF[range];
   const { series } = model;
   const { points, change } = useMemo(() => series(domainRange), [series, domainRange]);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={cn("flex flex-col gap-6", entrance && "motion-fade-in")}>
       <Summary model={model} change={change} points={points} range={range} onRange={setRange} />
       <Holdings model={model} />
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2 xl:items-start">
@@ -228,13 +234,18 @@ function Summary({
           ) : (
             <>
               <Private className="font-display text-[clamp(1.75rem,8vw,2.75rem)] leading-tight font-semibold tracking-tight text-primary-text">
-                <span data-testid="portfolio-value">{format.currency(summary.currentValue, { digits: 2 })}</span>
+                <span data-testid="portfolio-value">
+                  <AnimatedText text={format.currency(summary.currentValue, { digits: 2 })} numeric={summary.currentValue.toString()} className="inline-block" />
+                </span>
               </Private>
               {change ? (
-                <Private className={cn("flex items-center gap-1 font-display text-body font-semibold tabular-nums", toneOf(change.amount))}>
+                <Private className={cn("flex items-center gap-1 font-display text-body font-semibold tabular-nums transition-colors", toneOf(change.amount))}>
                   <span data-testid="portfolio-change">
-                    {format.currency(change.amount, { signed: true })}
-                    {change.percentage ? ` (${format.percent(change.percentage)})` : ""}
+                    <AnimatedText
+                      text={`${format.currency(change.amount, { signed: true })}${change.percentage ? ` (${format.percent(change.percentage)})` : ""}`}
+                      numeric={change.amount.toString()}
+                      className="inline-block"
+                    />
                   </span>
                 </Private>
               ) : points.length < 2 ? (
@@ -363,7 +374,7 @@ function Holdings({ model }: { model: PortfolioModel }) {
             {t("portfolio.positionContent.gainLoss")}
           </TableHeaderCell>
         </TableHead>
-        <tbody>
+        <FlipList as="tbody">
           {rows.map(({ id, valuation }) => {
             const instrument = model.instruments.get(id);
             const bond = instrument?.bond ?? false;
@@ -371,7 +382,7 @@ function Holdings({ model }: { model: PortfolioModel }) {
             const quantity = quantityText(position.quantity, instrument);
             const name = instrument ? nameBeyondSymbol(instrument.name, instrument.symbol) : undefined;
             return (
-              <TableRow key={id} data-testid="holding-row">
+              <TableRow key={id} data-flip-key={id} data-testid="holding-row">
                 <TableNameCell
                   href={`${PORTFOLIO_PATH}/${id}`}
                   linkProps={{ "aria-description": t("portfolio.accessibility.positionDetailsHint") }}
@@ -388,7 +399,11 @@ function Holdings({ model }: { model: PortfolioModel }) {
                   <Private>{quantity}</Private>
                 </TableCell>
                 <TableCell numeric className="max-lg:hidden" data-testid="holding-price">
-                  {valuation.currentPrice ? format.securityPrice(valuation.currentPrice, { bond }) : "—"}
+                  {valuation.currentPrice ? (
+                    <AnimatedText text={format.securityPrice(valuation.currentPrice, { bond })} numeric={valuation.currentPrice.toString()} live className="inline-block" />
+                  ) : (
+                    "—"
+                  )}
                 </TableCell>
                 <TableCell numeric className="max-xl:hidden">
                   <Private>{format.securityPrice(position.averagePurchasePrice, { bond })}</Private>
@@ -396,7 +411,9 @@ function Holdings({ model }: { model: PortfolioModel }) {
                 <TableCell numeric>
                   {valuation.currentValue ? (
                     <span className="flex flex-col items-end gap-0.5">
-                      <Private className="font-semibold">{format.currency(valuation.currentValue)}</Private>
+                      <Private className="font-semibold">
+                        <AnimatedText text={format.currency(valuation.currentValue)} numeric={valuation.currentValue.toString()} className="inline-block" />
+                      </Private>
                       {valuation.returnPercentage ? (
                         <Private className={cn("text-secondary tabular-nums sm:hidden", toneOf(valuation.returnPercentage))}>
                           {format.percent(valuation.returnPercentage)}
@@ -427,7 +444,7 @@ function Holdings({ model }: { model: PortfolioModel }) {
               </TableRow>
             );
           })}
-        </tbody>
+        </FlipList>
       </DataTable>
       {model.valueState === "partial" ? <p className="px-5 pt-3 pb-5 text-secondary text-warning desk:px-6">{t("portfolio.dashboard.partialValuesNotice")}</p> : null}
     </Card>
@@ -473,28 +490,23 @@ function AllocationList({ model }: { model: PortfolioModel }) {
       : []),
   ];
   return (
-    <ul className="flex flex-col gap-4" data-testid="allocation">
+    <FlipList className="flex flex-col gap-4" data-testid="allocation">
       {rows.map((row) => (
-        <li key={row.key} className="flex flex-col gap-2">
+        <li key={row.key} data-flip-key={row.key} className="flex flex-col gap-2">
           <div className="flex items-baseline gap-3">
             <span className="flex min-w-0 flex-1 flex-col">
               <span className="font-display text-body font-semibold text-primary-text">{row.title}</span>
               {row.subtitle ? <span className="truncate text-caption text-secondary-text">{row.subtitle}</span> : null}
             </span>
             <span className="flex flex-col items-end">
-              <span className="font-display text-body font-semibold text-primary-text">{format.number(row.percentage, { digits: 1 })}%</span>
-              <span className="text-caption text-secondary-text">{format.currency(row.currentValue)}</span>
+              <AnimatedText text={`${format.number(row.percentage, { digits: 1 })}%`} numeric={row.percentage.toString()} className="inline-block font-display text-body font-semibold text-primary-text" />
+              <AnimatedText text={format.currency(row.currentValue)} numeric={row.currentValue.toString()} className="inline-block text-caption text-secondary-text" />
             </span>
           </div>
-          <progress
-            max={100}
-            value={row.percentage.toNumber()}
-            aria-label={t("portfolio.allocationRow.portfolioWeight")}
-            className="h-1.5 w-full accent-accent"
-          />
+          <Meter value={row.percentage.toNumber()} label={t("portfolio.allocationRow.portfolioWeight")} />
         </li>
       ))}
-    </ul>
+    </FlipList>
   );
 }
 

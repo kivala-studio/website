@@ -33,6 +33,8 @@ import { Skeleton } from "@/ui/components/states";
 import type { Format } from "@/domain/format";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
+import { FlipList } from "@/ui/components/flip-list";
+import { usePresence } from "@/ui/motion/use-presence";
 
 /** The instrument an alerts dialog is about. `price`: the current price, when one is usable. */
 export type AlertTarget = { id: string; symbol: string; bond: boolean; currency: string; price?: Decimal };
@@ -102,6 +104,13 @@ export function AlertsDialog({ open, onClose, target }: { open: boolean; onClose
   const t = useTranslations();
   const stores = useAccountStores();
   const [editing, setEditing] = useState<AlertRule | "new" | null>(null);
+  // The content stays while the sheet leaves; each opening starts on the list.
+  const { mounted } = usePresence(open);
+  const [wasOpen, setWasOpen] = useState(open);
+  if (open !== wasOpen) {
+    setWasOpen(open);
+    if (open) setEditing(null);
+  }
 
   useEffect(() => {
     if (!open || !stores) return;
@@ -111,19 +120,19 @@ export function AlertsDialog({ open, onClose, target }: { open: boolean; onClose
     return () => controller.abort();
   }, [open, stores]);
 
-  const close = () => {
-    setEditing(null);
-    onClose();
-  };
+  const close = onClose;
 
   return (
     <Dialog open={open} onClose={close} title={editing ? t(editing === "new" ? "common.newAlert" : "alerts.form.editTitle") : `${t("common.alerts")} · ${target.symbol}`}>
-      {stores && open ? (
-        editing ? (
-          <AlertEditor key={editing === "new" ? "new" : editing.id} rule={editing === "new" ? null : editing} target={target} onDone={() => setEditing(null)} />
-        ) : (
-          <AlertList target={target} onEdit={setEditing} />
-        )
+      {stores && mounted ? (
+        // The list and the editor replace each other in place with a fade.
+        <div key={editing === null ? "list" : editing === "new" ? "new" : editing.id} className="motion-fade-in">
+          {editing ? (
+            <AlertEditor rule={editing === "new" ? null : editing} target={target} onDone={() => setEditing(null)} />
+          ) : (
+            <AlertList target={target} onEdit={setEditing} />
+          )}
+        </div>
       ) : null}
     </Dialog>
   );
@@ -161,6 +170,7 @@ function AlertList({ target, onEdit }: { target: AlertTarget; onEdit: (rule: Ale
   const alerts = useSyncExternalStore(stores.alerts.subscribe, stores.alerts.getSnapshot, stores.alerts.getSnapshot);
   const list = useSyncExternalStore(stores.watchlist.subscribe, stores.watchlist.getSnapshot, stores.watchlist.getSnapshot);
   const note = useDeliveryNote();
+  const noteShown = usePresence(note.visible);
   const rules = alerts.rules.filter((rule) => rule.securityID === target.id);
   const watched = list.order.includes(target.id);
   const translate = (key: string, values?: Record<string, string>) => t(key as never, values as never);
@@ -169,8 +179,12 @@ function AlertList({ target, onEdit }: { target: AlertTarget; onEdit: (rule: Ale
 
   return (
     <div className="flex flex-col gap-6" data-testid="alerts-panel">
-      {note.visible ? (
-        <div className="flex items-start gap-3 rounded-medium bg-accent-soft p-3 text-primary-text" data-testid="alerts-delivery-note">
+      {noteShown.mounted ? (
+        <div
+          {...noteShown.presenceProps}
+          className="motion-pop flex items-start gap-3 rounded-medium bg-accent-soft p-3 text-primary-text"
+          data-testid="alerts-delivery-note"
+        >
           <Icon name="info" className="mt-0.5 shrink-0 text-accent" />
           <p className="flex-1 text-secondary">{t("site.alerts.delivery")}</p>
           <IconButton icon="close" label={t("site.alerts.dismissDelivery")} onClick={note.dismiss} className="-my-2 -mr-2" />
@@ -199,13 +213,13 @@ function AlertList({ target, onEdit }: { target: AlertTarget; onEdit: (rule: Ale
         ) : rules.length === 0 ? (
           <p className="text-secondary text-secondary-text">{t("alerts.list.emptyTitle")}</p>
         ) : (
-          <ul className="flex flex-col divide-y divide-hairline" data-testid="alert-rules">
+          <FlipList className="flex flex-col divide-y divide-hairline" data-testid="alert-rules">
             {rules.map((rule) => {
               const title = translate(TITLE[rule.kind]);
               const value = thresholdText(rule, target, format, translate);
               const pending = alerts.pending.has(`alert.${rule.id}`);
               return (
-                <li key={rule.id} className="flex items-center gap-2 py-1" data-testid="alert-rule">
+                <li key={rule.id} data-flip-key={rule.id} className="flex items-center gap-2 py-1" data-testid="alert-rule">
                   <div className="min-w-0 flex-1">
                     <SwitchRow
                       label={value && !hidden ? `${title} ${value}` : title}
@@ -222,7 +236,7 @@ function AlertList({ target, onEdit }: { target: AlertTarget; onEdit: (rule: Ale
                 </li>
               );
             })}
-          </ul>
+          </FlipList>
         )}
         <Button icon="add" kind="secondary" onClick={() => onEdit("new")} disabled={alerts.status !== "loaded"} data-testid="new-alert">
           {t("common.newAlert")}
@@ -330,7 +344,7 @@ function AlertEditor({ rule, target, onDone }: { rule: AlertRule | null; target:
           />
         ) : null}
         {distance ? (
-          <p className="text-secondary text-secondary-text" aria-live="polite">
+          <p className="motion-fade-in text-secondary text-secondary-text" aria-live="polite">
             {distance.direction === "equal"
               ? t("alerts.form.sameAsCurrentPrice")
               : t(distance.direction === "above" ? "alerts.form.aboveCurrentPrice" : "alerts.form.belowCurrentPrice", {

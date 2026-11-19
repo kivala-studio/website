@@ -4,7 +4,7 @@ The invest.ao website's visual language, layout rules and component library. Eve
 
 | Page | What it covers |
 |---|---|
-| [theme.md](theme.md) | Colour tokens, type scale, radii, shadows, spacing, motion, dark mode, increased contrast, theme switching |
+| [theme.md](theme.md) | Colour tokens, type scale, radii, shadows, spacing, motion (the one reference for animation), dark mode, increased contrast, theme switching |
 | [layout.md](layout.md) | Breakpoints, `lg:` vs `desk:`, the page column, top bar, tab bar, footer, page templates, tables on phones, sticky and responsive rules |
 | [components.md](components.md) | Every shared component: when to use it, props, a minimal example, accessibility, do and don't |
 | [patterns.md](patterns.md) | Prices, numbers, privacy mode, states, copy, focus, illustrative visuals, icons, "see all", page actions |
@@ -15,7 +15,8 @@ The live library is `/dev/design` (`src/features/design-gallery/`), built only o
 
 | Layer | Files |
 |---|---|
-| Tokens | `src/ui/theme/tokens.css` (colours, shadows), `src/app/globals.css` (type, radii, `desk:`, `panel`, focus), `src/ui/theme/motion.css` |
+| Tokens | `src/ui/theme/tokens.css` (colours, shadows), `src/app/globals.css` (type, radii, `desk:`, `panel`, focus), `src/ui/theme/motion.css` (durations, curves, motion patterns) |
+| Motion hooks | `src/ui/motion/*` |
 | Primitives | `src/ui/components/*`, `src/ui/icons/*` |
 | Shell | `src/features/shell/*` (signed-in app), `src/features/site/chrome.tsx` (public site) |
 | Shared feature pieces | `src/features/market/browse/price-cell.tsx`, `src/features/market/browse/market-overview.tsx` (`CompactRow`, `MoverRow`), `src/features/settings/settings-ui.tsx`, `src/features/privacy/privacy-mode.tsx`, `src/features/portfolio/portfolio-ui.tsx` (`Private`, `toneOf`) |
@@ -48,4 +49,5 @@ The live library is `/dev/design` (`src/features/design-gallery/`), built only o
 6. Prices through `PriceCell`/`rowFigure` or the instrument page's validity logic; amounts as `Decimal` through `useFormat()`; personal figures through `Private` or `HiddenValue`.
 7. Every string from the message catalogue (`t("…")`); web-only strings in the `site` namespace. Client components need their keys shipped (`CLIENT_NAMESPACES` or `AREA_KEYS` in `src/i18n/client-messages.ts`).
 8. Loading, empty, error and stale states for every data block.
-9. Check at 320, 375, 768 and 1440 px, light and dark, `pt` and `en`, keyboard only and at 200 % zoom. Targets ≥ 44 px; buttons and links show the focus ring, fields the accent border and glow.
+9. Every state change animates with a pattern from [theme.md](theme.md#motion), with its reduced-motion fallback.
+10. Check at 320, 375, 768 and 1440 px, light and dark, `pt` and `en`, keyboard only and at 200 % zoom. Targets ≥ 44 px; buttons and links show the focus ring, fields the accent border and glow.

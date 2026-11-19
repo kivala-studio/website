@@ -62,7 +62,7 @@ export function PriceCell({
   if (figure.kind === "none") return <span className={cn("text-secondary whitespace-normal text-secondary-text", className)}>{t("common.priceUnconfirmed")}</span>;
   return (
     <span className={cn("flex flex-col items-end gap-1", className)}>
-      <FinancialValue value={figure.price} bond={bond} code={code} className={compact ? "text-secondary font-semibold" : "text-body font-semibold"} />
+      <FinancialValue value={figure.price} bond={bond} code={code} live={figure.kind === "current"} className={compact ? "text-secondary font-semibold" : "text-body font-semibold"} />
       {figure.kind === "close" ? (
         <span className="text-caption text-secondary-text">
           <span className="sr-only">{t(MARKET_MESSAGE_KEYS.price.lastVerifiedClose, { arg1: format.civilDate(figure.date) })}</span>

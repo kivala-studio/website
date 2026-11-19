@@ -9,8 +9,10 @@ import { IconButton } from "./buttons";
 /**
  * Modal built on <dialog>: focus is trapped, Escape closes, focus returns to the opener. Opening focuses
  * the first control, or a descendant marked `data-autofocus`.
- * `sheet` is a side panel on wide screens and a bottom sheet on phones (iOS sheets);
- * `dialog` is a centred window.
+ * `sheet` is a side panel on wide screens and a bottom sheet on phones (iOS sheets), sliding in from its edge;
+ * `dialog` is a centred window that rises and grows in. Both leave the same way where the browser keeps a closing
+ * dialog on top (`motion-sheet`, `motion-modal`), and the page is usable again the moment they close. Keep the
+ * component mounted and drive `open`, or the exit has nothing to play on.
  */
 export function Dialog({
   open,
@@ -47,17 +49,20 @@ export function Dialog({
     <dialog
       ref={ref}
       aria-labelledby={titleId}
+      // Gone for assistive technology and the pointer the moment it closes, while it plays its exit.
+      aria-hidden={!open || undefined}
+      inert={!open || undefined}
       onClose={onClose}
       onClick={(event) => {
         // A click on the backdrop lands on the <dialog> element itself.
         if (event.target === ref.current) onClose();
       }}
       className={cn(
-        "m-0 max-h-none max-w-none border-card-border bg-card-background p-0 text-primary-text shadow-panel backdrop:bg-black/40 open:flex open:flex-col",
+        // `fixed` keeps the closing dialog where it was while it leaves (it is no longer `:modal` then).
+        "fixed m-0 max-h-none max-w-none flex-col border-card-border bg-card-background p-0 text-primary-text shadow-panel backdrop:bg-black/40 open:flex",
         variant === "dialog"
-          ? "inset-0 m-auto max-h-[85dvh] w-[min(32rem,calc(100%-2rem))] rounded-card border"
-          : "inset-x-0 top-auto bottom-0 max-h-[92dvh] w-full rounded-t-card border-t md:inset-y-0 md:right-0 md:left-auto md:h-dvh md:max-h-none md:w-[28rem] md:rounded-none md:rounded-l-card md:border-t-0 md:border-l",
-        "motion-presence",
+          ? "motion-modal inset-0 m-auto max-h-[85dvh] w-[min(32rem,calc(100%-2rem))] rounded-card border"
+          : "motion-sheet inset-x-0 top-auto bottom-0 max-h-[92dvh] w-full rounded-t-card border-t md:inset-y-0 md:right-0 md:left-auto md:h-dvh md:max-h-none md:w-[28rem] md:rounded-none md:rounded-l-card md:border-t-0 md:border-l",
       )}
     >
       {/* The close button comes first in the DOM (the control `showModal` focuses) and sits at the end of the row. */}

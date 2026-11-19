@@ -269,7 +269,6 @@ export function keepingClosingReferenceOnly(security: MarketSecurity): MarketSec
     officialMarketVisibility: security.officialMarketVisibility,
     marketContextValidUntil: security.marketContextValidUntil,
     logoURL: security.logoURL,
-    issuerWebsiteURL: security.issuerWebsiteURL,
   };
 }
 

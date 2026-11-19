@@ -1,12 +1,13 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import type { ButtonHTMLAttributes, ComponentProps, ReactNode } from "react";
+import { type ButtonHTMLAttributes, type ComponentProps, type ReactNode, useRef } from "react";
 
 import { Link } from "@/i18n/navigation";
 
 import { cn } from "../cn";
 import { Icon, type IconName } from "../icons/icon";
+import { ICON_IN, useChangeAnimation } from "../motion/use-change-animation";
 import { type ButtonKind as Kind, type ButtonSize as Size, buttonClass, iconButtonClass } from "./button-styles";
 import { Spinner } from "./states";
 
@@ -22,10 +23,13 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 /**
  * Full-width pill button (iOS InvestButtonStyle + ActionButton). `className="w-auto!"` sizes it to its title (`cn` does not
- * merge classes, and Tailwind emits `w-full` after `w-auto`); `sm:w-auto` does so from 640 px.
+ * merge classes, and Tailwind emits `w-full` after `w-auto`); `sm:w-auto` does so from 640 px. A new icon (copy → check,
+ * the spinner giving way to the icon) grows in.
  */
 export function Button({ kind = "primary", size, icon, loading = false, className, children, onClick, ...props }: ButtonProps) {
   const t = useTranslations("components.button");
+  const glyph = useRef<SVGSVGElement>(null);
+  useChangeAnimation(glyph, loading ? undefined : icon, ICON_IN);
   return (
     <button
       type="button"
@@ -38,7 +42,7 @@ export function Button({ kind = "primary", size, icon, loading = false, classNam
       }}
       className={buttonClass(kind, className, size)}
     >
-      {loading ? <Spinner /> : icon ? <Icon name={icon} /> : null}
+      {loading ? <Spinner /> : icon ? <Icon ref={glyph} name={icon} /> : null}
       <span>{children}</span>
       {loading ? <span className="sr-only">{t("processing")}</span> : null}
     </button>
@@ -68,11 +72,13 @@ type IconButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children">
   variant?: "filled" | "plain" | "outline";
 };
 
-/** Circular icon-only button; the label is required. */
+/** Circular icon-only button; the label is required. A new icon (eye ↔ eye-off) grows in. */
 export function IconButton({ icon, label, variant = "filled", className, ...props }: IconButtonProps) {
+  const glyph = useRef<SVGSVGElement>(null);
+  useChangeAnimation(glyph, icon, ICON_IN);
   return (
     <button type="button" aria-label={label} title={label} {...props} className={iconButtonClass(variant, className)}>
-      <Icon name={icon} />
+      <Icon ref={glyph} name={icon} />
     </button>
   );
 }

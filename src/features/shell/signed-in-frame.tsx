@@ -28,7 +28,7 @@ export async function SignedInFrame({ account, children }: { account: SignedInAc
         <AccountSetup
           userID={account.id}
           initialName={account.name}
-          instruments={rows?.map(({ id, symbol, name, issuer, kind }) => ({ id, symbol, name, issuer, kind })) ?? null}
+          instruments={rows?.map(({ id, symbol, name, issuer, kind, logoURL }) => ({ id, symbol, name, issuer, kind, logoURL })) ?? null}
           watchedIDs={watched}
         />
       </AreaMessages>

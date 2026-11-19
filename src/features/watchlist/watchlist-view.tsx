@@ -21,6 +21,9 @@ import { EmptyState, InstrumentRowSkeleton, SectionPlaceholder } from "@/ui/comp
 import { WatchlistInsights } from "@/features/intelligence/watchlist-insights";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
+import { FlipList } from "@/ui/components/flip-list";
+import { FadeIn } from "@/ui/components/states";
+import { usePresence, usePresenceValue } from "@/ui/motion/use-presence";
 
 import { AddDialog } from "./add-dialog";
 import { FreeSelectionDialog } from "./free-selection-dialog";
@@ -82,6 +85,9 @@ export function WatchlistView({ rows, renderedAt }: { rows: readonly CatalogueRo
   const [alerting, setAlerting] = useState<string | null>(null);
   const [dragging, setDragging] = useState<string | null>(null);
   const [over, setOver] = useState<string | null>(null);
+  const choice = usePresenceValue(choosing && account.access !== undefined && account.access !== null);
+  const named = usePresenceValue(naming);
+  const alerted = usePresenceValue(alerting);
 
   useEffect(() => {
     void stores.watchlist.load(true);
@@ -195,6 +201,11 @@ export function WatchlistView({ rows, renderedAt }: { rows: readonly CatalogueRo
 
   const loaded = list.status === "loaded";
   const undone = list.undo;
+  // The undo bar slides away with its last message when it is used, dismissed or times out.
+  const undoBar = usePresence(undone !== null && undone !== undefined);
+  const [lastUndo, setLastUndo] = useState(undone);
+  if (undone && undone !== lastUndo) setLastUndo(undone);
+  const shownUndo = undone ?? lastUndo;
 
   return (
     <div className="flex flex-col gap-4">
@@ -289,18 +300,18 @@ export function WatchlistView({ rows, renderedAt }: { rows: readonly CatalogueRo
         </div>
       ) : null}
 
-      {undone ? (
-        <div role="status" className="panel flex items-center gap-2 py-1 pr-1 pl-5 desk:pl-6" data-testid="undo-bar">
-          <span className="flex-1 text-body text-primary-text">{t("watchlist.undo.removed", { arg1: symbol(undone.securityID) })}</span>
+      {undoBar.mounted && shownUndo ? (
+        <div role="status" {...undoBar.presenceProps} className="panel motion-pop flex items-center gap-2 py-1 pr-1 pl-5 desk:pl-6" data-testid="undo-bar">
+          <span className="flex-1 text-body text-primary-text">{t("watchlist.undo.removed", { arg1: symbol(shownUndo.securityID) })}</span>
           <button
             id="watchlist-undo"
             type="button"
-            onClick={() => stores.watchlist.undo(undone)}
-            className="min-h-11 rounded-full px-3 text-body font-semibold text-accent"
+            onClick={() => stores.watchlist.undo(shownUndo)}
+            className="motion-press min-h-11 rounded-full px-3 text-body font-semibold text-accent"
           >
             {t("watchlist.undo.button")}
           </button>
-          <IconButton icon="close" label={t("common.close")} onClick={() => stores.watchlist.discardUndo(undone)} />
+          <IconButton icon="close" label={t("common.close")} onClick={() => stores.watchlist.discardUndo(shownUndo)} />
         </div>
       ) : null}
 
@@ -333,6 +344,7 @@ export function WatchlistView({ rows, renderedAt }: { rows: readonly CatalogueRo
             <EmptyState icon="filter" title={group!.name} />
           </div>
         ) : (
+          <FadeIn>
           <DataTable className="table-fixed">
             <TableHead>
               <TableHeaderCell>{t("common.instrument")}</TableHeaderCell>
@@ -346,7 +358,7 @@ export function WatchlistView({ rows, renderedAt }: { rows: readonly CatalogueRo
               {/* The row actions have no column title. */}
               <td className="w-11 min-[22.5rem]:w-14 sm:w-30" />
             </TableHead>
-            <tbody>
+            <FlipList as="tbody">
               {visible.map((id) => {
                 const security = securities.get(id);
                 const row = byID.get(id);
@@ -379,6 +391,7 @@ export function WatchlistView({ rows, renderedAt }: { rows: readonly CatalogueRo
                   <TableRow
                     key={id}
                     {...drag}
+                    data-flip-key={id}
                     data-testid="watchlist-row"
                     className={cn(dragging === id && "opacity-50", over === id && dragging !== id && "bg-accent-soft")}
                   >
@@ -414,17 +427,20 @@ export function WatchlistView({ rows, renderedAt }: { rows: readonly CatalogueRo
                   </TableRow>
                 );
               })}
-            </tbody>
+            </FlipList>
           </DataTable>
+          </FadeIn>
         )}
       </section>
       {loaded && list.order.length > 0 && !group ? <WatchlistInsights /> : null}
 
       <AddDialog open={adding} onClose={() => setAdding(false)} rows={rows} renderedAt={renderedAt} />
-      {choosing && account.access ? <FreeSelectionDialog onClose={() => setChoosing(false)} rows={byID} /> : null}
-      {naming ? (
+      {choice.value ? <FreeSelectionDialog key={choice.key} open={choice.open} onClose={() => setChoosing(false)} rows={byID} /> : null}
+      {named.value ? (
         <GroupNameDialog
-          naming={naming}
+          key={named.key}
+          open={named.open}
+          naming={named.value}
           onClose={() => setNaming(null)}
           onSave={(name) => {
             if (!naming) return;
@@ -437,7 +453,7 @@ export function WatchlistView({ rows, renderedAt }: { rows: readonly CatalogueRo
           }}
         />
       ) : null}
-      {alerting ? <AlertsDialog open onClose={() => setAlerting(null)} target={alertTarget(alerting)} /> : null}
+      {alerted.value ? <AlertsDialog key={alerted.key} open={alerted.open} onClose={() => setAlerting(null)} target={alertTarget(alerted.value)} /> : null}
     </div>
   );
 }

@@ -10,11 +10,13 @@ import { cn } from "@/ui/cn";
 import { Button } from "@/ui/components/buttons";
 import { Dialog } from "@/ui/components/dialog";
 import { HiddenValue } from "@/ui/components/feedback";
+import { FlipList } from "@/ui/components/flip-list";
 import { Menu } from "@/ui/components/menu";
 import { DataTable, TableCell, TableHead, TableHeaderCell, TableRow } from "@/ui/components/table";
 import { Link } from "@/i18n/navigation";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
+import { usePresenceValue } from "@/ui/motion/use-presence";
 
 import type { SaveResult } from "./portfolio-store";
 import type { PortfolioInstrument } from "./use-portfolio";
@@ -96,6 +98,8 @@ export function useRecordDetail() {
 /**
  * The records table (CoinStats "Transactions"): instrument, date, kind, quantity, price and fees, with an
  * options menu per row. Below 768 px the row keeps the date and the masked detail line under the instrument.
+ * Rows glide when one is added or removed above them (`FlipList`); the delete confirmation lives with the table,
+ * so it leaves with its own motion after the row it deleted is gone.
  */
 export function RecordsTable({
   records,
@@ -113,42 +117,79 @@ export function RecordsTable({
   testID?: string;
 }) {
   const t = useTranslations();
+  const [confirming, setConfirming] = useState<PortfolioTransaction | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [refused, setRefused] = useState(false);
+  const confirm = usePresenceValue(confirming);
+  const remove = async () => {
+    if (!confirming) return;
+    setDeleting(true);
+    const result = await onDelete(confirming);
+    setDeleting(false);
+    if (result === "saved") setConfirming(null);
+    else if (result !== "failed") setRefused(true);
+  };
   return (
-    <DataTable data-testid={testID}>
-      <TableHead>
-        <TableHeaderCell>{showSymbol ? t("common.instrument") : t("common.date")}</TableHeaderCell>
-        {showSymbol ? <TableHeaderCell className="max-md:hidden">{t("common.date")}</TableHeaderCell> : null}
-        <TableHeaderCell className="max-md:hidden">{t("assetDetails.marketInfo.type")}</TableHeaderCell>
-        <TableHeaderCell align="right" className="max-md:hidden">
-          {t("common.quantity")}
-        </TableHeaderCell>
-        <TableHeaderCell align="right" className="max-md:hidden">
-          {t("common.price")}
-        </TableHeaderCell>
-        <TableHeaderCell align="right" className="max-lg:hidden">
-          {t("portfolio.form.fees")}
-        </TableHeaderCell>
-        <TableHeaderCell align="right">
-          <span className="sr-only">{t("portfolio.purchaseRow.options")}</span>
-        </TableHeaderCell>
-      </TableHead>
-      <tbody>
-        {records.map((record) => (
-          <RecordRow
-            key={record.id}
-            record={record}
-            instrument={instrument(record.securityId)}
-            showSymbol={showSymbol}
-            onEdit={() => onEdit(record)}
-            onDelete={() => onDelete(record)}
-          />
-        ))}
-      </tbody>
-    </DataTable>
+    <>
+      <DataTable data-testid={testID}>
+        <TableHead>
+          <TableHeaderCell>{showSymbol ? t("common.instrument") : t("common.date")}</TableHeaderCell>
+          {showSymbol ? <TableHeaderCell className="max-md:hidden">{t("common.date")}</TableHeaderCell> : null}
+          <TableHeaderCell className="max-md:hidden">{t("assetDetails.marketInfo.type")}</TableHeaderCell>
+          <TableHeaderCell align="right" className="max-md:hidden">
+            {t("common.quantity")}
+          </TableHeaderCell>
+          <TableHeaderCell align="right" className="max-md:hidden">
+            {t("common.price")}
+          </TableHeaderCell>
+          <TableHeaderCell align="right" className="max-lg:hidden">
+            {t("portfolio.form.fees")}
+          </TableHeaderCell>
+          <TableHeaderCell align="right">
+            <span className="sr-only">{t("portfolio.purchaseRow.options")}</span>
+          </TableHeaderCell>
+        </TableHead>
+        <FlipList as="tbody">
+          {records.map((record) => (
+            <RecordRow
+              key={record.id}
+              record={record}
+              instrument={instrument(record.securityId)}
+              showSymbol={showSymbol}
+              onEdit={() => onEdit(record)}
+              onDelete={() => (setRefused(false), setConfirming(record))}
+            />
+          ))}
+        </FlipList>
+      </DataTable>
+      {confirm.value ? (
+        <Dialog
+          key={confirm.key}
+          variant="dialog"
+          open={confirm.open}
+          onClose={() => setConfirming(null)}
+          title={t("portfolio.purchaseRow.deleteTitle")}
+          footer={
+            <div className="flex w-full flex-col gap-2 sm:flex-row-reverse">
+              <Button kind="destructive" className="w-full" loading={deleting} onClick={remove} data-testid="confirm-delete">
+                {t("common.deleteRecord")}
+              </Button>
+              <Button kind="secondary" className="w-full" onClick={() => setConfirming(null)}>
+                {t("common.cancel")}
+              </Button>
+            </div>
+          }
+        >
+          <p className={cn("text-body", refused ? "text-negative" : "text-primary-text")} role={refused ? "alert" : undefined}>
+            {refused ? t("portfolio.csvTransfer.invalidPortfolio") : t("portfolio.purchaseRow.deleteMessage")}
+          </p>
+        </Dialog>
+      ) : null}
+    </>
   );
 }
 
-/** One record: its columns, the masked detail line on phones, an options menu (edit, delete with confirmation). */
+/** One record: its columns, the masked detail line on phones, an options menu (edit, delete: the table confirms). */
 function RecordRow({
   record,
   instrument,
@@ -160,26 +201,16 @@ function RecordRow({
   instrument: PortfolioInstrument | undefined;
   showSymbol: boolean;
   onEdit: () => void;
-  onDelete: () => Promise<SaveResult>;
+  onDelete: () => void;
 }) {
   const t = useTranslations();
   const format = useFormat();
   const detail = useRecordDetail();
   const quantityText = useQuantityText();
-  const [confirming, setConfirming] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  const [refused, setRefused] = useState(false);
-  const remove = async () => {
-    setDeleting(true);
-    const result = await onDelete();
-    setDeleting(false);
-    if (result === "saved") setConfirming(false);
-    else if (result !== "failed") setRefused(true);
-  };
   const date = format.civilDate(record.tradedOn);
   const income = record.kind === "income";
   return (
-    <TableRow data-testid="record-row">
+    <TableRow data-testid="record-row" data-flip-key={record.id}>
       <TableCell>
         <span className="flex min-w-0 flex-col gap-0.5 py-2">
           <span className="font-medium text-primary-text">{showSymbol ? (instrument?.symbol ?? t("common.instrumentUnavailable")) : date}</span>
@@ -215,53 +246,10 @@ function RecordRow({
               label: t("common.deleteRecord"),
               icon: "trash",
               destructive: true,
-              onSelect: () => (setRefused(false), setConfirming(true)),
+              onSelect: onDelete,
             },
           ]}
         />
-        {confirming ? (
-          // The dialog is a child of the cell: reset what the numeric cell would hand down to it.
-          <div className="contents text-left font-sans font-normal whitespace-normal">
-            <Dialog
-              variant="dialog"
-              open
-              onClose={() => setConfirming(false)}
-              title={t("portfolio.purchaseRow.deleteTitle")}
-              footer={
-                <div className="flex w-full flex-col gap-2 sm:flex-row-reverse">
-                  <Button
-                    kind="destructive"
-                    className="w-full"
-                    loading={deleting}
-                    onClick={remove}
-                    data-testid="confirm-delete"
-                  >
-                    {t("common.deleteRecord")}
-                  </Button>
-                  <Button
-                    kind="secondary"
-                    className="w-full"
-                    onClick={() => setConfirming(false)}
-                  >
-                    {t("common.cancel")}
-                  </Button>
-                </div>
-              }
-            >
-              <p
-                className={cn(
-                  "text-body",
-                  refused ? "text-negative" : "text-primary-text",
-                )}
-                role={refused ? "alert" : undefined}
-              >
-                {refused
-                  ? t("portfolio.csvTransfer.invalidPortfolio")
-                  : t("portfolio.purchaseRow.deleteMessage")}
-              </p>
-            </Dialog>
-          </div>
-        ) : null}
       </TableCell>
     </TableRow>
   );

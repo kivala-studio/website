@@ -17,7 +17,9 @@ import { SegmentedControl } from "@/ui/components/controls";
 import { ChangeBadge, MarketStatusIndicator } from "@/ui/components/financial";
 import { Card, Panel } from "@/ui/components/layout";
 import { SeeAll } from "@/ui/components/see-all";
-import { ErrorState, InstrumentRowSkeleton, Skeleton } from "@/ui/components/states";
+import { AnimatedText } from "@/ui/components/animated-value";
+import { FlipList } from "@/ui/components/flip-list";
+import { ErrorState, FadeIn, InstrumentRowSkeleton, Skeleton } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
 
@@ -68,7 +70,7 @@ export function HomeView({
           onClick={() => void store.load({ force: true })}
           disabled={state.isRefreshing}
           aria-busy={state.isRefreshing || undefined}
-          className={cn(state.isRefreshing && "[&>svg]:animate-spin motion-reduce:[&>svg]:animate-none")}
+          className={cn(state.isRefreshing && "[&>svg]:motion-spin")}
           data-testid="home-refresh"
         />
       </div>
@@ -139,70 +141,72 @@ function OverviewCard({ loaded, stale }: { loaded: Loaded | undefined; stale: bo
   const visible = visibleOutsideSearch(snapshot.securities, at);
   const verifiedCloses = visible.filter((security) => security.closingPrice !== undefined).length;
   return (
-    <Card
-      title={t("home.overview.header")}
-      titleId="home-overview-title"
-      action={<MarketStatusIndicator status={snapshot.status} />}
-      bodyClassName="flex flex-col gap-5"
-      data-testid="home-overview"
-    >
-      {hasIndex ? (
-        <div className="flex items-end justify-between gap-4">
-          <div className="flex min-w-0 flex-col gap-1">
-            <span className="text-caption text-secondary-text">{t("common.appIndicator")}</span>
-            <span className="flex flex-wrap items-center gap-2">
-              <span className="text-headline text-primary-text tabular-nums" data-testid="home-index">
-                {format.number(index.value!, { digits: 2 })}
+    <FadeIn>
+      <Card
+        title={t("home.overview.header")}
+        titleId="home-overview-title"
+        action={<MarketStatusIndicator status={snapshot.status} />}
+        bodyClassName="flex flex-col gap-5"
+        data-testid="home-overview"
+      >
+        {hasIndex ? (
+          <div className="flex items-end justify-between gap-4">
+            <div className="flex min-w-0 flex-col gap-1">
+              <span className="text-caption text-secondary-text">{t("common.appIndicator")}</span>
+              <span className="flex flex-wrap items-center gap-2">
+                <span className="text-headline text-primary-text tabular-nums" data-testid="home-index">
+                  <AnimatedText text={format.number(index.value!, { digits: 2 })} numeric={index.value!.toString()} className="inline-block" />
+                </span>
+                {index.percentageChange ? <ChangeBadge value={index.percentageChange} /> : null}
               </span>
-              {index.percentageChange ? <ChangeBadge value={index.percentageChange} /> : null}
-            </span>
-            <span className="text-caption text-secondary-text">{t("market.index.closesOn", { arg1: format.date(index.tradingDate!) })}</span>
+              <span className="text-caption text-secondary-text">{t("market.index.closesOn", { arg1: format.date(index.tradingDate!) })}</span>
+            </div>
+            <Sparkline values={index.history.slice(-30).map((point) => point.value.toNumber())} />
           </div>
-          <Sparkline values={index.history.slice(-30).map((point) => point.value.toNumber())} />
+        ) : null}
+        {statistics ? (
+          <dl className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1">
+              <dt className="text-caption text-secondary-text">{t("home.overview.sessionVolume")}</dt>
+              <dd className="flex flex-col">
+                <span className="text-section text-primary-text tabular-nums">{format.count(snapshot.sessionVolume)}</span>
+                <span className="text-caption text-secondary-text">{t("home.overview.tradedSecurities")}</span>
+              </dd>
+            </div>
+            <div className="flex flex-col gap-1">
+              <dt className="text-caption text-secondary-text">{t("common.trades")}</dt>
+              <dd className="text-section text-primary-text tabular-nums">{format.count(snapshot.trades)}</dd>
+            </div>
+          </dl>
+        ) : hasIndex ? (
+          <p className="text-secondary text-secondary-text">{t("home.overview.noVerifiedTotals")}</p>
+        ) : (
+          <div className="flex flex-col gap-2">
+            <p className="flex items-baseline justify-between gap-3">
+              <span className="text-secondary text-secondary-text">
+                {t(verifiedCloses > 0 ? "home.overview.verifiedCloses" : "home.overview.availableInstruments")}
+              </span>
+              <span className="text-section text-primary-text tabular-nums">{format.count(verifiedCloses > 0 ? verifiedCloses : visible.length)}</span>
+            </p>
+            <p className="text-secondary text-secondary-text">{t("home.overview.noVerifiedData")}</p>
+          </div>
+        )}
+        {stale ? <p className="text-caption text-warning">{t("home.summary.staleData")}</p> : null}
+        <div className="border-t border-separator pt-1 lg:border-hairline">
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            aria-haspopup="dialog"
+            className="flex min-h-11 w-full items-center justify-between gap-3 rounded-small text-secondary font-semibold text-accent"
+            data-testid="home-market-details"
+          >
+            {t("home.overview.viewDetails")}
+            <Icon name="chevron-right" />
+          </button>
         </div>
-      ) : null}
-      {statistics ? (
-        <dl className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col gap-1">
-            <dt className="text-caption text-secondary-text">{t("home.overview.sessionVolume")}</dt>
-            <dd className="flex flex-col">
-              <span className="text-section text-primary-text tabular-nums">{format.count(snapshot.sessionVolume)}</span>
-              <span className="text-caption text-secondary-text">{t("home.overview.tradedSecurities")}</span>
-            </dd>
-          </div>
-          <div className="flex flex-col gap-1">
-            <dt className="text-caption text-secondary-text">{t("common.trades")}</dt>
-            <dd className="text-section text-primary-text tabular-nums">{format.count(snapshot.trades)}</dd>
-          </div>
-        </dl>
-      ) : hasIndex ? (
-        <p className="text-secondary text-secondary-text">{t("home.overview.noVerifiedTotals")}</p>
-      ) : (
-        <div className="flex flex-col gap-2">
-          <p className="flex items-baseline justify-between gap-3">
-            <span className="text-secondary text-secondary-text">
-              {t(verifiedCloses > 0 ? "home.overview.verifiedCloses" : "home.overview.availableInstruments")}
-            </span>
-            <span className="text-section text-primary-text tabular-nums">{format.count(verifiedCloses > 0 ? verifiedCloses : visible.length)}</span>
-          </p>
-          <p className="text-secondary text-secondary-text">{t("home.overview.noVerifiedData")}</p>
-        </div>
-      )}
-      {stale ? <p className="text-caption text-warning">{t("home.summary.staleData")}</p> : null}
-      <div className="border-t border-separator pt-1 lg:border-hairline">
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          aria-haspopup="dialog"
-          className="flex min-h-11 w-full items-center justify-between gap-3 rounded-small text-secondary font-semibold text-accent"
-          data-testid="home-market-details"
-        >
-          {t("home.overview.viewDetails")}
-          <Icon name="chevron-right" />
-        </button>
-      </div>
-      <MarketSessionSheet open={open} onClose={() => setOpen(false)} loaded={loaded} />
-    </Card>
+        <MarketSessionSheet open={open} onClose={() => setOpen(false)} loaded={loaded} />
+      </Card>
+    </FadeIn>
   );
 }
 
@@ -254,16 +258,18 @@ function WatchlistRail({ loaded, rows }: { loaded: Loaded | undefined; rows: Map
           ))}
         </div>
       ) : (
-        <ul className="flex flex-col">
-          {securities.map((security) => {
-            const row = rows.get(security.id);
-            return (
-              <CompactRow key={security.id} security={security} row={row}>
-                <RowFigures security={security} row={row} at={loaded!.at} />
-              </CompactRow>
-            );
-          })}
-        </ul>
+        <FadeIn>
+          <FlipList className="flex flex-col">
+            {securities.map((security) => {
+              const row = rows.get(security.id);
+              return (
+                <CompactRow key={security.id} security={security} row={row}>
+                  <RowFigures security={security} row={row} at={loaded!.at} />
+                </CompactRow>
+              );
+            })}
+          </FlipList>
+        </FadeIn>
       )}
     </Panel>
   );
@@ -316,16 +322,21 @@ function MovementFeed({ loaded, rows }: { loaded: Loaded | undefined; rows: Map<
           <InstrumentRowSkeleton />
         </div>
       ) : items.length === 0 ? (
-        <p className="py-3 text-secondary text-secondary-text">{t(feed!.hasQuotes ? "home.movers.emptyCategory" : "home.movers.quotesUnavailable")}</p>
+        <FadeIn key={tab}>
+          <p className="py-3 text-secondary text-secondary-text">{t(feed!.hasQuotes ? "home.movers.emptyCategory" : "home.movers.quotesUnavailable")}</p>
+        </FadeIn>
       ) : (
-        <ul className="flex flex-col">
-          {items.map((security, index) => {
-            const row = rows.get(security.id);
-            return (
-              <MoverRow key={security.id} security={security} row={row} at={loaded!.at} volume={tab === "volume"} className={cn(index >= 3 && "max-lg:hidden")} />
-            );
-          })}
-        </ul>
+        // Another tab or snapshot: rows that stay glide to their places, new ones fade in.
+        <FadeIn>
+          <FlipList className="flex flex-col">
+            {items.map((security, index) => {
+              const row = rows.get(security.id);
+              return (
+                <MoverRow key={security.id} security={security} row={row} at={loaded!.at} volume={tab === "volume"} className={cn(index >= 3 && "max-lg:hidden")} />
+              );
+            })}
+          </FlipList>
+        </FadeIn>
       )}
     </Panel>
   );

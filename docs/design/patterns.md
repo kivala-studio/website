@@ -61,7 +61,7 @@ Every data block has all four.
 
 The landing's product visuals (`InstrumentVisual`, `WatchlistVisual`, `PortfolioVisual`, `PlusVisual`) and the bento miniatures (`SimulatorMiniature` and the others in `BentoCard`):
 
-- One accessible name per figure (`role="img"` + `aria-label` from the catalogue) or per bento card (its title, the link's name); everything inside is `aria-hidden`, not selectable and has no controls, and no motion beyond the landing's one-time scroll reveal (the chart line wipes in, then its area and dot fade in): the feature visuals switch off `ChangeBadge`'s value roll (`[&_.motion-value]:animate-none`), since sample values never change and a badge hidden on narrow screens would replay it when shown again.
+- One accessible name per figure (`role="img"` + `aria-label` from the catalogue) or per bento card (its title, the link's name); everything inside is `aria-hidden`, not selectable and has no controls, and no motion beyond the landing's one-time scroll reveal (the chart line wipes in, then its area and dot fade in). `ChangeBadge` and `FinancialValue` roll only when their value changes, so sample values never move.
 - Captioned "Exemplo ilustrativo" (`IllustrativeCaption`): under each visual's stage, and once under the whole bento grid, never per card.
 - Sample values only: the iOS onboarding's sample instruments (BAI, BFA) and round invented figures; sample text is catalogue wording with sample arguments. Never market data, never a live or current price.
 - Built from the real primitives (`StatTile`, `ChangeBadge`, `SecurityLogo`, chips, the segmented track) so they match the product.
@@ -70,9 +70,30 @@ The landing's product visuals (`InstrumentVisual`, `WatchlistVisual`, `Portfolio
 
 Decorative backgrounds (`HeroBackdrop` at either edge, the `Showcase` halo, `bento-wash` in the largest bento card and the Plus panel) are `aria-hidden`; the `feature-stage` light and grid are backgrounds of the figure itself.
 
+## Motion
+
+Everything that moves or changes is animated, with one vocabulary of tokens and patterns: see [theme.md](theme.md#motion), the single reference ("when X changes, use Y", reduced motion, techniques without inline styles, do and don't), and the Motion section of `/dev/design`.
+
+On a screen, when:
+
+| This changes | Do |
+|---|---|
+| A dialog or sheet closes | Keep it mounted through its exit: drive `open` on an always-rendered `Dialog`, or render it from `usePresenceValue(value)` and key it with `key`. Never `{open ? <Dialog open /> : null}` |
+| A price or figure a poll updates | `FinancialValue live` / `AnimatedText live` for current quotes (roll + tint), `AnimatedText` for totals and derived figures (roll). Never a timestamp |
+| A list is sorted, filtered, paged or an item is added or removed | `FlipList` (`as="tbody"` for tables) with `data-flip-key` on each item; the empty state in a `FadeIn` |
+| A tab, segment or chip choice changes the content below | The control's indicator glides (`useSlidingIndicator`); the content glides (`FlipList`) or fades in (`FadeIn` keyed by the choice, `motion-fade-in` on a panel shown again) |
+| A skeleton or loading state gives way to content | Wrap the loaded content in `FadeIn` (or use the state components, which do it themselves) |
+| A chart gets another range or series | `useChartMotion` with a content key |
+| A flow moves to another step | `stepSlide` on the step body, the progress as a sliding-indicator group |
+| A share or level changes | `Meter`, or `barGrow` on an SVG rect |
+| An icon reflects a state (added, copied, alert on) | `IconSwap`, or `IconButton`/`Button` with the new `icon` |
+| A message, error or notice appears | `motion-presence` (fade and rise); with an exit, `usePresence` + `motion-pop` |
+| Something refreshes | The refresh icon turns (`[&>svg]:motion-spin`) while `aria-busy` |
+| The page changes | Nothing to do: `PageTransition` in the templates and group layouts dissolves it |
+
 ## Icons
 
-- Only icons from the pack (`Icon`, `ICON_PACK`). A missing icon is added to `design/icon-pack/masters.json` and generated with `npm run icons`.
+- Only icons from the pack (`Icon`, `ICON_PACK`). A missing icon is added to `design/icon-pack/masters.json` and generated with `npm run icons`. Flags are the one multi-colour exception: `LanguageFlag`, beside a language's name or code.
 - Decorative by default. An icon-only control is an `IconButton` (required `label`) or carries `sr-only` text.
 - Colour: `secondary-text` idle, `accent` for the current or selected item and inside icon discs, `warning` beside warnings, `tertiary-text` for trailing chevrons.
 - Size follows the text: `scale` (`s`, `m`, `l`) or a text size on the icon (`text-[1.25rem]`).

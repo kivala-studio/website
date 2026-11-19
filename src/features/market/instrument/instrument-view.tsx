@@ -36,6 +36,7 @@ import { useMarketState, useMarketStore } from "@/features/market/market-provide
 import { cn } from "@/ui/cn";
 import { IconButton } from "@/ui/components/buttons";
 import { SectionTabs, type TimeRange as RangeName, TimeRangePicker } from "@/ui/components/controls";
+import { AnimatedText } from "@/ui/components/animated-value";
 import { ChangeBadge, MarketStatusIndicator } from "@/ui/components/financial";
 import { Card, StatStrip } from "@/ui/components/layout";
 import { SecurityLogo } from "@/ui/components/rows";
@@ -127,15 +128,18 @@ export function InstrumentView({
   const live = currentQuote(security, at);
   const close = instrument.close;
   let headline: string | undefined;
+  let headlineValue: string | undefined;
   let change: { amount?: Decimal; percentage: Decimal } | undefined;
   let caption: string;
   if (live) {
     headline = money(live.price);
+    headlineValue = live.price.toString();
     if (live.percentage) change = { amount: live.amount, percentage: live.percentage };
     const day = live.date?.kind === "today" ? t("common.today") : live.date?.kind === "yesterday" ? t("common.yesterday") : live.date ? format.civilDate(live.date.date) : undefined;
     caption = day ? `${t(live.label)} · ${day}` : t(live.label);
   } else if (close) {
     headline = money(close.price);
+    headlineValue = close.price;
     if (close.change) change = { percentage: new Decimal(close.change) };
     caption = t(MARKET_MESSAGE_KEYS.price.lastVerifiedClose, { arg1: format.civilDate(close.date) });
   } else {
@@ -171,13 +175,15 @@ export function InstrumentView({
             <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
               <span className={cn("font-display text-primary-text", headline ? "text-[1.75rem] leading-tight font-semibold tracking-tight" : "text-section")}>
                 <span className="sr-only">{`${t("common.price")}: `}</span>
-                {headline ?? t("common.priceUnconfirmed")}
+                <AnimatedText text={headline ?? t("common.priceUnconfirmed")} numeric={headlineValue} live={live !== undefined} className="inline-block" />
               </span>
               {change ? <ChangeBadge value={change.percentage} /> : null}
               {change?.amount ? (
-                <span className={cn("text-secondary font-semibold", toneOf(change.percentage))}>
-                  {format.quoteChange(change.amount, { bond: instrument.bond, code: instrument.currency, signed: true })}
-                </span>
+                <AnimatedText
+                  text={format.quoteChange(change.amount, { bond: instrument.bond, code: instrument.currency, signed: true })}
+                  numeric={change.amount.toString()}
+                  className={cn("inline-block text-secondary font-semibold transition-colors", toneOf(change.percentage))}
+                />
               ) : null}
             </p>
             <p className="text-caption text-secondary-text" data-testid="instrument-price-label">
@@ -346,7 +352,7 @@ function HistoryCard({
             aria-hidden
             data-testid="chart-readout"
             className={cn(
-              "pointer-events-none absolute top-0 flex flex-col gap-0.5 rounded-small border border-hairline bg-elevated-background/95 px-3 py-2 shadow-raised",
+              "motion-fade-in pointer-events-none absolute top-0 flex flex-col gap-0.5 rounded-small border border-hairline bg-elevated-background/95 px-3 py-2 shadow-raised",
               selected < visible.length / 2 ? "right-16" : "left-0",
             )}
           >

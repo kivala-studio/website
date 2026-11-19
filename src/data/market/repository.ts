@@ -74,6 +74,8 @@ export class SupabaseMarketRepository implements MarketRepository {
       route?: SnapshotRoute;
       /** Demo only: market information attached to every snapshot (the live backend sends none). */
       updates?: readonly MarketUpdate[];
+      /** Each issuer's logo URL (`issuerLogoURL`, none in demo mode); without it securities carry none. */
+      logo?: (issuerID: string | undefined) => string | undefined;
     },
   ) {
     this.now = options.now ?? Date.now;
@@ -89,7 +91,7 @@ export class SupabaseMarketRepository implements MarketRepository {
       // Without direct reads (demo mode) the snapshot is the only route, also after a server failure.
       if (!this.options.supabase || this.route.usesSnapshot(this.now())) {
         try {
-          return this.withUpdates(await this.fromSnapshot(signal));
+          return this.completed(await this.fromSnapshot(signal));
         } catch (error) {
           if (isCancellation(error) || signal?.aborted) throw new CancellationError();
           if (SnapshotRoute.isServerFailure(error)) {
@@ -99,14 +101,22 @@ export class SupabaseMarketRepository implements MarketRepository {
           if (!this.options.supabase || !fallsThrough(error)) throw error;
         }
       }
-      return this.withUpdates(await this.fromDirectReads(signal));
+      return this.completed(await this.fromDirectReads(signal));
     } catch (error) {
       throw boundaryError(error, "supabase.fetchLightSnapshot");
     }
   }
 
-  private withUpdates(snapshot: MarketSnapshot): MarketSnapshot {
-    return this.options.updates ? { ...snapshot, updates: this.options.updates } : snapshot;
+  /** Each issuer's logo and the market updates, when there are any. */
+  private completed(snapshot: MarketSnapshot): MarketSnapshot {
+    const { logo, updates } = this.options;
+    const securities = logo
+      ? snapshot.securities.map((security) => {
+          const logoURL = logo(security.issuerID);
+          return logoURL ? { ...security, logoURL } : security;
+        })
+      : snapshot.securities;
+    return { ...snapshot, securities, ...(updates ? { updates } : {}) };
   }
 
   async fetchTradingCalendar(signal?: AbortSignal): Promise<MarketCalendar | undefined> {

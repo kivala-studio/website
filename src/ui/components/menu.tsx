@@ -4,6 +4,7 @@ import { type KeyboardEvent, type ReactNode, useEffect, useId, useRef, useState 
 
 import { cn } from "../cn";
 import { Icon, type IconName } from "../icons/icon";
+import { usePresence } from "../motion/use-presence";
 
 export type MenuEntry =
   | { kind: "item"; label: string; icon?: IconName; onSelect: () => void; destructive?: boolean; disabled?: boolean; testID?: string }
@@ -12,12 +13,13 @@ export type MenuEntry =
   | { kind: "separator" };
 
 const ENTRY =
-  "flex min-h-11 w-full items-center gap-3 rounded-small px-3 text-left text-body text-primary-text outline-none focus-visible:bg-action-surface hover:bg-action-surface aria-disabled:opacity-42";
+  "flex min-h-11 w-full items-center gap-3 rounded-small px-3 text-left text-body text-primary-text outline-none transition-colors focus-visible:bg-action-surface hover:bg-action-surface aria-disabled:opacity-42";
 
 /**
  * A menu button (WAI-ARIA menu): Enter, Space or the arrows open it on the first or last item; arrows, Home
  * and End move; Escape closes it and returns focus; a click outside or Tab closes it. Replaces swipe and
- * long-press actions on the web.
+ * long-press actions on the web. The menu grows from the trigger's corner and shrinks back into it (`motion-pop`);
+ * the trigger is a `group`, so a chevron inside can turn with `group-aria-expanded:rotate-180 motion-turn`.
  */
 export function Menu({
   label,
@@ -42,6 +44,7 @@ export function Menu({
   triggerClassName?: string;
 }) {
   const [open, setOpen] = useState(false);
+  const { mounted, presenceProps } = usePresence(open);
   const button = useRef<HTMLButtonElement>(null);
   const list = useRef<HTMLDivElement>(null);
   const id = useId();
@@ -111,26 +114,28 @@ export function Menu({
             show("last");
           }
         }}
-        className={
+        className={cn(
+          "group",
           triggerClassName ??
-          cn(
-            "motion-press inline-flex min-h-11 items-center justify-center rounded-full text-primary-text",
-            trigger ? "gap-2 bg-action-surface px-4 text-secondary font-semibold" : "size-11 text-secondary-text hover:bg-action-surface hover:text-primary-text",
-          )
-        }
+            cn(
+              "motion-press inline-flex min-h-11 items-center justify-center rounded-full text-primary-text",
+              trigger ? "gap-2 bg-action-surface px-4 text-secondary font-semibold hover:bg-track" : "size-11 text-secondary-text hover:bg-action-surface hover:text-primary-text",
+            ),
+        )}
       >
         {trigger ?? <Icon name={icon} />}
       </button>
-      {open ? (
+      {mounted ? (
         <div
+          {...presenceProps}
           ref={list}
           id={id}
           role="menu"
           aria-label={label}
           onKeyDown={onMenuKey}
           className={cn(
-            "absolute top-full z-40 mt-1 flex max-h-[min(24rem,70dvh)] min-w-60 flex-col overflow-y-auto rounded-medium border border-card-border bg-card-background p-1 shadow-panel",
-            align === "end" ? "right-0" : "left-0",
+            "motion-pop absolute top-full z-40 mt-1 flex max-h-[min(24rem,70dvh)] min-w-60 flex-col overflow-y-auto rounded-medium border border-card-border bg-card-background p-1 shadow-panel",
+            align === "end" ? "right-0 origin-top-right" : "left-0 origin-top-left",
           )}
         >
           {entries.map((entry, index) => {
@@ -154,7 +159,7 @@ export function Menu({
                     onClick={() => run(entry.onToggle)}
                     className={ENTRY}
                   >
-                    <Icon name="check" className={entry.checked ? "text-accent" : "invisible"} />
+                    <Icon name="check" data-hidden={!entry.checked || undefined} className="motion-appear text-accent" />
                     <span className="truncate">{entry.label}</span>
                   </button>
                 );
@@ -182,7 +187,7 @@ export function Menu({
   );
 }
 
-/** An on/off switch with its visible label; the whole row is the target. */
+/** An on/off switch with its visible label; the whole row is the target. The thumb slides and the track fades. */
 export function SwitchRow({
   label,
   checked,
@@ -207,7 +212,7 @@ export function SwitchRow({
       disabled={disabled}
       onClick={() => onChange(!checked)}
       data-testid={testID}
-      className="flex min-h-11 w-full items-center gap-3 rounded-small py-2 text-left disabled:opacity-42"
+      className="motion-tap flex min-h-11 w-full items-center gap-3 rounded-small py-2 text-left disabled:opacity-42"
     >
       <span className="flex min-w-0 flex-1 flex-col gap-0.5">
         <span className="text-body text-primary-text">{label}</span>
@@ -216,13 +221,13 @@ export function SwitchRow({
       <span
         aria-hidden
         className={cn(
-          "relative h-7 w-12 shrink-0 rounded-full transition-colors duration-200 motion-reduce:transition-none",
+          "relative h-7 w-12 shrink-0 rounded-full transition-[background-color,box-shadow] duration-base",
           checked ? "bg-positive" : "bg-track ring-1 ring-field-border",
         )}
       >
         <span
           className={cn(
-            "absolute top-0.5 size-6 rounded-full bg-white shadow transition-transform duration-200 motion-reduce:transition-none",
+            "absolute top-0.5 size-6 rounded-full bg-white shadow transition-[translate] duration-base ease-emphasized motion-reduce:transition-none",
             checked ? "translate-x-5.5" : "translate-x-0.5",
           )}
         />

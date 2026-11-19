@@ -24,7 +24,7 @@ export function PalancaMark({ className }: { className?: string }) {
   );
 }
 
-/** Where the wordmark appears: from 360 px in the public bar (logo, sign-in, menu), from 400 px in the app's fuller bar. */
+/** Where the wordmark appears: from 360 px in the public bar (menu, logo, sign-in), from 400 px in the app's fuller bar. */
 const WORDMARK_FROM = { 360: "min-[22.5rem]:inline", 400: "min-[25rem]:inline" } as const;
 
 /** Mark and wordmark for the top bar; the wordmark gives way on narrow phones (the link keeps its name). */
@@ -38,14 +38,22 @@ export function BrandLockup({ wordmarkFrom = 400 }: { wordmarkFrom?: keyof typeo
   );
 }
 
-/** The language link styled as a round top-bar control. */
+/** The language link (flag and short code) styled as a 44 px top-bar pill. */
 export const LANGUAGE_CONTROL =
-  "inline-flex size-11 shrink-0 items-center justify-center rounded-full font-display text-secondary font-semibold text-secondary-text transition-colors hover:bg-action-surface hover:text-primary-text";
+  "inline-flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-full pr-3 pl-2.5 font-display text-secondary font-semibold text-secondary-text transition-colors hover:bg-action-surface hover:text-primary-text";
 
-/** The theme and the language on one row: in the footer and in the public top bar's menu. */
-export function SiteControls({ theme, className }: { theme: Theme; className?: string }) {
+/**
+ * Extra classes for the sign-in pill (`ButtonLink size="compact"`) in the public bar. Below 1024 px the pill is drawn
+ * at 36 px with tighter padding so it doesn't outweigh the logo; an `::after` 4 px above and below keeps the 44 px
+ * target. From 1024 px it is the plain compact pill.
+ */
+export const SIGN_IN_PILL =
+  "ml-1 max-lg:relative max-lg:min-h-9 max-lg:px-3 max-lg:after:absolute max-lg:after:inset-x-0 max-lg:after:-inset-y-1";
+
+/** The theme and the language on one row, in the public top bar's menu. */
+export function SiteControls({ theme }: { theme: Theme }) {
   return (
-    <div className={cn("flex items-center gap-2", className)}>
+    <div className="flex items-center gap-2">
       <div className="min-w-0 flex-1">
         <ThemeSwitch initial={theme} />
       </div>
@@ -56,8 +64,8 @@ export function SiteControls({ theme, className }: { theme: Theme; className?: s
 
 /**
  * Public top bar: sections as pills, then the language, the theme and sign-in. Below 1024 px the sections, the theme
- * and the language move into the menu; sign-in stays in the bar. Visitors get no search (it needs the app's market
- * store).
+ * and the language move into the menu, whose button leads the bar; the smaller sign-in pill stays at the end.
+ * Visitors get no search (it needs the app's market store).
  */
 export function SiteHeader({ theme }: { theme: Theme }) {
   const t = useTranslations();
@@ -80,7 +88,7 @@ export function SiteHeader({ theme }: { theme: Theme }) {
         </>
       }
       actions={
-        <ButtonLink href={SIGN_IN_PATH} prefetch={false} size="compact" className="ml-1">
+        <ButtonLink href={SIGN_IN_PATH} prefetch={false} size="compact" className={SIGN_IN_PILL}>
           {t("onboarding.navigation.signIn")}
         </ButtonLink>
       }
@@ -94,10 +102,12 @@ const FOOTER_LINK =
 const FOOTER_ROW = "flex min-h-11 items-center desk:min-h-9";
 
 /**
- * The brand (logo, then the theme and the language), three link columns on the logo's line, then the standing
- * disclaimers and the copyright under a hairline. `year` is the server's (Luanda) year.
+ * The logo, then the product and legal link columns on the logo's line; then the standing disclaimers and the
+ * copyright under a hairline. One grid of equal tracks: on phones the logo sits above the two columns; from 640 px
+ * the three share a row; from 1024 px the logo takes three of five tracks and the links the last two. `year` is the
+ * server's (Luanda) year.
  */
-export function SiteFooter({ theme, year }: { theme: Theme; year: string }) {
+export function SiteFooter({ year }: { year: string }) {
   const t = useTranslations();
   const columns = [
     {
@@ -107,13 +117,6 @@ export function SiteFooter({ theme, year }: { theme: Theme; year: string }) {
         { href: INDEXABLE_PAGES.news, title: t("common.news") },
         { href: INDEXABLE_PAGES.learn, title: t("learn.title") },
         { href: "/simulador", title: t("common.simulateInvestment") },
-      ],
-    },
-    {
-      title: t("common.account"),
-      links: [
-        { href: SIGN_IN_PATH, title: t("onboarding.navigation.signIn") },
-        { href: INDEXABLE_PAGES.deletion, title: t("common.deleteAccount") },
       ],
     },
     {
@@ -128,15 +131,17 @@ export function SiteFooter({ theme, year }: { theme: Theme; year: string }) {
   return (
     <footer className="mt-auto">
       <div className={cn(PAGE_CONTAINER, "flex flex-col gap-8 border-t border-hairline pt-8 pb-8 md:gap-10 md:pt-12 md:pb-10")}>
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-6">
-          <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between lg:flex-col lg:items-start lg:justify-start">
-            <Link href="/" prefetch={false} aria-label={t("site.header.homeLabel")} className={cn(FOOTER_ROW, "gap-2 rounded-small text-primary-text")}>
-              <PalancaMark className="size-8" />
-              <span className="font-display text-[1.1875rem] font-semibold tracking-tight">{t("common.appName")}</span>
-            </Link>
-            <SiteControls theme={theme} className="w-full max-w-sm" />
-          </div>
-          <nav aria-label={t("site.footer.label")} className="grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-3">
+        <div className="grid gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-5">
+          <Link
+            href="/"
+            prefetch={false}
+            aria-label={t("site.header.homeLabel")}
+            className={cn(FOOTER_ROW, "gap-2 self-start justify-self-start rounded-small text-primary-text lg:col-span-3")}
+          >
+            <PalancaMark className="size-8" />
+            <span className="font-display text-[1.1875rem] font-semibold tracking-tight">{t("common.appName")}</span>
+          </Link>
+          <nav aria-label={t("site.footer.label")} className="grid grid-cols-2 gap-x-6 sm:col-span-2">
             {columns.map((column) => (
               <div key={column.title} className="flex min-w-0 flex-col">
                 <h2 className={cn(FOOTER_ROW, "text-secondary font-semibold text-primary-text")}>{column.title}</h2>
