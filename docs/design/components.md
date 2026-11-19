@@ -455,7 +455,17 @@ Label, value and an optional caption and icon, "—" when the value is `null`. P
 
 ### `SecurityLogo` (`@/ui/components/rows`)
 
-Circular issuer logo; a coloured monogram when there is no image or it fails. Decorative (`aria-hidden`): the row names the instrument. The image sits on white with a hairline edge in both themes.
+Circular issuer logo; a coloured monogram when there is no image or it fails. Decorative (`aria-hidden`): the row names the instrument. The circle is white with a hairline edge in both themes.
+
+The component reads each logo once in a small canvas (same-origin, so allowed) and picks its fit, cached per URL for the page:
+
+| Logo | Fit |
+|---|---|
+| Near-square, opaque to its edges, not mostly white (a solid badge) | Fills the circle (`object-cover`), clipped round |
+| The same with a thin white strip on an edge (a loosely cropped favicon) | Fills it enlarged 10 %, so the strip falls outside |
+| Transparent edges, a wide wordmark, a mark on white, or anything the canvas can't read | Contained with 12 % padding on the white |
+
+The image stays transparent until its fit is known, then fades in (instantly with reduced motion), so it never jumps between fits; without scripting it shows contained.
 
 Logos come only from the site's origin, so `img-src` stays `'self'`: `issuerLogoURL(issuerID)` (`@/data/market/logos`) gives `/api/logos/{issuer}` (nothing in demo mode), and market rows, catalogue rows and the instrument and admission pages already carry it as `logoURL`. The route resolves the issuer's curated `logo_url`, else the Google favicon of its `website_url` (`resolvedLogoURL`, as iOS), fetches it on the server (HTTPS, 4 s, 512 KB, PNG, JPEG, WebP, GIF or ICO; never SVG) and answers it with a day of CDN caching, or a 404 cached for an hour, which shows the monogram. Never pass a third-party URL.
 

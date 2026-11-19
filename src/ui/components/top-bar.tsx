@@ -105,7 +105,7 @@ const WIDE = "(min-width: 64rem)";
  * it in the DOM, so Tab goes from the button into the panel. The panel drops from under the bar, full width, over a
  * dimmed page that doesn't scroll. Escape or a tap on the dimmed page closes it and returns focus to the button;
  * following a link, a tap elsewhere on the bar, moving focus out of the menu (to the logo, say) or widening the
- * window past 1024 px closes it too. Without JavaScript the footer has the same links and controls.
+ * window past 1024 px closes it too. Without JavaScript the footer still has the same links (not the controls).
  */
 function TopBarMenu({ label, nav, navLabel, content }: { label: string; nav: readonly TopBarLink[]; navLabel: string; content: ReactNode }) {
   const current = useLinkCurrent();
