@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import pt from "../../../messages/pt.json";
 import { createFormat } from "../format";
-import { bodivaMaturityDate, isMaturedBond, isVisibleOutsideSearch, resolvedLogoURL, securityDisplayName, visibleOutsideSearch } from "./classification";
+import { bodivaMaturityDate, isMaturedBond, isVisibleOutsideSearch, securityDisplayName, visibleOutsideSearch } from "./classification";
 import { applyDiscoveryQuery, kindSearchTerms, recordRecentSearch, searchSecurities } from "./discovery";
 import { type MarketSecurity, type QuoteAvailability, type SecurityKind, marketSecurity } from "./models";
 import { qualityFailure } from "./quality";
@@ -36,8 +36,6 @@ function makeSecurity(input: {
   change: number;
   volume: number;
   quoteAvailability?: QuoteAvailability;
-  logoURL?: string;
-  issuerWebsiteURL?: string;
   id?: string;
 }): MarketSecurity {
   const available = (input.quoteAvailability ?? "available") === "available";
@@ -52,8 +50,6 @@ function makeSecurity(input: {
     percentageChange: new Decimal(input.change),
     volume: new Decimal(input.volume),
     quoteAvailability: input.quoteAvailability ?? "available",
-    logoURL: input.logoURL,
-    issuerWebsiteURL: input.issuerWebsiteURL,
     closingPrice:
       price.isFinite() && price.gt(0) && available
         ? { price, tradingDate: now - DAY_MS, confirmedAt: now, percentageChange: new Decimal(input.change) }
@@ -172,29 +168,6 @@ describe("market discovery", () => {
 
   it("sorts by name in both directions", () => {
     order("name", ["AAA", "DDD", "BBB", "CCC"], ["CCC", "BBB", "DDD", "AAA"]);
-  });
-
-  it("the logo URL prefers the curated issuer logo", () => {
-    const security = makeSecurity({
-      symbol: "BAI", name: "Banco Angolano de Investimentos", issuer: "BAI", kind: "equity", price: 1, change: 0, volume: 0,
-      logoURL: "https://cdn.example.com/bai.png", issuerWebsiteURL: "https://www.bancobai.ao",
-    });
-    expect(resolvedLogoURL(security)).toBe("https://cdn.example.com/bai.png");
-  });
-
-  it("the logo URL falls back to the official website icon", () => {
-    const security = makeSecurity({
-      symbol: "BAI", name: "Banco Angolano de Investimentos", issuer: "BAI", kind: "equity", price: 1, change: 0, volume: 0,
-      issuerWebsiteURL: "https://www.bancobai.ao",
-    });
-    const url = new URL(resolvedLogoURL(security) ?? "");
-    expect(url.host).toBe("www.google.com");
-    expect(url.searchParams.get("domain_url")).toBe("https://www.bancobai.ao");
-    expect(url.searchParams.get("sz")).toBe("128");
-  });
-
-  it("the logo URL is absent without issuer metadata", () => {
-    expect(resolvedLogoURL(securities[0])).toBeUndefined();
   });
 });
 

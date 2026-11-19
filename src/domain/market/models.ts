@@ -92,8 +92,8 @@ export interface MarketSecurity {
   readonly details?: SessionDetails;
   readonly orderBook?: readonly OrderBookLevel[];
   readonly orderBookQuality?: DataQualityReport;
+  /** Same-origin issuer logo (`/api/logos/{issuer}`); absent in demo mode and without an issuer. */
   readonly logoURL?: string;
-  readonly issuerWebsiteURL?: string;
 }
 
 export type MarketSecurityInit = Pick<MarketSecurity, "id" | "symbol" | "kind"> &

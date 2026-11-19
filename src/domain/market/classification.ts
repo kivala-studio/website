@@ -72,13 +72,3 @@ export function securityDisplayName(security: MarketSecurity): string | undefine
   if (differsFromSymbol(issuer, security.symbol)) return issuer;
   return undefined;
 }
-
-/** The curated logo, else the issuer website's favicon. */
-export function resolvedLogoURL(security: MarketSecurity): string | undefined {
-  if (security.logoURL) return security.logoURL;
-  if (!security.issuerWebsiteURL) return undefined;
-  const url = new URL("https://www.google.com/s2/favicons");
-  url.searchParams.set("domain_url", security.issuerWebsiteURL);
-  url.searchParams.set("sz", "128");
-  return url.toString();
-}

@@ -15,7 +15,7 @@ import { Skeleton } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
 
 /** What the page knows about an instrument in the shared ledger. */
-export type SharedInstrument = { id: string; symbol: string; name: string; securityType: string; bond: boolean; currency: string };
+export type SharedInstrument = { id: string; symbol: string; name: string; securityType: string; bond: boolean; currency: string; logoURL?: string };
 
 /**
  * A read-only shared portfolio: positions from the W2 ledger calculator, valued in the browser at
@@ -96,7 +96,7 @@ export function SharedPortfolioView({
             const symbol = instrument?.symbol ?? "—";
             return (
               <li key={valuation.position.securityId} className="flex min-h-16 items-center gap-3 border-t border-hairline px-5 py-3 first:border-t-0 desk:px-6">
-                <SecurityLogo symbol={symbol} brandColor={instrument?.bond ? "violet" : "blue"} size="s" />
+                <SecurityLogo symbol={symbol} logoUrl={instrument?.logoURL} brandColor={instrument?.bond ? "violet" : "blue"} size="s" />
                 <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                   <span className="font-display text-body font-semibold text-primary-text">{symbol}</span>
                   <span className="text-caption text-secondary-text">

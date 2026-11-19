@@ -29,7 +29,7 @@ export function RelatedInstruments({ article, rows, now }: { article: NewsArticl
               className="flex min-h-16 items-center gap-3 px-5 py-2 transition-colors hover:bg-app-background/70 desk:px-6"
               data-testid="related-instrument"
             >
-              <SecurityLogo symbol={row.symbol} brandColor={row.bond ? "violet" : "blue"} size="s" />
+              <SecurityLogo symbol={row.symbol} logoUrl={row.logoURL} brandColor={row.bond ? "violet" : "blue"} size="s" />
               <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                 <span className="font-display text-body font-semibold text-primary-text">{row.symbol}</span>
                 <span className="truncate text-secondary text-secondary-text">

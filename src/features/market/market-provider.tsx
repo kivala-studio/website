@@ -5,6 +5,7 @@ import { createContext, type ReactNode, useContext, useEffect, useState, useSync
 import { publicEnv } from "@/config/public-env";
 import { browserConnectivity, observeConnectivity } from "@/data/market/connectivity";
 import { routeHistorySource } from "@/data/market/history-wire";
+import { issuerLogoURL } from "@/data/market/logos";
 import { listenToQuoteAnnouncements } from "@/data/market/realtime";
 import { SupabaseMarketRepository, type SnapshotSource } from "@/data/market/repository";
 import { demoMarketUpdates } from "@/data/market/demo/updates";
@@ -46,6 +47,7 @@ function marketStoreForTab(scenario: string | undefined): MarketStore {
     supabase: demo ? undefined : loadClient,
     history: routeHistorySource,
     updates: demo && (scenario ?? cookieScenario()) === "updates" ? demoMarketUpdates(Date.now()) : undefined,
+    logo: issuerLogoURL,
   });
   const store = new MarketStore({ repository, errors: appErrors });
   // Server rendering gets an idle store per request: it never loads, and it is never shared between visitors.

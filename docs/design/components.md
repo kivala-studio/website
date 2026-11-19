@@ -455,12 +455,14 @@ Label, value and an optional caption and icon, "—" when the value is `null`. P
 
 ### `SecurityLogo` (`@/ui/components/rows`)
 
-Circular issuer logo; a coloured monogram when there is no image or it fails. Decorative (`aria-hidden`): the row names the instrument.
+Circular issuer logo; a coloured monogram when there is no image or it fails. Decorative (`aria-hidden`): the row names the instrument. The image sits on white with a hairline edge in both themes.
+
+Logos come only from the site's origin, so `img-src` stays `'self'`: `issuerLogoURL(issuerID)` (`@/data/market/logos`) gives `/api/logos/{issuer}` (nothing in demo mode), and market rows, catalogue rows and the instrument and admission pages already carry it as `logoURL`. The route resolves the issuer's curated `logo_url`, else the Google favicon of its `website_url` (`resolvedLogoURL`, as iOS), fetches it on the server (HTTPS, 4 s, 512 KB, PNG, JPEG, WebP, GIF or ICO; never SVG) and answers it with a day of CDN caching, or a 404 cached for an hour, which shows the monogram. Never pass a third-party URL.
 
 | Prop | Type | Default | |
 |---|---|---|---|
 | `symbol` | `string` | | Monogram: up to four characters, hyphens dropped |
-| `logoUrl` | `string \| null` | | |
+| `logoUrl` | `string \| null` | | A same-origin `/api/logos/{issuer}` path (`logoURL` on rows) |
 | `brandColor` | `"blue" \| "gold" \| "green" \| "red" \| "violet"` | `"blue"` | Pages use `violet` for bonds and `blue` otherwise |
 | `size` | `"s" \| "m" \| "l" \| "header"` | `"m"` | 32 px · 48/36 desk · 64/48 desk · 48 px everywhere |
 

@@ -23,6 +23,7 @@ import {
   readPublicArticle,
   readPublicDividend,
   readPublicHistoryRows,
+  readIssuerLogoSources,
   readPublicIssuer,
   readPublicNews,
   readPublicNewsSearch,
@@ -39,6 +40,7 @@ export const PUBLIC_REVALIDATE = {
   history: 3600,
   pulse: 3600,
   issuer: 86_400,
+  logos: 3600,
   news: 60,
   rates: 3600,
 } as const;
@@ -64,6 +66,9 @@ const pulseRows = unstable_cache((day: string) => readPulseRows(anonymousSupabas
 
 const issuer = unstable_cache((id: string) => readPublicIssuer(anonymousSupabase(), id), ["public-issuer-v1"], {
   revalidate: PUBLIC_REVALIDATE.issuer,
+});
+const logoSources = unstable_cache(() => readIssuerLogoSources(anonymousSupabase()), ["public-issuer-logos-v1"], {
+  revalidate: PUBLIC_REVALIDATE.logos,
 });
 const dividend = unstable_cache((id: string) => readPublicDividend(anonymousSupabase(), id), ["public-dividend-v1"], {
   revalidate: PUBLIC_REVALIDATE.issuer,
@@ -128,6 +133,8 @@ export async function getPublicPulse(now = Date.now()) {
 }
 
 export const getPublicIssuer = (id: string) => (demo ? Promise.resolve(undefined) : issuer(id));
+/** An active issuer's logo source; demo mode has none (no network). */
+export const getIssuerLogoSource = async (id: string) => (demo ? undefined : (await logoSources()).find((source) => source.id === id));
 export const getPublicDividend = (id: string) => (demo ? Promise.resolve(undefined) : dividend(id));
 export const getPublicReports = (id: string) => (demo ? Promise.resolve([]) : reports(id));
 

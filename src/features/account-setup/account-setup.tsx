@@ -240,7 +240,7 @@ export function AccountSetup({ userID, initialName, instruments, watchedIDs }: P
                             isSelected ? "bg-accent-soft" : "enabled:hover:bg-action-surface",
                           )}
                         >
-                          <SecurityLogo symbol={item.symbol} size="s" />
+                          <SecurityLogo symbol={item.symbol} logoUrl={item.logoURL} size="s" />
                           <span className="flex min-w-0 flex-1 flex-col">
                             <span className="font-display text-body font-semibold text-primary-text">{item.symbol}</span>
                             <span className="truncate text-secondary text-primary-text">{item.name}</span>

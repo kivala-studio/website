@@ -29,7 +29,7 @@ const LOGO_SIZE = {
   header: { box: "size-12", monogram: "text-caption" },
 } as const;
 
-/** Circular issuer logo; falls back to a coloured monogram when there is no image or it fails. */
+/** Circular issuer logo from `/api/logos/{issuer}`; falls back to a coloured monogram when there is no image or it fails. */
 export function SecurityLogo({
   symbol,
   logoUrl,
@@ -55,11 +55,12 @@ export function SecurityLogo({
       className={cn(
         "inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full",
         LOGO_SIZE[size].box,
-        showImage ? "bg-white" : BRAND[brandColor],
+        // White under the logo in both themes (iOS); the hairline keeps the circle on white cards.
+        showImage ? "border border-hairline bg-white" : BRAND[brandColor],
       )}
     >
       {showImage ? (
-        // eslint-disable-next-line @next/next/no-img-element -- remote issuer logos, cached by the browser
+        // eslint-disable-next-line @next/next/no-img-element -- same-origin issuer logos (`/api/logos/{issuer}`), cached by the CDN
         <img ref={image} src={logoUrl} alt="" className="size-full object-contain p-[12%]" onError={() => setFailed(logoUrl)} />
       ) : (
         <span className={cn("font-bold", LOGO_SIZE[size].monogram)}>

@@ -4,7 +4,9 @@ import { notFound } from "next/navigation";
 
 import { requestTime } from "@/data/clock";
 import { readListingEvent } from "@/data/market/listing";
+import { issuerLogoURL } from "@/data/market/logos";
 import { getPublicIssuer } from "@/data/market/public-cache";
+import { resolvedLogoURL } from "@/domain/market";
 import { catalogueRows } from "@/features/market/browse/catalogue";
 import { Link, redirect } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
@@ -51,7 +53,7 @@ export default async function ListingPage({ params }: Props) {
         {t("common.market")}
       </Link>
       <header className="flex items-center gap-4">
-        <SecurityLogo symbol={issuer?.shortName ?? name} logoUrl={issuer?.logoURL} size="l" />
+        <SecurityLogo symbol={issuer?.shortName ?? name} logoUrl={issuer && resolvedLogoURL(issuer) ? issuerLogoURL(issuer.id) : undefined} size="l" />
         <div className="flex min-w-0 flex-col gap-1">
           <h1 className="text-display text-primary-text">{name}</h1>
           <p className="text-secondary font-semibold text-accent">{t("assetDetails.listing.newAdmission")}</p>
