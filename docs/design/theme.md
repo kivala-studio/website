@@ -157,6 +157,7 @@ Everything that moves or changes is animated, so the app feels alive: quick, cal
 | `--duration-base` | `duration-base` | 220 ms | Small moves: indicators, chevrons, switch thumbs, value rolls, menus in, panel exits |
 | `--duration-slow` | `duration-slow` | 340 ms | Panels and large moves: sheets in, disclosures, toasts in, the theme cross-fade |
 | `--duration-reveal` | | 550 ms | The landing's one-time entrance and scroll reveal only |
+| `--duration-flash` | | 900 ms | The tint behind a live price that just changed, fading out (`valueFlash`) only |
 | `--ease-standard` | `ease-standard` | `cubic-bezier(0.25, 0.8, 0.25, 1)` | Colour and state changes (the default of every `transition-*` utility) |
 | `--ease-emphasized` | `ease-emphasized` | `cubic-bezier(0.22, 1, 0.36, 1)` | Anything that moves or enters: a fast start, a long settle. `--ease-reveal` is its landing name |
 | `--ease-exit` | `ease-exit` | `cubic-bezier(0.4, 0, 1, 1)` | Anything that leaves: it accelerates away |
@@ -176,14 +177,21 @@ A bare `transition-colors`, `transition-opacity` or `transition-[…]` is `fast`
 | A chevron, a sort arrow | Turns with its state (`motion-turn` + `group-open:rotate-180`, `group-aria-expanded:rotate-180`) | CSS | Instant |
 | One icon replacing another | Cross-shrink: `IconSwap` (both icons in one cell, `turn` adds a quarter turn: menu ↔ close); `IconButton` grows a new `icon` in by itself | CSS / `useChangeAnimation` | Fade only |
 | A dot, check or badge coming and going in place | `motion-appear` with `data-hidden` (the unread dot, menu checks, the sort arrow) | CSS | Fade only |
-| A number changing (a price, a change, a count) | It rolls in: up from below when it rises, down from above when it falls (`base`) | `AnimatedText` (used by `FinancialValue` and `ChangeBadge`) or `useChangeAnimation` + `valueRoll`; Web Animations, so it plays only when the value changes, never on load or when a hidden wrapper is shown again | A short fade |
+| A number changing (a price, a change, a count, a total) | It rolls in: up from below when it rises, down from above when it falls (`base`) | `AnimatedText` (used by `FinancialValue` and `ChangeBadge`) or `useChangeAnimation` + `valueRoll`; Web Animations, so it plays only when the value changes, never on load or when a hidden wrapper is shown again | A short fade |
+| A live quote changing (a poll, a realtime update) | It rolls and a tint of its direction (positive up, negative down) fades out behind it (`flash`) | `AnimatedText live` / `FinancialValue live`: only a current quote replacing a current quote. The first quote replacing the dated close, a revoked quote, more than 12 figures in one update and anything in the 3 s after the tab comes back from the background simply update (`playLive`) | The tint stays (a fade), no roll |
+| The market status | Its dot's colour fades and its label rolls (`MarketStatusIndicator`) | CSS + `AnimatedText` | Fade |
+| A chart's series (another range, a scenario, data that arrived) | Mounted after hydration (a client navigation, a sheet, data after a loading state): the line wipes in from the left once (`slow`). Another series: the old one fades out over the new one fading in, and the axis labels fade in | `useChartMotion(plot, ghost, key, { draw })`: `plot` is the group React draws the series into, `ghost` an empty sibling group for the outgoing copy; `key` is the drawn content (count, first and last point), never the array, so a poll that changes nothing replays nothing. The crosshair and its readout follow the pointer at once | Fades only, no wipe |
+| A share or a level (an allocation weight, an order-book depth) | The bar grows or shrinks from where it was (`slow`, emphasized) | `Meter`, or an SVG `rect` sized by its attributes + `useChangeAnimation(rect, value, barGrow)`: no inline width | Instant |
+| A step of a flow (account setup, a wizard) | The new step slides in from the side it is on (from the right going forward) and fades; the progress fill glides to the new segment | `useChangeAnimation(body, step, stepSlide(direction))`, guarded so the hydration swap does not play; the progress segments are a sliding-indicator group | Fade only |
+| Whether figures are shown (privacy mode) | The page cross-fades between masked and shown figures (`base`) | `crossFadePage(update)` (`document.startViewTransition` + `flushSync`) | Instant |
 | A list reordering, growing or shrinking | Items glide to their new places; new ones fade in | `FlipList` (items need `data-flip-key`); reads positions before and after React's update | Instant |
 | Content replacing a skeleton, a state swap (loaded, empty, error) | The new content fades in (`motion-fade-in`); a message or notice fades and rises (`motion-presence`) | Only for content mounted after hydration: `useEntrance()` (the state components do it themselves), so server-rendered content never fades in on load | Fade stays |
 | A disclosure opening and closing | Height grows and folds | `Collapse` (grid rows, React-controlled) or `motion-details` on a `<details>` (`::details-content` + `interpolate-size`; browsers without it open at once) | Instant (`Collapse` fades) |
 | A menu or popover | Grows from its trigger's corner, shrinks back on close | `usePresence` + `motion-pop` (`origin-top-right`/`-left`); `@starting-style` for the entry, a closing state for the exit | Fade only |
-| A dialog or sheet | `motion-modal`: rises and grows from 96 %; `motion-sheet`: slides from the bottom (phones) or the right (768 px and up); the backdrop fades | `@starting-style` in; out with `display`/`overlay` `allow-discrete` after `close()`, so the page is usable at once. Browsers without `overlay` (Safari, Firefox today) close at once | Fade only |
+| A dialog or sheet | `motion-modal`: rises and grows from 96 %; `motion-sheet`: slides from the bottom (phones) or the right (768 px and up); the backdrop fades | `@starting-style` in; out with `display`/`overlay` `allow-discrete` after `close()`, so the page is usable at once. Browsers without `overlay` (Safari, Firefox today) close at once. A dialog that shows a value (the record being edited, the tile whose details are open) is rendered from `usePresenceValue(value)`: it keeps the value through the exit, then unmounts, and its `key` changes on each opening, so every opening starts fresh and nothing runs while it is closed | Fade only |
 | A toast | Slides down from the top; lifts and fades away when dismissed, timed out or replaced | `ToastHost` keeps the leaving toast for its exit | Fades |
 | The top bar's menu | Drops from under the bar, page dims (`motion-drop-in/out`, `motion-dim-in/out`) | Phases in `TopBar` | Fades |
+| Another page (a link, the tab bar, the site header) | The new page is there at once; the old one dissolves over it (`base`). The bars, header and footer the two share stay exactly where they are | `PageTransition` (React `<ViewTransition exit>`) in each route group's `template.tsx` and around each group's layout; only the leaving page is a participant, so the new page takes clicks from its first frame. A change of query on the same page (a sort, a filter, a search) is no page change: its lists glide in place | Instant |
 | Light ↔ dark | One cross-fade of the whole page (`slow`) | `switchTheme()` (`document.startViewTransition`); per-element colour transitions are off while it switches (`data-theme-switching`), so nothing lags. Instant where unsupported | Instant |
 | Loading | `motion-pulse` (`Skeleton`), `motion-shimmer` (`ChartShimmer`), `motion-spin` (`Spinner`, fades in as it starts) | The only loops | No pulse, shimmer or spin |
 | The landing | `motion-entrance`, `motion-entrance-lift`, scroll reveal (`data-reveal`, `Reveal`) | One-time, `reveal` duration; see below | Nothing hidden, no movement |
@@ -200,7 +208,7 @@ A bare `transition-colors`, `transition-opacity` or `transition-[…]` is `fast`
 - **No inline styles.** The CSP is nonce-based and a test forbids `style=` in the HTML. Drive motion with classes and `data-*` attributes, `@starting-style`, the Web Animations API (`element.animate`, which sets no attribute), View Transitions, or `view-transition-name` through a class (`[view-transition-name:…]`). Never set CSS variables from scripts through `style`.
 
 Do: reach for the pattern table first; use the tokens; give every new pattern a reduced-motion fallback in `motion.css` and a specimen in the gallery's Motion section.
-Don't: add an animation library; animate on every render; fade in server-rendered content; bounce or overshoot; animate the colour of a price (gain and loss colour is for changes only); add a `transition-*` beside `motion-press`, which owns the transition.
+Don't: add an animation library; animate on every render; fade in server-rendered content; bounce or overshoot; animate the colour of a price (gain and loss colour is for changes only: the one exception is the brief tint behind a live quote that just changed, which fades to nothing); add a `transition-*` beside `motion-press`, which owns the transition; key a chart's motion on an array (every poll makes a new one); animate a timestamp, a crosshair readout or a scrubbed value (they follow the pointer or the clock and would never settle).
 
 ### Hooks and pieces (`src/ui/motion`, `src/ui/components`)
 
@@ -208,12 +216,19 @@ Don't: add an animation library; animate on every render; fade in server-rendere
 |---|---|---|
 | `useSlidingIndicator(selection, { selector, pseudo?, memory? })` | `@/ui/motion/use-sliding-indicator` | Returns the ref for the group; see the table above |
 | `usePresence(open, { timeout? })` | `@/ui/motion/use-presence` | `{ mounted, state, presenceProps }`: render while `mounted`, spread `presenceProps` (`data-state`, `inert`, `aria-hidden`, end handlers) on the animated element |
-| `useChangeAnimation(ref, value, animation)` | `@/ui/motion/use-change-animation` | Plays a Web Animation when `value` changes; `valueRoll(direction)`, `ICON_IN` |
+| `usePresenceValue(value, { timeout? })` | `@/ui/motion/use-presence` | `{ value, open, key }` for a dialog that shows a value: render while `value`, pass `open`, key it with `key`. Pass a stable value or a boolean, never a new object literal |
+| `useChangeAnimation(ref, value, animation, isSame?, schedule?)` | `@/ui/motion/use-change-animation` | Plays one or more Web Animations when `value` changes; `valueRoll(direction)`, `valueFlash(direction)`, `barGrow(before, after)`, `stepSlide(direction)`, `ICON_IN`, `FADE_IN` |
+| `playLive(play)` | `@/ui/motion/live` | The scheduler for figures a poll changes: drops a burst (more than 12 in one update) and anything just after the tab comes back |
+| `useChartMotion(plot, ghost, key, { draw })` | `@/ui/motion/use-chart-motion` | A chart's draw-in and series cross-fade |
+| `crossFadePage(update)` | `@/ui/motion/theme-transition` | Cross-fades a page-wide change of figures |
+| `PageTransition` | `@/ui/motion/page-transition` | The page dissolve; only in `template.tsx` and the group layouts |
 | `useEntrance()` | `@/ui/motion/use-entrance` | `true` for content mounted after hydration |
 | `switchTheme(update)` | `@/ui/motion/theme-transition` | Cross-fades a theme change |
 | `motionDuration`, `motionEasing`, `prefersReducedMotion` | `@/ui/motion/tokens` | The tokens for scripts |
 | `IconSwap`, `Collapse` | `@/ui/components/motion` | Server-safe |
-| `AnimatedText` | `@/ui/components/animated-value` | A figure that rolls when it changes |
+| `AnimatedText` | `@/ui/components/animated-value` | A figure that rolls when it changes; `live` adds the direction tint |
+| `Meter` | `@/ui/components/meter` | A share as a thin bar that grows from where it was |
+| `FadeIn` | `@/ui/components/states` | A `div` that fades (`rise`: and rises) in when mounted after hydration: content replacing a skeleton or another state |
 | `FlipList` | `@/ui/components/flip-list` | A list whose items glide on reorder |
 
 ### Landing

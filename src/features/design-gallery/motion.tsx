@@ -1,10 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useState, useSyncExternalStore } from "react";
+import { useRef, useState, useSyncExternalStore } from "react";
 
 import { cn } from "@/ui/cn";
-import { chipClass } from "@/ui/components/button-styles";
+import { INDICATOR_FILL, chipClass } from "@/ui/components/button-styles";
 import { Button, IconButton } from "@/ui/components/buttons";
 import { SectionTabs, SegmentedControl } from "@/ui/components/controls";
 import { Dialog } from "@/ui/components/dialog";
@@ -13,11 +13,14 @@ import { ChangeBadge, FinancialValue } from "@/ui/components/financial";
 import { FlipList } from "@/ui/components/flip-list";
 import { Card } from "@/ui/components/layout";
 import { Menu, SwitchRow } from "@/ui/components/menu";
+import { Meter } from "@/ui/components/meter";
 import { Collapse, IconSwap } from "@/ui/components/motion";
 import { SecurityLogo } from "@/ui/components/rows";
-import { EmptyState, InstrumentRowSkeleton } from "@/ui/components/states";
+import { EmptyState, FadeIn, InstrumentRowSkeleton } from "@/ui/components/states";
 import { Icon } from "@/ui/icons/icon";
 import { ICON_PACK } from "@/ui/icons/icon-pack";
+import { stepSlide, useChangeAnimation } from "@/ui/motion/use-change-animation";
+import { useChartMotion } from "@/ui/motion/use-chart-motion";
 import { useEntrance } from "@/ui/motion/use-entrance";
 import { useSlidingIndicator } from "@/ui/motion/use-sliding-indicator";
 
@@ -132,6 +135,61 @@ function LoadedRow() {
 
 const LIST = SAMPLE_INSTRUMENTS.map((item) => item.symbol);
 
+const SERIES = {
+  month: [32, 30, 34, 33, 38, 36, 41, 39, 44, 47, 45, 50],
+  year: [20, 26, 22, 30, 28, 35, 31, 27, 36, 42, 38, 46],
+} as const;
+
+/** A chart's series: wipes in once when mounted after hydration (Redraw remounts it), cross-fades to another range. */
+function ChartSample({ range }: { range: keyof typeof SERIES }) {
+  const plot = useRef<SVGGElement>(null);
+  const ghost = useRef<SVGGElement>(null);
+  const values = SERIES[range];
+  useChartMotion(plot, ghost, range, { draw: useEntrance() });
+  const points = values.map((value, index) => `${(index / (values.length - 1)) * 200},${60 - value}`).join(" ");
+  return (
+    <svg viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden className="h-24 w-full overflow-visible">
+      <g ref={plot}>
+        <polygon points={`0,60 ${points} 200,60`} className="fill-accent/10" />
+        <polyline points={points} fill="none" className="stroke-accent" strokeWidth={2} vectorEffect="non-scaling-stroke" />
+      </g>
+      <g ref={ghost} />
+    </svg>
+  );
+}
+
+/** A two-step flow: the body slides in from the side it is on, the progress fill glides. */
+function StepSample() {
+  const [step, setStep] = useState(0);
+  const body = useRef<HTMLDivElement>(null);
+  useChangeAnimation(body, step, (before, after) => stepSlide(after > before ? 1 : -1));
+  const progress = useSlidingIndicator<HTMLSpanElement>(step, { selector: "[data-current]" });
+  return (
+    <div className="flex flex-col gap-4">
+      <span ref={progress} className="flex gap-1.5">
+        {[0, 1, 2].map((index) => (
+          <span
+            key={index}
+            data-current={index === step || undefined}
+            className={cn("h-1 w-6 rounded-full bg-separator", index === step && cn(INDICATOR_FILL, "z-[1] before:bg-accent"))}
+          />
+        ))}
+      </span>
+      <div ref={body} className="min-h-12 text-body text-primary-text">
+        {[SAMPLE_INSTRUMENTS[0].name, SAMPLE_INSTRUMENTS[1].name, SAMPLE_INSTRUMENTS[2].name][step]}
+      </div>
+      <div className="flex gap-3">
+        <Button kind="secondary" size="compact" icon="chevron-left" disabled={step === 0} onClick={() => setStep((value) => value - 1)}>
+          Back
+        </Button>
+        <Button kind="secondary" size="compact" icon="chevron-right" disabled={step === 2} onClick={() => setStep((value) => value + 1)}>
+          Next
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 export function MotionSection() {
   const t = useTranslations();
   const { show } = useToast();
@@ -148,11 +206,15 @@ export function MotionSection() {
   const [loading, setLoading] = useState<"idle" | "loading" | "loaded" | "empty">("idle");
   const [sheet, setSheet] = useState(false);
   const [dialog, setDialog] = useState(false);
+  const [range, setRange] = useState<keyof typeof SERIES>("month");
+  const [drawn, setDrawn] = useState(0);
+  const [share, setShare] = useState(42);
   const tabs = [t("assetDetails.tab.overview"), t("common.about"), t("assetDetails.tab.orders")];
 
   const tick = (direction: 1 | -1) => {
     setPrice((value) => value + direction * 250);
     setChange((value) => Math.round((value + direction * 0.37) * 100) / 100);
+    setShare((value) => Math.min(Math.max(value + direction * 17, 5), 95));
   };
   const load = (result: "loaded" | "empty") => {
     setLoading("loading");
@@ -262,11 +324,17 @@ export function MotionSection() {
       </div>
 
       <div className={SPECIMEN_GRID}>
-        <Specimen name="AnimatedText: FinancialValue · ChangeBadge">
-          <div className="flex items-center gap-4">
-            <FinancialValue value={String(price)} style="price" />
+        <Specimen name="AnimatedText: FinancialValue · live tint · ChangeBadge · Meter">
+          <div className="flex flex-wrap items-center gap-4">
+            <Variant label="FinancialValue">
+              <FinancialValue value={String(price)} style="price" />
+            </Variant>
+            <Variant label="FinancialValue live">
+              <FinancialValue value={String(price)} style="price" live />
+            </Variant>
             <ChangeBadge value={String(change)} />
           </div>
+          <Meter value={share} label={`${share} %`} />
           <div className="flex gap-3">
             <Button kind="secondary" size="compact" icon="arrow-up" onClick={() => tick(1)}>
               Tick up
@@ -322,6 +390,33 @@ export function MotionSection() {
           </Card>
         </Specimen>
 
+        <Specimen name="useChartMotion: draw-in · range cross-fade">
+          <div className="flex flex-wrap items-center gap-3">
+            <SegmentedControl
+              label="Range sample"
+              value={range}
+              onChange={setRange}
+              options={[
+                { value: "month", title: "1M" },
+                { value: "year", title: "1A" },
+              ]}
+            />
+            <Button kind="secondary" size="compact" icon="refresh" onClick={() => setDrawn((value) => value + 1)}>
+              Redraw
+            </Button>
+          </div>
+          <ChartSample key={drawn} range={range} />
+        </Specimen>
+
+        <Specimen name="stepSlide · progress glide · FadeIn">
+          <StepSample />
+          <FadeIn key={range} rise className="text-caption text-secondary-text">
+            {range === "month" ? "1M" : "1A"}
+          </FadeIn>
+        </Specimen>
+      </div>
+
+      <div className={SPECIMEN_GRID}>
         <Specimen name="Overlays: motion-sheet · motion-modal · motion-pop · toast">
           <div className="flex flex-wrap gap-3">
             <Button kind="secondary" size="compact" onClick={() => setSheet(true)}>

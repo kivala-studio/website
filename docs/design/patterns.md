@@ -74,6 +74,23 @@ Decorative backgrounds (`HeroBackdrop` at either edge, the `Showcase` halo, `ben
 
 Everything that moves or changes is animated, with one vocabulary of tokens and patterns: see [theme.md](theme.md#motion), the single reference ("when X changes, use Y", reduced motion, techniques without inline styles, do and don't), and the Motion section of `/dev/design`.
 
+On a screen, when:
+
+| This changes | Do |
+|---|---|
+| A dialog or sheet closes | Keep it mounted through its exit: drive `open` on an always-rendered `Dialog`, or render it from `usePresenceValue(value)` and key it with `key`. Never `{open ? <Dialog open /> : null}` |
+| A price or figure a poll updates | `FinancialValue live` / `AnimatedText live` for current quotes (roll + tint), `AnimatedText` for totals and derived figures (roll). Never a timestamp |
+| A list is sorted, filtered, paged or an item is added or removed | `FlipList` (`as="tbody"` for tables) with `data-flip-key` on each item; the empty state in a `FadeIn` |
+| A tab, segment or chip choice changes the content below | The control's indicator glides (`useSlidingIndicator`); the content glides (`FlipList`) or fades in (`FadeIn` keyed by the choice, `motion-fade-in` on a panel shown again) |
+| A skeleton or loading state gives way to content | Wrap the loaded content in `FadeIn` (or use the state components, which do it themselves) |
+| A chart gets another range or series | `useChartMotion` with a content key |
+| A flow moves to another step | `stepSlide` on the step body, the progress as a sliding-indicator group |
+| A share or level changes | `Meter`, or `barGrow` on an SVG rect |
+| An icon reflects a state (added, copied, alert on) | `IconSwap`, or `IconButton`/`Button` with the new `icon` |
+| A message, error or notice appears | `motion-presence` (fade and rise); with an exit, `usePresence` + `motion-pop` |
+| Something refreshes | The refresh icon turns (`[&>svg]:motion-spin`) while `aria-busy` |
+| The page changes | Nothing to do: `PageTransition` in the templates and group layouts dissolves it |
+
 ## Icons
 
 - Only icons from the pack (`Icon`, `ICON_PACK`). A missing icon is added to `design/icon-pack/masters.json` and generated with `npm run icons`. Flags are the one multi-colour exception: `LanguageFlag`, beside a language's name or code.
