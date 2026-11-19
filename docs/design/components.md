@@ -50,7 +50,7 @@ The pack is generated from `design/icon-pack/masters.json` (the iOS masters plus
 
 ### `PAGE_CONTAINER`, `READING_COLUMN`
 
-Class strings, not components. See [layout.md](layout.md#the-page-column). Page wrappers built on them: `SITE_PAGE`, `ReadingPage`, `MessagePage` (`@/features/site/pages`), `SIGNED_IN_PAGE`, `SignedInPage` (`@/features/shell/placeholder-page`).
+Class strings, not components. See [layout.md](layout.md#the-page-column). `TopBar` puts its row (and its menu panel's content) in `PAGE_CONTAINER` too, so the bar lines up with the page. Page wrappers built on them: `SITE_PAGE`, `ReadingPage`, `MessagePage` (`@/features/site/pages`), `SIGNED_IN_PAGE`, `SignedInPage` (`@/features/shell/placeholder-page`).
 
 ### `Card`
 

@@ -8,6 +8,7 @@ import { cn } from "../cn";
 import { Icon } from "../icons/icon";
 import { iconButtonClass } from "./button-styles";
 import { useLinkCurrent } from "./controls";
+import { PAGE_CONTAINER } from "./layout";
 
 export type TopBarLink = { href: string; label: string };
 
@@ -28,7 +29,7 @@ type MobileNav =
 
 /**
  * The one top bar of the site and the app: full width, 64 px, sticky, on the elevated surface with a hairline
- * shadow. Logo, pill navigation, then the search and the actions on the right. Below 1024 px the navigation either
+ * shadow; its row sits in `PAGE_CONTAINER`, on the page's edges. Logo, pill navigation, then the search and the actions on the right. Below 1024 px the navigation either
  * moves into a menu whose button leads the bar (`mobileNav="menu"`, the public site) or is left to the bottom tab
  * bar (`"none"`, the app).
  */
@@ -53,7 +54,8 @@ export function TopBar({
   const current = useLinkCurrent();
   return (
     <header className="sticky top-0 z-30 bg-elevated-background shadow-bar">
-      <div className="flex flex-wrap items-center gap-x-1 px-4 sm:gap-x-2 sm:px-6 lg:flex-nowrap lg:gap-x-3">
+      {/* The row sits in the page column, so the logo and the last action line up with the content below. */}
+      <div className={cn(PAGE_CONTAINER, "flex flex-wrap items-center gap-x-1 sm:gap-x-2 lg:flex-nowrap lg:gap-x-3")}>
         {mobileNav === "menu" ? <TopBarMenu label={menu.label} nav={nav} navLabel={navLabel} content={menu.content} /> : null}
         <Link
           href={home.href}
@@ -191,30 +193,32 @@ function TopBarMenu({ label, nav, navLabel, content }: { label: string; nav: rea
               if (event.target === event.currentTarget && phase === "closing") setPhase("closed");
             }}
             className={cn(
-              "max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain border-t border-hairline bg-elevated-background px-4 pt-3 pb-5 shadow-bar sm:px-6",
+              "max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain border-t border-hairline bg-elevated-background pt-3 pb-5 shadow-bar",
               open ? "motion-drop-in" : "motion-drop-out",
             )}
           >
-            <nav aria-label={navLabel}>
-              <ul className="flex flex-col gap-1">
-                {nav.map((link) => {
-                  const state = current(link.href);
-                  return (
-                    <li key={link.href}>
-                      <Link
-                        href={link.href}
-                        prefetch={false}
-                        aria-current={state}
-                        className={cn(MENU_ROW, state ? "bg-action-surface font-semibold text-primary-text" : "font-medium text-primary-text hover:bg-action-surface")}
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </nav>
-            <div className="mt-3 border-t border-hairline pt-4">{content}</div>
+            <div className={PAGE_CONTAINER}>
+              <nav aria-label={navLabel}>
+                <ul className="flex flex-col gap-1">
+                  {nav.map((link) => {
+                    const state = current(link.href);
+                    return (
+                      <li key={link.href}>
+                        <Link
+                          href={link.href}
+                          prefetch={false}
+                          aria-current={state}
+                          className={cn(MENU_ROW, state ? "bg-action-surface font-semibold text-primary-text" : "font-medium text-primary-text hover:bg-action-surface")}
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </nav>
+              <div className="mt-3 border-t border-hairline pt-4">{content}</div>
+            </div>
           </div>
           {/* The dimmed page: from the panel's edge down, so the bar stays as it is. Not focusable; a tap closes. */}
           <div

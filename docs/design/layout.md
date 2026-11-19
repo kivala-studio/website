@@ -28,7 +28,7 @@ SITE_PAGE      = PAGE_CONTAINER + "pt-4 pb-16 lg:pt-8"       // src/features/sit
 SIGNED_IN_PAGE = PAGE_CONTAINER + "pt-4 pb-16 lg:pt-8"       // src/features/shell/placeholder-page.tsx
 ```
 
-Every page's `<main id="main">` uses one of these. Market pages get theirs from `src/app/[locale]/(market)/mercado/layout.tsx` (`pt-4 pb-16 lg:pt-6`). The top bar and the footer run full width; their content uses the same gutters.
+Every page's `<main id="main">` uses one of these. Market pages get theirs from `src/app/[locale]/(market)/mercado/layout.tsx` (`pt-4 pb-16 lg:pt-6`). The top bar's and the footer's backgrounds run full width; their content sits in `PAGE_CONTAINER` too, so the logo and the last action line up with the page's edges at every width (a round control at an edge lines up by its glyph, not its target).
 
 ## Chrome
 
@@ -52,16 +52,16 @@ Public site below 1024 px, menu open:
 ░░░░░░░ page dimmed (black/40) ░░░░░░
 ```
 
-One bar for the site and the app: full width, 64 px, `sticky top-0 z-30`, `bg-elevated-background shadow-bar`. Logo, pill navigation (the current section is the grey `action-surface` pill with `aria-current`), then search and actions on the right.
+One bar for the site and the app: full width, 64 px, `sticky top-0 z-30`, `bg-elevated-background shadow-bar`, its row in `PAGE_CONTAINER` (1200 px at most, centred, the page's gutters). Logo, pill navigation (the current section is the grey `action-surface` pill with `aria-current`), then search and actions on the right.
 
 | Mode | Who | Below 1024 px | From 1024 px |
 |---|---|---|---|
 | `mobileNav="menu"` | Public site (`SiteHeader` in `src/features/site/chrome.tsx`) | One row: the menu button, the logo, then the sign-in pill at the end. The menu holds the sections, then `menu.content` (theme and language) | Pills beside the logo; `wideActions` before `actions`; no menu button |
 | `mobileNav="none"` | Signed-in app (`ShellTopBar` in `src/features/shell/shell-nav.tsx`) | No pills; the bottom tab bar has the tabs | Pills beside the logo; the search tab becomes the palette field |
 
-Site actions: from 1024 px the language (`LanguageFlag` and code), `ThemeMenu` and the compact "Iniciar sessão" pill (links to `/entrar`); below 1024 px only the pill stays in the bar, drawn smaller (36 px, 12 px padding, `SIGN_IN_PILL`; the target stays 44 px) so it doesn't outweigh the logo, and the theme (`ThemeSwitch`) and language sit in the menu as `SiteControls`. App actions: unusual activity and activity (plain icon links with `aria-current`, an unread dot), the profile initials. The wordmark shows from 360 px in the public bar and from 400 px in the app's (the link keeps its name).
+Site actions: from 1024 px the language (`LanguageFlag` and code), `ThemeMenu` and the compact "Iniciar sessão" pill (links to `/entrar`); below 1024 px only the pill stays in the bar, drawn smaller (36 px, 12 px padding, `SIGN_IN_PILL`; the target stays 44 px) so it doesn't outweigh the logo, and the theme (`ThemeSwitch`) and language sit in the menu as `SiteControls`. App actions: unusual activity and activity (plain icon links with `aria-current`, an unread dot), the profile initials (a 36 px disc in a 44 px link that overhangs the gutter by 4 px, so the disc ends on the page's edge). The wordmark shows from 360 px in the public bar and from 400 px in the app's (the link keeps its name).
 
-The menu is a disclosure, not a WAI-ARIA menu: a 48 px icon button (`menu`, `close` while open) with `aria-expanded` and `aria-controls` that leads the bar, its glyph on the gutter (the button overhangs it by 16 px), then a panel that follows it in the DOM, so Tab goes from the button into the panel. The panel that drops from under the bar (`motion-drop-in`, full width, the bar's gutters, scrolls on its own if the window is short) over the dimmed page (`motion-dim-in`). While it is open the page doesn't scroll. Escape or a tap on the dimmed page closes it and returns focus to the button; following a link, tapping elsewhere on the bar, tabbing out of the menu (on to the logo, say) or widening the window past 1024 px closes it too. Without JavaScript the footer carries the same section links.
+The menu is a disclosure, not a WAI-ARIA menu: a 48 px icon button (`menu`, `close` while open) with `aria-expanded` and `aria-controls` that leads the bar, its glyph on the gutter (the button overhangs it by 16 px), then a panel that follows it in the DOM, so Tab goes from the button into the panel. The panel drops from under the bar (`motion-drop-in`, full width, its content in `PAGE_CONTAINER`, scrolls on its own if the window is short) over the dimmed page (`motion-dim-in`). While it is open the page doesn't scroll. Escape or a tap on the dimmed page closes it and returns focus to the button; following a link, tapping elsewhere on the bar, tabbing out of the menu (on to the logo, say) or widening the window past 1024 px closes it too. Without JavaScript the footer carries the same section links.
 
 ### Bottom tab bar (`ShellNav`)
 

@@ -92,8 +92,9 @@ export function ShellTopBar({ tabs, navLabel, homeLabel, logo, initials, profile
             <span className="sr-only">{`${activityLabel}, ${hasUnread ? activityStates.new : activityStates.none}`}</span>
             {hasUnread ? <span aria-hidden className="absolute top-2 right-2 size-2.5 rounded-full bg-negative ring-2 ring-elevated-background" /> : null}
           </Link>
-          {/* The initials are decorative: the link is named by the profile label. */}
-          <Link href="/definicoes" aria-current={current("/definicoes")} className="group ml-1 inline-flex size-11 shrink-0 items-center justify-center rounded-full">
+          {/* The initials are decorative: the link is named by the profile label. The 44 px target overhangs the
+              gutter by 4 px, so the disc ends on the page's edge. */}
+          <Link href="/definicoes" aria-current={current("/definicoes")} className="group -mr-1 ml-1 inline-flex size-11 shrink-0 items-center justify-center rounded-full">
             <span aria-hidden className="inline-flex size-9 items-center justify-center rounded-full bg-accent-soft font-display text-secondary font-semibold text-accent ring-accent group-hover:ring-2 group-aria-[current=page]:ring-2">
               {initials}
             </span>
