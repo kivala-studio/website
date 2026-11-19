@@ -11,6 +11,7 @@ import { iconButtonClass } from "@/ui/components/buttons";
 import { FIELD, KeyHint } from "@/ui/components/controls";
 import { Dialog } from "@/ui/components/dialog";
 import { Icon } from "@/ui/icons/icon";
+import { usePresence } from "@/ui/motion/use-presence";
 
 import { SearchPanel } from "./search-panel";
 
@@ -25,6 +26,8 @@ const isTyping = (target: EventTarget | null) =>
 export function CommandPalette({ rows, renderedAt }: { rows: readonly CatalogueRow[]; renderedAt: number }) {
   const t = useTranslations();
   const [open, setOpen] = useState(false);
+  // The panel stays while the dialog leaves, then unmounts: each opening starts with an empty search.
+  const { mounted } = usePresence(open);
   const pathname = usePathname();
   // Following a result closes the palette once the new page is there; unmounting the link first would drop the navigation.
   const [openedOn, setOpenedOn] = useState(pathname);
@@ -77,7 +80,7 @@ export function CommandPalette({ rows, renderedAt }: { rows: readonly CatalogueR
         <Icon name="search" scale="l" />
       </button>
       <Dialog variant="dialog" open={open} onClose={() => setOpen(false)} title={t("common.search")}>
-        {open ? <SearchPanel rows={rows} renderedAt={renderedAt} autoFocus /> : null}
+        {mounted ? <SearchPanel rows={rows} renderedAt={renderedAt} autoFocus /> : null}
       </Dialog>
     </>
   );

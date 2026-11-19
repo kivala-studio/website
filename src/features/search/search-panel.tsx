@@ -29,7 +29,8 @@ import { buttonClass } from "@/ui/components/button-styles";
 import { SearchField } from "@/ui/components/controls";
 import { Card } from "@/ui/components/layout";
 import { SecurityLogo } from "@/ui/components/rows";
-import { EmptyState } from "@/ui/components/states";
+import { EmptyState, FadeIn } from "@/ui/components/states";
+import { FlipList } from "@/ui/components/flip-list";
 import { useFormat } from "@/ui/format";
 
 import { WatchStar } from "./watch-star";
@@ -141,7 +142,7 @@ function ResultGroup({
     return (
       <Card title={title} titleId={id} action={action} flush>
         {note ? <p className="px-5 text-caption text-secondary-text desk:px-6">{note}</p> : null}
-        <ul className="flex flex-col px-5 pb-2 desk:px-6">{children}</ul>
+        <FlipList className="flex flex-col px-5 pb-2 desk:px-6">{children}</FlipList>
       </Card>
     );
   }
@@ -154,7 +155,7 @@ function ResultGroup({
         {action}
       </div>
       {note ? <p className="text-caption text-secondary-text">{note}</p> : null}
-      <ul className="flex flex-col">{children}</ul>
+      <FlipList className="flex flex-col">{children}</FlipList>
     </section>
   );
 }
@@ -221,12 +222,12 @@ export function SearchPanel({
   const row = (security: MarketSecurity) => {
     const catalogueRow = byID.get(security.id);
     return (
-      <li key={security.id} className="flex items-center gap-1 border-b border-hairline last:border-b-0">
+      <li key={security.id} data-flip-key={security.id} className="flex items-center gap-1 border-b border-hairline last:border-b-0">
         <Link
           href={`/mercado/${encodeURIComponent(security.symbol)}`}
           prefetch={false}
           onClick={() => recents.record(security.id)}
-          className="flex min-h-15 min-w-0 flex-1 items-center gap-3 rounded-small py-2"
+          className="motion-tap flex min-h-15 min-w-0 flex-1 items-center gap-3 rounded-small py-2"
           data-testid="search-result"
         >
           <SecurityLogo symbol={security.symbol} logoUrl={catalogueRow?.logoURL ?? security.logoURL} brandColor={catalogueRow?.bond ? "violet" : "blue"} size="s" />
@@ -252,14 +253,17 @@ export function SearchPanel({
           groups.length === 0 ? (
             <EmptyState icon="search" title={t("search.emptyState.noResults", { arg1: query.trim() })} />
           ) : (
-            groups.map((group) => (
-              <ResultGroup key={group.kind} id={`${resultsID}-${group.kind}`} title={translate(kindLabelKey(group.kind))} surface={surface}>
-                {group.items.map(row)}
-              </ResultGroup>
-            ))
+            // Results replace the browse view with a fade; while typing, rows glide and new ones fade in.
+            <FadeIn key="results" className={cn("flex flex-col", surface === "page" ? "gap-6" : "gap-5")}>
+              {groups.map((group) => (
+                <ResultGroup key={group.kind} id={`${resultsID}-${group.kind}`} title={translate(kindLabelKey(group.kind))} surface={surface}>
+                  {group.items.map(row)}
+                </ResultGroup>
+              ))}
+            </FadeIn>
           )
         ) : (
-          <>
+          <FadeIn key="browse" className={cn("flex flex-col", surface === "page" ? "gap-6" : "gap-5")}>
             <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {CATEGORIES.map((category) => {
                 const count = visible.filter((security) => categoryIncludesKind(category, security.kind)).length;
@@ -268,7 +272,7 @@ export function SearchPanel({
                     <Link
                       href={{ pathname: "/mercado", query: marketQueryParams({ ...MARKET_DEFAULT_QUERY, category }) }}
                       prefetch={false}
-                      className={cn("flex min-h-24 flex-col justify-between gap-3 rounded-card p-4 transition-[filter] hover:brightness-95 desk:px-5", CATEGORY_TONE[category])}
+                      className={cn("flex min-h-24 flex-col justify-between gap-3 rounded-card p-4 transition-[filter] duration-base hover:brightness-95 desk:px-5", CATEGORY_TONE[category])}
                     >
                       <span className="font-display text-body font-semibold">{translate(MARKET_CATEGORY_LABEL_KEYS[category])}</span>
                       <span className="font-display text-section text-primary-text">{format.count(count)}</span>
@@ -296,7 +300,7 @@ export function SearchPanel({
                 {highestVolume.map(row)}
               </ResultGroup>
             ) : null}
-          </>
+          </FadeIn>
         )}
       </div>
     </div>

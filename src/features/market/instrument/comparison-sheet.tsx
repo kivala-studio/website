@@ -26,7 +26,9 @@ import { Dialog } from "@/ui/components/dialog";
 import { SecurityLogo } from "@/ui/components/rows";
 import { Spinner } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
-import { Icon } from "@/ui/icons/icon";
+import { AnimatedText } from "@/ui/components/animated-value";
+import { IconSwap } from "@/ui/components/motion";
+import { useChartMotion } from "@/ui/motion/use-chart-motion";
 
 const RANGES: readonly RangeName[] = ["oneWeek", "oneMonth", "threeMonths", "sixMonths", "oneYear"];
 const SERIES = ["text-accent", "text-brand-violet", "text-warning"] as const;
@@ -52,6 +54,8 @@ export function ComparisonSheet({ open, onClose, base }: { open: boolean; onClos
   /** Server answers per instrument set (sorted ids): authorised, or a failure that is not a plan limit. */
   const [answers, setAnswers] = useState<Record<string, "ready" | "failed">>({});
   const svg = useRef<SVGSVGElement>(null);
+  const plot = useRef<SVGGElement>(null);
+  const ghost = useRef<SVGGElement>(null);
   const titleID = useId();
   const snapshot = state.load.kind === "loaded" ? state.load.snapshot : undefined;
   const at = state.assessedAt ?? 0;
@@ -173,6 +177,8 @@ export function ComparisonSheet({ open, onClose, base }: { open: boolean; onClos
 
   const noCommon = selected.length > 1 && !loading && interval === undefined;
   const ready = answers[key] === "ready" && series.every((item) => item.points.length >= 2);
+  // Another range or another instrument cross-fades the lines; the first set draws in.
+  useChartMotion(plot, ghost, ready ? `${rangeName}:${key}` : null, { draw: true });
   return (
     <Dialog open={open} onClose={onClose} title={t("assetDetails.comparison.title", { arg1: base.symbol })}>
       <div className="flex flex-col gap-6 px-5 pt-2 pb-8" data-testid="comparison">
@@ -206,19 +212,22 @@ export function ComparisonSheet({ open, onClose, base }: { open: boolean; onClos
                 className="h-60 w-full overflow-visible"
                 data-testid="comparison-chart"
               >
-                <line x1={0} x2={WIDTH} y1={y(0)} y2={y(0)} className="stroke-separator" strokeDasharray="3 4" fill="none" />
-                {series.map((item, index) => (
-                  <path
-                    key={item.security.id}
-                    d={item.points.map((point, step) => `${step === 0 ? "M" : "L"}${x(point.date).toFixed(2)} ${y(point.value.toNumber()).toFixed(2)}`).join(" ")}
-                    className={cn("stroke-current", SERIES[index])}
-                    fill="none"
-                    strokeWidth={2}
-                    strokeLinejoin="round"
-                    strokeLinecap="round"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                ))}
+                <g ref={plot}>
+                  <line x1={0} x2={WIDTH} y1={y(0)} y2={y(0)} className="stroke-separator" strokeDasharray="3 4" fill="none" />
+                  {series.map((item, index) => (
+                    <path
+                      key={item.security.id}
+                      d={item.points.map((point, step) => `${step === 0 ? "M" : "L"}${x(point.date).toFixed(2)} ${y(point.value.toNumber()).toFixed(2)}`).join(" ")}
+                      className={cn("stroke-current", SERIES[index])}
+                      fill="none"
+                      strokeWidth={2}
+                      strokeLinejoin="round"
+                      strokeLinecap="round"
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  ))}
+                </g>
+                <g ref={ghost} />
               </svg>
               <ul className="flex flex-col">
                 {series.map((item, index) => {
@@ -229,7 +238,7 @@ export function ComparisonSheet({ open, onClose, base }: { open: boolean; onClos
                         <span aria-hidden className={cn("size-2.5 rounded-full bg-current", SERIES[index])} />
                         {item.security.symbol}
                       </span>
-                      <span className="text-body font-semibold text-primary-text tabular-nums">{last ? format.percent(last) : "—"}</span>
+                      <AnimatedText text={last ? format.percent(last) : "—"} numeric={last?.toString()} className="inline-block text-body font-semibold text-primary-text tabular-nums" />
                     </li>
                   );
                 })}
@@ -265,7 +274,7 @@ export function ComparisonSheet({ open, onClose, base }: { open: boolean; onClos
                     >
                       <SecurityLogo symbol={security.symbol} logoUrl={security.logoURL} size="s" />
                       <span className="flex-1 text-body font-semibold text-primary-text">{security.symbol}</span>
-                      <Icon name={chosen ? "check-circle" : "add"} className={chosen ? "text-accent" : "text-tertiary-text"} />
+                      <IconSwap icons={["add", "check-circle"]} show={chosen ? 1 : 0} className={cn("transition-colors", chosen ? "text-accent" : "text-tertiary-text")} />
                     </button>
                   </li>
                 );

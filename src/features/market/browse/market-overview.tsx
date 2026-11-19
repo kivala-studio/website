@@ -12,7 +12,8 @@ import { MarketStatusIndicator } from "@/ui/components/financial";
 import { Card, StatTile } from "@/ui/components/layout";
 import { Dialog } from "@/ui/components/dialog";
 import { SecurityLogo } from "@/ui/components/rows";
-import { Skeleton } from "@/ui/components/states";
+import { FlipList } from "@/ui/components/flip-list";
+import { FadeIn, Skeleton } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
 
@@ -157,15 +158,15 @@ type MoverTab = "gains" | "declines" | "volume";
 
 /**
  * A compact instrument row (the movers card, Home's lists): logo, symbol and the trailing figures, the whole row a
- * link to the instrument.
+ * link to the instrument. Keyed for a `FlipList`, so a reordered list glides.
  */
 export function CompactRow({ security, row, children, className }: { security: MarketSecurity; row: CatalogueRow | undefined; children: ReactNode; className?: string }) {
   return (
-    <li className={cn("border-b border-hairline last:border-b-0", className)}>
+    <li data-flip-key={security.id} className={cn("border-b border-hairline last:border-b-0", className)}>
       <Link
         href={`/mercado/${encodeURIComponent(security.symbol)}`}
         prefetch={false}
-        className="flex min-h-12 items-center gap-3 rounded-small py-1.5 desk:min-h-11"
+        className="motion-tap flex min-h-12 items-center gap-3 rounded-small py-1.5 desk:min-h-11"
       >
         <span className="flex shrink-0 max-[25rem]:hidden">
           <SecurityLogo symbol={security.symbol} logoUrl={row?.logoURL ?? security.logoURL} brandColor={row?.bond ? "violet" : "blue"} size="s" />
@@ -197,7 +198,8 @@ export function MoverRow({ security, row, at, volume, className }: { security: M
 /**
  * The movers card: Subidas · Descidas · Volume over five rows, among instruments with a usable current quote, so it
  * fills in only once the browser has the snapshot (gains and declines by the displayed BODIVA variation, iOS home
- * movers; volume as on the signed-in Home).
+ * movers; volume as on the signed-in Home). Another tab or a new snapshot: rows that stay glide to their new
+ * places, new ones fade in; the loaded list fades in over the skeleton.
  */
 export function MarketMovers({ rows }: { rows: CatalogueRow[] }) {
   const t = useTranslations();
@@ -249,13 +251,17 @@ export function MarketMovers({ rows }: { rows: CatalogueRow[] }) {
           ))}
         </div>
       ) : items.length === 0 ? (
-        <p className="py-3 text-secondary text-secondary-text">{empty}</p>
+        <FadeIn key={tab}>
+          <p className="py-3 text-secondary text-secondary-text">{empty}</p>
+        </FadeIn>
       ) : (
-        <ul className="flex flex-col">
-          {items.map((security) => (
-            <MoverRow key={security.id} security={security} row={byID.get(security.id)} at={loaded!.at} volume={tab === "volume"} />
-          ))}
-        </ul>
+        <FadeIn>
+          <FlipList className="flex flex-col">
+            {items.map((security) => (
+              <MoverRow key={security.id} security={security} row={byID.get(security.id)} at={loaded!.at} volume={tab === "volume"} />
+            ))}
+          </FlipList>
+        </FadeIn>
       )}
     </Card>
   );

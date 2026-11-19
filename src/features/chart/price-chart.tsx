@@ -8,6 +8,10 @@ import { ChartScrubPacer, nearestIndex } from "@/domain/chart/selection";
 import type { PricePoint } from "@/domain/market";
 import { cn } from "@/ui/cn";
 import { useFormat } from "@/ui/format";
+import { FADE_IN, useChangeAnimation } from "@/ui/motion/use-change-animation";
+import { useChartMotion } from "@/ui/motion/use-chart-motion";
+import { useEntrance } from "@/ui/motion/use-entrance";
+
 
 /** Plot height (iOS asset chart: 258 pt). The plot is drawn in a 1000-unit-wide box stretched to its width. */
 export const CHART_HEIGHT = 258;
@@ -33,7 +37,8 @@ export function chartTone(points: readonly PricePoint[]): ChartTone {
 /**
  * Line + 10 % area over real observations, linear, with first and last values pinned on the
  * right-hand axis. Pointer and arrow keys select the nearest real observation; nothing is
- * interpolated. Every colour comes from a class, so the strict CSP needs no inline style.
+ * interpolated. Every colour comes from a class, so the strict CSP needs no inline style. A chart that arrives after
+ * hydration draws its line in; new points (another range) cross-fade the series and the axis (`useChartMotion`).
  */
 export function PriceChart({
   points,
@@ -57,6 +62,13 @@ export function PriceChart({
   const format = useFormat();
   const summaryID = useId();
   const plot = useRef<HTMLDivElement>(null);
+  const series = useRef<SVGGElement>(null);
+  const ghost = useRef<SVGGElement>(null);
+  const axis = useRef<SVGSVGElement>(null);
+  // What is drawn, not the array: a poll that recomputes the same points changes nothing.
+  const drawnKey = points.length ? `${points.length}:${points[0].date}:${points.at(-1)!.date}:${points.at(-1)!.value.toString()}` : "";
+  useChartMotion(series, ghost, drawnKey, { draw: useEntrance() });
+  useChangeAnimation(axis, drawnKey, FADE_IN);
   const pacer = useRef(new ChartScrubPacer());
   const tone = TONE[chartTone(points)];
 
@@ -155,31 +167,34 @@ export function PriceChart({
         className="relative min-w-0 flex-1 cursor-crosshair touch-pan-y rounded-small select-none"
       >
         <svg viewBox={`0 0 ${WIDTH} ${CHART_HEIGHT}`} preserveAspectRatio="none" aria-hidden className="block h-[258px] w-full overflow-visible">
-          {geometry.ticks.map((tick) => (
-            <line
-              key={`grid-${tick.value}`}
-              x1={0}
-              x2={WIDTH}
-              y1={tick.y}
-              y2={tick.y}
-              strokeWidth={tick.endpoint ? 0.7 : 0.5}
-              strokeDasharray="3 4"
+          <g ref={series}>
+            {geometry.ticks.map((tick) => (
+              <line
+                key={`grid-${tick.value}`}
+                x1={0}
+                x2={WIDTH}
+                y1={tick.y}
+                y2={tick.y}
+                strokeWidth={tick.endpoint ? 0.7 : 0.5}
+                strokeDasharray="3 4"
+                vectorEffect="non-scaling-stroke"
+                className={tick.endpoint ? cn(tone.stroke, "opacity-35") : "stroke-chart-grid"}
+              />
+            ))}
+            {geometry.area ? <path d={geometry.area} className={tone.fill} /> : null}
+            <path
+              d={geometry.line}
+              fill="none"
+              strokeWidth={lineWidth}
+              strokeLinecap="round"
+              strokeLinejoin="round"
               vectorEffect="non-scaling-stroke"
-              className={tick.endpoint ? cn(tone.stroke, "opacity-35") : "stroke-chart-grid"}
+              className={tone.stroke}
             />
-          ))}
-          {geometry.area ? <path d={geometry.area} className={tone.fill} /> : null}
-          <path
-            d={geometry.line}
-            fill="none"
-            strokeWidth={lineWidth}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            vectorEffect="non-scaling-stroke"
-            className={tone.stroke}
-          />
-          {dot(geometry.coordinates[0], 6, tone.stroke)}
-          {geometry.coordinates.length > 1 ? dot(geometry.coordinates.at(-1), 6, tone.stroke) : null}
+            {dot(geometry.coordinates[0], 6, tone.stroke)}
+            {geometry.coordinates.length > 1 ? dot(geometry.coordinates.at(-1), 6, tone.stroke) : null}
+          </g>
+          <g ref={ghost} />
           {selectedCoordinate ? (
             <>
               <line
@@ -201,7 +216,7 @@ export function PriceChart({
           {summary}
         </p>
       </div>
-      <svg viewBox={`0 0 56 ${CHART_HEIGHT}`} width={56} height={CHART_HEIGHT} aria-hidden className="shrink-0 overflow-visible">
+      <svg ref={axis} viewBox={`0 0 56 ${CHART_HEIGHT}`} width={56} height={CHART_HEIGHT} aria-hidden className="shrink-0 overflow-visible">
         {geometry.ticks.map((tick) => (
           <text
             key={`label-${tick.value}`}

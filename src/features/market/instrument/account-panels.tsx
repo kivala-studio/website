@@ -34,7 +34,9 @@ import { Button, iconButtonClass } from "@/ui/components/buttons";
 import { Card } from "@/ui/components/layout";
 import { SectionPlaceholder } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
+import { IconSwap } from "@/ui/components/motion";
 import { Icon } from "@/ui/icons/icon";
+import { barGrow, useChangeAnimation } from "@/ui/motion/use-change-animation";
 
 import { AlertsDialog } from "@/features/alerts/alerts-dialog";
 
@@ -197,7 +199,7 @@ export function InstrumentActions({ instrument, security, at, points }: { instru
       <div className="flex items-center gap-2">
         <WatchStar id={instrument.id} symbol={instrument.symbol} variant="toolbar" />
         <button type="button" onClick={() => void share()} aria-label={t("assetDetails.accessibility.shareInstrument")} title={t("assetDetails.accessibility.shareInstrument")} className={iconButtonClass()}>
-          <Icon name={copied ? "check" : "share"} />
+          <IconSwap icons={["share", "check"]} show={copied ? 1 : 0} />
         </button>
         {exportable ? (
           <button
@@ -234,6 +236,27 @@ export function InstrumentActions({ instrument, security, at, points }: { instru
       />
       {security ? <ComparisonSheet open={comparing} onClose={() => setComparing(false)} base={security} /> : null}
     </div>
+  );
+}
+
+/**
+ * A level's depth behind its figures, from the centre outwards. An SVG rect sized by its attributes (no inline style);
+ * a refresh that changes the quantity grows or shrinks it from where it was (`barGrow`).
+ */
+function DepthBar({ scale, side }: { scale: number; side: "bid" | "ask" }) {
+  const bar = useRef<SVGRectElement>(null);
+  const width = Math.min(Math.max(Number.isFinite(scale) ? scale : 0, 0), 100);
+  useChangeAnimation(bar, width, barGrow);
+  return (
+    <svg viewBox="0 0 100 1" preserveAspectRatio="none" aria-hidden className="absolute top-1 left-0 h-[calc(100%-0.5rem)] w-full">
+      <rect
+        ref={bar}
+        x={side === "bid" ? 100 - width : 0}
+        width={width}
+        height={1}
+        className={cn("[transform-box:fill-box]", side === "bid" ? "origin-right fill-positive/12" : "origin-left fill-negative/12")}
+      />
+    </svg>
   );
 }
 
@@ -285,7 +308,7 @@ export function OrderBookPanel({ instrument, security, at, active }: { instrumen
             arg4: format.quantity(level.quantity),
           })}
         </span>
-        <span aria-hidden className={cn("absolute inset-y-1", side === "bid" ? "right-0 bg-positive/12" : "left-0 bg-negative/12")} style={{ width: `${scale}%` }} />
+        <DepthBar scale={scale} side={side} />
         <span aria-hidden className={cn("relative text-body font-semibold tabular-nums", side === "bid" ? "text-positive" : "text-negative")}>{money(level.price)}</span>
         <span aria-hidden className="relative text-caption text-secondary-text tabular-nums">
           {t("assetDetails.orderBook.quantity", { arg1: format.quantity(level.quantity) })}
