@@ -15,6 +15,7 @@ import {
 
 import { cn } from "../cn";
 import { Icon } from "../icons/icon";
+import { useEntrance } from "../motion/use-entrance";
 import { Spinner } from "./states";
 import { PRIVACY_MASK } from "@/domain/privacy/privacy";
 
@@ -40,10 +41,17 @@ export function useToast() {
 
 const AUTO_DISMISS_MS = 7000;
 
-/** One toast at a time, from the top, announced politely. */
+/** How long the leaving toast may take before it is removed anyway (its exit is `base`). */
+const LEAVE_MS = 400;
+
+/**
+ * One toast at a time, from the top, announced politely. A toast slides down on arrival and lifts away when it is
+ * dismissed, times out or is replaced (the next one arrives over it).
+ */
 export function ToastHost({ children }: { children: ReactNode }) {
   const t = useTranslations("components.toast");
   const [toast, setToast] = useState<Toast | null>(null);
+  const [leaving, setLeaving] = useState<Toast | null>(null);
   const [retrying, setRetrying] = useState(false);
   const counter = useRef(0);
 
@@ -52,13 +60,22 @@ export function ToastHost({ children }: { children: ReactNode }) {
     current.current = toast;
   }, [toast]);
 
+  useEffect(() => {
+    if (!leaving) return;
+    const timer = setTimeout(() => setLeaving(null), LEAVE_MS);
+    return () => clearTimeout(timer);
+  }, [leaving]);
+
   const dismiss = useCallback(() => {
-    current.current?.onDismiss?.();
+    const closing = current.current;
+    closing?.onDismiss?.();
     current.current = null;
     setToast(null);
+    setLeaving(closing);
   }, []);
   const show = useCallback((next: ToastMessage) => {
     counter.current += 1;
+    setLeaving(current.current);
     setToast({ ...next, id: counter.current });
   }, []);
 
@@ -75,9 +92,25 @@ export function ToastHost({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <div aria-live="polite" className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-2">
+      {/* One grid cell: a leaving toast and the next one overlap instead of stacking. */}
+      <div aria-live="polite" className="pointer-events-none fixed inset-x-0 top-0 z-50 grid justify-items-center px-4 pt-2">
+        {leaving ? (
+          <div
+            key={leaving.id}
+            aria-hidden
+            inert
+            onAnimationEnd={(event) => event.target === event.currentTarget && setLeaving(null)}
+            className={cn(TOAST, "motion-toast-out")}
+          >
+            <div className="flex min-w-0 flex-1 flex-col gap-1">
+              <p className="line-clamp-2 text-secondary font-semibold text-primary-text">{leaving.title}</p>
+              <p className="line-clamp-3 text-secondary text-secondary-text">{leaving.message}</p>
+            </div>
+            <span className="size-11 shrink-0" />
+          </div>
+        ) : null}
         {toast ? (
-          <div key={toast.id} className="motion-toast pointer-events-auto flex w-full max-w-140 items-start gap-3 rounded-card border border-card-border bg-card-background py-4 pr-2 pl-5 shadow-panel">
+          <div key={toast.id} className={cn(TOAST, "motion-toast pointer-events-auto")}>
             <div className="flex min-w-0 flex-1 flex-col gap-1">
               <p className="line-clamp-2 text-secondary font-semibold text-primary-text">{toast.title}</p>
               <p className="line-clamp-3 text-secondary text-secondary-text">{toast.message}</p>
@@ -94,7 +127,7 @@ export function ToastHost({ children }: { children: ReactNode }) {
                       setRetrying(false);
                     }
                   }}
-                  className="mt-1 inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-action-surface px-4 text-secondary font-semibold text-primary-text"
+                  className="motion-press mt-1 inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-action-surface px-4 text-secondary font-semibold text-primary-text hover:bg-track"
                 >
                   {retrying ? <Spinner /> : null}
                   {retrying ? t("retrying") : toast.actionTitle}
@@ -106,7 +139,7 @@ export function ToastHost({ children }: { children: ReactNode }) {
               aria-label={t("dismiss")}
               disabled={retrying}
               onClick={dismiss}
-              className="flex size-11 shrink-0 items-center justify-center rounded-full text-caption text-secondary-text hover:bg-action-surface"
+              className="motion-press flex size-11 shrink-0 items-center justify-center rounded-full text-caption text-secondary-text hover:bg-action-surface"
             >
               <Icon name="close" />
             </button>
@@ -116,6 +149,8 @@ export function ToastHost({ children }: { children: ReactNode }) {
     </ToastContext.Provider>
   );
 }
+
+const TOAST = "col-start-1 row-start-1 flex w-full max-w-140 items-start gap-3 rounded-card border border-card-border bg-card-background py-4 pr-2 pl-5 shadow-panel";
 
 const subscribe = (callback: () => void) => {
   window.addEventListener("online", callback);
@@ -130,13 +165,18 @@ export function useOnline() {
   return useSyncExternalStore(subscribe, () => navigator.onLine, () => true);
 }
 
-/** `Sem ligação à Internet` while the browser is offline. */
+/** `Sem ligação à Internet` while the browser is offline; it eases in when the connection drops. */
 export function OfflineBanner({ forceVisible = false }: { forceVisible?: boolean }) {
-  const t = useTranslations();
   const online = useOnline();
   if (online && !forceVisible) return null;
+  return <OfflineNotice />;
+}
+
+function OfflineNotice() {
+  const t = useTranslations();
+  const entrance = useEntrance();
   return (
-    <div role="status" className="flex items-start gap-3 rounded-card border border-card-border bg-card-background px-5 py-3">
+    <div role="status" className={cn("flex items-start gap-3 rounded-card border border-card-border bg-card-background px-5 py-3", entrance && "motion-presence")}>
       <Icon name="offline" className="mt-0.5 text-warning" />
       <div className="flex flex-col gap-1">
         <p className="text-secondary font-semibold text-primary-text">{t("common.noInternet")}</p>

@@ -68,14 +68,14 @@ export function ControlRow({ icon, label, children }: { icon?: IconName; label: 
   );
 }
 
-/** A text page of the iOS app, here an expandable row. */
+/** A text page of the iOS app, here an expandable row: it grows open and folds closed, its chevron turning. */
 export function DisclosureRow({ icon, label, children }: { icon?: IconName; label: string; children: ReactNode }) {
   return (
-    <details className="group">
+    <details className="group motion-details">
       <summary className={cn(ROW, "cursor-pointer list-none [&::-webkit-details-marker]:hidden")}>
         <Leading icon={icon} />
         <span className="min-w-0 flex-1 text-body text-primary-text">{label}</span>
-        <Icon name="chevron-down" scale="s" className="shrink-0 text-tertiary-text transition-transform group-open:rotate-180" />
+        <Icon name="chevron-down" scale="s" className="motion-turn shrink-0 text-tertiary-text group-open:rotate-180" />
       </summary>
       <div className="flex flex-col gap-2 pb-4 text-secondary text-secondary-text">{children}</div>
     </details>
