@@ -17,6 +17,7 @@ import {
 import { useAccount } from "@/features/account/account-provider";
 import { useMarketState, useMarketStore } from "@/features/market/market-provider";
 import { cn } from "@/ui/cn";
+import { IconSwap } from "@/ui/components/motion";
 import { AmountField } from "@/ui/components/amount-field";
 import { chipClass } from "@/ui/components/button-styles";
 import { Button, IconButton } from "@/ui/components/buttons";
@@ -29,6 +30,10 @@ import { SecurityLogo } from "@/ui/components/rows";
 import { EmptyState, Spinner } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
+import { AnimatedText } from "@/ui/components/animated-value";
+import { useEntrance } from "@/ui/motion/use-entrance";
+import { usePresenceValue } from "@/ui/motion/use-presence";
+import { useSlidingIndicator } from "@/ui/motion/use-sliding-indicator";
 
 import { useSimulationDraft } from "./draft-store";
 import { SimulationChart } from "./simulation-chart";
@@ -127,7 +132,9 @@ function Calculator({
   const t = useTranslations();
   const format = useFormat();
   const [draft, update] = useSimulationDraft(userID);
+  const entrance = useEntrance();
   const [picking, setPicking] = useState(false);
+  const picker = usePresenceValue(picking);
   const [touched, setTouched] = useState<ReadonlySet<SimulationField>>(new Set());
   const [scrub, setScrub] = useState<number | null>(null);
   const security = securities.find((item) => item.id === draft.securityId);
@@ -141,7 +148,7 @@ function Calculator({
 
   return (
     // Phones follow iOS (projection, controls, details); wide screens keep the controls beside both halves.
-    <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:grid-rows-[auto_1fr] lg:items-start lg:gap-x-8">
+    <div className={cn("flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:grid-rows-[auto_1fr] lg:items-start lg:gap-x-8", entrance && "motion-fade-in")}>
       <Card role="region" aria-labelledby="simulation-headline" className="flex flex-col gap-6 lg:col-start-1">
         <InstrumentHeader security={security} onPick={() => setPicking(true)} error={instrumentError ? t(instrumentError as never) : null} />
         <Headline result={result} scrub={scrub} horizonMonths={result?.input.durationMonths} money={money} />
@@ -176,8 +183,10 @@ function Calculator({
         <QuoteFootnote security={security} partial={partial} refreshing={refreshing} onRefresh={onRefresh} />
         <Methodology />
       </div>
-      {picking ? (
+      {picker.value ? (
         <InstrumentPicker
+          key={picker.key}
+          open={picker.open}
           securities={securities}
           now={now}
           selectedId={draft.securityId}
@@ -267,11 +276,12 @@ function Headline({
         {label}
       </span>
       <span className="text-display break-all text-primary-text tabular-nums" data-testid="simulation-value">
-        {point ? money(point.balance) : t("simulation.result.valuePlaceholder")}
+        {/* The result rolls to each new scenario; scrubbing the chart reads months out without a roll per step. */}
+        {scrub === null ? <AnimatedText text={point ? money(point.balance) : t("simulation.result.valuePlaceholder")} numeric={point?.balance.toString()} className="inline-block" /> : point ? money(point.balance) : null}
       </span>
       {point && gain ? (
         <span className="flex flex-wrap gap-x-2 text-secondary" data-testid="simulation-gain">
-          <span className={cn("font-semibold tabular-nums", tone)}>
+          <span className={cn("font-semibold tabular-nums transition-colors", tone)}>
             {money(gain, !gain.isZero())}
             {percent
               ? ` (${format.number(percent.toDecimalPlaces(1).toString(), { digits: percent.toDecimalPlaces(1).isInteger() ? 0 : 1, signed: !percent.isZero() })}%)`
@@ -291,6 +301,7 @@ function Headline({
 function Position({ result, symbol, money }: { result: SimulationResult; symbol: string; money: (value: SimDecimal) => string }) {
   const t = useTranslations();
   const format = useFormat();
+  const entrance = useEntrance();
   const quantity = (value: SimDecimal | undefined) => (value ? format.price(value.toSignificantDigits(10).toString()) : "—");
   const rows = [
     [t("simulation.result.initialUnits"), quantity(result.initialQuantity)],
@@ -299,11 +310,19 @@ function Position({ result, symbol, money }: { result: SimulationResult; symbol:
     [t("simulation.result.uninvestedBalance"), result.uninvestedCash ? money(result.uninvestedCash) : "—"],
   ] as const;
   return (
-    <dl className="flex flex-col divide-y divide-hairline rounded-large border-[length:var(--card-outline-width)] border-card-outline bg-card-background px-5 py-1 desk:panel desk:px-6" data-testid="simulation-position">
+    <dl
+      className={cn(
+        "flex flex-col divide-y divide-hairline rounded-large border-[length:var(--card-outline-width)] border-card-outline bg-card-background px-5 py-1 desk:panel desk:px-6",
+        entrance && "motion-presence",
+      )}
+      data-testid="simulation-position"
+    >
       {rows.map(([title, value]) => (
         <div key={title} className="flex min-h-11 items-center justify-between gap-4 py-2">
           <dt className="text-secondary text-secondary-text">{title}</dt>
-          <dd className="text-body font-semibold text-primary-text tabular-nums">{value}</dd>
+          <dd className="text-body font-semibold text-primary-text tabular-nums">
+            <AnimatedText text={value} className="inline-block" />
+          </dd>
         </div>
       ))}
     </dl>
@@ -351,10 +370,10 @@ function QuoteFootnote({
 function Methodology() {
   const t = useTranslations();
   return (
-    <details className="group rounded-large border-[length:var(--card-outline-width)] border-card-outline bg-card-background px-5 desk:panel desk:px-6" data-testid="simulation-methodology">
+    <details className="motion-details group rounded-large border-[length:var(--card-outline-width)] border-card-outline bg-card-background px-5 desk:panel desk:px-6" data-testid="simulation-methodology">
       <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 font-display text-body font-semibold text-primary-text [&::-webkit-details-marker]:hidden">
         {t("simulation.methodology.title")}
-        <Icon name="chevron-down" className="size-4 text-secondary-text transition-transform group-open:rotate-180 motion-reduce:transition-none" />
+        <Icon name="chevron-down" className="motion-turn size-4 text-secondary-text group-open:rotate-180" />
       </summary>
       <div className="flex flex-col gap-3 pb-5 text-secondary text-secondary-text desk:pb-6">
         <p>{t("simulation.methodology.quoteAndPrice")}</p>
@@ -406,6 +425,8 @@ function ScenarioRow({
     return compact.format(Number(preset));
   };
   const presetValue = (preset: string) => (amount ? format.number(preset, { digits: 2 }) : preset);
+  // The chosen preset's fill glides to the next one; typing a value no preset matches lets it go.
+  const chips = useSlidingIndicator<HTMLDivElement>(current, { selector: '[aria-pressed="true"]' });
   const input = {
     id,
     "aria-invalid": error ? true : undefined,
@@ -441,7 +462,7 @@ function ScenarioRow({
           )}
         </div>
       </div>
-      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 [scrollbar-width:none]" role="group" aria-label={t(TITLES[field] as never)}>
+      <div ref={chips} className="-mx-1 flex gap-2 overflow-x-auto px-1 [scrollbar-width:none]" role="group" aria-label={t(TITLES[field] as never)}>
         {PRESETS[field].map((preset) => {
           const selected = current === preset;
           return (
@@ -461,7 +482,7 @@ function ScenarioRow({
         })}
       </div>
       {error ? (
-        <p id={errorID} className="text-secondary text-negative">
+        <p id={errorID} className="motion-presence text-secondary text-negative">
           {error}
         </p>
       ) : null}
@@ -470,12 +491,14 @@ function ScenarioRow({
 }
 
 function InstrumentPicker({
+  open,
   securities,
   now,
   selectedId,
   onPick,
   onClose,
 }: {
+  open: boolean;
   securities: readonly MarketSecurity[];
   now: number;
   selectedId: string | null;
@@ -500,11 +523,11 @@ function InstrumentPicker({
   // The picker closes when its quotes change underneath it (iOS closes it on every refresh).
   const [initial] = useState(securities);
   useEffect(() => {
-    if (initial !== securities && !securities.some((item) => item.id === selectedId)) onClose();
-  }, [initial, securities, selectedId, onClose]);
+    if (open && initial !== securities && !securities.some((item) => item.id === selectedId)) onClose();
+  }, [open, initial, securities, selectedId, onClose]);
 
   return (
-    <Dialog open onClose={onClose} title={t("common.chooseInstrument")}>
+    <Dialog open={open} onClose={onClose} title={t("common.chooseInstrument")}>
       <div className="flex flex-col gap-3" data-testid="simulation-picker">
         <SearchField value={query} onChange={setQuery} placeholder={t("common.symbolNameOrIssuer")} controls={resultsID} autoFocus />
         {candidates.length === 0 ? (
@@ -536,7 +559,7 @@ function InstrumentPicker({
                       <span className="text-body font-semibold text-primary-text tabular-nums">{format.currency(security.price, { digits: 2 })}</span>
                       {change !== undefined ? <ChangeBadge value={change} /> : null}
                     </span>
-                    <Icon name={selected ? "check-circle" : "add"} className={selected ? "text-accent" : "text-secondary-text"} />
+                    <IconSwap icons={["add", "check-circle"]} show={selected ? 1 : 0} className={cn("transition-colors", selected ? "text-accent" : "text-secondary-text")} />
                   </button>
                 </li>
               );

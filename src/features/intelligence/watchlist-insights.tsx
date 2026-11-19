@@ -17,6 +17,7 @@ import { SectionHeader } from "@/ui/components/layout";
 import { Menu } from "@/ui/components/menu";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
+import { usePresenceValue } from "@/ui/motion/use-presence";
 
 import { useIntelligence, useNow, useWatchlistReading } from "./reading";
 import { watchlistPresentation } from "./presentation";
@@ -41,7 +42,9 @@ export function WatchlistInsights() {
   const intelligence = useIntelligence();
   const reading = useWatchlistReading();
   const [open, setOpen] = useState<Insight | null>(null);
-  if (!intelligence || reading.insights.length === 0) return open ? <InsightDetail insight={open} surface="watchlist" onClose={() => setOpen(null)} /> : null;
+  const shown = usePresenceValue(open);
+  const detail = shown.value ? <InsightDetail key={shown.key} open={shown.open} insight={shown.value} surface="watchlist" onClose={() => setOpen(null)} /> : null;
+  if (!intelligence || reading.insights.length === 0) return detail;
   const { coordinator } = intelligence;
   const show = (insight: Insight) => {
     setOpen(insight);
@@ -90,13 +93,23 @@ export function WatchlistInsights() {
         })}
       </ul>
       {reading.partial ? <p className="text-caption text-secondary-text">{t("watchlist.insight.sourcesUnavailable")}</p> : null}
-      {open ? <InsightDetail insight={open} surface="watchlist" onClose={() => setOpen(null)} /> : null}
+      {detail}
     </section>
   );
 }
 
 /** The observation sheet (iOS `WatchlistInsightDetails`): what was measured, from which closes, and when. */
-export function InsightDetail({ insight, surface, onClose }: { insight: Insight; surface: PersonalizationSurface; onClose: () => void }) {
+export function InsightDetail({
+  open,
+  insight,
+  surface,
+  onClose,
+}: {
+  open: boolean;
+  insight: Insight;
+  surface: PersonalizationSurface;
+  onClose: () => void;
+}) {
   const t = useTranslate();
   const format = useFormat();
   const locale = useLocale();
@@ -144,7 +157,7 @@ export function InsightDetail({ insight, surface, onClose }: { insight: Insight;
   };
 
   return (
-    <Dialog open onClose={onClose} title={t("watchlist.insightDetail.title")}>
+    <Dialog open={open} onClose={onClose} title={t("watchlist.insightDetail.title")}>
       <div className="flex flex-col gap-6" data-testid="insight-detail">
         {message ? (
           <p role="status" className="text-caption text-secondary-text" data-testid="insight-feedback">
@@ -223,10 +236,10 @@ function ObservationSources({ insight, symbols }: { insight: Insight; symbols: R
   const format = useFormat();
   const rows = [...insight.provenance.observations].sort((a, b) => a.observedAt - b.observedAt || (a.assetID < b.assetID ? -1 : 1));
   return (
-    <details className="group flex flex-col gap-3" data-testid="insight-sources">
+    <details className="motion-details group flex flex-col gap-3" data-testid="insight-sources">
       <summary className="flex min-h-11 cursor-pointer items-center justify-between gap-3 text-body font-semibold text-primary-text">
         {t("watchlist.sources.verifiedCloses", { arg1: String(rows.length) })}
-        <Icon name="chevron-down" className="transition-transform group-open:rotate-180" />
+        <Icon name="chevron-down" className="motion-turn group-open:rotate-180" />
       </summary>
       <p className="text-caption text-secondary-text">{t("watchlist.sources.closesDescription")}</p>
       <ul className="flex flex-col">
@@ -241,7 +254,7 @@ function ObservationSources({ insight, symbols }: { insight: Insight; symbols: R
           </li>
         ))}
       </ul>
-      <details className="flex flex-col gap-2">
+      <details className="motion-details flex flex-col gap-2">
         <summary className="flex min-h-11 cursor-pointer items-center text-secondary text-accent">{t("watchlist.sources.recordDetails")}</summary>
         <ul className="flex flex-col gap-2 text-caption text-secondary-text select-text">
           {rows.map((row) => (

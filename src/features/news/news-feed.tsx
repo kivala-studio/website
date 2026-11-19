@@ -12,7 +12,8 @@ import { buttonClass } from "@/ui/components/button-styles";
 import { Button } from "@/ui/components/buttons";
 import { SearchField } from "@/ui/components/controls";
 import { Card } from "@/ui/components/layout";
-import { EmptyState, ErrorState, LoadingState } from "@/ui/components/states";
+import { FlipList } from "@/ui/components/flip-list";
+import { EmptyState, ErrorState, FadeIn, LoadingState } from "@/ui/components/states";
 
 import { ArticleMetadata } from "./article-metadata";
 
@@ -38,36 +39,38 @@ function useMonthTitle() {
 function Archive({ articles, now }: { articles: readonly NewsArticle[]; now: number }) {
   const t = useTranslations();
   const monthTitle = useMonthTitle();
+  // A section that arrives (more loaded, a search's results) fades in; rows added to one glide the others down.
   return archiveSections(articles, now).map((section) => (
-    <Card
-      key={section.key}
-      title={section.kind === "month" ? monthTitle(section) : t(section.kind === "today" ? "common.today" : "common.yesterday")}
-      titleId={`news-${section.key}`}
-      flush
-      className="overflow-hidden"
-    >
-      <ul className="flex flex-col">
-        {section.articles.map((article) => (
-          <li key={article.id} className="border-t border-hairline first:border-t-0">
-            <Link
-              href={`/noticias/${article.slug}`}
-              prefetch={false}
-              aria-description={t(article.isRecap ? "news.row.recapHint" : "news.row.articleHint")}
-              className="flex min-h-11 flex-col gap-2 px-5 py-4 transition-colors hover:bg-app-background/70 desk:px-6"
-              data-testid="news-row"
-            >
-              <ArticleMetadata article={article} />
-              <span lang={ARTICLE_LANGUAGE} className="font-display text-body font-medium text-primary-text">
-                {article.title}
-              </span>
-              <span lang={ARTICLE_LANGUAGE} className="line-clamp-2 text-secondary text-secondary-text">
-                {article.summary}
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </Card>
+    <FadeIn key={section.key}>
+      <Card
+        title={section.kind === "month" ? monthTitle(section) : t(section.kind === "today" ? "common.today" : "common.yesterday")}
+        titleId={`news-${section.key}`}
+        flush
+        className="overflow-hidden"
+      >
+        <FlipList className="flex flex-col">
+          {section.articles.map((article) => (
+            <li key={article.id} data-flip-key={article.id} className="border-t border-hairline first:border-t-0">
+              <Link
+                href={`/noticias/${article.slug}`}
+                prefetch={false}
+                aria-description={t(article.isRecap ? "news.row.recapHint" : "news.row.articleHint")}
+                className="flex min-h-11 flex-col gap-2 px-5 py-4 motion-tap hover:bg-app-background/70 desk:px-6"
+                data-testid="news-row"
+              >
+                <ArticleMetadata article={article} />
+                <span lang={ARTICLE_LANGUAGE} className="font-display text-body font-medium text-primary-text">
+                  {article.title}
+                </span>
+                <span lang={ARTICLE_LANGUAGE} className="line-clamp-2 text-secondary text-secondary-text">
+                  {article.summary}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </FlipList>
+      </Card>
+    </FadeIn>
   ));
 }
 

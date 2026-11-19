@@ -20,6 +20,7 @@ import { Link } from "@/i18n/navigation";
 import { useOnline } from "@/ui/components/feedback";
 import { useFormat } from "@/ui/format";
 import { Icon, type IconName } from "@/ui/icons/icon";
+import { usePresenceValue } from "@/ui/motion/use-presence";
 
 import { useIntelligence, useNow } from "./reading";
 import { portfolioTiles, watchlistPresentation } from "./presentation";
@@ -45,6 +46,7 @@ export function HomeContextSlot({ fallback }: { fallback: ReactNode }) {
   const now = useNow(intelligence?.coordinator.nextExpiry() ?? null);
   const weekAhead = useWeekAheadOffer(now, calendar);
   const [open, setOpen] = useState<Insight | null>(null);
+  const shown = usePresenceValue(open);
 
   const state = intelligence?.state;
   const availability = state?.availability ?? null;
@@ -106,7 +108,9 @@ export function HomeContextSlot({ fallback }: { fallback: ReactNode }) {
         )
       : null;
 
-  const detail = open ? <InsightDetail insight={open} surface={discover.length ? "saturdayDiscover" : "home"} onClose={() => setOpen(null)} /> : null;
+  const detail = shown.value ? (
+    <InsightDetail key={shown.key} open={shown.open} insight={shown.value} surface={discover.length ? "saturdayDiscover" : "home"} onClose={() => setOpen(null)} />
+  ) : null;
   const consume = (insight: Insight, surface: "home" | "saturdayDiscover") => void intelligence?.coordinator.consume(insight, surface);
 
   if (discover.length > 0) {

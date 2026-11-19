@@ -4,6 +4,8 @@ import { useTranslations } from "next-intl";
 import { type KeyboardEvent, type PointerEvent, useId, useMemo, useRef } from "react";
 
 import type { SimulationResult } from "@/domain/simulation/simulation";
+import { useChartMotion } from "@/ui/motion/use-chart-motion";
+import { useEntrance } from "@/ui/motion/use-entrance";
 
 const WIDTH = 600;
 const HEIGHT = 200;
@@ -11,7 +13,8 @@ const PAD = 8;
 
 /**
  * Projected value (solid, with a fading area) over cumulative contributions (dashed). Dragging or arrow keys
- * select a month and the headline follows; leaving returns to the horizon.
+ * select a month and the headline follows; leaving returns to the horizon. The first projection draws in; a new
+ * scenario cross-fades the lines (`useChartMotion`).
  */
 export function SimulationChart({
   result,
@@ -29,8 +32,12 @@ export function SimulationChart({
   const t = useTranslations();
   const gradient = useId();
   const surface = useRef<SVGSVGElement>(null);
+  const series = useRef<SVGGElement>(null);
+  const ghost = useRef<SVGGElement>(null);
   const points = result.monthlyPoints;
   const last = points.length - 1;
+  const end = points[last];
+  useChartMotion(series, ghost, `${last}:${end?.balance.toString()}:${end?.contributions.toString()}`, { draw: useEntrance() });
 
   const geometry = useMemo(() => {
     // Chart coordinates only: the figures shown stay exact.
@@ -102,16 +109,19 @@ export function SimulationChart({
               <stop offset="1" stopColor="var(--color-accent)" stopOpacity="0" />
             </linearGradient>
           </defs>
-          <path d={geometry.area} fill={`url(#${gradient})`} />
-          <path
-            d={geometry.invested}
-            fill="none"
-            stroke="var(--color-secondary-text)"
-            strokeWidth={1.5}
-            strokeDasharray="5 4"
-            vectorEffect="non-scaling-stroke"
-          />
-          <path d={geometry.line} fill="none" stroke="var(--color-accent)" strokeWidth={2.5} strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+          <g ref={series}>
+            <path d={geometry.area} fill={`url(#${gradient})`} />
+            <path
+              d={geometry.invested}
+              fill="none"
+              stroke="var(--color-secondary-text)"
+              strokeWidth={1.5}
+              strokeDasharray="5 4"
+              vectorEffect="non-scaling-stroke"
+            />
+            <path d={geometry.line} fill="none" stroke="var(--color-accent)" strokeWidth={2.5} strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+          </g>
+          <g ref={ghost} />
           {selected !== null ? (
             <line
               x1={geometry.x(selected)}

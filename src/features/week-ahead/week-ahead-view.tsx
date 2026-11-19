@@ -12,7 +12,7 @@ import { PrivacyModeButton, usePrivacyMode } from "@/features/privacy/privacy-mo
 import { cn } from "@/ui/cn";
 import { Button } from "@/ui/components/buttons";
 import { Card, READING_COLUMN } from "@/ui/components/layout";
-import { EmptyState, ErrorState, LoadingState } from "@/ui/components/states";
+import { EmptyState, ErrorState, FadeIn, LoadingState } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
 
@@ -98,18 +98,23 @@ export function WeekAheadView({ renderedAt }: { renderedAt: number }) {
             </p>
           ) : null}
           {selection.ranked.length === 0 ? (
-            <EmptyState icon="calendar" title={t("weekAhead.emptyState.title")} message={t("weekAhead.emptyState.message")} />
+            <FadeIn>
+              <EmptyState icon="calendar" title={t("weekAhead.emptyState.title")} message={t("weekAhead.emptyState.message")} />
+            </FadeIn>
           ) : (
             <>
+              {/* Days that arrive (the week loaded, another selection) fade in. */}
               {selection.days.map((day) => (
-                <Card key={day.id} title={dayTitle(day.id)} titleId={`week-day-${day.id}`} bodyClassName="flex flex-col pt-1! pb-1!" data-testid="week-ahead-day">
-                  {day.hasVerifiedClosure ? <p className="text-caption text-secondary-text">{t("weekAhead.list.noSession")}</p> : null}
-                  <ul className="flex flex-col">
-                    {day.items.map((item) => (
-                      <EventRow key={item.id} item={item} text={text} />
-                    ))}
-                  </ul>
-                </Card>
+                <FadeIn key={day.id}>
+                  <Card title={dayTitle(day.id)} titleId={`week-day-${day.id}`} bodyClassName="flex flex-col pt-1! pb-1!" data-testid="week-ahead-day">
+                    {day.hasVerifiedClosure ? <p className="text-caption text-secondary-text">{t("weekAhead.list.noSession")}</p> : null}
+                    <ul className="flex flex-col">
+                      {day.items.map((item) => (
+                        <EventRow key={item.id} item={item} text={text} />
+                      ))}
+                    </ul>
+                  </Card>
+                </FadeIn>
               ))}
               <Card title={t("weekAhead.about.title")} titleId="week-about" bodyClassName="flex flex-col gap-2 text-caption text-secondary-text">
                 <p>{t("weekAhead.about.announcedDates")}</p>

@@ -16,8 +16,10 @@ import { cn } from "@/ui/cn";
 import { Button, IconButton } from "@/ui/components/buttons";
 import { SectionTabs } from "@/ui/components/controls";
 import { Dialog } from "@/ui/components/dialog";
+import { usePresence, usePresenceValue } from "@/ui/motion/use-presence";
 import { Card, READING_COLUMN } from "@/ui/components/layout";
-import { EmptyState, ErrorState, LoadingState } from "@/ui/components/states";
+import { FlipList } from "@/ui/components/flip-list";
+import { EmptyState, ErrorState, FadeIn, LoadingState } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
 import { Icon, type IconName } from "@/ui/icons/icon";
 
@@ -51,6 +53,7 @@ export function ActivityCenter({ symbols, renderedAt }: { symbols: Readonly<Reco
   const state = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
   const [filter, setFilter] = useState<ActivityFilter>("movements");
   const [unavailable, setUnavailable] = useState(false);
+  const notice = usePresenceValue(unavailable);
   const now = state.loadedAt ?? renderedAt;
   const local = useLocalActivity(now);
   const items = useMemo(
@@ -164,43 +167,46 @@ export function ActivityCenter({ symbols, renderedAt }: { symbols: Readonly<Reco
         ) : days.length === 0 ? (
           <EmptyState icon={EMPTY[filter].icon} title={t(EMPTY[filter].title as never)} message={t(EMPTY[filter].message as never)} />
         ) : (
+          // Another filter or page: a day that arrives fades in, rows that stay glide, new ones fade in.
           days.map((day) => (
-            <Card key={day.date} title={dayTitle(day.date)} titleId={`day-${day.date}`} bodyClassName="flex flex-col gap-4 pb-2!">
-              <div className="flex flex-col gap-4">
-                {day.groups.map((group) => (
-                  <div key={group.category} className="flex flex-col">
-                    <span
-                      className={cn(
-                        "inline-flex min-h-7 items-center gap-1.5 self-start rounded-full px-2.5 text-caption font-semibold",
-                        CATEGORY[group.category].tint,
-                      )}
-                    >
-                      <Icon name={CATEGORY[group.category].icon} scale="s" />
-                      <span className="text-primary-text">{CATEGORY[group.category].key ? t(CATEGORY[group.category].key as never) : "Watchlist"}</span>
-                    </span>
-                    <ul className="flex flex-col divide-y divide-hairline">
-                      {group.items.map((item) => (
-                        <ActivityRow
-                          key={item.id}
-                          item={item}
-                          href={href(item)}
-                          text={activityText(item, { t: translate, format, symbolOf: (id) => symbols[id], privacyMode })}
-                          time={format.time(item.occurredAt)}
-                          stateLabel={t(item.read ? "common.read" : "common.unread")}
-                          markLabel={t("common.markAsRead")}
-                          onOpen={() => void markRead([item.id], true)}
-                          onUnavailable={() => {
-                            void markRead([item.id], true);
-                            setUnavailable(true);
-                          }}
-                          onMark={() => void markRead([item.id])}
-                        />
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </Card>
+            <FadeIn key={day.date}>
+              <Card title={dayTitle(day.date)} titleId={`day-${day.date}`} bodyClassName="flex flex-col gap-4 pb-2!">
+                <div className="flex flex-col gap-4">
+                  {day.groups.map((group) => (
+                    <div key={group.category} className="flex flex-col">
+                      <span
+                        className={cn(
+                          "inline-flex min-h-7 items-center gap-1.5 self-start rounded-full px-2.5 text-caption font-semibold",
+                          CATEGORY[group.category].tint,
+                        )}
+                      >
+                        <Icon name={CATEGORY[group.category].icon} scale="s" />
+                        <span className="text-primary-text">{CATEGORY[group.category].key ? t(CATEGORY[group.category].key as never) : "Watchlist"}</span>
+                      </span>
+                      <FlipList className="flex flex-col divide-y divide-hairline">
+                        {group.items.map((item) => (
+                          <ActivityRow
+                            key={item.id}
+                            item={item}
+                            href={href(item)}
+                            text={activityText(item, { t: translate, format, symbolOf: (id) => symbols[id], privacyMode })}
+                            time={format.time(item.occurredAt)}
+                            stateLabel={t(item.read ? "common.read" : "common.unread")}
+                            markLabel={t("common.markAsRead")}
+                            onOpen={() => void markRead([item.id], true)}
+                            onUnavailable={() => {
+                              void markRead([item.id], true);
+                              setUnavailable(true);
+                            }}
+                            onMark={() => void markRead([item.id])}
+                          />
+                        ))}
+                      </FlipList>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </FadeIn>
           ))
         )}
         {state.status === "loaded" && state.cursor ? (
@@ -210,10 +216,11 @@ export function ActivityCenter({ symbols, renderedAt }: { symbols: Readonly<Reco
         ) : null}
       </section>
 
-      {unavailable ? (
+      {notice.value ? (
         <Dialog
+          key={notice.key}
           variant="dialog"
-          open
+          open={notice.open}
           onClose={() => setUnavailable(false)}
           title={t("common.informationUnavailable")}
           footer={
@@ -258,6 +265,8 @@ function ActivityRow({
   onUnavailable: () => void;
   onMark: () => void;
 }) {
+  // Marked read: the button shrinks away before the row closes up.
+  const mark = usePresence(!item.read);
   // Screen readers get the server's accessibility text; the visible lines repeat it.
   const content = (
     <>
@@ -277,7 +286,7 @@ function ActivityRow({
   );
   const body = "flex min-h-11 min-w-0 flex-1 flex-col items-start gap-1 rounded-small py-4 text-left";
   return (
-    <li data-testid="activity-row" data-read={item.read} className="flex items-center gap-2">
+    <li data-testid="activity-row" data-read={item.read} data-flip-key={item.id} className="flex items-center gap-2">
       {href ? (
         <Link href={href} prefetch={false} onClick={onOpen} className={body}>
           {content}
@@ -289,8 +298,10 @@ function ActivityRow({
       ) : (
         <div className={body}>{content}</div>
       )}
-      {!item.read ? (
-        <IconButton icon="check" label={markLabel} onClick={onMark} className="bg-transparent text-secondary-text" data-testid="mark-read" />
+      {mark.mounted ? (
+        <span {...mark.presenceProps} className="motion-pop inline-flex">
+          <IconButton icon="check" label={markLabel} onClick={onMark} className="bg-transparent text-secondary-text" data-testid="mark-read" />
+        </span>
       ) : null}
     </li>
   );

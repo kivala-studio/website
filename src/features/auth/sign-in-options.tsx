@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useState } from "react";
 
 import { cn } from "@/ui/cn";
-import { Spinner } from "@/ui/components/states";
+import { FadeIn, Spinner } from "@/ui/components/states";
 
 import { AppleMark, GoogleMark } from "./provider-marks";
 
@@ -57,9 +57,11 @@ export function SignInOptions({ next, available, failed: initiallyFailed }: { ne
   return (
     <div className="flex flex-col gap-3">
       {failed ? (
-        <p role="alert" className="text-secondary font-semibold text-negative">
-          {t("errors.account.signInFailed")}
-        </p>
+        <FadeIn rise>
+          <p role="alert" className="text-secondary font-semibold text-negative">
+            {t("errors.account.signInFailed")}
+          </p>
+        </FadeIn>
       ) : null}
       {options.map(({ provider, label, className, mark }) =>
         available ? (
@@ -87,10 +89,10 @@ export function SignInOptions({ next, available, failed: initiallyFailed }: { ne
       )}
       <p role="status" className={cn("flex min-h-6 items-center justify-center gap-2 text-secondary text-secondary-text", !working && "invisible")}>
         {working ? (
-          <>
+          <span className="motion-fade-in inline-flex items-center gap-2">
             <Spinner />
             {t("authentication.signIn.progress")}
-          </>
+          </span>
         ) : null}
       </p>
     </div>
