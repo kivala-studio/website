@@ -37,11 +37,14 @@ export function MessagePage({ title, message, children }: { title: string; messa
   );
 }
 
+/** A link on its own line in a reading page's card: accent, underlined, 44 px tall. */
+export const CARD_LINK = "inline-flex min-h-11 items-center self-start text-body font-semibold text-accent underline underline-offset-4";
+
 export function SupportContact() {
   const t = useTranslations("site.legal");
   return (
     <Card title={t("contact")} titleId="contact">
-      <a href={`mailto:${SUPPORT_EMAIL}`} className="inline-flex min-h-11 items-center self-start text-body font-semibold text-accent underline underline-offset-4">
+      <a href={`mailto:${SUPPORT_EMAIL}`} className={CARD_LINK}>
         {SUPPORT_EMAIL}
       </a>
     </Card>
@@ -50,9 +53,9 @@ export function SupportContact() {
 
 /**
  * Legal and help pages until the owner supplies the text: a clearly marked draft notice and the support contact.
- * `data-draft` lets tests and reviewers find every page that still needs approved text.
+ * `data-draft` lets tests and reviewers find every page that still needs approved text. `children` follow the contact.
  */
-export function DraftLegalPage({ title }: { title: string }) {
+export function DraftLegalPage({ title, children }: { title: string; children?: ReactNode }) {
   const t = useTranslations("site.legal");
   return (
     <ReadingPage title={title}>
@@ -61,6 +64,7 @@ export function DraftLegalPage({ title }: { title: string }) {
         <span>{t("draft")}</span>
       </p>
       <SupportContact />
+      {children}
     </ReadingPage>
   );
 }

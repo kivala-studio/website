@@ -61,7 +61,7 @@ One bar for the site and the app: full width, 64 px, `sticky top-0 z-30`, `bg-el
 
 Site actions: from 1024 px the language, `ThemeMenu` and the compact "Iniciar sessão" pill (links to `/entrar`); below 1024 px only the pill stays in the bar, and the theme (`ThemeSwitch`) and language sit in the menu as `SiteControls`. App actions: unusual activity and activity (plain icon links with `aria-current`, an unread dot), the profile initials. The wordmark shows from 360 px in the public bar and from 400 px in the app's (the link keeps its name).
 
-The menu is a disclosure, not a WAI-ARIA menu: a 48 px icon button (`menu`, `close` while open) with `aria-expanded` and `aria-controls`, then a panel that drops from under the bar (`motion-drop-in`, full width, the bar's gutters, scrolls on its own if the window is short) over the dimmed page (`motion-dim-in`). While it is open the page doesn't scroll. Escape or a tap on the dimmed page closes it and returns focus to the button; following a link, tapping elsewhere on the bar, tabbing out of the bar or widening the window past 1024 px closes it too. Without JavaScript the footer carries the same links and controls.
+The menu is a disclosure, not a WAI-ARIA menu: a 48 px icon button (`menu`, `close` while open) with `aria-expanded` and `aria-controls`, then a panel that drops from under the bar (`motion-drop-in`, full width, the bar's gutters, scrolls on its own if the window is short) over the dimmed page (`motion-dim-in`). While it is open the page doesn't scroll. Escape or a tap on the dimmed page closes it and returns focus to the button; following a link, tapping elsewhere on the bar, tabbing out of the bar or widening the window past 1024 px closes it too. Without JavaScript the footer carries the same section links.
 
 ### Bottom tab bar (`ShellNav`)
 
@@ -71,15 +71,15 @@ Signed-in app only, below 1024 px: `fixed inset-x-0 bottom-0 z-20`, five tabs in
 
 ```
 ──────────────────────────────────────────────────────────────── hairline
-◆ invest.ao                       Produto      Conta        Legal       one 44 px row (36 on desk)
-(Sistema|Claro|Escuro) (EN)       Mercado      Iniciar …    Política …
-                                  …            …            …
+◆ invest.ao                               Produto      Legal         one 44 px row (36 on desk)
+                                          Mercado      Política …
+                                          …            …
 ──────────────────────────────────────────────────────────────── hairline
 disclaimers (captions, tertiary, ≤ 672 px)
 © 2026 invest.ao
 ```
 
-Public pages only (the app has none). `SiteFooter({ theme, year })`: under a hairline, the brand block (the home link, then `ThemeSwitch` and the language link on one row) and the `nav` of three link columns; the logo row and the column headings share one height, so the columns start on the logo's line. From 1024 px the brand block takes 2 of 5 columns beside the links; at 768 px the logo and the controls share a row above three link columns; on phones everything stacks, the links in two columns. Then, under a second hairline, the standing disclaimers in `tertiary-text` captions and "© year invest.ao" (`common.appName`; `year` is the request's Luanda year, `civilDate(requestTime())`, passed by the layouts). The footer has no top margin of its own: the page's bottom padding is the gap above it.
+Public pages only (the app has none). `SiteFooter({ year })`: under a hairline, the home link (mark and wordmark) and the `nav` of two link columns (Produto, Legal) on one grid of equal tracks; the logo row and the column headings share one height, so the columns start on the logo's line. From 1024 px the logo takes 3 of 5 tracks and the columns the last two; from 640 px the logo and the two columns are three equal tracks; on phones the logo sits above the two columns. The theme and the language live in the top bar only; sign-in is the top bar's pill; the deletion page is linked from `/suporte`. Then, under a second hairline, the standing disclaimers in `tertiary-text` captions and "© year invest.ao" (`common.appName`; `year` is the request's Luanda year, `civilDate(requestTime())`, passed by the layouts). The footer has no top margin of its own: the page's bottom padding is the gap above it.
 
 ## Page templates
 

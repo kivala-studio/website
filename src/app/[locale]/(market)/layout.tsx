@@ -20,7 +20,7 @@ export default async function MarketAreaLayout({ children }: Readonly<{ children
     <>
       <SiteHeader theme={theme} />
       {children}
-      <SiteFooter theme={theme} year={civilDate(requestTime()).slice(0, 4)} />
+      <SiteFooter year={civilDate(requestTime()).slice(0, 4)} />
     </>
   );
 }

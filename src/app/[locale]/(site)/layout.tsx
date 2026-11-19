@@ -13,7 +13,7 @@ export default async function SiteLayout({ children }: Readonly<{ children: Reac
     <>
       <SiteHeader theme={theme} />
       {children}
-      <SiteFooter theme={theme} year={civilDate(requestTime()).slice(0, 4)} />
+      <SiteFooter year={civilDate(requestTime()).slice(0, 4)} />
     </>
   );
 }

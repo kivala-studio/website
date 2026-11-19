@@ -221,7 +221,7 @@ All three share one look: text tabs in the display face on a hairline, the curre
 
 ### Site chrome (`@/features/site/chrome`)
 
-`SiteHeader({ theme })`, `SiteFooter({ theme, year })` (`year`: the request's Luanda year from the layout; see [layout.md](layout.md#footer-sitefooter)), `SiteControls({ theme, className? })` (`ThemeSwitch` and the language link on one row: the footer and the header's menu), `BrandLockup({ wordmarkFrom? })` (mark + wordmark; the wordmark shows from `400` px by default, from `360` in the public bar), `PalancaMark({ className })` (the mark as a mask in `currentColor`), `LANGUAGE_CONTROL` (class string of the round language link).
+`SiteHeader({ theme })`, `SiteFooter({ year })` (`year`: the request's Luanda year from the layout; see [layout.md](layout.md#footer-sitefooter)), `SiteControls({ theme })` (`ThemeSwitch` and the language link on one row, in the header's menu), `BrandLockup({ wordmarkFrom? })` (mark + wordmark; the wordmark shows from `400` px by default, from `360` in the public bar), `PalancaMark({ className })` (the mark as a mask in `currentColor`), `LANGUAGE_CONTROL` (class string of the round language link).
 
 ## Buttons and choices
 
@@ -299,7 +299,7 @@ An on/off switch with its visible label; the whole 44 px row is the target (`rol
 
 ### `ThemeSwitch`, `ThemeMenu` (`controls.tsx`)
 
-`<ThemeSwitch initial={theme} />` (Sistema · Claro · Escuro as a segmented control, in the footer) and `<ThemeMenu initial={theme} icon? />` (the same as a check menu, in the top bar). `initial` is the server's `parseTheme(cookie)`.
+`<ThemeSwitch initial={theme} />` (Sistema · Claro · Escuro as a segmented control, in the public menu) and `<ThemeMenu initial={theme} icon? />` (the same as a check menu, in the top bar). `initial` is the server's `parseTheme(cookie)`.
 
 ### `Menu` (`@/ui/components/menu`)
 
