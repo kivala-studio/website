@@ -1,6 +1,8 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
+import { settled } from "./settled";
+
 // Portuguese is the default locale; without this, locale detection sends the browser to /en.
 test.use({ locale: "pt-AO" });
 
@@ -26,6 +28,8 @@ const FUNCTIONAL_COOKIES = ["theme", "NEXT_LOCALE"];
 async function seriousAxeIssues(page: Page) {
   // A value that changes rolls in over 0.25 s; axe would sample its contrast mid-animation.
   await page.emulateMedia({ reducedMotion: "reduce" });
+  // Content that arrives after load (the movers, a list) fades in, also with reduced motion.
+  await settled(page);
   const { violations } = await new AxeBuilder({ page }).analyze();
   return violations.filter((violation) => ["serious", "critical"].includes(violation.impact ?? "")).map((violation) => violation.id);
 }
