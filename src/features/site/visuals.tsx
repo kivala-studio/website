@@ -50,8 +50,7 @@ function ProductFigure({ label, bare = false, children }: { label: string; bare?
             "feature-stage overflow-hidden rounded-card border border-card-border px-4 py-8 transition-[border-color] duration-300 ease-out [--lean:0px] hover:border-field-border motion-reduce:transition-none sm:p-10 sm:[--lean:1.5rem] lg:px-12 lg:py-14 lg:[--lean:2rem]",
         )}
       >
-        {/* Sample values never "arrive": no value roll, which a layout change (a badge hidden below 400 px and shown again) would replay. */}
-        <div aria-hidden className="flex flex-col select-none [&_.motion-value]:animate-none">
+        <div aria-hidden className="flex flex-col select-none">
           {children}
         </div>
       </div>

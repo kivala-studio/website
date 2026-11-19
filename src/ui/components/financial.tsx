@@ -6,6 +6,7 @@ import type { Numeric } from "@/domain/format";
 import { cn } from "../cn";
 import { useFormat } from "../format";
 import { Icon, type IconName } from "../icons/icon";
+import { AnimatedText } from "./animated-value";
 
 const STYLE = {
   display: "text-headline",
@@ -13,7 +14,7 @@ const STYLE = {
   standard: "text-body font-medium",
 } as const;
 
-/** Formatted instrument value. Prices are neutral text; colour belongs to changes only. */
+/** Formatted instrument value that rolls when it changes. Prices are neutral text; colour belongs to changes only. */
 export function FinancialValue({
   value,
   bond = false,
@@ -32,9 +33,11 @@ export function FinancialValue({
   const format = useFormat();
   const text = format.securityPrice(value, { bond, code, digits });
   return (
-    <span key={text} className={cn("motion-value inline-block whitespace-nowrap font-display text-primary-text", STYLE[style], className)}>
-      {text}
-    </span>
+    <AnimatedText
+      text={text}
+      numeric={new Decimal(value).toString()}
+      className={cn("inline-block whitespace-nowrap font-display text-primary-text", STYLE[style], className)}
+    />
   );
 }
 
@@ -45,7 +48,7 @@ const direction = (value: Decimal): { tone: string; icon: IconName } =>
       ? { tone: "text-negative bg-negative/12", icon: "arrow-down-right" }
       : { tone: "text-secondary-text bg-secondary-text/12", icon: "remove" };
 
-/** Signed change capsule with arrow; read as "Subiu …" / "Desceu …". */
+/** Signed change capsule with arrow; read as "Subiu …" / "Desceu …". The figure rolls and the tint fades when it changes. */
 export function ChangeBadge({ value, className }: { value: Numeric; className?: string }) {
   const t = useTranslations();
   const format = useFormat();
@@ -58,9 +61,11 @@ export function ChangeBadge({ value, className }: { value: Numeric; className?: 
       ? t("components.financial.fellAccessibility", { arg1: text.replace("-", "") })
       : t("common.unchanged");
   return (
-    <span className={cn("inline-flex min-h-7 shrink-0 items-center gap-1 rounded-full px-2 font-display text-caption font-semibold desk:min-h-6 desk:rounded-md desk:px-1.5", tone, className)}>
+    <span className={cn("inline-flex min-h-7 shrink-0 items-center gap-1 rounded-full px-2 font-display text-caption font-semibold transition-colors desk:min-h-6 desk:rounded-md desk:px-1.5", tone, className)}>
       <Icon name={icon} aria-hidden />
-      <span aria-hidden key={text} className="motion-value">{text}</span>
+      <span aria-hidden className="inline-flex">
+        <AnimatedText text={text} numeric={decimal.toString()} className="inline-block" />
+      </span>
       <span className="sr-only">{`${t("common.change")}: ${spoken}`}</span>
     </span>
   );

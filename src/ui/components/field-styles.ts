@@ -12,7 +12,8 @@ export const FIELD_FOCUS = "focus:border-accent focus:shadow-focus";
 /** Focus on a box around a bare input (`INPUT_BOX`, the search field): the box lights up while anything inside has focus. */
 export const FIELD_FOCUS_WITHIN = "focus-within:border-accent focus-within:shadow-focus";
 
-const TRANSITION = "transition-[border-color,box-shadow] motion-reduce:transition-none";
+/** The glow and the accent border fade in and out (`fast`); a fade, so reduced motion keeps it. */
+const TRANSITION = "transition-[border-color,box-shadow]";
 
 /** A box around an input and its prefix or suffix (`Kz`, `%`); the input inside is bare (`INPUT_BARE`). */
 export const INPUT_BOX = `flex min-h-12 items-center gap-2 rounded-medium border border-field-border bg-card-background px-3 desk:min-h-11 ${TRANSITION} ${FIELD_FOCUS_WITHIN}`;
