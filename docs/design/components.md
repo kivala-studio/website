@@ -42,6 +42,10 @@ The web card surface: `border: 1px solid var(--card-border)`, `rounded-card` (22
 
 The pack is generated from `design/icon-pack/masters.json` (the iOS masters plus the web-only `menu`) by `npm run icons`; never edit `icon-pack.ts`. 24 × 24 grid, 2 px round strokes, `currentColor`. Icons are decorative by default: the control around them carries the name.
 
+### `LanguageFlag` (`@/ui/icons/flags`)
+
+`<LanguageFlag locale="pt" />`: the flag that stands for a language, a 20 px disc with a faint inner ring (`primary-text` at 15 %) so its edge holds on either canvas. Portuguese is the flag of Angola, English the Union Jack. Always `aria-hidden`: it sits before the language's name or code, never alone. Flags keep their own colours in both themes, so they are drawn in `flags.tsx` with fixed hex values (like the Google mark), outside the single-colour pack; the only hex values allowed in a component.
+
 ## Layout and surfaces (`@/ui/components/layout`)
 
 ### `PAGE_CONTAINER`, `READING_COLUMN`
@@ -166,7 +170,7 @@ The one top bar. Use it through `SiteHeader` (`@/features/site/chrome`) or `Shel
 | `search` | `ReactNode` | From 1024 px a 288–320 px slot |
 | `actions` | `ReactNode` | Icon buttons and one compact pill, right-aligned, at every width |
 
-`TOP_BAR_PILL` is the pill link's class string. Actions are 44 px: `IconButton variant="plain"`, `iconButtonClass("plain")` on links, `LANGUAGE_CONTROL`, `ThemeMenu`, a `size="compact"` pill. The menu button is `iconButtonClass("plain")` (48 px on phones).
+`TOP_BAR_PILL` is the pill link's class string. Actions are 44 px: `IconButton variant="plain"`, `iconButtonClass("plain")` on links, `LANGUAGE_CONTROL` (a pill: flag and code), `ThemeMenu`, a `size="compact"` pill. The menu button is `iconButtonClass("plain")` (48 px on phones).
 
 ### `ShellNav` (`@/features/shell/shell-nav`)
 
@@ -221,7 +225,7 @@ All three share one look: text tabs in the display face on a hairline, the curre
 
 ### Site chrome (`@/features/site/chrome`)
 
-`SiteHeader({ theme })`, `SiteFooter({ year })` (`year`: the request's Luanda year from the layout; see [layout.md](layout.md#footer-sitefooter)), `SiteControls({ theme })` (`ThemeSwitch` and the language link on one row, in the header's menu), `BrandLockup({ wordmarkFrom? })` (mark + wordmark; the wordmark shows from `400` px by default, from `360` in the public bar), `PalancaMark({ className })` (the mark as a mask in `currentColor`), `LANGUAGE_CONTROL` (class string of the round language link).
+`SiteHeader({ theme })`, `SiteFooter({ year })` (`year`: the request's Luanda year from the layout; see [layout.md](layout.md#footer-sitefooter)), `SiteControls({ theme })` (`ThemeSwitch` and the language link on one row, in the header's menu), `BrandLockup({ wordmarkFrom? })` (mark + wordmark; the wordmark shows from `400` px by default, from `360` in the public bar), `PalancaMark({ className })` (the mark as a mask in `currentColor`), `LANGUAGE_CONTROL` (class string of the language link: a 44 px pill with the `LanguageFlag` and the code of the language it switches to, "EN" on Portuguese pages, "PT" on English ones; the accessible name is the language's name).
 
 ## Buttons and choices
 
@@ -282,7 +286,7 @@ A WAI-ARIA `radiogroup` with roving focus. The segmented look is a `track` groov
 
 | Component | Props |
 |---|---|
-| `SegmentedControl<T>` | `options: { value: T; title; spoken?; disabled? }[]`, `value`, `onChange`, `label` |
+| `SegmentedControl<T>` | `options: { value: T; title; spoken?; disabled?; leading? }[]`, `value`, `onChange`, `label` |
 | `OptionGroup<T>` | the same, plus `variant?: "segmented" \| "ranges"` (`ranges`: small pills, the chosen one in `accent-soft`) and `scroll?` (each option keeps 44 px and the track scrolls) |
 | `TimeRangePicker` | `value: TimeRange`, `onChange`, `label`, `ranges?` (default `TIME_RANGES`: 1D · 1S · 1M · 3M · 6M · 1A · Tudo), `isEnabled?` (disabled ranges stay visible and inert; arrows skip them), `variant?: "ranges" \| "segmented"` (`segmented` is the chart card's range track) |
 
@@ -291,7 +295,7 @@ A WAI-ARIA `radiogroup` with roving focus. The segmented look is a `track` groov
 <TimeRangePicker variant="segmented" label={t("components.chart.priceAccessibility")} value={range} onChange={setRange} />
 ```
 
-`spoken` is the option's accessible name when the title is an abbreviation (`1M` → "One month").
+`spoken` is the option's accessible name when the title is an abbreviation (`1M` → "One month"). `leading` is a decorative mark before the title: the settings' language choice (`LanguageChoice`) puts each language's `LanguageFlag` there.
 
 ### `SwitchRow` (`@/ui/components/menu`)
 

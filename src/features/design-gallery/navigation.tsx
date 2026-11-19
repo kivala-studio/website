@@ -13,6 +13,7 @@ import { Menu } from "@/ui/components/menu";
 import { RAIL_TILE, RAIL_TILE_IDLE, SectionRail } from "@/ui/components/section-rail";
 import { SeeAll } from "@/ui/components/see-all";
 import { TopBar } from "@/ui/components/top-bar";
+import { LanguageFlag } from "@/ui/icons/flags";
 import { Icon } from "@/ui/icons/icon";
 import type { Theme } from "@/ui/theme/theme";
 
@@ -46,7 +47,10 @@ export function Navigation({ initialTheme }: { initialTheme: Theme }) {
             ]}
             wideActions={
               <>
-                <span className={LANGUAGE_CONTROL}>EN</span>
+                <span className={LANGUAGE_CONTROL}>
+                  <LanguageFlag locale="en" />
+                  EN
+                </span>
                 <ThemeMenu initial={initialTheme} />
               </>
             }
@@ -56,6 +60,23 @@ export function Navigation({ initialTheme }: { initialTheme: Theme }) {
               </ButtonLink>
             }
           />
+        </div>
+      </Specimen>
+
+      <Specimen name="LANGUAGE_CONTROL · LanguageFlag">
+        <div className="flex flex-wrap items-center gap-4">
+          <Variant label='Bar, pt page: locale="en"'>
+            <span className={LANGUAGE_CONTROL}>
+              <LanguageFlag locale="en" />
+              EN
+            </span>
+          </Variant>
+          <Variant label='Menu, en page: locale="pt"'>
+            <span className={cn(LANGUAGE_CONTROL, "bg-action-surface")}>
+              <LanguageFlag locale="pt" />
+              PT
+            </span>
+          </Variant>
         </div>
       </Specimen>
 

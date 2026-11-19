@@ -72,7 +72,7 @@ Decorative backgrounds (`HeroBackdrop` at either edge, the `Showcase` halo, `ben
 
 ## Icons
 
-- Only icons from the pack (`Icon`, `ICON_PACK`). A missing icon is added to `design/icon-pack/masters.json` and generated with `npm run icons`.
+- Only icons from the pack (`Icon`, `ICON_PACK`). A missing icon is added to `design/icon-pack/masters.json` and generated with `npm run icons`. Flags are the one multi-colour exception: `LanguageFlag`, beside a language's name or code.
 - Decorative by default. An icon-only control is an `IconButton` (required `label`) or carries `sr-only` text.
 - Colour: `secondary-text` idle, `accent` for the current or selected item and inside icon discs, `warning` beside warnings, `tertiary-text` for trailing chevrons.
 - Size follows the text: `scale` (`s`, `m`, `l`) or a text size on the icon (`text-[1.25rem]`).

@@ -38,9 +38,9 @@ export function BrandLockup({ wordmarkFrom = 400 }: { wordmarkFrom?: keyof typeo
   );
 }
 
-/** The language link styled as a round top-bar control. */
+/** The language link (flag and short code) styled as a 44 px top-bar pill. */
 export const LANGUAGE_CONTROL =
-  "inline-flex size-11 shrink-0 items-center justify-center rounded-full font-display text-secondary font-semibold text-secondary-text transition-colors hover:bg-action-surface hover:text-primary-text";
+  "inline-flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-full pr-3 pl-2.5 font-display text-secondary font-semibold text-secondary-text transition-colors hover:bg-action-surface hover:text-primary-text";
 
 /** The theme and the language on one row, in the public top bar's menu. */
 export function SiteControls({ theme }: { theme: Theme }) {

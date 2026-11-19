@@ -173,7 +173,8 @@ export function NavTabs({
   );
 }
 
-type Option<T extends string> = { value: T; title: string; spoken?: string; disabled?: boolean };
+/** `leading`: a decorative mark before the title (a language's flag). */
+type Option<T extends string> = { value: T; title: string; spoken?: string; disabled?: boolean; leading?: ReactNode };
 
 export function OptionGroup<T extends string>({
   options,
@@ -228,7 +229,14 @@ export function OptionGroup<T extends string>({
                 : cn("min-w-11 shrink-0 rounded-full text-caption font-semibold", isSelected ? "bg-accent-soft text-accent" : "text-secondary-text hover:text-primary-text"),
             )}
           >
-            {option.title}
+            {option.leading ? (
+              <span className="inline-flex items-center justify-center gap-2">
+                {option.leading}
+                {option.title}
+              </span>
+            ) : (
+              option.title
+            )}
           </button>
         );
       })}
