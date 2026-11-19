@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { BrandLockup, LANGUAGE_CONTROL, SiteControls } from "@/features/site/chrome";
+import { BrandLockup, LANGUAGE_CONTROL, SIGN_IN_PILL, SiteControls } from "@/features/site/chrome";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
 import { ButtonLink, iconButtonClass } from "@/ui/components/buttons";
@@ -55,7 +55,7 @@ export function Navigation({ initialTheme }: { initialTheme: Theme }) {
               </>
             }
             actions={
-              <ButtonLink href={HERE} size="compact" className="ml-1">
+              <ButtonLink href={HERE} size="compact" className={SIGN_IN_PILL}>
                 {t("onboarding.navigation.signIn")}
               </ButtonLink>
             }

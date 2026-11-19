@@ -164,13 +164,13 @@ The one top bar. Use it through `SiteHeader` (`@/features/site/chrome`) or `Shel
 | `logo` | `ReactNode` | `<BrandLockup />` |
 | `nav` | `{ href: string; label: string }[]` | Pill links; the current one (path match) gets `aria-current` and the grey pill |
 | `navLabel` | `string` | The `<nav>` name |
-| `mobileNav` | `"menu" \| "none"` | Below 1024 px: the links move into a menu behind a button at the end of the bar, or nothing (the bottom tab bar has them) |
+| `mobileNav` | `"menu" \| "none"` | Below 1024 px: the links move into a menu behind a button at the start of the bar, before the logo, or nothing (the bottom tab bar has them) |
 | `menu` | `{ label: string; content: ReactNode }` | With `"menu"` (required): the button's accessible name (`site.header.menuLabel`) and what follows the links in the menu, under a hairline (`<SiteControls />`) |
 | `wideActions` | `ReactNode` | With `"menu"`: actions shown only from 1024 px, before `actions` (the language, `ThemeMenu`); below that they belong in `menu.content` |
 | `search` | `ReactNode` | From 1024 px a 288–320 px slot |
 | `actions` | `ReactNode` | Icon buttons and one compact pill, right-aligned, at every width |
 
-`TOP_BAR_PILL` is the pill link's class string. Actions are 44 px: `IconButton variant="plain"`, `iconButtonClass("plain")` on links, `LANGUAGE_CONTROL` (a pill: flag and code), `ThemeMenu`, a `size="compact"` pill. The menu button is `iconButtonClass("plain")` (48 px on phones).
+`TOP_BAR_PILL` is the pill link's class string. Actions are 44 px: `IconButton variant="plain"`, `iconButtonClass("plain")` on links, `LANGUAGE_CONTROL` (a pill: flag and code), `ThemeMenu`, a `size="compact"` pill (the public sign-in pill adds `SIGN_IN_PILL`: below 1024 px it is drawn at 36 px with 12 px padding and an `::after` keeps the 44 px target). The menu button is `iconButtonClass("plain")` (48 px on phones), first in the bar with `-ml-4` so its glyph sits on the gutter.
 
 ### `ShellNav` (`@/features/shell/shell-nav`)
 
@@ -225,7 +225,7 @@ All three share one look: text tabs in the display face on a hairline, the curre
 
 ### Site chrome (`@/features/site/chrome`)
 
-`SiteHeader({ theme })`, `SiteFooter({ year })` (`year`: the request's Luanda year from the layout; see [layout.md](layout.md#footer-sitefooter)), `SiteControls({ theme })` (`ThemeSwitch` and the language link on one row, in the header's menu), `BrandLockup({ wordmarkFrom? })` (mark + wordmark; the wordmark shows from `400` px by default, from `360` in the public bar), `PalancaMark({ className })` (the mark as a mask in `currentColor`), `LANGUAGE_CONTROL` (class string of the language link: a 44 px pill with the `LanguageFlag` and the code of the language it switches to, "EN" on Portuguese pages, "PT" on English ones; the accessible name is the language's name).
+`SiteHeader({ theme })`, `SiteFooter({ year })` (`year`: the request's Luanda year from the layout; see [layout.md](layout.md#footer-sitefooter)), `SiteControls({ theme })` (`ThemeSwitch` and the language link on one row, in the header's menu), `BrandLockup({ wordmarkFrom? })` (mark + wordmark; the wordmark shows from `400` px by default, from `360` in the public bar), `PalancaMark({ className })` (the mark as a mask in `currentColor`), `SIGN_IN_PILL` (extra classes for the header's compact sign-in `ButtonLink`: 36 px drawn, 44 px target below 1024 px; unchanged from 1024 px), `LANGUAGE_CONTROL` (class string of the language link: a 44 px pill with the `LanguageFlag` and the code of the language it switches to, "EN" on Portuguese pages, "PT" on English ones; the accessible name is the language's name).
 
 ## Buttons and choices
 

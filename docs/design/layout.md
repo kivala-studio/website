@@ -41,7 +41,7 @@ Every page's `<main id="main">` uses one of these. Market pages get theirs from 
 
 Public site below 1024 px, menu open:
 ┌──────────────────────────────────┐
-│ ◆ invest.ao   (Iniciar sessão) ✕ │  the bar: one 64 px row
+│ ✕ ◆ invest.ao   (Iniciar sessão) │  the bar: one 64 px row; ☰ (✕ while open) leads
 ├──────────────────────────────────┤  hairline
 │ (Mercado                       ) │  48 px font-display rows, current one on the grey pill
 │  Notícias                        │
@@ -56,12 +56,12 @@ One bar for the site and the app: full width, 64 px, `sticky top-0 z-30`, `bg-el
 
 | Mode | Who | Below 1024 px | From 1024 px |
 |---|---|---|---|
-| `mobileNav="menu"` | Public site (`SiteHeader` in `src/features/site/chrome.tsx`) | One row: logo, the sign-in pill and a menu button. The menu holds the sections, then `menu.content` (theme and language) | Pills beside the logo; `wideActions` before `actions`; no menu button |
+| `mobileNav="menu"` | Public site (`SiteHeader` in `src/features/site/chrome.tsx`) | One row: the menu button, the logo, then the sign-in pill at the end. The menu holds the sections, then `menu.content` (theme and language) | Pills beside the logo; `wideActions` before `actions`; no menu button |
 | `mobileNav="none"` | Signed-in app (`ShellTopBar` in `src/features/shell/shell-nav.tsx`) | No pills; the bottom tab bar has the tabs | Pills beside the logo; the search tab becomes the palette field |
 
-Site actions: from 1024 px the language (`LanguageFlag` and code), `ThemeMenu` and the compact "Iniciar sessão" pill (links to `/entrar`); below 1024 px only the pill stays in the bar, and the theme (`ThemeSwitch`) and language sit in the menu as `SiteControls`. App actions: unusual activity and activity (plain icon links with `aria-current`, an unread dot), the profile initials. The wordmark shows from 360 px in the public bar and from 400 px in the app's (the link keeps its name).
+Site actions: from 1024 px the language (`LanguageFlag` and code), `ThemeMenu` and the compact "Iniciar sessão" pill (links to `/entrar`); below 1024 px only the pill stays in the bar, drawn smaller (36 px, 12 px padding, `SIGN_IN_PILL`; the target stays 44 px) so it doesn't outweigh the logo, and the theme (`ThemeSwitch`) and language sit in the menu as `SiteControls`. App actions: unusual activity and activity (plain icon links with `aria-current`, an unread dot), the profile initials. The wordmark shows from 360 px in the public bar and from 400 px in the app's (the link keeps its name).
 
-The menu is a disclosure, not a WAI-ARIA menu: a 48 px icon button (`menu`, `close` while open) with `aria-expanded` and `aria-controls`, then a panel that drops from under the bar (`motion-drop-in`, full width, the bar's gutters, scrolls on its own if the window is short) over the dimmed page (`motion-dim-in`). While it is open the page doesn't scroll. Escape or a tap on the dimmed page closes it and returns focus to the button; following a link, tapping elsewhere on the bar, tabbing out of the bar or widening the window past 1024 px closes it too. Without JavaScript the footer carries the same section links.
+The menu is a disclosure, not a WAI-ARIA menu: a 48 px icon button (`menu`, `close` while open) with `aria-expanded` and `aria-controls` that leads the bar, its glyph on the gutter (the button overhangs it by 16 px), then a panel that follows it in the DOM, so Tab goes from the button into the panel. The panel that drops from under the bar (`motion-drop-in`, full width, the bar's gutters, scrolls on its own if the window is short) over the dimmed page (`motion-dim-in`). While it is open the page doesn't scroll. Escape or a tap on the dimmed page closes it and returns focus to the button; following a link, tapping elsewhere on the bar, tabbing out of the menu (on to the logo, say) or widening the window past 1024 px closes it too. Without JavaScript the footer carries the same section links.
 
 ### Bottom tab bar (`ShellNav`)
 

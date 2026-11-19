@@ -22,14 +22,15 @@ type MobileNav =
   | { mobileNav: "none"; menu?: never; wideActions?: never }
   /**
    * Below 1024 px the navigation and `menu.content` (the theme, the language) move into a menu behind a button
-   * at the end of the bar (the public site). `wideActions` show only from 1024 px, before `actions`.
+   * at the start of the bar, before the logo (the public site). `wideActions` show only from 1024 px, before `actions`.
    */
   | { mobileNav: "menu"; menu: { label: string; content: ReactNode }; wideActions?: ReactNode };
 
 /**
  * The one top bar of the site and the app: full width, 64 px, sticky, on the elevated surface with a hairline
  * shadow. Logo, pill navigation, then the search and the actions on the right. Below 1024 px the navigation either
- * moves into a menu (`mobileNav="menu"`, the public site) or is left to the bottom tab bar (`"none"`, the app).
+ * moves into a menu whose button leads the bar (`mobileNav="menu"`, the public site) or is left to the bottom tab
+ * bar (`"none"`, the app).
  */
 export function TopBar({
   home,
@@ -53,6 +54,7 @@ export function TopBar({
   return (
     <header className="sticky top-0 z-30 bg-elevated-background shadow-bar">
       <div className="flex flex-wrap items-center gap-x-1 px-4 sm:gap-x-2 sm:px-6 lg:flex-nowrap lg:gap-x-3">
+        {mobileNav === "menu" ? <TopBarMenu label={menu.label} nav={nav} navLabel={navLabel} content={menu.content} /> : null}
         <Link
           href={home.href}
           prefetch={false}
@@ -85,7 +87,6 @@ export function TopBar({
           <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
             {wideActions ? <div className="hidden lg:contents">{wideActions}</div> : null}
             {actions}
-            {mobileNav === "menu" ? <TopBarMenu label={menu.label} nav={nav} navLabel={navLabel} content={menu.content} /> : null}
           </div>
         </div>
       </div>
@@ -98,10 +99,11 @@ const WIDE = "(min-width: 64rem)";
 
 /**
  * The menu button and its panel, below 1024 px: a disclosure (not a WAI-ARIA menu: it holds links and a segmented
- * control). The panel drops from under the bar, full width, over a dimmed page that doesn't scroll. Escape or a tap
- * on the dimmed page closes it and returns focus to the button; following a link, a tap elsewhere on the bar, moving
- * focus out of the bar or widening the window past 1024 px closes it too. Without JavaScript the footer has the
- * same links and controls.
+ * control). The button leads the bar, its glyph on the gutter (the 48 px target overhangs it), and the panel follows
+ * it in the DOM, so Tab goes from the button into the panel. The panel drops from under the bar, full width, over a
+ * dimmed page that doesn't scroll. Escape or a tap on the dimmed page closes it and returns focus to the button;
+ * following a link, a tap elsewhere on the bar, moving focus out of the menu (to the logo, say) or widening the
+ * window past 1024 px closes it too. Without JavaScript the footer has the same links and controls.
  */
 function TopBarMenu({ label, nav, navLabel, content }: { label: string; nav: readonly TopBarLink[]; navLabel: string; content: ReactNode }) {
   const current = useLinkCurrent();
@@ -129,19 +131,18 @@ function TopBarMenu({ label, nav, navLabel, content }: { label: string; nav: rea
     if (!open) return;
     const root = document.documentElement;
     root.classList.add("overflow-hidden");
-    const bar = button.current?.closest("header");
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
       event.preventDefault();
       setPhase("closing");
       button.current?.focus();
     };
+    const outside = (target: Node) => !panel.current?.contains(target) && !button.current?.contains(target);
     const onPointer = (event: PointerEvent) => {
-      const target = event.target as Node;
-      if (!panel.current?.contains(target) && !button.current?.contains(target)) setPhase("closing");
+      if (outside(event.target as Node)) setPhase("closing");
     };
     const onFocus = (event: FocusEvent) => {
-      if (!bar?.contains(event.target as Node)) setPhase("closing");
+      if (outside(event.target as Node)) setPhase("closing");
     };
     const wide = window.matchMedia(WIDE);
     const onWide = () => wide.matches && setPhase("closed");
@@ -174,7 +175,7 @@ function TopBarMenu({ label, nav, navLabel, content }: { label: string; nav: rea
         aria-expanded={open}
         aria-controls={phase === "closed" ? undefined : id}
         onClick={() => (open ? close() : setPhase("open"))}
-        className={iconButtonClass("plain", "-mr-2 lg:hidden")}
+        className={iconButtonClass("plain", "-ml-4 lg:hidden")}
       >
         <Icon name={open ? "close" : "menu"} scale="l" />
       </button>
