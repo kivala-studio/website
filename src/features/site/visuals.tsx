@@ -47,7 +47,7 @@ function ProductFigure({ label, bare = false, children }: { label: string; bare?
         className={cn(
           "group/stage w-full",
           !bare &&
-            "feature-stage overflow-hidden rounded-card border border-card-border px-4 py-8 transition-[border-color] duration-300 ease-out [--lean:0px] hover:border-field-border motion-reduce:transition-none sm:p-10 sm:[--lean:1.5rem] lg:px-12 lg:py-14 lg:[--lean:2rem]",
+            "feature-stage overflow-hidden rounded-card border border-card-border px-4 py-8 transition-[border-color] [--lean:0px] hover:border-field-border sm:p-10 sm:[--lean:1.5rem] lg:px-12 lg:py-14 lg:[--lean:2rem]",
         )}
       >
         <div aria-hidden className="flex flex-col select-none">
@@ -60,7 +60,7 @@ function ProductFigure({ label, bare = false, children }: { label: string; bare?
 }
 
 /** A floating card rises 4 px while the pointer is over its visual (pointer devices; none with reduced motion). */
-const FLOAT_HOVER = "transition-[translate] duration-300 ease-out motion-safe:group-hover/stage:-translate-y-1";
+const FLOAT_HOVER = "transition-[translate] duration-slow ease-emphasized motion-safe:group-hover/stage:-translate-y-1";
 
 /** The card that leads a visual; it fills the stage's width. */
 const MAIN_CARD = "panel flex flex-col gap-4 p-4 sm:gap-5 sm:p-5 lg:p-6";

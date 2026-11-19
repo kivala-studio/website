@@ -135,11 +135,11 @@ export function BentoCard({
         prefetch={false}
         className="group motion-press flex w-full rounded-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
-        <div className="panel relative isolate flex w-full flex-col overflow-hidden transition-[border-color,translate] duration-200 ease-out group-hover:border-field-border motion-safe:group-hover:-translate-y-0.5 motion-reduce:transition-none">
+        <div className="panel relative isolate flex w-full flex-col overflow-hidden transition-[border-color,translate] duration-base ease-emphasized group-hover:border-field-border motion-safe:group-hover:-translate-y-px">
           {wash ? <div aria-hidden className="bento-wash absolute inset-0 -z-10" /> : null}
           <h3 className="flex items-center justify-between gap-3 px-5 pt-5 font-display text-section text-primary-text desk:px-6 desk:pt-6">
             {title}
-            <Icon name="chevron-right" className="shrink-0 text-[1.125rem] text-tertiary-text transition-[translate,color] duration-200 group-hover:text-primary-text motion-safe:group-hover:translate-x-0.5" />
+            <Icon name="chevron-right" className="shrink-0 text-[1.125rem] text-tertiary-text transition-[translate,color] duration-base ease-emphasized group-hover:text-primary-text motion-safe:group-hover:translate-x-0.5" />
           </h3>
           <div
             aria-hidden

@@ -102,7 +102,7 @@ export default async function ListingPage({ params }: Props) {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={t("assetDetails.accessibility.viewOfficialInfo", { arg1: source.name })}
-                  className="flex min-h-14 items-center justify-between gap-3 px-5 py-2 transition-colors hover:bg-app-background/70 desk:px-6"
+                  className="flex min-h-14 items-center justify-between gap-3 px-5 py-2 motion-tap hover:bg-app-background/70 desk:px-6"
                 >
                   <span className="flex flex-col">
                     <span className="text-body font-semibold text-primary-text">{source.name}</span>

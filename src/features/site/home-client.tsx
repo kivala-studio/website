@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { type CatalogueRow, ChangeCell, PriceCell } from "@/features/market/browse/price-cell";
+import { cn } from "@/ui/cn";
 import { ButtonLink } from "@/ui/components/buttons";
 import { SearchField, SectionTabs } from "@/ui/components/controls";
 import { Card } from "@/ui/components/layout";
@@ -43,19 +44,21 @@ export type PreviewTab = {
 export function MarketPreview({ tabs, label }: { tabs: PreviewTab[]; label: string }) {
   const t = useTranslations();
   const [selected, setSelected] = useState(0);
+  // After the first switch, a panel fades in each time it is shown (its animation restarts as `hidden` lifts).
+  const [switched, setSwitched] = useState(false);
   const prefix = "home-market";
   return (
     <Card flush className="w-full overflow-hidden panel">
       <SectionTabs
         titles={tabs.map((tab) => tab.title)}
         selected={selected}
-        onSelect={setSelected}
+        onSelect={(index) => (setSwitched(true), setSelected(index))}
         label={label}
         idPrefix={prefix}
         className="px-4 max-sm:gap-4 desk:px-6"
       />
       {tabs.map((tab, index) => (
-        <div key={tab.title} role="tabpanel" id={`${prefix}-panel-${index}`} aria-labelledby={`${prefix}-tab-${index}`} hidden={index !== selected}>
+        <div key={tab.title} role="tabpanel" id={`${prefix}-panel-${index}`} aria-labelledby={`${prefix}-tab-${index}`} hidden={index !== selected} className={cn(switched && "motion-fade-in")}>
           <DataTable className="table-fixed" data-testid="home-market-table">
             <TableHead>
               <TableHeaderCell>{t("common.instrument")}</TableHeaderCell>

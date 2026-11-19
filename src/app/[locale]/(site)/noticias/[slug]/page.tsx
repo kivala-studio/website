@@ -103,7 +103,7 @@ export default async function ArticlePage({ params }: Props) {
                   href={source.url}
                   rel="noopener noreferrer external"
                   target="_blank"
-                  className="flex min-h-14 items-center justify-between gap-3 px-5 py-2 transition-colors hover:bg-app-background/70 desk:px-6"
+                  className="flex min-h-14 items-center justify-between gap-3 px-5 py-2 motion-tap hover:bg-app-background/70 desk:px-6"
                 >
                   <span className="flex flex-col gap-1">
                     <span className="text-body font-medium text-primary-text">{source.name}</span>
