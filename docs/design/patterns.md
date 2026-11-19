@@ -61,7 +61,7 @@ Every data block has all four.
 
 The landing's product visuals (`InstrumentVisual`, `WatchlistVisual`, `PortfolioVisual`, `PlusVisual`) and the bento miniatures (`SimulatorMiniature` and the others in `BentoCard`):
 
-- One accessible name per figure (`role="img"` + `aria-label` from the catalogue) or per bento card (its title, the link's name); everything inside is `aria-hidden`, not selectable and has no controls, and no motion beyond the landing's one-time scroll reveal (the chart line wipes in, then its area and dot fade in): the feature visuals switch off `ChangeBadge`'s value roll (`[&_.motion-value]:animate-none`), since sample values never change and a badge hidden on narrow screens would replay it when shown again.
+- One accessible name per figure (`role="img"` + `aria-label` from the catalogue) or per bento card (its title, the link's name); everything inside is `aria-hidden`, not selectable and has no controls, and no motion beyond the landing's one-time scroll reveal (the chart line wipes in, then its area and dot fade in). `ChangeBadge` and `FinancialValue` roll only when their value changes, so sample values never move.
 - Captioned "Exemplo ilustrativo" (`IllustrativeCaption`): under each visual's stage, and once under the whole bento grid, never per card.
 - Sample values only: the iOS onboarding's sample instruments (BAI, BFA) and round invented figures; sample text is catalogue wording with sample arguments. Never market data, never a live or current price.
 - Built from the real primitives (`StatTile`, `ChangeBadge`, `SecurityLogo`, chips, the segmented track) so they match the product.
@@ -69,6 +69,10 @@ The landing's product visuals (`InstrumentVisual`, `WatchlistVisual`, `Portfolio
 - No inline `style` attributes (the page is checked for them): a dot placed on a chart takes static position classes (`left-full top-[18.333%]`).
 
 Decorative backgrounds (`HeroBackdrop` at either edge, the `Showcase` halo, `bento-wash` in the largest bento card and the Plus panel) are `aria-hidden`; the `feature-stage` light and grid are backgrounds of the figure itself.
+
+## Motion
+
+Everything that moves or changes is animated, with one vocabulary of tokens and patterns: see [theme.md](theme.md#motion), the single reference ("when X changes, use Y", reduced motion, techniques without inline styles, do and don't), and the Motion section of `/dev/design`.
 
 ## Icons
 

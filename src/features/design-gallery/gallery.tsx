@@ -16,6 +16,7 @@ import { Fields } from "./fields";
 import { FormatCheck } from "./format-check";
 import { Foundations } from "./foundations";
 import { Landing } from "./landing";
+import { MotionSection } from "./motion";
 import { Navigation } from "./navigation";
 import { GallerySection } from "./specimen";
 import { Surfaces } from "./surfaces";
@@ -28,6 +29,7 @@ import { Surfaces } from "./surfaces";
 
 const SECTIONS = [
   { id: "foundations", title: "Foundations" },
+  { id: "motion", title: "Motion" },
   { id: "layout", title: "Layout" },
   { id: "navigation", title: "Navigation" },
   { id: "buttons", title: "Buttons" },
@@ -81,6 +83,7 @@ export function DesignGallery({ initialTheme }: { initialTheme: Theme }) {
         </div>
 
         <Foundations />
+        <MotionSection />
         <Surfaces initialTheme={initialTheme} />
         <Navigation initialTheme={initialTheme} />
         <Choices initialTheme={initialTheme} />
