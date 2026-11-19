@@ -3,10 +3,10 @@
  * the page so CSS stays the one source, with the same numbers as a fallback before styles load.
  */
 
-export type MotionDuration = "fast" | "base" | "slow";
+export type MotionDuration = "fast" | "base" | "slow" | "flash";
 export type MotionEasing = "standard" | "emphasized" | "exit";
 
-const DURATION_FALLBACK: Record<MotionDuration, number> = { fast: 140, base: 220, slow: 340 };
+const DURATION_FALLBACK: Record<MotionDuration, number> = { fast: 140, base: 220, slow: 340, flash: 900 };
 const EASING_FALLBACK: Record<MotionEasing, string> = {
   standard: "cubic-bezier(0.25, 0.8, 0.25, 1)",
   emphasized: "cubic-bezier(0.22, 1, 0.36, 1)",
@@ -31,4 +31,9 @@ export function motionEasing(name: MotionEasing): string {
 /** Whether the visitor asked for reduced motion; scripts then change state at once. */
 export function prefersReducedMotion(): boolean {
   return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+/** A colour token as the page resolves it now (`positive` → the current theme's value), for keyframes. */
+export function motionColour(name: "positive" | "negative"): string {
+  return token(`--color-${name}`);
 }

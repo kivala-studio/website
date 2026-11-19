@@ -8,7 +8,7 @@
 /*
  * Durations: `fast` for hover, press, colour and small exits; `base` for small moves (indicators, chevrons, menus);
  * `slow` for panels and large moves (sheets, disclosures, the theme cross-fade). `reveal` is the landing's one-time
- * scroll reveal only. Curves: `standard` (calm ease-out) for colour and state changes, `emphasized` (fast start, long
+ * scroll reveal only; `flash` is the tint behind a live figure that changed, fading out. Curves: `standard` (calm ease-out) for colour and state changes, `emphasized` (fast start, long
  * settle) for anything that moves or enters, `exit` (accelerates away) for anything that leaves.
  * Tailwind: `duration-fast|base|slow`, `ease-standard|emphasized|exit`; a bare `transition-*` utility is fast and
  * standard. Scripts read the same values through `src/ui/motion/tokens.ts`.
@@ -18,6 +18,7 @@
   --duration-base: 220ms;
   --duration-slow: 340ms;
   --duration-reveal: 550ms;
+  --duration-flash: 900ms;
   --transition-duration-fast: var(--duration-fast);
   --transition-duration-base: var(--duration-base);
   --transition-duration-slow: var(--duration-slow);
@@ -402,6 +403,31 @@
   animation-duration: var(--duration-slow);
   animation-timing-function: var(--ease-standard);
 }
+/* A page-wide change of figures (privacy mode, `crossFadePage`): the same cross-fade, quicker. */
+:root[data-cross-fade]::view-transition-old(root),
+:root[data-cross-fade]::view-transition-new(root) {
+  animation-duration: var(--duration-base);
+  animation-timing-function: var(--ease-standard);
+}
+
+/*
+ * Navigation to another page (`PageTransition`): the new page is live at once and a snapshot of the old one fades
+ * out over it. The root does not cross-fade during it (the theme switch and `crossFadePage` keep theirs), so what
+ * both pages share stays put. Clicks pass through to the new page. Off with reduced motion.
+ */
+::view-transition {
+  pointer-events: none;
+}
+::view-transition-group(.page-exit) {
+  animation: none;
+}
+::view-transition-old(.page-exit) {
+  animation: fade-out var(--duration-base) var(--ease-standard) both;
+}
+:root:not([data-theme-switching], [data-cross-fade])::view-transition-old(root),
+:root:not([data-theme-switching], [data-cross-fade])::view-transition-new(root) {
+  animation: none;
+}
 
 /* ---------------------------------------------------------------------------------------------------------------
  * Reduced motion: no movement; fades and colour changes stay.
@@ -432,6 +458,9 @@
   .motion-details::details-content { transition: none; }
   .motion-pulse, .motion-shimmer { animation: none; }
   .motion-spin { animation: fade-in var(--duration-base) var(--ease-standard) backwards; }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) { animation: none; }
 }
 
 /* ---------------------------------------------------------------------------------------------------------------

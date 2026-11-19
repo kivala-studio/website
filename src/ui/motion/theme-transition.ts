@@ -29,3 +29,21 @@ export function switchTheme(update: () => void) {
   const transition = document.startViewTransition(apply);
   transition.finished.finally(settle);
 }
+
+/**
+ * Applies a change that touches figures all over the page at once (privacy mode masking every personal value) as one
+ * quick cross-fade (`base`), or at once where View Transitions are missing or reduced motion is asked for. `update`
+ * runs inside `flushSync`, so the new snapshot is complete.
+ */
+export function crossFadePage(update: () => void) {
+  if (typeof document.startViewTransition !== "function" || prefersReducedMotion()) {
+    update();
+    return;
+  }
+  const root = document.documentElement;
+  root.dataset.crossFade = "";
+  const transition = document.startViewTransition(() => flushSync(update));
+  transition.finished.finally(() => {
+    delete root.dataset.crossFade;
+  });
+}

@@ -14,13 +14,17 @@ const STYLE = {
   standard: "text-body font-medium",
 } as const;
 
-/** Formatted instrument value that rolls when it changes. Prices are neutral text; colour belongs to changes only. */
+/**
+ * Formatted instrument value that rolls when it changes. Prices are neutral text; colour belongs to changes only,
+ * except `live`: a current quote that changes to another shows a tint of its direction that fades out.
+ */
 export function FinancialValue({
   value,
   bond = false,
   code = "AOA",
   digits,
   style = "standard",
+  live = false,
   className,
 }: {
   value: Numeric;
@@ -28,6 +32,8 @@ export function FinancialValue({
   code?: string;
   digits?: number;
   style?: keyof typeof STYLE;
+  /** A current quote: a change to another current quote also flashes the direction's tint (`AnimatedText`). */
+  live?: boolean;
   className?: string;
 }) {
   const format = useFormat();
@@ -36,6 +42,7 @@ export function FinancialValue({
     <AnimatedText
       text={text}
       numeric={new Decimal(value).toString()}
+      live={live}
       className={cn("inline-block whitespace-nowrap font-display text-primary-text", STYLE[style], className)}
     />
   );
@@ -99,14 +106,16 @@ const STATUS_DOT = {
   open: "bg-positive",
 } as const;
 
-/** A status dot and its word; `value` sets it as a stat tile's figure instead of a caption. */
+/** A status dot and its word; `value` sets it as a stat tile's figure instead of a caption. A change cross-fades the word and the dot's colour. */
 export function MarketStatusIndicator({ status, size = "caption" }: { status: MarketStatus; size?: "caption" | "value" }) {
   const t = useTranslations();
   const title = t(STATUS_KEY[status]);
   return (
     <span className={cn("inline-flex items-center gap-2", size === "value" ? "text-primary-text" : "text-caption font-medium text-secondary-text")}>
-      <span aria-hidden className={cn("rounded-full", size === "value" ? "size-2" : "size-[7px]", STATUS_DOT[status])} />
-      <span aria-hidden>{title}</span>
+      <span aria-hidden className={cn("rounded-full transition-colors duration-base", size === "value" ? "size-2" : "size-[7px]", STATUS_DOT[status])} />
+      <span aria-hidden className="inline-flex">
+        <AnimatedText text={title} className="inline-block" />
+      </span>
       <span className="sr-only">{t("common.marketStatus", { arg1: title })}</span>
     </span>
   );

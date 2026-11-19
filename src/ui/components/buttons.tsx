@@ -23,10 +23,13 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 /**
  * Full-width pill button (iOS InvestButtonStyle + ActionButton). `className="w-auto!"` sizes it to its title (`cn` does not
- * merge classes, and Tailwind emits `w-full` after `w-auto`); `sm:w-auto` does so from 640 px.
+ * merge classes, and Tailwind emits `w-full` after `w-auto`); `sm:w-auto` does so from 640 px. A new icon (copy → check,
+ * the spinner giving way to the icon) grows in.
  */
 export function Button({ kind = "primary", size, icon, loading = false, className, children, onClick, ...props }: ButtonProps) {
   const t = useTranslations("components.button");
+  const glyph = useRef<SVGSVGElement>(null);
+  useChangeAnimation(glyph, loading ? undefined : icon, ICON_IN);
   return (
     <button
       type="button"
@@ -39,7 +42,7 @@ export function Button({ kind = "primary", size, icon, loading = false, classNam
       }}
       className={buttonClass(kind, className, size)}
     >
-      {loading ? <Spinner /> : icon ? <Icon name={icon} /> : null}
+      {loading ? <Spinner /> : icon ? <Icon ref={glyph} name={icon} /> : null}
       <span>{children}</span>
       {loading ? <span className="sr-only">{t("processing")}</span> : null}
     </button>

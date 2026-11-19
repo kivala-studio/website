@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import type { ReactNode } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 
 import { cn } from "../cn";
 import { Icon, type IconName } from "../icons/icon";
@@ -15,6 +15,17 @@ export function Spinner({ className }: { className?: string }) {
 /** States that replace content on the page fade in; the ones the server rendered are simply there. */
 function useStateEntrance() {
   return useEntrance() ? "motion-fade-in" : undefined;
+}
+
+/**
+ * Content that replaces a skeleton or another state inside a component the server rendered (a list arriving, the
+ * loaded view after `LoadingState`): it fades in (`rise`: and rises, `motion-presence`) when it mounts after
+ * hydration, and is simply there when the server rendered it. A plain `div`: give it the layout classes the content
+ * needs, or wrap one full-width child.
+ */
+export function FadeIn({ rise = false, className, ...props }: HTMLAttributes<HTMLDivElement> & { rise?: boolean }) {
+  const entrance = useEntrance();
+  return <div {...props} className={cn(entrance && (rise ? "motion-presence" : "motion-fade-in"), className)} />;
 }
 
 function StateBody({ icon, tone, title, message }: { icon: IconName; tone: "neutral" | "warning"; title: string; message?: string }) {

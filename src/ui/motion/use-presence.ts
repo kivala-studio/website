@@ -43,3 +43,23 @@ export function usePresence(open: boolean, { timeout = 400 }: { timeout?: number
     },
   };
 }
+
+/**
+ * For a dialog or panel that shows a value while there is one (the tile whose details are open, the record being
+ * edited, `true` for a plain flag): keeps the last value for the length of the exit, so the dialog can be rendered
+ * with `open={false}` and leave with its content, then unmounts it, so nothing it loads or listens to runs while it
+ * is closed. `key` changes on every opening: key the dialog with it and each opening starts fresh, as a remount did.
+ *
+ * ```tsx
+ * const details = usePresenceValue(selected);
+ * {details.value ? <Details key={details.key} open={details.open} tile={details.value} onClose={…} /> : null}
+ * ```
+ */
+export function usePresenceValue<T>(value: T | null | undefined | false, { timeout = 400 }: { timeout?: number } = {}) {
+  const open = value !== null && value !== undefined && value !== false;
+  const { mounted } = usePresence(open, { timeout });
+  const [kept, setKept] = useState<{ value: T | null; key: number; open: boolean }>(() => ({ value: open ? (value as T) : null, key: 0, open }));
+  if (open && (!kept.open || kept.value !== value)) setKept({ value: value as T, key: kept.open ? kept.key : kept.key + 1, open: true });
+  if (!open && kept.open) setKept({ ...kept, open: false });
+  return { value: mounted ? (open ? (value as T) : kept.value) : null, open, key: kept.key };
+}
