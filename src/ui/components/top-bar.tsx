@@ -5,18 +5,20 @@ import { type ReactNode, useEffect, useId, useRef, useState } from "react";
 import { Link, usePathname } from "@/i18n/navigation";
 
 import { cn } from "../cn";
-import { Icon } from "../icons/icon";
-import { iconButtonClass } from "./button-styles";
+import { useSlidingIndicator } from "../motion/use-sliding-indicator";
+import { INDICATOR_FILL, INDICATOR_IDLE, iconButtonClass } from "./button-styles";
 import { useLinkCurrent } from "./controls";
 import { PAGE_CONTAINER } from "./layout";
+import { IconSwap } from "./motion";
 
 export type TopBarLink = { href: string; label: string };
 
-/** A pill link of the top bar; the current section has the soft grey pill. */
-export const TOP_BAR_PILL = "inline-flex min-h-11 shrink-0 items-center rounded-full px-4 font-display text-secondary font-medium whitespace-nowrap transition-colors";
+/** A pill link of the top bar; the current section has the soft grey pill, which glides to the next section. */
+export const TOP_BAR_PILL = "motion-press inline-flex min-h-11 shrink-0 items-center rounded-full px-4 font-display text-secondary font-medium whitespace-nowrap";
+const TOP_BAR_PILL_CURRENT = cn(INDICATOR_FILL, "font-semibold text-primary-text before:bg-action-surface");
 
 /** A link row of the top bar's menu: the pill's look at row size. */
-const MENU_ROW = "flex min-h-12 items-center rounded-full px-4 font-display text-section transition-colors";
+const MENU_ROW = "motion-tap flex min-h-12 items-center rounded-full px-4 font-display text-section";
 
 type MobileNav =
   /** Below 1024 px the navigation is left to the bottom tab bar (the app). */
@@ -52,6 +54,9 @@ export function TopBar({
   actions: ReactNode;
 } & MobileNav) {
   const current = useLinkCurrent();
+  const pathname = usePathname();
+  // Remembered by name: route groups with their own layouts render the bar again on a route change.
+  const pills = useSlidingIndicator<HTMLUListElement>(pathname, { selector: "[aria-current]", memory: `top-bar:${navLabel}` });
   return (
     <header className="sticky top-0 z-30 bg-elevated-background shadow-bar">
       {/* The row sits in the page column, so the logo and the last action line up with the content below. */}
@@ -66,7 +71,7 @@ export function TopBar({
           {logo}
         </Link>
         <nav aria-label={navLabel} className="hidden lg:block lg:ml-4">
-          <ul className="flex gap-1">
+          <ul ref={pills} className="flex gap-1">
             {nav.map((link) => {
               const state = current(link.href);
               return (
@@ -75,7 +80,7 @@ export function TopBar({
                     href={link.href}
                     prefetch={false}
                     aria-current={state}
-                    className={cn(TOP_BAR_PILL, state ? "bg-action-surface font-semibold text-primary-text" : "text-primary-text hover:bg-action-surface")}
+                    className={cn(TOP_BAR_PILL, state ? TOP_BAR_PILL_CURRENT : cn(INDICATOR_IDLE, "text-primary-text hover:bg-action-surface"))}
                   >
                     {link.label}
                   </Link>
@@ -161,7 +166,7 @@ function TopBarMenu({ label, nav, navLabel, content }: { label: string; nav: rea
     };
   }, [open]);
 
-  // The exit animation ends the closing phase; the timer covers a browser that runs no animation.
+  // The exit animation (`base`) ends the closing phase; the timer covers a browser that runs no animation.
   useEffect(() => {
     if (phase !== "closing") return;
     const timer = window.setTimeout(() => setPhase("closed"), 400);
@@ -179,7 +184,7 @@ function TopBarMenu({ label, nav, navLabel, content }: { label: string; nav: rea
         onClick={() => (open ? close() : setPhase("open"))}
         className={iconButtonClass("plain", "-ml-4 lg:hidden")}
       >
-        <Icon name={open ? "close" : "menu"} scale="l" />
+        <IconSwap icons={["menu", "close"]} show={open ? 1 : 0} turn scale="l" />
       </button>
       {phase === "closed" ? null : (
         <div className="absolute inset-x-0 top-full lg:hidden">

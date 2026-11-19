@@ -137,7 +137,7 @@ export function SecurityLogo({
           src={logoUrl}
           alt=""
           className={cn(
-            "size-full transition-opacity duration-150 ease-out motion-reduce:transition-none",
+            "size-full transition-opacity duration-base",
             FIT_CLASS[fit ?? "contain"],
             // Hidden until measured, so it never jumps from one fit to the other; without scripting it shows contained.
             !fit && "[@media(scripting:enabled)]:opacity-0",
@@ -193,7 +193,7 @@ export function AssetRow({ symbol, name, price, change, bond, code, logoUrl, bra
   );
   const layout = "flex min-h-20 w-full items-center gap-2 py-3 desk:min-h-14 desk:py-2 max-[20rem]:flex-col max-[20rem]:items-start";
   return href ? (
-    <Link href={href} className={cn(layout, "rounded-small")} aria-description={t("openSecurityDetailsHint")}>
+    <Link href={href} className={cn(layout, "motion-tap rounded-small")} aria-description={t("openSecurityDetailsHint")}>
       {content}
     </Link>
   ) : (
