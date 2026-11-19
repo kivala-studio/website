@@ -11,6 +11,7 @@ import { SearchField } from "@/ui/components/controls";
 import { Dialog } from "@/ui/components/dialog";
 import { SecurityLogo } from "@/ui/components/rows";
 import { EmptyState } from "@/ui/components/states";
+import { FlipList } from "@/ui/components/flip-list";
 import { Icon } from "@/ui/icons/icon";
 
 /**
@@ -23,6 +24,12 @@ export function AddDialog({ open, onClose, rows, renderedAt }: { open: boolean; 
   const list = useSyncExternalStore(stores.watchlist.subscribe, stores.watchlist.getSnapshot, stores.watchlist.getSnapshot);
   const market = useMarketState();
   const [query, setQuery] = useState("");
+  // Each opening starts with an empty search; clearing it on close would change the list while the sheet leaves.
+  const [wasOpen, setWasOpen] = useState(open);
+  if (open !== wasOpen) {
+    setWasOpen(open);
+    if (open) setQuery("");
+  }
   const resultsID = useId();
   const at = market.assessedAt ?? renderedAt;
   const byID = useMemo(() => new Map(rows.map((row) => [row.id, row])), [rows]);
@@ -44,10 +51,7 @@ export function AddDialog({ open, onClose, rows, renderedAt }: { open: boolean; 
   return (
     <Dialog
       open={open}
-      onClose={() => {
-        setQuery("");
-        onClose();
-      }}
+      onClose={onClose}
       title={t("common.addInstruments")}
     >
       <div className="flex flex-col gap-3" data-testid="add-dialog">
@@ -61,17 +65,17 @@ export function AddDialog({ open, onClose, rows, renderedAt }: { open: boolean; 
             )}
           </div>
         ) : (
-          <ul id={resultsID} className="flex flex-col divide-y divide-hairline">
+          <FlipList id={resultsID} className="flex flex-col divide-y divide-hairline">
             {candidates.map((security) => {
               const row = byID.get(security.id);
               const name = securityDisplayName(security) ?? row?.name ?? security.symbol;
               return (
-                <li key={security.id}>
+                <li key={security.id} data-flip-key={security.id}>
                   <button
                     type="button"
                     onClick={() => stores.watchlist.setWatched(security.id, true)}
                     aria-label={t("watchlist.accessibility.addSecurity", { arg1: security.symbol, arg2: name })}
-                    className="flex min-h-16 w-full items-center gap-3 py-2 text-left"
+                    className="motion-tap flex min-h-16 w-full items-center gap-3 py-2 text-left"
                     data-testid="add-candidate"
                   >
                     <SecurityLogo symbol={security.symbol} logoUrl={row?.logoURL ?? security.logoURL} brandColor={row?.bond ? "violet" : "blue"} size="s" />
@@ -84,7 +88,7 @@ export function AddDialog({ open, onClose, rows, renderedAt }: { open: boolean; 
                 </li>
               );
             })}
-          </ul>
+          </FlipList>
         )}
       </div>
     </Dialog>

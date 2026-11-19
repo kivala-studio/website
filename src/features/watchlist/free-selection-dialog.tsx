@@ -11,13 +11,13 @@ import { Button } from "@/ui/components/buttons";
 import { INPUT } from "@/ui/components/field-styles";
 import { Dialog } from "@/ui/components/dialog";
 import { useFormat } from "@/ui/format";
-import { Icon } from "@/ui/icons/icon";
+import { IconSwap } from "@/ui/components/motion";
 
 /**
  * `Plano gratuito` (iOS `FreePlanSelectionView`): up to three active instruments and one for automatic
- * movements (`select_free_watchlist`). The rest stay saved and paused. Mounted while open.
+ * movements (`select_free_watchlist`). The rest stay saved and paused. Mounted while open and while it leaves.
  */
-export function FreeSelectionDialog({ onClose, rows }: { onClose: () => void; rows: ReadonlyMap<string, CatalogueRow> }) {
+export function FreeSelectionDialog({ open, onClose, rows }: { open: boolean; onClose: () => void; rows: ReadonlyMap<string, CatalogueRow> }) {
   const t = useTranslations();
   const format = useFormat();
   const stores = useAccountStores()!;
@@ -52,13 +52,13 @@ export function FreeSelectionDialog({ onClose, rows }: { onClose: () => void; ro
 
   return (
     <Dialog
-      open
+      open={open}
       onClose={onClose}
       title={t("subscriptions.freeSelection.title")}
       footer={
         <div className="flex flex-col gap-2">
           {result === "saved" || result === "failed" ? (
-            <p role="status" className={cn("text-secondary", result === "failed" ? "text-negative" : "text-secondary-text")}>
+            <p role="status" className={cn("motion-presence text-secondary", result === "failed" ? "text-negative" : "text-secondary-text")}>
               {t(result === "saved" ? "subscriptions.freeSelection.saved" : "subscriptions.freeSelection.saveError")}
             </p>
           ) : null}
@@ -91,7 +91,7 @@ export function FreeSelectionDialog({ onClose, rows }: { onClose: () => void; ro
                   <span className="text-body font-semibold text-primary-text">{row?.symbol ?? id}</span>
                   <span className="text-caption text-secondary-text">{t(checked ? "subscriptions.freeSelection.active" : "subscriptions.freeSelection.paused")}</span>
                 </span>
-                <Icon name={checked ? "check-circle" : "add"} className={checked ? "text-accent" : "text-tertiary-text"} />
+                <IconSwap icons={["add", "check-circle"]} show={checked ? 1 : 0} className={cn("transition-colors", checked ? "text-accent" : "text-tertiary-text")} />
               </button>
             );
           })}

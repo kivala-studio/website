@@ -8,12 +8,14 @@ import { Button } from "@/ui/components/buttons";
 import { INPUT } from "@/ui/components/field-styles";
 import { Dialog } from "@/ui/components/dialog";
 
-/** `Novo grupo` / `Mudar nome`: a trimmed name of 1–40 characters. Mounted while naming. */
+/** `Novo grupo` / `Mudar nome`: a trimmed name of 1–40 characters. Mounted while naming and while it leaves. */
 export function GroupNameDialog({
+  open,
   naming,
   onClose,
   onSave,
 }: {
+  open: boolean;
   naming: { mode: "new" } | { mode: "rename"; name: string };
   onClose: () => void;
   onSave: (name: string) => void;
@@ -25,7 +27,7 @@ export function GroupNameDialog({
   return (
     <Dialog
       variant="dialog"
-      open
+      open={open}
       onClose={onClose}
       title={t(naming.mode === "rename" ? "watchlist.groups.rename" : "watchlist.groups.new")}
       footer={
