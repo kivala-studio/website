@@ -7,7 +7,6 @@ import { PAGE_CONTAINER } from "@/ui/components/layout";
 import { Icon } from "@/ui/icons/icon";
 
 import { PalancaMark } from "./chrome";
-import { HeroShapes } from "./hero-shapes";
 
 /*
  * Landing page building blocks: flat stage fills that change from section to section, the hero panel, centred
@@ -85,7 +84,7 @@ export function SectionIntro({
 
 /**
  * The hero panel: a large rounded `stage-deep` panel inset from the window's edges, right under the floating top bar
- * and about one window tall, with a few decorative shapes drifting at its edges (`HeroShapes`); `children` (the title and one large pill) are
+ * and about one window tall, with a few decorative shapes drifting slowly at its edges (`motion-drift-*`); `children` (the title and one large pill) are
  * centred in it. The `h1` is the largest paint, so it never fades in. `className` adjusts the frame (the gallery's
  * shorter specimen).
  */
@@ -101,7 +100,9 @@ export function HeroPanel({ labelledBy, className, children }: { labelledBy: str
       )}
     >
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-        <HeroShapes />
+        <span className="absolute -bottom-32 -left-24 size-72 motion-drift-swell rounded-full bg-stage-brand/30 sm:size-96" />
+        <span className="absolute -top-14 -right-12 size-44 rotate-12 motion-drift-rock rounded-[3rem] bg-stage-brand/45 sm:size-56 lg:right-[8%]" />
+        <span className="absolute top-[16%] left-[7%] hidden h-12 w-28 -rotate-6 motion-drift-slide rounded-full bg-on-stage-deep/10 md:block" />
         <PalancaMark className="absolute right-[6%] bottom-[8%] size-20 -rotate-12 text-stage-brand sm:size-28 lg:size-36" />
       </div>
       {children}

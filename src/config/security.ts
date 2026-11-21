@@ -39,8 +39,7 @@ export function buildContentSecurityPolicy({ nonce, isDev, secure, supabaseUrl, 
 
   const directives: Record<string, (string | null)[]> = {
     "default-src": ["'self'"],
-    // 'wasm-unsafe-eval' lets WebAssembly compile (the landing hero's Rive runtime, served from this site); it does not allow `eval`.
-    "script-src": ["'self'", `'nonce-${nonce}'`, "'strict-dynamic'", "'wasm-unsafe-eval'", isDev ? "'unsafe-eval'" : null],
+    "script-src": ["'self'", `'nonce-${nonce}'`, "'strict-dynamic'", isDev ? "'unsafe-eval'" : null],
     "style-src": ["'self'", isDev ? "'unsafe-inline'" : `'nonce-${nonce}'`],
     "img-src": ["'self'", "blob:", "data:", supabase],
     "font-src": ["'self'"],

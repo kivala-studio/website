@@ -48,6 +48,3 @@ next-env.d.ts
 
 # statement reader files copied from node_modules (scripts/statement-assets.mjs)
 /public/statement/
-
-# Rive runtime files copied from node_modules (scripts/rive-assets.mjs)
-/public/rive-runtime/

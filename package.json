@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/statement-assets.mjs && node scripts/rive-assets.mjs",
+    "predev": "node scripts/statement-assets.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/statement-assets.mjs && node scripts/rive-assets.mjs",
+    "prebuild": "node scripts/statement-assets.mjs",
     "build": "next build && node scripts/scan-client-bundle.mjs",
     "start": "next start",
     "lint": "eslint --max-warnings=0",
@@ -21,7 +21,6 @@
     "intelligence:evaluate": "INTELLIGENCE_EVALUATION_OUTPUT=docs/evidence/w14/web-intelligence-evaluation.json vitest run src/domain/intelligence/evaluation"
   },
   "dependencies": {
-    "@rive-app/canvas": "2.54.0",
     "@supabase/ssr": "0.12.7",
     "@supabase/supabase-js": "2.118.0",
     "@tesseract.js-data/eng": "1.0.0",

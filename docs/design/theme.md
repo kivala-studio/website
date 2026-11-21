@@ -269,9 +269,10 @@ Don't: add an animation library; animate on every render; fade in server-rendere
 |---|---|---|---|
 | `motion-entrance` | Once on load: fade in and rise 0.75rem, `reveal` duration, emphasized, after `entrance-delay-<ms>` (`backwards` fill: nothing stays applied) | none | The hero's App Store pill (70 ms) |
 | `motion-entrance-lift` | Once on load: rise 0.5rem with no fade and no delay, 500 ms | none | The landing `h1` (no fade, so the largest paint is the first) |
+| `motion-drift-swell`, `motion-drift-rock`, `motion-drift-slide` | Endless slow loops (20 s, 10 s, 6.5 s, ease-in-out) that return to the still position: a drift and swell, a rock, a slide. Transform only | none | The hero panel's circle, square and pill |
 | Scroll reveal (`data-reveal`) | Once as it enters the viewport: fade in and rise 0.875rem (`reveal`); targets entering together follow each other by shrinking steps (50, 45, 40, 35, 30 ms), a `data-reveal="stagger"` group's children by 70 ms then 50 ms; `reveal-line` wipes a chart line in from the left as its card rises (`draw`), `reveal-after` fades the area and dot in (`base`) as soon as the line is drawn | nothing hidden, no movement | Section intros (`stagger`: heading, then pill), the market preview, each deck, the Plus card and the closing band (`stagger`) (`Reveal`, see [components.md](components.md#landing-pieces)) |
 
-The reveal's start state exists only on a screen that allows motion, after the `Reveal` script has marked a target still below the fold (`data-reveal-state="pending"`); without JavaScript, before hydration, in print, with reduced motion and for a focused target, every section is simply there. No parallax and no auto-playing decks; the top bar's lift is the only scroll-linked effect.
+The reveal's start state exists only on a screen that allows motion, after the `Reveal` script has marked a target still below the fold (`data-reveal-state="pending"`); without JavaScript, before hydration, in print, with reduced motion and for a focused target, every section is simply there. No parallax and no auto-playing decks; the top bar's lift is the only scroll-linked effect. The hero panel's drifting shapes are the only endless decorative motion.
 
 ## Dark mode and increased contrast
 
