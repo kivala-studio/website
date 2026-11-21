@@ -89,7 +89,7 @@ On a screen, when:
 | An icon reflects a state (added, copied, alert on) | `IconSwap`, or `IconButton`/`Button` with the new `icon` |
 | A message, error or notice appears | `motion-presence` (fade and rise); with an exit, `usePresence` + `motion-pop` |
 | Something refreshes | The refresh icon turns (`[&>svg]:motion-spin`) while `aria-busy` |
-| The page changes | Nothing to do: the pressed link and the nav's indicator react at once, the route skeleton replaces the old page in the next frame, and the page replaces the skeleton. Give a new page a `loading.tsx`; never wait on an animation before showing it |
+| The page changes | Nothing to do: the pressed link and the nav's indicator react at once, the route skeleton replaces the old page within two frames (prefetched or not), and the page replaces the skeleton. Give a new page its skeleton (`loading.tsx` and `PendingPage`'s `ROUTES`); never wait on an animation before showing it |
 
 ## Icons
 

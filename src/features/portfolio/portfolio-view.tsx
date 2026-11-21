@@ -20,7 +20,7 @@ import { HiddenValue } from "@/ui/components/feedback";
 import { Card } from "@/ui/components/layout";
 import { SecurityLogo } from "@/ui/components/rows";
 import { DataTable, TableCell, TableHead, TableHeaderCell, TableNameCell, TableRow } from "@/ui/components/table";
-import { ErrorState, InstrumentRowSkeleton, Skeleton } from "@/ui/components/states";
+import { ErrorState, Skeleton } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
 import { AnimatedText } from "@/ui/components/animated-value";
@@ -30,6 +30,7 @@ import { useEntrance } from "@/ui/motion/use-entrance";
 
 import { BookMenu, ShareButton, useSelectionTitle } from "./book-menu";
 import { CsvTransfer } from "./csv-transfer";
+import { DashboardSkeleton } from "./dashboard-skeleton";
 import { Private, toneOf, useQuantityText } from "./portfolio-ui";
 import { type EditorRequest, TransactionEditor } from "./transaction-editor";
 import { BenchmarkSection, CashSection, Metric, ResultsSection } from "./summary-sections";
@@ -111,27 +112,6 @@ export function PortfolioView({
       )}
 
       <TransactionEditor request={editor} model={model} onClose={() => setEditor(null)} />
-    </div>
-  );
-}
-
-/** The value card and the positions while the ledger loads; also the portfolio routes' `loading.tsx`. */
-export function DashboardSkeleton() {
-  const t = useTranslations();
-  return (
-    <div role="status" aria-label={t("portfolio.header.loading")} className="flex flex-col gap-6">
-      <Card className="flex flex-col gap-4">
-        <Skeleton className="h-5 w-32" />
-        <Skeleton className="h-12 w-64" />
-        <Skeleton className="h-5 w-40" />
-        <Skeleton className="h-45 w-full" />
-      </Card>
-      <Card className="flex flex-col gap-2">
-        <Skeleton className="h-7 w-32" />
-        {[0, 1, 2, 3].map((index) => (
-          <InstrumentRowSkeleton key={index} />
-        ))}
-      </Card>
     </div>
   );
 }

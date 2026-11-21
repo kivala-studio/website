@@ -216,14 +216,16 @@ export function MarketBrowser({ rows, renderedAt, links = [] }: { rows: Catalogu
               <TableSortHeader
                 label={t("common.change")}
                 sort={ariaSort("percentageChange")}
-                href={href(sortChange("percentageChange"))} onNavigate={inPlace(sortChange("percentageChange"))}
+                href={href(sortChange("percentageChange"))}
+                onNavigate={inPlace(sortChange("percentageChange"))}
                 align="right"
                 className="hidden w-32 sm:table-cell"
               />
               <TableSortHeader
                 label={translate(MARKET_SORT_LABEL_KEYS.volume)}
                 sort={ariaSort("volume")}
-                href={href(sortChange("volume"))} onNavigate={inPlace(sortChange("volume"))}
+                href={href(sortChange("volume"))}
+                onNavigate={inPlace(sortChange("volume"))}
                 align="right"
                 className="hidden w-36 md:table-cell"
               />

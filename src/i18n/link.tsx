@@ -26,6 +26,8 @@ const subscribe = (listener: () => void) => {
   listeners.add(listener);
   return () => void listeners.delete(listener);
 };
+// Back or Forward while a page is on its way: the visitor went elsewhere, so nothing is pending any more.
+if (typeof window !== "undefined") window.addEventListener("popstate", () => setPendingPath(null));
 
 /** The locale-less path of an href, without its query and hash (`/mercado/BAI`). */
 function pathOf(href: LocaleLinkProps["href"]): string | null {
@@ -41,12 +43,16 @@ function pathOf(href: LocaleLinkProps["href"]): string | null {
  */
 export function useDestinationPathname(): string {
   const pathname = usePathname();
-  const pending = useSyncExternalStore(
+  return usePendingPathname() ?? pathname;
+}
+
+/** The locale-less path a link is taking the visitor to while its page is on its way; `null` otherwise. */
+export function usePendingPathname(): string | null {
+  return useSyncExternalStore(
     subscribe,
     () => pendingPath,
     () => null,
   );
-  return pending ?? pathname;
 }
 
 /**

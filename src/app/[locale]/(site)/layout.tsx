@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { requestTime } from "@/data/clock";
 import { civilDate } from "@/domain/market/zone";
+import { PendingPage } from "@/features/shell/pending-page";
 import { SiteFooter, SiteHeader } from "@/features/site/chrome";
 import { parseTheme, THEME_COOKIE } from "@/ui/theme/theme";
 
@@ -12,7 +13,7 @@ export default async function SiteLayout({ children }: Readonly<{ children: Reac
   return (
     <>
       <SiteHeader theme={theme} />
-      {children}
+      <PendingPage>{children}</PendingPage>
       <SiteFooter year={civilDate(requestTime()).slice(0, 4)} />
     </>
   );

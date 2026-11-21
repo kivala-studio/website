@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { type MouseEvent, useEffect, useState } from "react";
 
-import { usePathname } from "@/i18n/navigation";
+import { useDestinationPathname, usePathname } from "@/i18n/navigation";
 
 import type { CatalogueRow } from "@/features/market/browse/price-cell";
 import { cn } from "@/ui/cn";
@@ -33,12 +33,16 @@ export function CommandPalette({ rows, renderedAt }: { rows: readonly CatalogueR
   // The panel stays while the dialog leaves, then unmounts: each opening starts with an empty search.
   const { mounted } = usePresence(open);
   const pathname = usePathname();
-  // Following a result closes the palette once the new page is there; unmounting the link first would drop the navigation.
+  const destination = useDestinationPathname();
+  // Following a result closes the palette at once, over the next page's skeleton. The panel (and the pressed link,
+  // whose navigation it is) stays mounted in the closed dialog until the page is there.
   const [openedOn, setOpenedOn] = useState(pathname);
-  if (open && openedOn !== pathname) {
+  const [following, setFollowing] = useState(false);
+  if (open && destination !== openedOn) {
     setOpen(false);
-    setOpenedOn(pathname);
+    setFollowing(true);
   }
+  if (following && !open && destination === pathname) setFollowing(false);
   const [instant, setInstant] = useState(false);
   const show = (fromKeyboard: boolean) => {
     setOpenedOn(pathname);
@@ -103,7 +107,7 @@ export function CommandPalette({ rows, renderedAt }: { rows: readonly CatalogueR
         <Icon name="search" scale="l" />
       </button>
       <Dialog variant="dialog" open={open} instant={instant} onClose={() => setOpen(false)} title={t("common.search")}>
-        {mounted ? <SearchPanel rows={rows} renderedAt={renderedAt} autoFocus /> : null}
+        {mounted || following ? <SearchPanel rows={rows} renderedAt={renderedAt} autoFocus /> : null}
       </Dialog>
     </>
   );

@@ -5,6 +5,7 @@ import { currentAccount } from "@/data/auth/account";
 import { requestTime } from "@/data/clock";
 import { civilDate } from "@/domain/market/zone";
 import { SiteFooter, SiteHeader } from "@/features/site/chrome";
+import { PendingPage } from "@/features/shell/pending-page";
 import { SignedInFrame } from "@/features/shell/signed-in-frame";
 import { parseTheme, THEME_COOKIE } from "@/ui/theme/theme";
 
@@ -21,7 +22,7 @@ export default async function MarketAreaLayout({ children }: Readonly<{ children
   return (
     <>
       <SiteHeader theme={theme} />
-      {children}
+      <PendingPage>{children}</PendingPage>
       <SiteFooter year={civilDate(requestTime()).slice(0, 4)} />
     </>
   );

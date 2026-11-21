@@ -16,6 +16,7 @@ import { BrandLockup } from "@/features/site/chrome";
 import { AreaMessages } from "@/i18n/area-messages";
 
 import { TABS } from "./destinations";
+import { PendingPage } from "./pending-page";
 import { ShellNav, ShellTopBar } from "./shell-nav";
 
 /**
@@ -71,7 +72,7 @@ export async function AppShell({
                   hasUnread={account.hasUnread}
                   search={<CommandPalette rows={rows} renderedAt={requestTime()} />}
                 />
-                {children}
+                <PendingPage>{children}</PendingPage>
                 <ShellNav items={tabs} label={navLabel} />
               </div>
             </IntelligenceProvider>

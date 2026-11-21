@@ -13,7 +13,7 @@ import { Button } from "@/ui/components/buttons";
 import { SearchField } from "@/ui/components/controls";
 import { Card } from "@/ui/components/layout";
 import { FlipList } from "@/ui/components/flip-list";
-import { EmptyState, ErrorState, FadeIn, LoadingState } from "@/ui/components/states";
+import { EmptyState, ErrorState, FadeIn, LoadingState, Spinner } from "@/ui/components/states";
 
 import { ArticleMetadata } from "./article-metadata";
 
@@ -105,6 +105,8 @@ export function NewsFeed({
   const [search, setSearch] = useState(initialQuery);
   const [found, setFound] = useState<{ query: string; articles: NewsArticle[] | null }>({ query: initialQuery.trim(), articles: initialResults });
   const [now, setNow] = useState(renderedAt);
+  // The press on "Load more" until its page of articles is in: the control turns busy in place, the list stays.
+  const [loadingMore, setLoadingMore] = useState(false);
   const query = search.trim();
 
   useEffect(() => {
@@ -173,12 +175,17 @@ export function NewsFeed({
             scroll={false}
             onClick={(event) => {
               event.preventDefault();
-              void store.loadMore();
+              if (state.isLoading) return;
+              setLoadingMore(true);
+              void store.loadMore().finally(() => setLoadingMore(false));
             }}
             aria-disabled={state.isLoading || undefined}
+            aria-busy={loadingMore || undefined}
             className={buttonClass("secondary")}
           >
-            {t("common.loadMore")}
+            {loadingMore ? <Spinner /> : null}
+            <span>{t("common.loadMore")}</span>
+            {loadingMore ? <span className="sr-only">{t("components.button.processing")}</span> : null}
           </Link>
         </div>
       ) : null}

@@ -13,7 +13,16 @@ export const CLIENT_NAMESPACES = ["common", "components", "designSystem", "error
 /** Single keys from larger namespaces: the shared formatter's bands and days, and every error the presenter can show. */
 export const FORMAT_MESSAGE_KEYS = ["legacy.entre0E", "legacy.entreE0", "notifications.date.today", "notifications.date.yesterday"] as const;
 
-export const CLIENT_KEYS: readonly string[] = [...FORMAT_MESSAGE_KEYS, ...ERROR_MESSAGE_KEYS];
+/** The route skeletons' titles outside the client namespaces: any page can show them while a link's page is on its way. */
+export const SKELETON_MESSAGE_KEYS = [
+  "home.contextCard.availableSummaries",
+  "learn.title",
+  "portfolio.header.loading",
+  "unusualActivity.title",
+  "weekAhead.summary.title",
+] as const;
+
+export const CLIENT_KEYS: readonly string[] = [...FORMAT_MESSAGE_KEYS, ...ERROR_MESSAGE_KEYS, ...SKELETON_MESSAGE_KEYS];
 
 /**
  * Extra keys (leaves or whole subtrees) that the client components of one area read. The area's layout adds

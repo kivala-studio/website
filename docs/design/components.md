@@ -50,7 +50,7 @@ The pack is generated from `design/icon-pack/masters.json` (the iOS masters plus
 
 ### `PAGE_CONTAINER`, `READING_COLUMN`
 
-Class strings, not components. See [layout.md](layout.md#the-page-column). `TopBar` puts its row (and its menu card) in `PAGE_CONTAINER` too, so the bar lines up with the page. Page wrappers built on them: `SITE_PAGE`, `ReadingPage`, `MessagePage` (`@/features/site/pages`), `SIGNED_IN_PAGE`, `SignedInPage` (`@/features/shell/placeholder-page`).
+Class strings, not components. See [layout.md](layout.md#the-page-column). `TopBar` puts its row (and its menu card) in `PAGE_CONTAINER` too, so the bar lines up with the page. Page wrappers built on them: `SITE_PAGE`, `ReadingPage`, `MessagePage` (`@/features/site/pages`), `SIGNED_IN_PAGE` (`@/features/shell/route-skeletons`), `SignedInPage` (`@/features/shell/placeholder-page`).
 
 ### `Card`
 
@@ -586,18 +586,23 @@ What a route's `loading.tsx` renders: the page's template in skeleton blocks, in
 | `RowsSkeleton` | `rows?` (4), `className?` | `InstrumentRowSkeleton`s with hairlines between them |
 | `TableSkeleton` | `rows?` (8), `className?` | A table in its flush card: the 48 px header, 60 px rows, columns that fold like the table's |
 
-Per template: `SignedInPageSkeleton` (`@/features/shell/placeholder-page`) and `ReadingPageSkeleton` (`@/features/site/pages`) wrap the column pages; `MarketOverviewSkeleton`, `InstrumentSkeleton` (`@/features/market/…`), `DashboardSkeleton` (`@/features/portfolio/portfolio-view`) and an empty `HeroPanel` (the landing) are the others.
+Per template: `SignedInPageSkeleton` and `ReadingPageSkeleton` (`@/features/site/pages`) wrap the column pages; `MarketOverviewSkeleton`, `InstrumentSkeleton` (`@/features/market/…`), `DashboardSkeleton` (`@/features/portfolio/dashboard-skeleton`) and an empty `HeroPanel` (the landing) are the others.
+
+Each route's skeleton is a named component in `@/features/shell/route-skeletons` (`WeekSkeleton`; the market overview's and the instrument's stay in `@/features/market/…`), and the route's `loading.tsx` re-exports it. `PendingPage` (`@/features/shell/pending-page`), the page slot of the app shell and the site layouts, maps a path to the same component (`ROUTES`): a link whose page was not prefetched shows it two frames after the press, before the server answers, and the router's `loading.tsx` then takes its place unchanged. A new route adds its skeleton there, a line in `ROUTES` and the one-line `loading.tsx`. Titles outside the client namespaces go in `SKELETON_MESSAGE_KEYS` (`@/i18n/client-messages`).
 
 ```tsx
-// src/app/[locale]/(app)/semana/loading.tsx
-export default function Loading() {
+// src/features/shell/route-skeletons.tsx
+export function WeekSkeleton() {
   const t = useTranslations();
   return (
-    <SignedInPageSkeleton title={t("weekAhead.summary.title")} narrow actions={1}>
-      <CardSkeleton />
+    <SignedInPageSkeleton title={t("weekAhead.summary.title")} actions={1} narrow>
+      <CardSkeleton lines={3} />
     </SignedInPageSkeleton>
   );
 }
+
+// src/app/[locale]/(app)/semana/loading.tsx
+export { WeekSkeleton as default } from "@/features/shell/route-skeletons";
 ```
 
 ## Settings rows (`@/features/settings/settings-ui`)

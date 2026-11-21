@@ -25,7 +25,7 @@ Tailwind's defaults plus one custom variant (`src/app/globals.css`):
 PAGE_CONTAINER = "mx-auto w-full max-w-300 px-4 sm:px-6"   // 1200 px max, 16 / 24 px gutters
 READING_COLUMN = "mx-auto flex w-full max-w-3xl flex-col"   // 768 px, inside the container
 SITE_PAGE      = PAGE_CONTAINER + "pt-4 pb-16 lg:pt-8"       // src/features/site/pages.tsx
-SIGNED_IN_PAGE = PAGE_CONTAINER + "pt-4 pb-16 lg:pt-8"       // src/features/shell/placeholder-page.tsx
+SIGNED_IN_PAGE = PAGE_CONTAINER + "pt-4 pb-16 lg:pt-8"       // src/features/shell/route-skeletons.tsx
 ```
 
 Every page's `<main id="main">` uses one of these. Market pages get theirs from `src/app/[locale]/(market)/mercado/layout.tsx` (`pt-4 pb-16 lg:pt-6`). The top bar's row sits in `PAGE_CONTAINER` too, so the logo and the last action line up with the page's edges at every width (the logo's pill and a round control overhang the gutter so their content lines up). The footer's band runs full width and its card is inset from the window's edges.
@@ -87,7 +87,7 @@ Public pages only (the app has none). `SiteFooter({ year })` owns its band, `sta
 
 ## Page templates
 
-Pick the template, then read the file it names. Every page also has a `loading.tsx` beside it: the template's route skeleton (see [components.md](components.md#route-skeletons-uicomponentspage-skeleton)), shown inside the kept frame the moment a link to the page is pressed. A new page gets one too, built from the same template. A route group (`(home)`, `mercado/(overview)`, `noticias/(feed)`, `aprender/(index)`) holds a page whose skeleton must not cover the pages under it: the first `loading.tsx` above a page is the one shown.
+Pick the template, then read the file it names. Every page also has a `loading.tsx` beside it: the template's route skeleton (see [components.md](components.md#route-skeletons-uicomponentspage-skeleton)), shown inside the kept frame the moment a link to the page is pressed, prefetched or not (`PendingPage`). A new page gets one too, built from the same template, in `route-skeletons.tsx` and `PendingPage`'s `ROUTES`. A route group (`(home)`, `mercado/(overview)`, `noticias/(feed)`, `aprender/(index)`) holds a page whose skeleton must not cover the pages under it: the first `loading.tsx` above a page is the one shown.
 
 ### 1. Marketing landing — `src/app/[locale]/(site)/(home)/page.tsx`, `src/features/site/home.tsx`, `home-client.tsx`
 

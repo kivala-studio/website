@@ -110,6 +110,7 @@ function untilAborted(task: Promise<boolean>, signal: AbortSignal | undefined): 
 export class MarketStore {
   readonly errors: ErrorCoordinator;
   private state: MarketStoreState;
+  private readonly initial: MarketStoreState;
   private readonly listeners = new Set<() => void>();
   private readonly repository: MarketRepository;
   private readonly now: () => EpochMs;
@@ -145,6 +146,7 @@ export class MarketStore {
       historyErrors: {},
       loadingHistories: {},
     };
+    this.initial = this.state;
   }
 
   readonly subscribe = (listener: () => void): (() => void) => {
@@ -153,6 +155,12 @@ export class MarketStore {
   };
 
   readonly getSnapshot = (): MarketStoreState => this.state;
+
+  /**
+   * The state the store was created with: what the server rendered. A page that streams in after the store has
+   * loaded hydrates against it (`useSyncExternalStore`'s server snapshot), then renders the current state.
+   */
+  readonly getInitialSnapshot = (): MarketStoreState => this.initial;
 
   get snapshot(): MarketSnapshot | undefined {
     return this.state.load.kind === "loaded" ? this.state.load.snapshot : undefined;
