@@ -48,7 +48,7 @@ export default async function ListingPage({ params }: Props) {
 
   return (
     <article className={cn(READING_COLUMN, "gap-6")} data-testid="listing">
-      <Link href="/mercado" prefetch={false} className="-mb-2 -ml-1 inline-flex min-h-11 items-center gap-1 self-start rounded-small px-1 text-secondary font-semibold text-accent">
+      <Link href="/mercado" className="-mb-2 -ml-1 inline-flex min-h-11 items-center gap-1 self-start rounded-small px-1 text-secondary font-semibold text-accent">
         <Icon name="chevron-left" />
         {t("common.market")}
       </Link>

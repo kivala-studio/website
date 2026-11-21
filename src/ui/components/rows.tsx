@@ -193,7 +193,7 @@ export function AssetRow({ symbol, name, price, change, bond, code, logoUrl, bra
   );
   const layout = "flex min-h-20 w-full items-center gap-2 py-3 desk:min-h-14 desk:py-2 max-[20rem]:flex-col max-[20rem]:items-start";
   return href ? (
-    <Link href={href} className={cn(layout, "motion-tap rounded-small")} aria-description={t("openSecurityDetailsHint")}>
+    <Link href={href} prefetch="intent" className={cn(layout, "motion-tap rounded-small")} aria-description={t("openSecurityDetailsHint")}>
       {content}
     </Link>
   ) : (

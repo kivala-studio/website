@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { cn } from "@/ui/cn";
 import { Card, MessageCard, PAGE_CONTAINER, PageHeading, READING_COLUMN } from "@/ui/components/layout";
+import { CardSkeleton, PageHeadingSkeleton, PageSkeleton } from "@/ui/components/page-skeleton";
 import { Icon } from "@/ui/icons/icon";
 
 import { SUPPORT_EMAIL } from "./site";
@@ -19,6 +20,21 @@ export function ReadingPage({ title, children }: { title: string; children: Reac
         {children}
       </div>
     </main>
+  );
+}
+
+/**
+ * A reading page on its way (the `loading.tsx` of legal, help, news and lesson pages): the 768 px column with the
+ * title (or its place) and `cards` text cards, or `children`.
+ */
+export function ReadingPageSkeleton({ title, cards = 2, children }: { title?: string; cards?: number; children?: ReactNode }) {
+  return (
+    <PageSkeleton as="main" className={SITE_PAGE}>
+      <div className={cn(READING_COLUMN, "gap-6")}>
+        <PageHeadingSkeleton title={title} />
+        {children ?? Array.from({ length: cards }, (_, index) => <CardSkeleton key={index} lines={index === 0 ? 4 : 2} />)}
+      </div>
+    </PageSkeleton>
   );
 }
 

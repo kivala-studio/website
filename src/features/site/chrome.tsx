@@ -88,7 +88,7 @@ export function SiteHeader({ theme }: { theme: Theme }) {
         </>
       }
       actions={
-        <ButtonLink href={SIGN_IN_PATH} prefetch={false} size="compact" className={cn(TOP_BAR_FLOAT, SIGN_IN_PILL)}>
+        <ButtonLink href={SIGN_IN_PATH} size="compact" className={cn(TOP_BAR_FLOAT, SIGN_IN_PILL)}>
           {t("onboarding.navigation.signIn")}
         </ButtonLink>
       }
@@ -124,7 +124,7 @@ export function SiteFooter({ year }: { year: string }) {
     <footer className="mt-auto bg-stage-brand px-2 pt-2 text-on-stage-brand [--focus-ring:var(--on-stage-brand)] sm:px-4 sm:pt-4 lg:px-6 lg:pt-6">
       {/* The card's controls ring in the accent again. */}
       <div className="grid gap-x-10 gap-y-10 rounded-card bg-card-background px-5 py-8 text-primary-text [--focus-ring:var(--accent)] sm:grid-cols-[minmax(0,1fr)_auto] sm:p-10 lg:min-h-96 lg:p-14">
-        <Link href="/" prefetch={false} aria-label={t("site.header.homeLabel")} className="inline-flex min-h-12 items-center gap-2.5 self-start justify-self-start rounded-small">
+        <Link href="/" prefetch="intent" aria-label={t("site.header.homeLabel")} className="inline-flex min-h-12 items-center gap-2.5 self-start justify-self-start rounded-small">
           <PalancaMark className="size-11" />
           <span className="font-display text-[1.5rem] font-semibold tracking-tight">{t("common.appName")}</span>
         </Link>
@@ -133,7 +133,7 @@ export function SiteFooter({ year }: { year: string }) {
           <ul className="flex flex-col">
             {product.map((link) => (
               <li key={link.href}>
-                <Link href={link.href} prefetch={false} className={FOOTER_LINK}>
+                <Link href={link.href} prefetch="intent" className={FOOTER_LINK}>
                   {link.title}
                 </Link>
               </li>
@@ -147,7 +147,7 @@ export function SiteFooter({ year }: { year: string }) {
           <ul className="flex flex-wrap gap-x-6">
             {legal.map((link) => (
               <li key={link.href}>
-                <Link href={link.href} prefetch={false} className={FOOTER_LEGAL_LINK}>
+                <Link href={link.href} prefetch="intent" className={FOOTER_LEGAL_LINK}>
                   {link.title}
                 </Link>
               </li>

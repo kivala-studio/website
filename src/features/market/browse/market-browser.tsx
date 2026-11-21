@@ -37,7 +37,11 @@ import { MARKET_DEFAULT_QUERY, marketQueryParams, readMarketQuery } from "./quer
 /** The query the list is showing; links and the search keep it in the URL. */
 function useMarketQuery() {
   const params = useSearchParams();
-  const fromURL = readMarketQuery(params);
+  const search = params.toString();
+  // The pressed link's query, from the press until `useSearchParams` catches up with the URL (a transition later).
+  const [pressed, setPressed] = useState<{ from: string; change: Partial<DiscoveryQuery> } | null>(null);
+  if (pressed && pressed.from !== search) setPressed(null);
+  const fromURL: DiscoveryQuery = { ...readMarketQuery(params), ...(pressed?.from === search ? pressed.change : undefined) };
   const [searchText, setSearchText] = useState(fromURL.searchText);
   const query: DiscoveryQuery = { ...fromURL, searchText };
   const updateSearch = (value: string) => {
@@ -45,7 +49,19 @@ function useMarketQuery() {
     const next = new URLSearchParams(marketQueryParams({ ...fromURL, searchText: value })).toString();
     window.history.replaceState(window.history.state, "", next ? `?${next}` : window.location.pathname);
   };
-  return { query, updateSearch };
+  /**
+   * A category, sort or direction link's `onNavigate`: the list is filtered and sorted here, from data the page
+   * already has, so the URL changes in place (a history entry, as a link would add) and the tabs, the arrows and the
+   * rows change in the frame of the press, before the router's own update. The server page doesn't read the query;
+   * loading it again would only redo the same page. Without JavaScript the links still load it.
+   */
+  const inPlace = (change: Partial<DiscoveryQuery>) => (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    setPressed({ from: search, change });
+    const next = new URLSearchParams(marketQueryParams({ ...query, ...change })).toString();
+    window.history.pushState(null, "", next ? `?${next}` : window.location.pathname);
+  };
+  return { query, updateSearch, inPlace };
 }
 
 /** A trailing tab-row link to another page (Notícias, Aprender for signed-in visitors). */
@@ -66,7 +82,7 @@ export function MarketBrowser({ rows, renderedAt, links = [] }: { rows: Catalogu
   const state = useMarketState();
   const snapshot = state.load.kind === "loaded" ? state.load.snapshot : undefined;
   const at = snapshot ? (state.assessedAt ?? renderedAt) : renderedAt;
-  const { query, updateSearch } = useMarketQuery();
+  const { query, updateSearch, inPlace } = useMarketQuery();
 
   const catalogue = useMemo(
     () =>
@@ -82,8 +98,9 @@ export function MarketBrowser({ rows, renderedAt, links = [] }: { rows: Catalogu
   const hasSearch = query.searchText.trim() !== "";
   const href = (change: Partial<DiscoveryQuery>, path = pathname) => ({ pathname: path, query: marketQueryParams({ ...query, ...change }) });
   const hidden = Object.entries(marketQueryParams(query)).filter(([name]) => name !== "q");
-  const sortLink = (key: MarketSortKey) =>
-    href(key === query.sortKey ? { direction: query.direction === "ascending" ? "descending" : "ascending" } : { sortKey: key });
+  const sortChange = (key: MarketSortKey): Partial<DiscoveryQuery> =>
+    key === query.sortKey ? { direction: query.direction === "ascending" ? "descending" : "ascending" } : { sortKey: key };
+  const flipped: Partial<DiscoveryQuery> = { direction: query.direction === "ascending" ? "descending" : "ascending" };
   const ariaSort = (key: MarketSortKey) => (key === query.sortKey ? query.direction : undefined);
 
   return (
@@ -98,13 +115,13 @@ export function MarketBrowser({ rows, renderedAt, links = [] }: { rows: Catalogu
               href: href({ category }),
               title: translate(MARKET_CATEGORY_LABEL_KEYS[category]),
               current: category === query.category,
+              onNavigate: inPlace({ category }),
             }))}
           />
           {links.length > 0 ? (
             <NavTabs
               bare
               label={t("common.market")}
-              linkProps={{ prefetch: false }}
               items={links}
               className="flex shrink-0 items-center gap-6 before:h-5 before:w-px before:bg-hairline before:content-['']"
             />
@@ -142,6 +159,7 @@ export function MarketBrowser({ rows, renderedAt, links = [] }: { rows: Catalogu
                     href={href({ sortKey: key })}
                     prefetch={false}
                     scroll={false}
+                    onNavigate={inPlace({ sortKey: key })}
                     aria-current={key === query.sortKey ? "true" : undefined}
                     onClick={(event) => event.currentTarget.closest("details")?.removeAttribute("open")}
                     className="flex min-h-11 items-center justify-between gap-3 rounded-small px-3 text-secondary text-primary-text"
@@ -154,9 +172,10 @@ export function MarketBrowser({ rows, renderedAt, links = [] }: { rows: Catalogu
             </ul>
           </details>
           <Link
-            href={href({ direction: query.direction === "ascending" ? "descending" : "ascending" })}
+            href={href(flipped)}
             prefetch={false}
             scroll={false}
+            onNavigate={inPlace(flipped)}
             aria-label={t("markets.accessibility.order", { arg1: translate(SORT_DIRECTION_LABEL_KEYS[query.direction]) })}
             aria-description={t("markets.accessibility.orderHint")}
             className={iconButtonClass("outline")}
@@ -178,6 +197,7 @@ export function MarketBrowser({ rows, renderedAt, links = [] }: { rows: Catalogu
                   href={{ pathname, query: marketQueryParams({ ...MARKET_DEFAULT_QUERY, category: "all", sortKey: query.sortKey, direction: query.direction }) }}
                   prefetch={false}
                   scroll={false}
+                  onNavigate={inPlace({ ...MARKET_DEFAULT_QUERY, category: "all", sortKey: query.sortKey, direction: query.direction })}
                   onClick={() => updateSearch("")}
                   className="inline-flex min-h-11 items-center text-secondary font-semibold text-accent"
                 >
@@ -191,19 +211,19 @@ export function MarketBrowser({ rows, renderedAt, links = [] }: { rows: Catalogu
         <Card flush className="overflow-hidden panel">
           <DataTable className="table-fixed" data-testid="market-table">
             <TableHead>
-              <TableSortHeader label={t("common.instrument")} sort={ariaSort("name")} href={sortLink("name")} />
-              <TableSortHeader label={t("common.price")} sort={ariaSort("price")} href={sortLink("price")} align="right" className="w-36 sm:w-44" />
+              <TableSortHeader label={t("common.instrument")} sort={ariaSort("name")} href={href(sortChange("name"))} onNavigate={inPlace(sortChange("name"))} />
+              <TableSortHeader label={t("common.price")} sort={ariaSort("price")} href={href(sortChange("price"))} onNavigate={inPlace(sortChange("price"))} align="right" className="w-36 sm:w-44" />
               <TableSortHeader
                 label={t("common.change")}
                 sort={ariaSort("percentageChange")}
-                href={sortLink("percentageChange")}
+                href={href(sortChange("percentageChange"))} onNavigate={inPlace(sortChange("percentageChange"))}
                 align="right"
                 className="hidden w-32 sm:table-cell"
               />
               <TableSortHeader
                 label={translate(MARKET_SORT_LABEL_KEYS.volume)}
                 sort={ariaSort("volume")}
-                href={sortLink("volume")}
+                href={href(sortChange("volume"))} onNavigate={inPlace(sortChange("volume"))}
                 align="right"
                 className="hidden w-36 md:table-cell"
               />

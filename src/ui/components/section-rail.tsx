@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 
-import { Link, usePathname } from "@/i18n/navigation";
+import { Link, useDestinationPathname } from "@/i18n/navigation";
 
 import { cn } from "../cn";
 import { Icon, type IconName } from "../icons/icon";
@@ -37,7 +37,7 @@ const RAIL_TILE_CURRENT = cn(INDICATOR_FILL, "text-primary-text before:bg-raised
  */
 export function SectionRail({ items, label, leading, className }: { items: readonly RailItem[]; label: string; leading?: ReactNode; className?: string }) {
   const current = useLinkCurrent();
-  const pathname = usePathname();
+  const pathname = useDestinationPathname();
   const states = items.map((item) => (item.current !== undefined ? item.current || undefined : current(item.href, item.exact)));
   const list = useSlidingIndicator<HTMLUListElement>(`${pathname}|${states.join()}`, { selector: "[aria-current]", memory: `rail:${label}` });
   return (

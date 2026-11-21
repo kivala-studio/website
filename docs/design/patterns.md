@@ -36,7 +36,7 @@ Every data block has all four.
 
 | State | Pattern |
 |---|---|
-| Loading | Skeletons shaped like the content, inside the same card (`Skeleton`, `InstrumentRowSkeleton`, `ChartShimmer`), with `role="status"` or `aria-busy` and an accessible label. `LoadingState` only when a whole view loads. Never fake data |
+| Loading | Skeletons shaped like the content, inside the same card (`Skeleton`, `InstrumentRowSkeleton`, `ChartShimmer`), with `role="status"` or `aria-busy` and an accessible label. A whole page: its `loading.tsx` with the template's route skeleton (`PageSkeleton` and the pieces beside it), so a pressed link shows the new page's shape at once. `LoadingState` only for a view inside a page. Never fake data |
 | Empty | `EmptyState`: icon, title, one line, and the next step as the action (add instruments, record a purchase, clear filters) |
 | Error | `ErrorState` with a "Tentar novamente" secondary pill; `SectionPlaceholder failed` for one section among others. No automatic retries (standing rule 9) |
 | Stale | Keep what is on screen and say so: a `text-warning` caption (`home.summary.staleData`) or the dated close instead of the quote. `OfflineBanner` at the top while offline |
@@ -89,7 +89,7 @@ On a screen, when:
 | An icon reflects a state (added, copied, alert on) | `IconSwap`, or `IconButton`/`Button` with the new `icon` |
 | A message, error or notice appears | `motion-presence` (fade and rise); with an exit, `usePresence` + `motion-pop` |
 | Something refreshes | The refresh icon turns (`[&>svg]:motion-spin`) while `aria-busy` |
-| The page changes | Nothing to do: `PageTransition` in the templates and group layouts dissolves it |
+| The page changes | Nothing to do: the pressed link and the nav's indicator react at once, the route skeleton replaces the old page in the next frame, and the page replaces the skeleton. Give a new page a `loading.tsx`; never wait on an animation before showing it |
 
 ## Icons
 

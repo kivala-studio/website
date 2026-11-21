@@ -41,7 +41,6 @@ export default function LessonPage({ params }: Props) {
       <article className={cn(READING_COLUMN, "gap-6")}>
         <Link
           href="/aprender"
-          prefetch={false}
           className="-mb-4 -ml-1 inline-flex min-h-11 items-center gap-1 self-start rounded-small px-1 text-secondary font-semibold text-accent"
         >
           <Icon name="chevron-left" />

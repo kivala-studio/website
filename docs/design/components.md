@@ -206,7 +206,7 @@ All three share one look: text tabs in the display face on a hairline, the curre
 | Component | Semantics | Props |
 |---|---|---|
 | `SectionTabs` | WAI-ARIA tabs (`tablist`/`tab`, roving focus, arrows, Home, End) | `titles: string[]`, `selected: number`, `onSelect`, `label`, `idPrefix?` (tabs control `${idPrefix}-panel-${i}`; render each panel with `role="tabpanel"`, that id and `aria-labelledby={`${idPrefix}-tab-${i}`}`), `className?` (inset the row inside a flush card: `px-4 desk:px-6`) |
-| `NavTabs` | Links in a `<nav>`, the current one `aria-current` | `items: { href; title; exact?; current? }[]`, `label`, `bare?` (no hairline of its own, for a row that draws one under more than the tabs), `linkProps?`, `className?` |
+| `NavTabs` | Links in a `<nav>`, the current one `aria-current` | `items: { href; title; exact?; current?; onNavigate? }[]`, `label`, `bare?` (no hairline of its own, for a row that draws one under more than the tabs), `linkProps?`, `className?` |
 | `FilterTabs` | Toggle buttons with `aria-pressed` in a labelled `group` | `options: { value; title }[]`, `value`, `onChange`, `label`, `testID?` |
 
 ```tsx
@@ -217,7 +217,17 @@ All three share one look: text tabs in the display face on a hairline, the curre
 - Do use `NavTabs` with `current` when the tabs are URL filters (`/mercado?categoria=…`), so the list works without JavaScript.
 - Don't put tabs inside a card for 2–3 short values; use `SegmentedControl`.
 
-`useLinkCurrent()` returns `(href, exact?) => "page" | "true" | undefined` for custom navigation.
+`useLinkCurrent()` returns `(href, exact?) => "page" | "true" | undefined` for custom navigation. It reads the pressed destination, so the pressed tab is current at once.
+
+### `Link` (`@/i18n/navigation`)
+
+Every in-app link. The locale-aware `next-intl` link, plus:
+
+- **Pressed at once.** While its navigation is under way the link holds a hidden `[data-link-pending]` marker: `motion-press` and `motion-tap` stay pressed, a table row keeps its pressed fill, and any other link dims (`motion.css`). Nothing to add.
+- **`prefetch`.** Leave it out for primary navigation and the few links a page leads to (the bars, the rail, back links, "Ver tudo"): the page is fetched down to its `loading.tsx` while in view. `"intent"` for rows in a list or a table, footer and settings links: fetched on hover, touch or focus. `false` for links that change only the query on the same page.
+- **`onNavigate`.** A query the client reads itself (sort, filter, category) changes in place: `onNavigate={(event) => { event.preventDefault(); history.pushState(null, "", href); }}`. `useSearchParams` follows, Back works, no server round trip.
+
+`useDestinationPathname()` returns the path being navigated to while a `Link` press is pending, else the current one. Nav groups key their current item and their sliding indicator on it (`TopBar`, `ShellNav`, `SectionRail`, `useLinkCurrent`); use `usePathname()` for anything that must follow the page that is actually shown (closing a menu).
 
 ### `SeeAll` (`@/ui/components/see-all`)
 
@@ -391,7 +401,7 @@ Decimal amounts: comma decimal separator in every language (`.` typed as `,`), l
 | `DataTable` | `table` attributes (`className="table-fixed"` with fixed numeric widths) |
 | `TableHead` | `children` (header cells), `className?`: one header row with a hairline under it |
 | `TableHeaderCell` | `align?: "left" \| "right" \| "center"`, `th` attributes (`scope="col"`) |
-| `TableSortHeader` | `label`, `sort: "ascending" \| "descending" \| undefined`, `href` (the URL with the new sort), `align?`, `className?`: the label is a link; the sorted column has `aria-sort`, primary text and an arrow that grows in and turns with the direction |
+| `TableSortHeader` | `label`, `sort: "ascending" \| "descending" \| undefined`, `href` (the URL with the new sort), `onNavigate?` (sort in place, see `Link`), `align?`, `className?`: the label is a link; the sorted column has `aria-sort`, primary text and an arrow that grows in and turns with the direction |
 | `TableRow` | `tr` attributes |
 | `TableCell` | `numeric?` (right-aligned, no wrap), `td` attributes |
 | `TableNameCell` | `logo?`, `name`, `symbol?` (a muted "• SYM"), `href?` (the whole row becomes the link through an overlay that carries the focus ring), `linkProps?`, `stackOnPhone?` (symbol under the name below 640 px), `detail?` (a caption line under the name), `className?`. Renders `th scope="row"` |
@@ -504,7 +514,6 @@ The patterns and when to use each are in [theme.md](theme.md#motion); the Motion
 | `usePresenceValue(value, { timeout? })` | | `{ value, open, key }` for a dialog that shows a value: `{shown.value ? <Details key={shown.key} open={shown.open} item={shown.value} /> : null}`. The dialog leaves with its content, then unmounts; each opening is a fresh mount. Pass a stable value or a boolean |
 | `useChangeAnimation(ref, value, animation, isSame?, schedule?)` | | Plays one or more Web Animations when `value` changes, never on mount; `valueRoll`, `valueFlash`, `barGrow`, `stepSlide`, `ICON_IN`, `FADE_IN`. `schedule`: `playLive` for figures a poll changes |
 | `useChartMotion(plot, ghost, key, { draw })` | | A chart's line wiping in once (`draw`: mounted after hydration) and cross-fading to another series. `plot`: the group React draws into; `ghost`: an empty group after it; `key`: the drawn content as a string |
-| `PageTransition` (`@/ui/motion/page-transition`) | `children` | The page dissolve on navigation (React `<ViewTransition exit>`). Already in each route group's `template.tsx` and layout; nothing else uses it |
 | `crossFadePage(update)` | | Runs a page-wide change of figures (privacy mode) inside a View Transition cross-fade |
 | `useEntrance()` | | `true` when the component mounted after hydration: only then add an entrance class |
 | `switchTheme(update)` | | Runs a theme change inside a View Transition cross-fade |
@@ -555,12 +564,41 @@ A sheet slides in from the bottom (from the right at 768 px and up), a dialog ri
 | `LoadingState` | `message?` | A whole view loading (`role="status"`) |
 | `EmptyState` | `title`, `message?`, `icon?` (`"info"`), `action?` | Nothing to show; offer the next step as the action |
 | `ErrorState` | `title?` ("Dados indisponíveis"), `message`, `action?` | A view failed (`role="alert"`); the action is "Tentar novamente" |
-| `Skeleton` | `className` | A grey pulsing block shaped like what will load |
+| `Skeleton` | `className` | A grey pulsing block shaped like what will load; `rounded-small` unless `className` has its own `rounded-…` |
 | `InstrumentRowSkeleton` | | Placeholder for an instrument row |
 | `ChartShimmer` | `className?` | A chart's place while it loads; never fake data |
 | `SectionPlaceholder` | `title`, `failed?`, `onRetry?` | A section keeps its place while loading or after it fails |
 
 `LoadingState`, `EmptyState`, `ErrorState` and a failed `SectionPlaceholder` fade in when they replace content after hydration; rendered by the server, they are simply there. Content that replaces a skeleton fades in with `motion-fade-in` when `useEntrance()` is true.
+
+### Route skeletons (`@/ui/components/page-skeleton`)
+
+What a route's `loading.tsx` renders: the page's template in skeleton blocks, inside the frame that stays (bars, rail, footer), sized like the page so it replaces it without a jump. Titles the route knows are the real `h1`; data is blocks. Server-safe.
+
+| Component | Props | Use |
+|---|---|---|
+| `PageSkeleton` | `as?: "div" \| "main"`, `className?`, `children` | The root: `role="status"`, `aria-busy`, "A carregar" for assistive technology. `as="main"` (with `id="main"`) for a page that renders its own `<main>`; market pages get theirs from the layout |
+| `PageHeadingSkeleton` | `title?`, `actions?` (count), `pill?` | The title row: the real `h1`, or a block for a data title, then round 48 / 44 px action places and a pill button's; they wrap under the title on a narrow phone, as the pages' rows do |
+| `TitleSkeleton` | `className?` | A `text-display` title's line with a block on it |
+| `CardSkeleton` | `title?` (default `true`), `lines?` (3), `className?`, `children?` | A `Card` with a title row over `children` or text lines |
+| `CardTitleSkeleton` | `className?` | A `CardHeader` row (44 px) |
+| `PanelSkeleton` | `className?`, `children` | A titled `Panel` (a card from 1024 px) |
+| `RowsSkeleton` | `rows?` (4), `className?` | `InstrumentRowSkeleton`s with hairlines between them |
+| `TableSkeleton` | `rows?` (8), `className?` | A table in its flush card: the 48 px header, 60 px rows, columns that fold like the table's |
+
+Per template: `SignedInPageSkeleton` (`@/features/shell/placeholder-page`) and `ReadingPageSkeleton` (`@/features/site/pages`) wrap the column pages; `MarketOverviewSkeleton`, `InstrumentSkeleton` (`@/features/market/…`), `DashboardSkeleton` (`@/features/portfolio/portfolio-view`) and an empty `HeroPanel` (the landing) are the others.
+
+```tsx
+// src/app/[locale]/(app)/semana/loading.tsx
+export default function Loading() {
+  const t = useTranslations();
+  return (
+    <SignedInPageSkeleton title={t("weekAhead.summary.title")} narrow actions={1}>
+      <CardSkeleton />
+    </SignedInPageSkeleton>
+  );
+}
+```
 
 ## Settings rows (`@/features/settings/settings-ui`)
 

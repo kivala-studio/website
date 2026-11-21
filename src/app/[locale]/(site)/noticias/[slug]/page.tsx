@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { cache } from "react";
 
 import { requestTime } from "@/data/clock";
 import { serverEnv } from "@/config/server-env";
-import { getPublicArticle } from "@/data/market/public-cache";
-import { ARTICLE_LANGUAGE, ARTICLE_SLUG } from "@/domain/news/article";
+import { ARTICLE_LANGUAGE } from "@/domain/news/article";
 import { safeURL } from "@/domain/news/markdown";
 import { catalogueRows } from "@/features/market/browse/catalogue";
 import { RelatedInstruments } from "@/features/news/related-instruments";
@@ -22,10 +20,10 @@ import { Card, READING_COLUMN } from "@/ui/components/layout";
 import { ErrorState } from "@/ui/components/states";
 import { Icon } from "@/ui/icons/icon";
 
+import { article } from "./article";
+
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
-/** `undefined`: not published (404); `null`: the read failed. */
-const article = cache(async (slug: string) => (ARTICLE_SLUG.test(slug) ? getPublicArticle(slug).catch(() => null) : undefined));
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;

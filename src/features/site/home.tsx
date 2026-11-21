@@ -73,7 +73,7 @@ export function SectionIntro({
         {title}
       </h2>
       {action ? (
-        <Link href={action.href} prefetch={false} className={INTRO[tone].pill}>
+        <Link href={action.href} prefetch="intent" className={INTRO[tone].pill}>
           {action.label}
           <Icon name="arrow-up-right" className="text-[1rem]" />
         </Link>
@@ -86,9 +86,9 @@ export function SectionIntro({
  * The hero panel: a large rounded `stage-deep` panel inset from the window's edges, right under the floating top bar
  * and about one window tall, with a few decorative shapes drifting slowly at its edges (`motion-drift-*`); `children` (the title and one large pill) are
  * centred in it. The `h1` is the largest paint, so it never fades in. `className` adjusts the frame (the gallery's
- * shorter specimen).
+ * shorter specimen). Empty, it is the landing's `loading.tsx` skeleton.
  */
-export function HeroPanel({ labelledBy, className, children }: { labelledBy: string; className?: string; children: ReactNode }) {
+export function HeroPanel({ labelledBy, className, children }: { labelledBy?: string; className?: string; children?: ReactNode }) {
   return (
     <section
       aria-labelledby={labelledBy}
@@ -156,7 +156,7 @@ export function DeckCard({ href, statement, tone, children }: { href: string; st
     <li className="flex w-[min(85%,22rem)] shrink-0 snap-start sm:w-[22rem] lg:w-[29.5rem]">
       <Link
         href={href}
-        prefetch={false}
+        prefetch="intent"
         className={cn(
           "group/card motion-lift flex h-[27rem] w-full flex-col overflow-hidden rounded-card sm:h-[31rem] lg:h-[36rem]",
           STAGE_FILL[tone],

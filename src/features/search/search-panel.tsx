@@ -225,7 +225,7 @@ export function SearchPanel({
       <li key={security.id} data-flip-key={security.id} className="flex items-center gap-1 border-b border-hairline last:border-b-0">
         <Link
           href={`/mercado/${encodeURIComponent(security.symbol)}`}
-          prefetch={false}
+          prefetch="intent"
           onClick={() => recents.record(security.id)}
           className="motion-tap flex min-h-15 min-w-0 flex-1 items-center gap-3 rounded-small py-2"
           data-testid="search-result"
@@ -271,7 +271,7 @@ export function SearchPanel({
                   <li key={category}>
                     <Link
                       href={{ pathname: "/mercado", query: marketQueryParams({ ...MARKET_DEFAULT_QUERY, category }) }}
-                      prefetch={false}
+                      prefetch="intent"
                       className={cn("flex min-h-24 flex-col justify-between gap-3 rounded-card p-4 transition-[filter] duration-base hover:brightness-95 desk:px-5", CATEGORY_TONE[category])}
                     >
                       <span className="font-display text-body font-semibold">{translate(MARKET_CATEGORY_LABEL_KEYS[category])}</span>

@@ -39,7 +39,7 @@ export function LinkRow({ href, icon, label, value, external = false }: { href: 
       {content}
     </a>
   ) : (
-    <Link href={href} prefetch={false} className={ROW}>
+    <Link href={href} prefetch="intent" className={ROW}>
       {content}
     </Link>
   );

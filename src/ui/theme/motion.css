@@ -39,9 +39,6 @@
 @keyframes fade-in {
   from { opacity: 0; }
 }
-@keyframes fade-out {
-  to { opacity: 0; }
-}
 @keyframes presence-in {
   from { opacity: 0; transform: translateY(0.5rem); }
 }
@@ -70,7 +67,8 @@
   transition-duration: var(--duration-fast);
   transition-timing-function: var(--ease-standard), var(--ease-standard), var(--ease-standard), var(--ease-standard),
     var(--ease-standard), var(--ease-standard), var(--ease-standard), var(--ease-standard), var(--ease-emphasized);
-  &:active:not(:disabled, [aria-disabled="true"]) {
+  &:active:not(:disabled, [aria-disabled="true"]),
+  &:not([aria-current]):has(> [data-link-pending]) {
     scale: 0.97;
   }
 }
@@ -80,9 +78,20 @@
   transition-property: color, background-color, border-color, opacity, box-shadow;
   transition-duration: var(--duration-fast);
   transition-timing-function: var(--ease-standard);
-  &:active:not(:disabled, [aria-disabled="true"]) {
+  &:active:not(:disabled, [aria-disabled="true"]),
+  &:has(> [data-link-pending]) {
     opacity: 0.72;
   }
+}
+
+/*
+ * A link whose page is on its way stays pressed until the page, or its `loading.tsx` skeleton, is there: `Link`
+ * (`@/i18n/navigation`) draws a hidden `[data-link-pending]` marker inside it while it navigates. `motion-press` and
+ * `motion-tap` hold their pressed look (above); a plain link dims. The pressed item of a navigation group becomes
+ * current at once instead (`useDestinationPathname`), so it is left alone.
+ */
+a:not(.motion-press, .motion-tap, [aria-current]):has(> [data-link-pending]) {
+  opacity: 0.72;
 }
 
 /* Lift: an interactive card rises 1 px under a mouse or a trackpad (never on touch) and dims when pressed. */
@@ -479,23 +488,9 @@
   animation-timing-function: var(--ease-standard);
 }
 
-/*
- * Navigation to another page (`PageTransition`): the new page is live at once and a snapshot of the old one fades
- * out over it. The root does not cross-fade during it (the theme switch and `crossFadePage` keep theirs), so what
- * both pages share stays put. Clicks pass through to the new page. Off with reduced motion.
- */
+/* Clicks pass through a running cross-fade to the live page underneath. */
 ::view-transition {
   pointer-events: none;
-}
-::view-transition-group(.page-exit) {
-  animation: none;
-}
-::view-transition-old(.page-exit) {
-  animation: fade-out var(--duration-base) var(--ease-standard) both;
-}
-:root:not([data-theme-switching], [data-cross-fade])::view-transition-old(root),
-:root:not([data-theme-switching], [data-cross-fade])::view-transition-new(root) {
-  animation: none;
 }
 
 /* ---------------------------------------------------------------------------------------------------------------
@@ -504,7 +499,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   /* No scale: a slight dim still acknowledges the press. */
-  .motion-press:active:not(:disabled, [aria-disabled="true"]) { scale: none; filter: brightness(0.9); }
+  .motion-press:active:not(:disabled, [aria-disabled="true"]),
+  .motion-press:not([aria-current]):has(> [data-link-pending]) { scale: none; filter: brightness(0.9); }
   .motion-lift:hover { translate: none; }
   .motion-turn { transition: none; }
   .motion-swap > * { transition-property: opacity; }

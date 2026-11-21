@@ -53,7 +53,7 @@ function Archive({ articles, now }: { articles: readonly NewsArticle[]; now: num
             <li key={article.id} data-flip-key={article.id} className="border-t border-hairline first:border-t-0">
               <Link
                 href={`/noticias/${article.slug}`}
-                prefetch={false}
+                prefetch="intent"
                 aria-description={t(article.isRecap ? "news.row.recapHint" : "news.row.articleHint")}
                 className="flex min-h-11 flex-col gap-2 px-5 py-4 motion-tap hover:bg-canvas/70 desk:px-6"
                 data-testid="news-row"

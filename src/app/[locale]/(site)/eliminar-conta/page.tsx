@@ -42,7 +42,7 @@ export default function DeleteAccountPage() {
 
       <Card title={t("site.deletion.onWeb")} titleId="on-web" bodyClassName="flex flex-col gap-4">
         <p className="text-body text-primary-text">{t("site.deletion.webMessage")}</p>
-        <ButtonLink href={`${SIGN_IN_PATH}?next=${ACCOUNT_PAGE}`} prefetch={false} className="sm:w-auto! sm:self-start">
+        <ButtonLink href={`${SIGN_IN_PATH}?next=${ACCOUNT_PAGE}`} prefetch="intent" className="sm:w-auto! sm:self-start">
           {t("onboarding.navigation.signIn")}
         </ButtonLink>
       </Card>

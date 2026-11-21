@@ -164,7 +164,7 @@ function GroupRow({
   return (
     <li className="flex flex-col pb-4" data-testid="unusual-group" data-security={group.securityID} data-flip-key={group.securityID}>
       {known ? (
-        <Link href={`/mercado/${encodeURIComponent(group.symbol)}`} prefetch={false} className="flex min-h-16 min-w-0 items-center gap-3 rounded-small py-3 desk:py-2">
+        <Link href={`/mercado/${encodeURIComponent(group.symbol)}`} prefetch="intent" className="flex min-h-16 min-w-0 items-center gap-3 rounded-small py-3 desk:py-2">
           <SecurityLogo symbol={group.symbol} logoUrl={row?.logoURL ?? security?.logoURL} brandColor={row?.bond ? "violet" : "blue"} />
           {identity}
           <PriceCell row={row} security={security} at={at} className="shrink-0" />

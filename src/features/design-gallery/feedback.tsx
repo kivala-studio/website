@@ -11,6 +11,7 @@ import { HiddenValue, OfflineBanner, SensitiveValue, useToast } from "@/ui/compo
 import { AssetRow } from "@/ui/components/rows";
 import { FinancialValue } from "@/ui/components/financial";
 import { Card } from "@/ui/components/layout";
+import { CardSkeleton, PageHeadingSkeleton, PageSkeleton, PanelSkeleton, RowsSkeleton, TableSkeleton } from "@/ui/components/page-skeleton";
 import { Menu } from "@/ui/components/menu";
 import {
   ChartShimmer,
@@ -195,6 +196,19 @@ export function FeedbackAndStates() {
           </Card>
         </Specimen>
       </div>
+
+      <Specimen name="Route skeletons (loading.tsx): PageSkeleton · PageHeadingSkeleton · CardSkeleton · PanelSkeleton · RowsSkeleton · TableSkeleton">
+        <PageSkeleton className="flex flex-col gap-6">
+          <PageHeadingSkeleton actions={2} />
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <CardSkeleton />
+            <PanelSkeleton>
+              <RowsSkeleton rows={3} />
+            </PanelSkeleton>
+          </div>
+          <TableSkeleton rows={3} />
+        </PageSkeleton>
+      </Specimen>
 
       <Specimen name="SectionPlaceholder">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

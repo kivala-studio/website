@@ -30,7 +30,7 @@ export function Publications({
         <ul className="flex flex-col">
           {articles.map((article) => (
             <li key={article.id} className="border-b border-separator last:border-b-0 lg:border-hairline">
-              <Link href={`/noticias/${article.slug}`} className="flex flex-col gap-2 rounded-small py-3 desk:gap-1 desk:py-2.5">
+              <Link href={`/noticias/${article.slug}`} prefetch="intent" className="flex flex-col gap-2 rounded-small py-3 desk:gap-1 desk:py-2.5">
                 <span lang={ARTICLE_LANGUAGE} className="line-clamp-2 text-body font-semibold text-primary-text">
                   {article.title}
                 </span>

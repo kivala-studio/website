@@ -87,9 +87,9 @@ Public pages only (the app has none). `SiteFooter({ year })` owns its band, `sta
 
 ## Page templates
 
-Pick the template, then read the file it names.
+Pick the template, then read the file it names. Every page also has a `loading.tsx` beside it: the template's route skeleton (see [components.md](components.md#route-skeletons-uicomponentspage-skeleton)), shown inside the kept frame the moment a link to the page is pressed. A new page gets one too, built from the same template. A route group (`(home)`, `mercado/(overview)`, `noticias/(feed)`, `aprender/(index)`) holds a page whose skeleton must not cover the pages under it: the first `loading.tsx` above a page is the one shown.
 
-### 1. Marketing landing — `src/app/[locale]/(site)/page.tsx`, `src/features/site/home.tsx`, `home-client.tsx`
+### 1. Marketing landing — `src/app/[locale]/(site)/(home)/page.tsx`, `src/features/site/home.tsx`, `home-client.tsx`
 
 ```
  ╭ HeroPanel: stage-deep, inset, one window tall ──────────────╮
@@ -127,7 +127,7 @@ The page alternates the canvas and full-bleed stage bands with no gradient betwe
 
 Motion is restrained: the hero's title rises once on load with no fade, the pill fades in after it; below it, each section intro (heading, then pill), the market preview, each deck, the Plus card and the closing band ease in once as they enter the viewport, and the visuals' charts draw from the left. Decks move only when asked (touch, trackpad, Tab or the buttons); no parallax, no auto-play (see [theme.md](theme.md#motion)).
 
-### 2. List / table page — `src/app/[locale]/(market)/mercado/page.tsx`, `src/features/market/browse/market-browser.tsx`
+### 2. List / table page — `src/app/[locale]/(market)/mercado/(overview)/page.tsx`, `src/features/market/browse/market-browser.tsx`
 
 ```
                 Mercado                       h1 centred

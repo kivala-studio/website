@@ -115,7 +115,8 @@ export function PortfolioView({
   );
 }
 
-function DashboardSkeleton() {
+/** The value card and the positions while the ledger loads; also the portfolio routes' `loading.tsx`. */
+export function DashboardSkeleton() {
   const t = useTranslations();
   return (
     <div role="status" aria-label={t("portfolio.header.loading")} className="flex flex-col gap-6">

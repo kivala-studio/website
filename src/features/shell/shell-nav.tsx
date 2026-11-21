@@ -4,7 +4,7 @@ import { type ReactNode, useSyncExternalStore } from "react";
 
 import { useAccountStores } from "@/features/account/account-provider";
 
-import { Link, usePathname } from "@/i18n/navigation";
+import { Link, useDestinationPathname } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
 import { INDICATOR_FILL, INDICATOR_IDLE, TOP_BAR_FLOAT } from "@/ui/components/button-styles";
 import { iconButtonClass } from "@/ui/components/buttons";
@@ -18,10 +18,10 @@ type Item = { href: string; label: string; icon: IconName };
 
 /**
  * The phone tab bar (iOS tab bar) below 1024 px; the current tab is marked `aria-current="page"` and sits on a soft
- * accent capsule that glides to the next tab (as on iOS).
+ * accent capsule that glides to the next tab (as on iOS) the moment it is pressed, while its page is on its way.
  */
 export function ShellNav({ items, label }: { items: readonly Item[]; label: string }) {
-  const pathname = usePathname();
+  const pathname = useDestinationPathname();
   const list = useSlidingIndicator<HTMLUListElement>(pathname, { selector: "[aria-current]", memory: `tab-bar:${label}` });
   return (
     <nav aria-label={label} className="fixed inset-x-0 bottom-0 z-20 border-t border-separator bg-canvas pb-[env(safe-area-inset-bottom)] lg:hidden">
@@ -72,7 +72,7 @@ const NO_SUBSCRIPTION = () => () => {};
  * button and the icons; the tabs move to the bottom bar.
  */
 export function ShellTopBar({ tabs, navLabel, homeLabel, logo, initials, profileLabel, unusualLabel, activityLabel, activityStates, hasUnread: initial, search }: TopBarProps) {
-  const pathname = usePathname();
+  const pathname = useDestinationPathname();
   const activity = useAccountStores()?.activity;
   const hasUnread = useSyncExternalStore(
     activity?.subscribe ?? NO_SUBSCRIPTION,

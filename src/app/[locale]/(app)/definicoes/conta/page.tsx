@@ -40,7 +40,7 @@ export default async function AccountPage({ searchParams }: Props) {
 
   return (
     <SignedInPage titleKey="common.manageAccount" narrow>
-      <Link href="/definicoes" prefetch={false} className="order-first -mb-4 -ml-1 inline-flex min-h-11 items-center gap-1 self-start rounded-small px-1 text-secondary font-semibold text-accent">
+      <Link href="/definicoes" className="order-first -mb-4 -ml-1 inline-flex min-h-11 items-center gap-1 self-start rounded-small px-1 text-secondary font-semibold text-accent">
         <Icon name="chevron-left" scale="s" />
         {t("profile.navigation.title")}
       </Link>

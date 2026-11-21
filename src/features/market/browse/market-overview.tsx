@@ -165,7 +165,7 @@ export function CompactRow({ security, row, children, className }: { security: M
     <li data-flip-key={security.id} className={cn("border-b border-hairline last:border-b-0", className)}>
       <Link
         href={`/mercado/${encodeURIComponent(security.symbol)}`}
-        prefetch={false}
+        prefetch="intent"
         className="motion-tap flex min-h-12 items-center gap-3 rounded-small py-1.5 desk:min-h-11"
       >
         <span className="flex shrink-0 max-[25rem]:hidden">

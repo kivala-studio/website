@@ -90,7 +90,7 @@ export function MarketPreview({ tabs, label }: { tabs: PreviewTab[]; label: stri
             </tbody>
           </DataTable>
           <div className="flex justify-center border-t border-hairline p-4">
-            <ButtonLink href={tab.href} prefetch={false} kind="outline" className="w-auto! px-8! desk:px-8!">
+            <ButtonLink href={tab.href} prefetch="intent" kind="outline" className="w-auto! px-8! desk:px-8!">
               {t("common.viewAll")}
             </ButtonLink>
           </div>

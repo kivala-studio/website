@@ -45,7 +45,7 @@ export default async function SignInPage({ params, searchParams }: Props) {
   return (
     <main id="main" className="flex min-h-dvh w-full flex-col items-center justify-center bg-canvas px-4 py-10 sm:px-6">
       <MessageCard>
-        <Link href="/" prefetch={false} aria-label={t("site.header.homeLabel")} className="-ml-1 inline-flex min-h-11 items-center gap-2 self-start rounded-small px-1 text-primary-text">
+        <Link href="/" prefetch="intent" aria-label={t("site.header.homeLabel")} className="-ml-1 inline-flex min-h-11 items-center gap-2 self-start rounded-small px-1 text-primary-text">
           <PalancaMark className="size-10" />
         </Link>
         <div className="flex flex-col gap-2">
@@ -86,7 +86,7 @@ export default async function SignInPage({ params, searchParams }: Props) {
             </button>
           </form>
         ) : null}
-        <Link href={INDEXABLE_PAGES.policy} prefetch={false} className="-ml-1 inline-flex min-h-11 items-center self-start rounded-small px-1 text-secondary font-semibold text-accent">
+        <Link href={INDEXABLE_PAGES.policy} prefetch="intent" className="-ml-1 inline-flex min-h-11 items-center self-start rounded-small px-1 text-secondary font-semibold text-accent">
           {t("common.privacyPolicy")}
         </Link>
       </MessageCard>

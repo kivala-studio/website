@@ -15,7 +15,7 @@ export default function ShareNotFound() {
         </p>
       }
     >
-      <ButtonLink href="/" prefetch={false} className="sm:w-auto">
+      <ButtonLink href="/" className="sm:w-auto">
         {t("common.home")}
       </ButtonLink>
     </MessagePage>

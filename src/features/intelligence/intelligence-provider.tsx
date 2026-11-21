@@ -13,27 +13,55 @@ import type { IntelligenceCoordinator } from "./coordinator";
  * module stays light: the engine, its catalogue and the product voice load on demand once an account is signed in.
  */
 
-export const IntelligenceContext = createContext<IntelligenceCoordinator | null>(null);
+/**
+ * Holds the coordinator once its module has loaded. The context value itself never changes: a new value would reach
+ * a page that is still streaming in (a route's `loading.tsx` boundary not yet hydrated), and React would then render
+ * that page again from scratch instead of hydrating it. Readers subscribe to the slot instead.
+ */
+export type CoordinatorSlot = {
+  get: () => IntelligenceCoordinator | null;
+  subscribe: (listener: () => void) => () => void;
+};
+
+function coordinatorSlot() {
+  let current: IntelligenceCoordinator | null = null;
+  const listeners = new Set<() => void>();
+  return {
+    get: () => current,
+    set(next: IntelligenceCoordinator) {
+      current = next;
+      for (const listener of listeners) listener();
+    },
+    subscribe(listener: () => void) {
+      listeners.add(listener);
+      return () => void listeners.delete(listener);
+    },
+  };
+}
+
+export const IntelligenceContext = createContext<CoordinatorSlot | null>(null);
+const NO_COORDINATOR = () => null;
 /** A failed or empty refresh is tried again at most this often while the tab is visible. */
 const RETRY_MS = 5 * 60_000;
 
 export function IntelligenceProvider({ children }: { children: ReactNode }) {
   const account = useAccount();
   const userID = account?.userID ?? null;
-  const [coordinator, setCoordinator] = useState<IntelligenceCoordinator | null>(null);
+  const [slot] = useState(coordinatorSlot);
+  const coordinator = useSyncExternalStore(slot.subscribe, slot.get, NO_COORDINATOR);
   useEffect(() => {
-    if (!userID || coordinator) return;
+    if (!userID || slot.get()) return;
     let live = true;
     void import("./coordinator").then((module) => {
-      if (live) setCoordinator(module.intelligenceCoordinator());
+      if (live) slot.set(module.intelligenceCoordinator());
     });
     return () => {
       live = false;
     };
-  }, [userID, coordinator]);
+  }, [userID, slot]);
 
   return (
-    <IntelligenceContext.Provider value={coordinator}>
+    <IntelligenceContext.Provider value={slot}>
       {coordinator && userID ? <Refresh coordinator={coordinator} userID={userID} /> : null}
       {children}
     </IntelligenceContext.Provider>

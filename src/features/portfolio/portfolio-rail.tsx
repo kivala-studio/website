@@ -5,7 +5,7 @@ import { useSyncExternalStore } from "react";
 
 import { COMBINED, MAIN, resolveSelection } from "@/domain/portfolio/books";
 import { useAccountStores } from "@/features/account/account-provider";
-import { usePathname } from "@/i18n/navigation";
+import { useDestinationPathname } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
 import { Menu } from "@/ui/components/menu";
 import { RAIL_TILE, RAIL_TILE_IDLE, SectionRail } from "@/ui/components/section-rail";
@@ -24,7 +24,7 @@ const SECTIONS = [`${PATH}/registos`, `${PATH}/rendimentos`];
  */
 export function PortfolioRail() {
   const t = useTranslations();
-  const pathname = usePathname();
+  const pathname = useDestinationPathname();
   const store = useAccountStores()?.portfolio;
   const books = useSyncExternalStore(
     store?.subscribe ?? noSubscribe,
