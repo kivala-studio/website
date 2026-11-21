@@ -27,8 +27,8 @@ export type AccountInitial = {
   readonly watchlist: readonly string[];
   /** Null when it could not be read: nothing is locked then (the server still enforces). */
   readonly access: SubscriptionAccess | null;
-  /** The bell's dot as the server saw it for this page. */
-  readonly hasUnread: boolean;
+  /** The bell's dot as the server sees it; it resolves after the shell has rendered. */
+  readonly hasUnread: Promise<boolean>;
 };
 
 /** The plan access of this tab's account; re-read after confirmed watchlist changes. */
@@ -134,7 +134,7 @@ export function AccountProvider({ initial, children }: { initial: AccountInitial
       accessChanged: (next) => (next ? access.apply(next) : access.refreshSoon()),
     });
     const alerts = new AlertsStore(accountAlertRepository(initial.userID), appErrors, (next) => requestUpgrade(next));
-    const activity = new ActivityStore(accountActivityRepository(initial.userID), appErrors, initial.hasUnread, {
+    const activity = new ActivityStore(accountActivityRepository(initial.userID), appErrors, false, {
       // New rows while the site is open: one quiet toast that never carries a threshold or an amount.
       arrived: () => {
         if (!appErrors.current) toast.show({ title: t("common.activity"), message: t("common.newInformationNotification") });
@@ -144,6 +144,17 @@ export function AccountProvider({ initial, children }: { initial: AccountInitial
     const portfolio = new PortfolioStore(accountPortfolioRepository(initial.userID), appErrors, (next) => requestUpgrade(next));
     return { userID: initial.userID, access, watchlist, alerts, activity, preferences, portfolio, requestUpgrade };
   });
+
+  useEffect(() => {
+    let current = true;
+    initial.hasUnread.then(
+      (hasUnread) => current && value.activity.seed(hasUnread),
+      () => {},
+    );
+    return () => {
+      current = false;
+    };
+  }, [initial.hasUnread, value]);
 
   // The bell and the inbox: re-read every minute while the tab is visible, and on return after a minute away.
   useEffect(() => {

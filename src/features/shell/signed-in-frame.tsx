@@ -34,11 +34,9 @@ export async function SignedInFrame({ account, children }: { account: SignedInAc
       </AreaMessages>
     );
   }
-  const [state, hasUnread, rows] = await Promise.all([
-    readAccountState(session),
-    hasUnreadActivity(session, requestTime()),
-    catalogueRows(requestTime()),
-  ]);
+  // The bell's dot needs the inbox (two reads in a row): it streams in after the shell instead of holding it back.
+  const hasUnread = hasUnreadActivity(session, requestTime());
+  const [state, rows] = await Promise.all([readAccountState(session), catalogueRows(requestTime())]);
   return (
     <AppShell name={account.name} account={{ userID: state.userID, watchlist: state.watchlist, access: state.access, hasUnread }} rows={rows ?? []}>
       {children}

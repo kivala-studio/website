@@ -78,6 +78,11 @@ export class ActivityStore {
 
   readonly getSnapshot = () => this.state;
 
+  /** The server's answer for the bell, which streams in after the page; the tab's own first read replaces it. */
+  seed(hasNew: boolean) {
+    if (this.state.status !== "loaded" && this.state.hasNew !== hasNew) this.set({ hasNew });
+  }
+
   private set(change: Partial<ActivitySnapshot>) {
     const next = { ...this.state, ...change };
     if (next.status === "loaded") next.hasNew = hasNewActivity(next.items, this.now());

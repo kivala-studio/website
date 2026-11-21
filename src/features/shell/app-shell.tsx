@@ -35,7 +35,7 @@ export async function AppShell({
     userID: string;
     watchlist: readonly string[];
     access: SubscriptionAccess | null;
-    hasUnread: boolean;
+    hasUnread: Promise<boolean>;
   };
   rows: readonly CatalogueRow[];
   children: ReactNode;
@@ -69,7 +69,6 @@ export async function AppShell({
                   unusualLabel={t("unusualActivity.title")}
                   activityLabel={t("common.activity")}
                   activityStates={{ new: t("home.accessibility.activityNew"), none: t("home.accessibility.activityNone") }}
-                  hasUnread={account.hasUnread}
                   search={<CommandPalette rows={rows} renderedAt={requestTime()} />}
                 />
                 <PendingPage>{children}</PendingPage>

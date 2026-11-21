@@ -60,7 +60,6 @@ type TopBarProps = {
   activityLabel: string;
   /** The bell's accessible state: something new, or nothing new. */
   activityStates: { readonly new: string; readonly none: string };
-  hasUnread: boolean;
   search?: ReactNode;
 };
 
@@ -71,13 +70,13 @@ const NO_SUBSCRIPTION = () => () => {};
  * the bell (a dot when something is unread) and the profile initials. Below 1024 px it keeps the logo, a search
  * button and the icons; the tabs move to the bottom bar.
  */
-export function ShellTopBar({ tabs, navLabel, homeLabel, logo, initials, profileLabel, unusualLabel, activityLabel, activityStates, hasUnread: initial, search }: TopBarProps) {
+export function ShellTopBar({ tabs, navLabel, homeLabel, logo, initials, profileLabel, unusualLabel, activityLabel, activityStates, search }: TopBarProps) {
   const pathname = useDestinationPathname();
   const activity = useAccountStores()?.activity;
   const hasUnread = useSyncExternalStore(
     activity?.subscribe ?? NO_SUBSCRIPTION,
-    () => activity?.getSnapshot().hasNew ?? initial,
-    () => initial,
+    () => activity?.getSnapshot().hasNew ?? false,
+    () => false,
   );
   const current = (href: string) => (isCurrentTab(href, pathname) ? ("page" as const) : undefined);
   return (
