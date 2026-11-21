@@ -2,55 +2,136 @@ import type { ReactNode } from "react";
 
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
+import { buttonClass, buttonShape } from "@/ui/components/button-styles";
 import { PAGE_CONTAINER } from "@/ui/components/layout";
-import { Icon, type IconName } from "@/ui/icons/icon";
+import { Icon } from "@/ui/icons/icon";
 
-import { IllustrativeCaption } from "./visuals";
+import { PalancaMark } from "./chrome";
 
 /*
- * Landing page building blocks: a centred hero on a glow and grid with its coverage figures and the market showcase,
- * centred section headings, the bento, alternating feature rows and a closing band. Server components only.
+ * Landing page building blocks: flat stage fills that change from section to section, the hero panel, centred
+ * section intros with the brand mark set inline, and the cards of a deck (`Deck` in `home-client.tsx` holds them).
+ * Server components only.
  */
 
-/** Section spacing on the canvas. */
-export const HOME_SECTION = cn(PAGE_CONTAINER, "py-16 md:py-24");
+export type StageTone = "brand" | "deep" | "ink" | "pale";
 
-/** Large section heading in the display face (CoinStats' 40 px section titles on desk). */
-export const HOME_HEADING = "text-display text-primary-text text-balance lg:text-[2.5rem] lg:leading-[1.15] lg:tracking-[-0.02em]";
+/** A stage fill with its on-colour (AA for all text on it). */
+export const STAGE_FILL: Record<StageTone, string> = {
+  brand: "bg-stage-brand text-on-stage-brand",
+  deep: "bg-stage-deep text-on-stage-deep",
+  ink: "bg-stage-ink text-on-stage-ink",
+  pale: "bg-stage-pale text-on-stage-pale",
+};
+
+/** The focus ring in the on-colour, for controls whose ring falls on the fill. A card on the fill sets it back to the accent. */
+export const STAGE_RING: Record<StageTone, string> = {
+  brand: "[--focus-ring:var(--on-stage-brand)]",
+  deep: "[--focus-ring:var(--on-stage-deep)]",
+  ink: "[--focus-ring:var(--on-stage-ink)]",
+  pale: "[--focus-ring:var(--on-stage-pale)]",
+};
+
+/** Section spacing: lots of air above each intro (96 px on phones, 144 px from 768 px). */
+export const STAGE_SPACE = "pt-24 md:pt-36";
 
 /**
- * The hero title: fluid from 38 px at 320 to 44 px on phones (42 px at 390, two lines, leading 1.08), then from 47 px at
- * 640 to 68 px on wide screens (leading 1.04); tracking −0.02em (−0.025em from 640 px).
+ * A full-bleed band in one flat stage fill (no gradient into the next one): its text takes the on-colour and focus
+ * rings the on-colour too. A plain `div`: the sections inside it carry the headings.
  */
-export const HERO_TITLE =
-  "font-display text-[clamp(2.25rem,1.2rem+4.4vw,4.25rem)] leading-[1.04] max-sm:text-[clamp(2.375rem,1.23rem+5.7vw,2.75rem)] max-sm:leading-[1.08] font-semibold tracking-[-0.02em] sm:tracking-[-0.025em] text-balance text-primary-text";
-
-/** The closing line: display face, fluid from 34 px on phones to 56 px, between `HOME_HEADING` and `HERO_TITLE`. */
-export const CLOSING_TITLE =
-  "font-display text-[clamp(2.125rem,1.4rem+2.8vw,3.5rem)] leading-[1.06] font-semibold tracking-[-0.02em] sm:tracking-[-0.025em] text-balance text-primary-text";
+export function Stage({ tone, className, children }: { tone: StageTone; className?: string; children: ReactNode }) {
+  return <div className={cn("w-full", STAGE_FILL[tone], STAGE_RING[tone], className)}>{children}</div>;
+}
 
 /**
- * The hero backdrop: an accent glow from the top over a fine grid that fades out towards the edges; `edge="bottom"`
- * mirrors it so the light rises from the block's bottom edge (the page's close, onto the footer's hairline).
- * Decorative; place it first inside a `relative isolate overflow-hidden` block.
+ * The text with the brand mark set inline before its last word, at the cap height, kept on one line with that word
+ * (`O teu mercado, de ▲ perto.`). The mark is decorative, so the text reads the same to assistive technology.
  */
-export function HeroBackdrop({ edge = "top" }: { edge?: "top" | "bottom" }) {
+export function MarkedText({ text }: { text: string }) {
+  const split = text.lastIndexOf(" ");
+  if (split < 0) return text;
   return (
-    <div aria-hidden className={cn("pointer-events-none absolute inset-0 -z-10", edge === "bottom" && "-scale-y-100")}>
-      <div className="hero-grid absolute inset-0" />
-      <div className="hero-glow absolute inset-x-0 top-0 h-[26rem] sm:h-[40rem]" />
+    <>
+      {text.slice(0, split)}{" "}
+      <span className="whitespace-nowrap">
+        {/* The glyph sits left in its square, so its own right margin is the gap before the word. */}
+        <PalancaMark className="size-[0.78em] align-[-0.04em]" />
+        {text.slice(split + 1)}
+      </span>
+    </>
+  );
+}
+
+/** The soft pill under a section intro, per fill it sits on: the soft accent tint on the canvas, a light veil on a stage. */
+const INTRO_PILL = {
+  canvas: buttonClass("secondary", undefined, "compact"),
+  deep: cn(buttonShape("compact"), "bg-on-stage-deep/12 text-on-stage-deep hover:bg-on-stage-deep/20"),
+} as const;
+
+/**
+ * A section's intro: the giant centred heading (`text-heading`, two lines at most) with the mark inline, then an
+ * optional small soft pill to the section's page. `tone` is the fill the section sits on. A scroll-reveal group.
+ */
+export function SectionIntro({
+  id,
+  title,
+  action,
+  tone = "canvas",
+}: {
+  id: string;
+  title: string;
+  action?: { href: string; label: string };
+  tone?: keyof typeof INTRO_PILL;
+}) {
+  return (
+    <div data-reveal="stagger" className={cn(PAGE_CONTAINER, "flex flex-col items-center gap-8 text-center md:gap-10")}>
+      <h2 id={id} className="max-w-5xl text-heading text-balance">
+        <MarkedText text={title} />
+      </h2>
+      {action ? (
+        <Link href={action.href} prefetch={false} className={INTRO_PILL[tone]}>
+          {action.label}
+          <Icon name="arrow-up-right" className="text-[1rem]" />
+        </Link>
+      ) : null}
     </div>
   );
 }
 
-type HeroFigure = { value: string; label: string };
+/**
+ * The hero panel: a large rounded `stage-deep` panel inset from the window's edges, right under the floating top bar
+ * and about one window tall, with a few decorative shapes at its edges; `children` (the title and one large pill) are
+ * centred in it. The `h1` is the largest paint, so it never fades in.
+ */
+export function HeroPanel({ labelledBy, children }: { labelledBy: string; children: ReactNode }) {
+  return (
+    <section
+      aria-labelledby={labelledBy}
+      className={cn(
+        "relative isolate mx-2 flex min-h-[max(30rem,calc(100svh-var(--top-bar-height)-1rem))] flex-col items-center justify-center gap-10 overflow-hidden rounded-card px-5 py-20 text-center sm:mx-4 sm:px-10 lg:mx-6 lg:min-h-[max(36rem,calc(100svh-var(--top-bar-height)-1.5rem))]",
+        STAGE_FILL.deep,
+        STAGE_RING.deep,
+      )}
+    >
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+        <span className="absolute -bottom-32 -left-24 size-72 rounded-full bg-stage-brand/30 sm:size-96" />
+        <span className="absolute -top-14 -right-12 size-44 rotate-12 rounded-[3rem] bg-stage-brand/45 sm:size-56 lg:right-[8%]" />
+        <span className="absolute top-[16%] left-[7%] hidden h-12 w-28 -rotate-6 rounded-full bg-on-stage-deep/10 md:block" />
+        <PalancaMark className="absolute right-[6%] bottom-[8%] size-20 -rotate-12 text-stage-brand sm:size-28 lg:size-36" />
+      </div>
+      {children}
+    </section>
+  );
+}
+
+type Figure = { value: string; label: string };
 
 /**
- * Coverage figures under the hero actions. Phones: the kinds as an even stat row, each count above its label, hairlines
- * between the columns, no total (it is their sum). From 640 px: one inline strip, the total first, each count in the
- * display face beside its label.
+ * The catalogue's coverage figures under the market search. Phones: the kinds as an even stat row, each count above
+ * its label, hairlines between the columns, no total (it is their sum). From 640 px: one inline strip, the total
+ * first, each count in the display face beside its label.
  */
-export function HeroFigures({ total, items, className }: { total?: HeroFigure; items: HeroFigure[]; className?: string }) {
+export function CoverageFigures({ total, items, className }: { total?: Figure; items: Figure[]; className?: string }) {
   return (
     <dl
       className={cn(
@@ -78,143 +159,27 @@ export function HeroFigures({ total, items, className }: { total?: HeroFigure; i
 }
 
 /**
- * The product showcase under the hero: a translucent bezel around the product (from 640 px), on an accent halo. The halo is
- * decorative; the content is the product.
+ * One card of a deck, a whole-card link: a tall flat card in a stage fill, its statement (`text-statement`, the link's
+ * name) at the top and the product visual in a frame that runs off its bottom edge. The visual is decorative:
+ * hidden, inert and unselectable. 85 % of the row on phones (the next card peeks in), 352 px from 640 px, 472 px
+ * from 1024 px; it snaps to the row's start.
  */
-export function Showcase({ children }: { children: ReactNode }) {
+export function DeckCard({ href, statement, tone, children }: { href: string; statement: string; tone: StageTone; children: ReactNode }) {
   return (
-    <div className="relative mx-auto w-full max-w-5xl">
-      <div
-        aria-hidden
-        className="showcase-halo pointer-events-none absolute -inset-x-[15%] -top-32 -z-10 h-[34rem] sm:-inset-x-[18%]"
-      />
-      <div className="sm:rounded-[calc(var(--radius-card)+0.5rem)] sm:border sm:border-card-border sm:bg-[color-mix(in_srgb,var(--card-background)_45%,transparent)] sm:p-2 sm:backdrop-blur-md">
-        {children}
-      </div>
-    </div>
-  );
-}
-
-/**
- * The "all in one" bento: product areas the feature rows do not cover, one card each, under one "Exemplo ilustrativo"
- * caption. Six columns from 1024 px, two from 768 px, one on phones.
- */
-export function Bento({ children }: { children: ReactNode }) {
-  return (
-    <figure className="flex flex-col items-center gap-3">
-      <ul className="grid w-full grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2 lg:grid-cols-6 lg:gap-5">{children}</ul>
-      <IllustrativeCaption />
-    </figure>
-  );
-}
-
-/**
- * One bento card, a whole-card link: the title, then the miniature in a frame that bleeds off the bottom edge (and the
- * right one with `bleed="corner"`) under a fade. `wide` spans four of six columns (the whole row at 768 px); `wash` adds
- * the soft accent light. The miniature is decorative: the link's name is the title. A scroll-reveal target.
- */
-export function BentoCard({
-  href,
-  title,
-  wide = false,
-  wash = false,
-  bleed = "bottom",
-  children,
-}: {
-  href: string;
-  title: string;
-  wide?: boolean;
-  wash?: boolean;
-  bleed?: "bottom" | "corner";
-  children: ReactNode;
-}) {
-  return (
-    <li data-reveal className={cn("flex min-w-0", wide ? "md:col-span-2 lg:col-span-4" : "lg:col-span-2")}>
+    <li className="flex w-[min(85%,22rem)] shrink-0 snap-start sm:w-[22rem] lg:w-[29.5rem]">
       <Link
         href={href}
         prefetch={false}
-        className="group motion-press flex w-full rounded-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        className={cn(
+          "group/card motion-lift flex h-[27rem] w-full flex-col justify-between overflow-hidden rounded-card sm:h-[31rem] lg:h-[36rem]",
+          STAGE_FILL[tone],
+        )}
       >
-        <div className="panel relative isolate flex w-full flex-col overflow-hidden transition-[border-color,translate] duration-base ease-emphasized group-hover:border-field-border motion-safe:group-hover:-translate-y-px">
-          {wash ? <div aria-hidden className="bento-wash absolute inset-0 -z-10" /> : null}
-          <h3 className="flex items-center justify-between gap-3 px-5 pt-5 font-display text-section text-primary-text desk:px-6 desk:pt-6">
-            {title}
-            <Icon name="chevron-right" className="shrink-0 text-[1.125rem] text-tertiary-text transition-[translate,color] duration-base ease-emphasized group-hover:text-primary-text motion-safe:group-hover:translate-x-0.5" />
-          </h3>
-          <div
-            aria-hidden
-            className={cn(
-              "mt-5 h-56 overflow-hidden select-none mask-b-from-70%",
-              bleed === "corner" ? "ml-5 desk:ml-6" : "mx-5 desk:mx-6",
-            )}
-          >
-            <div
-              className={cn(
-                "flex h-full flex-col rounded-t-[1.125rem] border border-b-0 border-card-border bg-canvas p-2.5 *:grow",
-                bleed === "corner" && "rounded-tr-none border-r-0 pr-0 *:rounded-r-none *:border-r-0",
-              )}
-            >
-              {children}
-            </div>
-          </div>
+        <h3 className="px-6 pt-6 font-display text-statement text-balance sm:px-8 sm:pt-8 lg:px-12 lg:pt-12">{statement}</h3>
+        <div aria-hidden inert className="mx-3 mt-8 h-60 shrink-0 overflow-hidden rounded-t-[1.25rem] bg-canvas p-3 select-none sm:mx-5 sm:h-68 lg:mx-8 lg:h-80">
+          {children}
         </div>
       </Link>
     </li>
-  );
-}
-
-/**
- * The feature rows' column: one gap between rows, and the same space against the bento above and Plus below
- * (4rem on phones, 6rem from 768 px).
- */
-export function FeatureRows({ children }: { children: ReactNode }) {
-  return <div className={cn(PAGE_CONTAINER, "flex flex-col gap-16 pt-8 md:gap-24 md:pt-14")}>{children}</div>;
-}
-
-/**
- * A feature row: the icon in an accent squircle, the heading, the message and a pill, then the product visual (a piece
- * of the web product on a tinted stage). Stacked, text first, below 1024 px; from there two columns, the visual taking
- * 7 of 12, on the left unless `flip`, its floating card leaning towards the text. A scroll-reveal group: the text eases
- * in, then the visual.
- */
-export function FeatureRow({
-  id,
-  icon,
-  title,
-  message,
-  action,
-  visual,
-  flip = false,
-}: {
-  id: string;
-  icon: IconName;
-  title: string;
-  message: string;
-  action: ReactNode;
-  visual: ReactNode;
-  flip?: boolean;
-}) {
-  return (
-    <section
-      aria-labelledby={id}
-      data-flip={flip || undefined}
-      data-reveal="stagger"
-      className={cn(
-        "group/feature grid items-center gap-10 lg:gap-16",
-        flip ? "lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]" : "lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]",
-      )}
-    >
-      <div className={cn("flex min-w-0 flex-col items-start", !flip && "lg:order-last")}>
-        <span className="mb-6 flex size-12 items-center justify-center rounded-medium bg-accent-soft text-accent">
-          <Icon name={icon} className="text-[1.5rem]" />
-        </span>
-        <h2 id={id} className={cn(HOME_HEADING, "max-w-lg")}>
-          {title}
-        </h2>
-        <p className="mt-4 max-w-md text-body text-secondary-text lg:text-[1.125rem] lg:leading-normal">{message}</p>
-        <div className="mt-8 w-full sm:w-auto">{action}</div>
-      </div>
-      <div className="flex min-w-0 justify-center">{visual}</div>
-    </section>
   );
 }

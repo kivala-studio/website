@@ -5,7 +5,6 @@ import { cn } from "@/ui/cn";
 import { iconButtonClass, TOP_BAR_FLOAT } from "@/ui/components/button-styles";
 import { ButtonLink } from "@/ui/components/buttons";
 import { ThemeMenu, ThemeSwitch } from "@/ui/components/controls";
-import { PAGE_CONTAINER } from "@/ui/components/layout";
 import { TopBar } from "@/ui/components/top-bar";
 import type { Theme } from "@/ui/theme/theme";
 
@@ -98,76 +97,70 @@ export function SiteHeader({ theme }: { theme: Theme }) {
   );
 }
 
-const FOOTER_LINK =
-  "inline-flex min-h-11 items-center rounded-small text-secondary text-secondary-text transition-colors hover:text-primary-text desk:min-h-9";
-/** The logo row and the column headings share one height, so the columns start on the logo's line. */
-const FOOTER_ROW = "flex min-h-11 items-center desk:min-h-9";
+/** A link of the footer card's column: plain text, the accent on hover; 44 px tall. */
+const FOOTER_LINK = "inline-flex min-h-11 items-center rounded-small text-body text-primary-text transition-colors hover:text-accent";
+/** A legal link on the footer band, under the card, in the band's on-colour. */
+const FOOTER_LEGAL_LINK = "inline-flex min-h-11 items-center rounded-small underline-offset-4 hover:underline";
 
 /**
- * The logo, then the product and legal link columns on the logo's line; then the standing disclaimers and the
- * copyright under a hairline. One grid of equal tracks: on phones the logo sits above the two columns; from 640 px
- * the three share a row; from 1024 px the logo takes three of five tracks and the links the last two. `year` is the
- * server's (Luanda) year.
+ * The footer owns its band, `stage-brand`, so it closes every public page the same way (on the landing it continues
+ * the closing section). On it: one big card on the card fill, inset from the window's edges, with the mark at the top
+ * left, the product links on the right (one column under its muted title) and the standing disclaimers at the bottom
+ * left (after the links on phones); under the card, one line in the band's on-colour with the copyright on the left
+ * and the legal links on the right. `year` is the server's (Luanda) year.
  */
 export function SiteFooter({ year }: { year: string }) {
   const t = useTranslations();
-  const columns = [
-    {
-      title: t("site.footer.product"),
-      links: [
-        { href: INDEXABLE_PAGES.market, title: t("common.market") },
-        { href: INDEXABLE_PAGES.news, title: t("common.news") },
-        { href: INDEXABLE_PAGES.learn, title: t("learn.title") },
-        { href: "/simulador", title: t("common.simulateInvestment") },
-      ],
-    },
-    {
-      title: t("site.footer.legal"),
-      links: [
-        { href: INDEXABLE_PAGES.policy, title: t("common.privacyPolicy") },
-        { href: INDEXABLE_PAGES.terms, title: t("site.legal.termsTitle") },
-        { href: INDEXABLE_PAGES.support, title: t("site.legal.supportTitle") },
-      ],
-    },
+  const product = [
+    { href: INDEXABLE_PAGES.market, title: t("common.market") },
+    { href: INDEXABLE_PAGES.news, title: t("common.news") },
+    { href: INDEXABLE_PAGES.learn, title: t("learn.title") },
+    { href: "/simulador", title: t("common.simulateInvestment") },
+  ];
+  const legal = [
+    { href: INDEXABLE_PAGES.policy, title: t("common.privacyPolicy") },
+    { href: INDEXABLE_PAGES.terms, title: t("site.legal.termsTitle") },
+    { href: INDEXABLE_PAGES.support, title: t("site.legal.supportTitle") },
   ];
   return (
-    <footer className="mt-auto">
-      <div className={cn(PAGE_CONTAINER, "flex flex-col gap-8 border-t border-hairline pt-8 pb-8 md:gap-10 md:pt-12 md:pb-10")}>
-        <div className="grid gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-5">
-          <Link
-            href="/"
-            prefetch={false}
-            aria-label={t("site.header.homeLabel")}
-            className={cn(FOOTER_ROW, "gap-2 self-start justify-self-start rounded-small text-primary-text lg:col-span-3")}
-          >
-            <PalancaMark className="size-8" />
-            <span className="font-display text-[1.1875rem] font-semibold tracking-tight">{t("common.appName")}</span>
-          </Link>
-          <nav aria-label={t("site.footer.label")} className="grid grid-cols-2 gap-x-6 sm:col-span-2">
-            {columns.map((column) => (
-              <div key={column.title} className="flex min-w-0 flex-col">
-                <h2 className={cn(FOOTER_ROW, "text-secondary font-semibold text-primary-text")}>{column.title}</h2>
-                <ul className="flex flex-col">
-                  {column.links.map((link) => (
-                    <li key={link.href}>
-                      <Link href={link.href} prefetch={false} className={FOOTER_LINK}>
-                        {link.title}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+    <footer className="mt-auto bg-stage-brand px-2 pt-2 text-on-stage-brand [--focus-ring:var(--on-stage-brand)] sm:px-4 sm:pt-4 lg:px-6 lg:pt-6">
+      {/* The card's controls ring in the accent again. */}
+      <div className="grid gap-x-10 gap-y-10 rounded-card bg-card-background px-5 py-8 text-primary-text [--focus-ring:var(--accent)] sm:grid-cols-[minmax(0,1fr)_auto] sm:grid-rows-[auto_1fr] sm:p-10 lg:min-h-96 lg:p-14">
+        <Link href="/" prefetch={false} aria-label={t("site.header.homeLabel")} className="inline-flex min-h-12 items-center gap-2.5 self-start justify-self-start rounded-small">
+          <PalancaMark className="size-11" />
+          <span className="font-display text-[1.5rem] font-semibold tracking-tight">{t("common.appName")}</span>
+        </Link>
+        <nav aria-label={t("site.footer.label")} className="flex min-w-40 flex-col gap-2 sm:row-span-2 lg:min-w-56">
+          <h2 className="text-caption font-medium text-secondary-text">{t("site.footer.product")}</h2>
+          <ul className="flex flex-col">
+            {product.map((link) => (
+              <li key={link.href}>
+                <Link href={link.href} prefetch={false} className={FOOTER_LINK}>
+                  {link.title}
+                </Link>
+              </li>
             ))}
-          </nav>
+          </ul>
+        </nav>
+        <div className="flex max-w-2xl flex-col gap-1.5 self-end text-caption text-secondary-text">
+          <p>{t("site.footer.independence")}</p>
+          <p>{t("settings.marketData.disclaimer")}</p>
+          <p>{t("onboarding.caption.simulationDisclaimer")}</p>
         </div>
-        <div className="flex flex-col gap-4 border-t border-hairline pt-6 text-caption md:pt-8">
-          <div className="flex max-w-2xl flex-col gap-1.5 text-tertiary-text">
-            <p>{t("site.footer.independence")}</p>
-            <p>{t("settings.marketData.disclaimer")}</p>
-            <p>{t("onboarding.caption.simulationDisclaimer")}</p>
-          </div>
-          <p className="text-secondary-text">{`© ${year} ${t("common.appName")}`}</p>
-        </div>
+      </div>
+      <div className="flex flex-col-reverse gap-x-8 gap-y-1 px-3 py-4 text-secondary sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+        <p className="py-3 sm:py-0">{`© ${year} ${t("common.appName")}`}</p>
+        <nav aria-label={t("site.footer.legal")}>
+          <ul className="flex flex-wrap gap-x-6">
+            {legal.map((link) => (
+              <li key={link.href}>
+                <Link href={link.href} prefetch={false} className={FOOTER_LEGAL_LINK}>
+                  {link.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
     </footer>
   );

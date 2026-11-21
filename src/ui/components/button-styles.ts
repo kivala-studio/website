@@ -30,6 +30,9 @@ const LARGE =
 
 const SIZE: Record<ButtonSize, string> = { regular: BASE, compact: COMPACT, large: LARGE };
 
+/** A pill's shape, type and press without its fill: for a pill on a stage fill, which brings its own colours. */
+export const buttonShape = (size: ButtonSize = "regular") => SIZE[size];
+
 /** Class names of a pill button, for links and summaries styled as one. */
 export const buttonClass = (kind: ButtonKind = "primary", className?: string, size: ButtonSize = "regular") => cn(SIZE[size], KIND[kind], className);
 
