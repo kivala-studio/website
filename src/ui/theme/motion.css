@@ -609,6 +609,30 @@
   }
 }
 
+/*
+ * Drift: the hero panel's decorative shapes, each on its own slow loop that returns to where it started (the still
+ * position is frame 0, so nothing jumps on load). Transform only; the shape's own `rotate` stays underneath.
+ */
+@keyframes drift-swell {
+  50% { transform: translate(1.75rem, -2.25rem) scale(1.08); }
+}
+@keyframes drift-rock {
+  50% { transform: translateY(1.5rem) rotate(10deg); }
+}
+@keyframes drift-slide {
+  50% { transform: translateX(2.25rem) rotate(9deg); }
+}
+@utility motion-drift-swell {
+  animation: drift-swell 20s ease-in-out infinite;
+}
+@utility motion-drift-rock {
+  animation: drift-rock 10s ease-in-out infinite;
+}
+@utility motion-drift-slide {
+  animation: drift-slide 6.5s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .motion-entrance, .motion-entrance-lift { animation: none; }
+  .motion-drift-swell, .motion-drift-rock, .motion-drift-slide { animation: none; }
 }
