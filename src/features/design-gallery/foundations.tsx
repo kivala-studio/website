@@ -34,11 +34,31 @@ const SEMANTIC = [
 ] as const;
 
 const WEB = [
+  ["canvas", "bg-canvas"],
+  ["panel-edge", "bg-panel-edge"],
+  ["accent-soft-hover", "bg-accent-soft-hover"],
   ["hairline", "bg-hairline"],
   ["card-border", "bg-card-border"],
   ["field-border", "bg-field-border"],
   ["track", "bg-track"],
   ["raised", "bg-raised"],
+] as const;
+
+/** Flat fills for full-bleed sections and solid cards, each with its on-colour. */
+const STAGES = [
+  ["stage-brand", "bg-stage-brand text-on-stage-brand"],
+  ["stage-deep", "bg-stage-deep text-on-stage-deep"],
+  ["stage-ink", "bg-stage-ink text-on-stage-ink"],
+  ["stage-pale", "bg-stage-pale text-on-stage-pale"],
+  ["card-background", "bg-card-background text-primary-text"],
+] as const;
+
+/** Marketing roles: fluid, weight 400, −0.025em (lead: normal tracking). */
+const MARKETING_TYPE = [
+  { role: "text-hero", sizes: "40 → 80", sample: "A bolsa de Angola" },
+  { role: "text-heading", sizes: "36 → 96", sample: "Mercado" },
+  { role: "text-statement", sizes: "24 → 30", sample: "72 500,00 Kz" },
+  { role: "text-lead", sizes: "18 → 24", sample: "Banco Angolano de Investimentos" },
 ] as const;
 
 const TYPE = [
@@ -56,16 +76,17 @@ const TYPE = [
 const RADII = [
   ["rounded-small", "12 · desk 8"],
   ["rounded-medium", "18 · desk 12"],
-  ["rounded-large", "24 · desk 22"],
-  ["rounded-card", "22"],
+  ["rounded-large", "24"],
+  ["rounded-card", "24"],
   ["rounded-full", "pill"],
 ] as const;
 
 const SHADOWS = [
-  ["panel", "panel utility"],
+  ["panel", "panel utility (flat)"],
   ["shadow-panel bg-card-background", "shadow-panel"],
   ["shadow-raised bg-raised", "shadow-raised + bg-raised"],
   ["shadow-bar bg-elevated-background", "shadow-bar"],
+  ["shadow-float bg-card-background", "shadow-float (top bar, scrolled)"],
   ["shadow-focus border border-accent bg-card-background", "shadow-focus + border-accent"],
 ] as const;
 
@@ -136,6 +157,19 @@ export function Foundations() {
       <Specimen name="Colour · web-only tokens">
         <Swatches tokens={WEB} themeKey={themeKey} />
       </Specimen>
+      <Specimen name="Colour · stages (bg-stage-* text-on-stage-*)">
+        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {STAGES.map(([token, classes]) => (
+            <li key={token} className={cn("flex min-h-32 flex-col justify-between gap-4 rounded-card p-5", classes)}>
+              <span className="font-display text-statement">Aa 72 500</span>
+              <span className="flex flex-col">
+                <code className="text-secondary">{token}</code>
+                <code className="text-caption">{tokenValue(themeKey, token) || " "}</code>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </Specimen>
 
       <Specimen name="Type scale">
         <ul className="flex flex-col divide-y divide-hairline">
@@ -148,12 +182,23 @@ export function Foundations() {
         </ul>
       </Specimen>
 
+      <Specimen name="Type · marketing roles">
+        <ul className="flex flex-col divide-y divide-hairline">
+          {MARKETING_TYPE.map((item) => (
+            <li key={item.role} className="flex flex-col gap-1 py-3 md:flex-row md:items-baseline md:gap-6">
+              <code className="shrink-0 text-caption text-secondary-text md:w-64">{`${item.role} font-display · ${item.sizes}`}</code>
+              <span className={cn(item.role, "min-w-0 font-display text-primary-text")}>{item.sample}</span>
+            </li>
+          ))}
+        </ul>
+      </Specimen>
+
       <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
         <Specimen name="Radii">
           <ul className="flex flex-wrap gap-4">
             {RADII.map(([radius, size]) => (
               <li key={radius} className="flex flex-col items-center gap-2">
-                <span aria-hidden className={cn("size-16 border border-card-border bg-card-background", radius)} />
+                <span aria-hidden className={cn("size-16 bg-card-background", radius)} />
                 <code className="text-caption text-secondary-text">{radius}</code>
                 <span className="text-caption text-secondary-text">{size}</span>
               </li>

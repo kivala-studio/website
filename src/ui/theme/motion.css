@@ -296,8 +296,37 @@
 }
 
 /*
- * The top bar's menu (`TopBar mobileNav="menu"`): the panel slides out from under the bar, clipped at the bar's edge
- * so it never covers it, and the page dims behind it. The clip leaves room for the panel's shadow.
+ * The top bar's pieces: flat on the canvas at the top of the page, they lift (`--float-shadow`) over the first 1.5rem
+ * of scroll, so the page passing under them never blurs into them; the logo, bare at the top, also takes the card
+ * fill. Tied to the scroll position, not to time; where scroll timelines are missing the lifted state simply stays.
+ * Not for elements that show a focus glow or a ring (both are box shadows).
+ */
+@keyframes float-in {
+  from { box-shadow: none; }
+}
+@keyframes backing-in {
+  from { background-color: transparent; box-shadow: none; }
+}
+@utility top-bar-float {
+  box-shadow: var(--float-shadow);
+  @supports (animation-timeline: scroll()) {
+    animation: float-in linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 1.5rem;
+  }
+}
+@utility top-bar-backing {
+  box-shadow: var(--float-shadow);
+  @supports (animation-timeline: scroll()) {
+    animation: backing-in linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 1.5rem;
+  }
+}
+
+/*
+ * The top bar's menu (`TopBar mobileNav="menu"`): the card slides out from under the bar, clipped at its top edge,
+ * and the page dims behind it. The clip leaves room for the card's shadow.
  */
 @keyframes drop-in {
   from { opacity: 0; transform: translateY(-0.5rem); clip-path: inset(0.5rem -1rem -1rem); }

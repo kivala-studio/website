@@ -53,7 +53,7 @@ export function PortfolioInsights({ transactions, section }: { transactions: rea
             onClick={() => show(tile)}
             data-testid="portfolio-insight"
             data-tile={tile.id}
-            className="flex min-h-11 flex-col items-start gap-1 rounded-medium border border-hairline px-4 py-3 text-left motion-tap hover:bg-app-background/70"
+            className="flex min-h-11 flex-col items-start gap-1 rounded-medium border border-hairline px-4 py-3 text-left motion-tap hover:bg-canvas/70"
           >
             <span className="text-caption text-secondary-text">{tile.title}</span>
             <span className="text-headline text-primary-text tabular-nums">{tile.value}</span>

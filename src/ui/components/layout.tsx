@@ -1,6 +1,8 @@
 import type { HTMLAttributes, ReactNode } from "react";
 
 import { cn } from "../cn";
+import { Icon, type IconName } from "../icons/icon";
+import { sectionChipClass } from "./button-styles";
 
 /** The page column for site and app pages: 1200 px at most, centred, 16 px gutters on phones and 24 px from 640 px. */
 export const PAGE_CONTAINER = "mx-auto w-full max-w-300 px-4 sm:px-6";
@@ -33,8 +35,21 @@ export function CardHeader({ title, titleId, action, className }: { title: React
 }
 
 /**
+ * A section's label on a stage (the landing's sections): a small pill on the card fill, or on the soft accent tint
+ * (`tone="soft"`) when it sits on a card, with an optional leading icon in the accent. Decorative text, not a control.
+ */
+export function SectionChip({ icon, tone = "card", className, children, ...props }: HTMLAttributes<HTMLSpanElement> & { icon?: IconName; tone?: "card" | "soft" }) {
+  return (
+    <span {...props} className={sectionChipClass(tone, className)}>
+      {icon ? <Icon name={icon} className="text-accent" /> : null}
+      {children}
+    </span>
+  );
+}
+
+/**
  * Surface for actions, grouped input and supporting information. Prices and rows stay on the canvas. On desk it
- * is the web card (22 px corners, faint border, soft shadow, 24 px padding). With a `title` it gets a header row;
+ * is the web card (`panel`: 24 px corners, a flat fill with no border or shadow, 24 px padding). With a `title` it gets a header row;
  * `flush` lets content (tables, row lists) reach the edges under it.
  */
 export function Card({
@@ -151,8 +166,8 @@ export function Panel({
 }
 
 /**
- * A nested stat tile inside a card (the CoinStats summary look): a hairline box with a muted label over a value in
- * the display face, then an optional detail line. `large` is the card's lead figure. Use inside a `<dl>`.
+ * A nested stat tile inside a card: a flat inset on the canvas fill (an edge only with increased contrast) with a
+ * muted label over a value in the display face, then an optional detail line. Only on a card, never on the canvas. `large` is the card's lead figure. Use inside a `<dl>`.
  */
 export function StatTile({
   label,
@@ -168,7 +183,7 @@ export function StatTile({
   size?: "large" | "small";
 }) {
   return (
-    <div {...props} className={cn("flex min-w-0 flex-col gap-1 rounded-medium border border-hairline px-4 py-3", className)}>
+    <div {...props} className={cn("flex min-w-0 flex-col gap-1 rounded-medium border border-panel-edge bg-canvas px-4 py-3", className)}>
       <dt className="flex min-h-5 items-center gap-1 text-caption text-secondary-text desk:text-secondary">{label}</dt>
       <dd className={cn("mt-auto font-display font-semibold text-primary-text", size === "large" ? "text-[1.625rem] leading-tight tracking-tight desk:text-[1.5rem]" : "text-lg leading-snug")}>{value}</dd>
       {detail ? <dd className="text-caption text-secondary-text">{detail}</dd> : null}

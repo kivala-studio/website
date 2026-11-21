@@ -26,7 +26,7 @@ export default function LearnPage() {
               <Link
                 href={`/aprender/${lesson.slug}`}
                 prefetch={false}
-                className="flex min-h-15 items-center gap-4 motion-tap px-5 py-3 outline-offset-[-2px] hover:bg-app-background/70 desk:px-6"
+                className="flex min-h-15 items-center gap-4 motion-tap px-5 py-3 outline-offset-[-2px] hover:bg-canvas/70 desk:px-6"
                 data-testid="lesson-row"
               >
                 <span aria-hidden className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent">

@@ -2,9 +2,10 @@
 
 import { useTranslations } from "next-intl";
 
-import { Bento, BentoCard, CLOSING_TITLE, FeatureRow, HERO_TITLE, HeroBackdrop, HeroFigures } from "@/features/site/home";
+import { CoverageFigures, DeckCard, HeroPanel, MarkedText, SectionIntro, Stage } from "@/features/site/home";
+import { Deck, MarketSearch } from "@/features/site/home-client";
 import {
-  InstrumentVisual,
+  IllustrativeCaption,
   LearnMiniature,
   NewsMiniature,
   PlusVisual,
@@ -15,9 +16,8 @@ import {
   WatchlistVisual,
   WeekAheadMiniature,
 } from "@/features/site/visuals";
-import { ButtonLink } from "@/ui/components/buttons";
 
-import { GallerySection, SPECIMEN_GRID, Specimen } from "./specimen";
+import { GallerySection, Specimen } from "./specimen";
 
 /** Sample counts; the landing reads them from the catalogue. */
 const TOTAL = { value: "24", key: "common.instruments" } as const;
@@ -30,76 +30,69 @@ export function Landing() {
   const t = useTranslations();
   return (
     <GallerySection id="landing" title="Landing pieces">
-      <Specimen name="HeroBackdrop · HERO_TITLE · HeroFigures">
-        <div className="relative isolate flex w-full flex-col items-center gap-6 overflow-hidden rounded-card px-4 py-12 text-center">
-          <HeroBackdrop />
-          <p className={HERO_TITLE}>{t("common.yourMarketUpClose")}</p>
-          <HeroFigures
-            total={{ value: TOTAL.value, label: t(TOTAL.key) }}
-            items={FIGURES.map((item) => ({ value: item.value, label: t(item.key) }))}
-          />
+      <Specimen name="HeroPanel (shortened) · text-hero · StoreButton large">
+        <HeroPanel labelledBy="gallery-hero" className="mx-0! min-h-96! w-full lg:min-h-96!">
+          <p id="gallery-hero" className="max-w-[13ch] font-display text-hero text-balance">
+            {t("common.yourMarketUpClose")}
+          </p>
+          <StoreButton size="large" fill="bg-on-stage-deep text-stage-deep hover:bg-on-stage-deep/90 max-sm:whitespace-normal" />
+        </HeroPanel>
+      </Specimen>
+
+      <Specimen name="SectionIntro · MarkedText (canvas)">
+        <div className="rounded-card bg-canvas py-12">
+          <SectionIntro id="gallery-intro" title={t("onboarding.page.watchlistTitle")} action={{ href: "/lista", label: t("common.follow") }} />
         </div>
       </Specimen>
 
-      <Specimen name="FeatureRow · InstrumentVisual (stage, caption)">
-        <div className="w-full">
-          <FeatureRow
-            id="gallery-feature-row"
-            icon="markets"
-            title={t("onboarding.page.marketTitle")}
-            message={t("onboarding.page.marketMessage")}
-            action={
-              <ButtonLink href="/mercado" prefetch={false} className="sm:w-auto!">
-                {t("common.explore")}
-              </ButtonLink>
-            }
-            visual={<InstrumentVisual label={t("site.home.instrumentAlt")} />}
-          />
-        </div>
-      </Specimen>
-
-      <div className={SPECIMEN_GRID}>
-        <Specimen name="WatchlistVisual">
-          <WatchlistVisual label={t("site.home.alertsAlt")} />
-        </Specimen>
-        <Specimen name="PortfolioVisual">
-          <PortfolioVisual label={t("site.home.portfolioAlt")} />
-        </Specimen>
-      </div>
-
-      <Specimen name="Bento · BentoCard (wide, wash, bleed corner) · miniatures">
-        <div className="w-full">
-          <Bento>
-            <BentoCard href="/simulador" title={t("common.simulateInvestment")} wide wash bleed="corner">
+      <Specimen name='Stage tone="deep" · SectionIntro tone="deep" · Deck · DeckCard'>
+        <Stage tone="deep" className="flex flex-col gap-10 overflow-hidden rounded-card py-12">
+          <SectionIntro id="gallery-deck-intro" tone="deep" title={t("onboarding.page.portfolioTitle")} action={{ href: "/carteira", label: t("common.recordPurchase") }} />
+          <Deck id="gallery-deck" label={t("common.portfolio")} caption={<IllustrativeCaption className="px-4 text-on-stage-deep sm:px-6" />} chip={null}>
+            <DeckCard href="/carteira" tone="brand" statement={t("onboarding.page.portfolioMessage")}>
+              <PortfolioVisual />
+            </DeckCard>
+            <DeckCard href="/lista" tone="ink" statement={t("onboarding.page.watchlistMessage")}>
+              <WatchlistVisual />
+            </DeckCard>
+            <DeckCard href="/simulador" tone="pale" statement={t("common.simulateInvestment")}>
               <SimulatorMiniature />
-            </BentoCard>
-            <BentoCard href="/atividade-invulgar" title={t("unusualActivity.title")}>
+            </DeckCard>
+            <DeckCard href="/atividade-invulgar" tone="brand" statement={t("unusualActivity.title")}>
               <UnusualActivityMiniature />
-            </BentoCard>
-            <BentoCard href="/noticias" title={t("common.news")}>
+            </DeckCard>
+            <DeckCard href="/noticias" tone="ink" statement={t("common.news")}>
               <NewsMiniature />
-            </BentoCard>
-            <BentoCard href="/aprender" title={t("learn.title")}>
+            </DeckCard>
+            <DeckCard href="/aprender" tone="pale" statement={t("learn.title")}>
               <LearnMiniature />
-            </BentoCard>
-            <BentoCard href="/semana" title={t("weekAhead.header.navigationTitle")}>
+            </DeckCard>
+            <DeckCard href="/semana" tone="brand" statement={t("weekAhead.header.navigationTitle")}>
               <WeekAheadMiniature />
-            </BentoCard>
-          </Bento>
-        </div>
+            </DeckCard>
+          </Deck>
+        </Stage>
       </Specimen>
 
-      <Specimen name="PlusVisual (no stage)">
-        <div className="panel w-full max-w-xl p-5 sm:p-8">
+      <Specimen name='Stage tone="brand" · MarkedText · StoreButton fill'>
+        <Stage tone="brand" className="flex flex-col items-center gap-6 rounded-card px-4 py-12 text-center">
+          <p className="text-heading text-balance">
+            <MarkedText text={t("common.yourMarketUpClose")} mark="text-current" />
+          </p>
+          <StoreButton size="large" fill="bg-card-background text-primary-text hover:bg-accent-soft max-sm:whitespace-normal" />
+        </Stage>
+      </Specimen>
+
+      <Specimen name="MarketSearch · CoverageFigures">
+        <div className="w-full max-w-xl">
+          <MarketSearch action="/mercado" hidden={{}} />
+        </div>
+        <CoverageFigures total={{ value: TOTAL.value, label: t(TOTAL.key) }} items={FIGURES.map((item) => ({ value: item.value, label: t(item.key) }))} />
+      </Specimen>
+
+      <Specimen name="PlusVisual (on stage-pale)">
+        <div className="w-full max-w-xl rounded-card bg-stage-pale p-5 text-on-stage-pale sm:p-8">
           <PlusVisual label={t("site.home.plusAlt")} />
-        </div>
-      </Specimen>
-
-      <Specimen name="HeroBackdrop edge=bottom · CLOSING_TITLE">
-        <div className="relative isolate flex w-full flex-col items-center gap-6 overflow-hidden rounded-card px-4 pt-6 pb-16 text-center">
-          <HeroBackdrop edge="bottom" />
-          <p className={CLOSING_TITLE}>{t("common.yourMarketUpClose")}</p>
-          <StoreButton className="sm:w-auto!" />
         </div>
       </Specimen>
 

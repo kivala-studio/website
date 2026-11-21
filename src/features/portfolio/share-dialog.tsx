@@ -171,7 +171,7 @@ function CreatedLink({ url }: { url: string }) {
   const [copied, setCopied] = useState(false);
   const canShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
   return (
-    <div className="motion-presence flex flex-col gap-3 rounded-medium border border-hairline bg-app-background p-4">
+    <div className="motion-presence flex flex-col gap-3 rounded-medium border border-hairline bg-canvas p-4">
       <output className="break-all font-mono text-secondary text-primary-text" data-testid="share-url">
         {url}
       </output>

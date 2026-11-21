@@ -41,7 +41,7 @@ export function SectionRail({ items, label, leading, className }: { items: reado
   const states = items.map((item) => (item.current !== undefined ? item.current || undefined : current(item.href, item.exact)));
   const list = useSlidingIndicator<HTMLUListElement>(`${pathname}|${states.join()}`, { selector: "[aria-current]", memory: `rail:${label}` });
   return (
-    <nav aria-label={label} className={cn("flex min-w-0 gap-1 lg:sticky lg:top-20 lg:w-24 lg:flex-col lg:gap-3 lg:self-start", className)}>
+    <nav aria-label={label} className={cn("flex min-w-0 gap-1 lg:sticky lg:top-[calc(var(--top-bar-height)+1rem)] lg:w-24 lg:flex-col lg:gap-3 lg:self-start", className)}>
       {leading ? <div className="flex w-24 shrink-0">{leading}</div> : null}
       <ul ref={list} className="-mr-4 flex min-w-0 flex-1 gap-1 overflow-x-auto pr-4 pb-1 [scrollbar-width:none] sm:-mr-6 sm:pr-6 lg:mr-0 lg:flex-col lg:overflow-visible lg:pr-0 lg:pb-0">
         {items.map((item, index) => {

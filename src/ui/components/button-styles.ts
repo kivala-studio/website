@@ -6,13 +6,12 @@ import { cn } from "../cn";
  */
 
 export type ButtonKind = "primary" | "secondary" | "outline" | "destructive";
-export type ButtonSize = "regular" | "compact";
+export type ButtonSize = "regular" | "compact" | "large";
 
-/** Pill fills: accent for the main action, a grey fill for the rest, a hairline outline for quiet actions. */
+/** Pill fills: solid accent for the main action, the soft accent tint for the rest, a hairline outline for quiet actions. */
 const KIND: Record<ButtonKind, string> = {
   primary: "bg-accent text-on-accent hover:brightness-110",
-  secondary:
-    "bg-action-surface text-primary-text border-[length:var(--control-outline-width)] border-control-outline desk:border-0 hover:bg-track",
+  secondary: "bg-accent-soft text-primary-text hover:bg-accent-soft-hover",
   outline: "border border-field-border bg-transparent text-primary-text hover:bg-action-surface",
   destructive: "bg-negative/12 text-negative",
 };
@@ -25,17 +24,53 @@ const BASE =
 // Compact pills keep 44 px everywhere and size to their title (card header actions, toolbars, the top bar).
 const COMPACT = "motion-press inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full px-4 text-secondary font-medium whitespace-nowrap disabled:opacity-42 aria-disabled:opacity-42";
 
-/** Class names of a pill button, for links and summaries styled as one. */
-export const buttonClass = (kind: ButtonKind = "primary", className?: string, size: ButtonSize = "regular") =>
-  cn(size === "compact" ? COMPACT : BASE, KIND[kind], className);
+// Large pills are the hero's calls to action: 64 px (72 on desk), 32 px of padding, sized to their title.
+const LARGE =
+  "motion-press inline-flex min-h-16 shrink-0 items-center justify-center gap-2.5 rounded-full px-8 text-body font-medium whitespace-nowrap desk:min-h-18 desk:text-[1.125rem] disabled:opacity-42 aria-disabled:opacity-42";
 
-/** Circular icon-only class names (48 px on phones, 44 px on desk), for links styled as an icon button. */
-export const iconButtonClass = (variant: "filled" | "plain" | "outline" = "filled", className?: string) =>
+const SIZE: Record<ButtonSize, string> = { regular: BASE, compact: COMPACT, large: LARGE };
+
+/** A pill's shape, type and press without its fill: for a pill on a stage fill, which brings its own colours. */
+export const buttonShape = (size: ButtonSize = "regular") => SIZE[size];
+
+/** Class names of a pill button, for links and summaries styled as one. */
+export const buttonClass = (kind: ButtonKind = "primary", className?: string, size: ButtonSize = "regular") => cn(SIZE[size], KIND[kind], className);
+
+export type IconButtonVariant = "filled" | "surface" | "plain" | "outline";
+
+/**
+ * Circular icon-only class names (48 px on phones, 44 px on desk), for links styled as an icon button. `filled` sits
+ * on the soft accent tint, `surface` on the card fill (an opaque disc on the canvas: the top bar), `plain` is a bare
+ * icon with a hover disc, `outline` a hairline ring.
+ */
+export const iconButtonClass = (variant: IconButtonVariant = "filled", className?: string) =>
   cn(
     "motion-press relative inline-flex size-12 shrink-0 items-center justify-center rounded-full text-primary-text desk:size-11 disabled:opacity-42",
-    { filled: "bg-action-surface hover:bg-track", plain: "hover:bg-action-surface", outline: "border border-field-border hover:bg-action-surface" }[variant],
+    {
+      filled: "bg-accent-soft hover:bg-accent-soft-hover",
+      surface: "bg-card-background hover:bg-accent-soft",
+      plain: "hover:bg-action-surface",
+      outline: "border border-field-border hover:bg-action-surface",
+    }[variant],
     className,
   );
+
+/**
+ * A section label on a stage: a small pill on the card fill (or the soft accent tint on a card) with an optional
+ * leading icon. Not a control, so it has no target size; render it through `SectionChip`.
+ */
+export const sectionChipClass = (tone: "card" | "soft" = "card", className?: string) =>
+  cn(
+    "inline-flex min-h-9 w-fit items-center gap-2 rounded-full px-4 py-2 font-display text-secondary font-medium whitespace-nowrap text-primary-text",
+    tone === "card" ? "bg-card-background" : "bg-accent-soft",
+    className,
+  );
+
+/**
+ * Lifts a piece of the top bar once the page scrolls under it (`top-bar-float` in motion.css). Not for a field or a
+ * ringed control: the focus glow and rings are box shadows too.
+ */
+export const TOP_BAR_FLOAT = "top-bar-float";
 
 /**
  * The fill of a selected item drawn by its `::before`, behind its content and in its own corners, so

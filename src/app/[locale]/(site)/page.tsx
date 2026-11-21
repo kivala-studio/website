@@ -6,16 +6,15 @@ import { requestTime } from "@/data/clock";
 import { type FormatLocale, createFormat } from "@/domain/format";
 import { MARKET_CATEGORY_LABEL_KEYS, type MarketCategory } from "@/domain/market";
 import { MARKET_DEFAULT_QUERY, marketQueryParams } from "@/features/market/browse/query";
-import { PalancaMark } from "@/features/site/chrome";
-import { Bento, BentoCard, CLOSING_TITLE, FeatureRow, FeatureRows, HERO_TITLE, HOME_HEADING, HOME_SECTION, HeroBackdrop, HeroFigures, Showcase } from "@/features/site/home";
-import { HeroSearch, MarketPreview } from "@/features/site/home-client";
+import { CoverageFigures, DeckCard, HeroPanel, MarkedText, SectionIntro, STAGE_SPACE, Stage } from "@/features/site/home";
+import { Deck, MarketPreview, MarketSearch } from "@/features/site/home-client";
 import { homeMarket } from "@/features/site/home-market";
 import { pageMetadata } from "@/features/site/metadata";
-import { INDEXABLE_PAGES, SIGN_IN_PATH } from "@/features/site/site";
+import { INDEXABLE_PAGES } from "@/features/site/site";
 import { Reveal } from "@/features/site/reveal";
 import { OrganizationData } from "@/features/site/structured-data";
 import {
-  InstrumentVisual,
+  IllustrativeCaption,
   LearnMiniature,
   NewsMiniature,
   PlusVisual,
@@ -28,8 +27,7 @@ import {
 } from "@/features/site/visuals";
 import { getPathname } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
-import { ButtonLink } from "@/ui/components/buttons";
-import { PAGE_CONTAINER } from "@/ui/components/layout";
+import { PAGE_CONTAINER, SectionChip } from "@/ui/components/layout";
 import { Icon } from "@/ui/icons/icon";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -51,12 +49,16 @@ const marketHref = (category: MarketCategory) => ({
   query: marketQueryParams({ ...MARKET_DEFAULT_QUERY, category }),
 });
 
+/** A deck's "Exemplo ilustrativo", on the page column's edge under the row. */
+const DECK_CAPTION = cn(PAGE_CONTAINER, "text-secondary-text");
+
 /**
- * The landing page: the hero (title, search, actions, coverage figures) with the market preview rising out of it as
- * the showcase; the product's other areas as a bento; three feature rows; then Plus and the closing line over the
- * hero's light mirrored, rising onto the footer. Market rows and counts come from the cached catalogue (dated
- * verified closes), the same server path as `/mercado`. The hero comes in once on load (`motion-entrance`); the
- * sections below ease in as they enter the viewport (`data-reveal`, driven by `Reveal`).
+ * The landing page, one flat fill per stretch: the hero panel (`stage-deep`: the title and the App Store pill); on the
+ * canvas, the market (intro, search, coverage figures and the market preview) and following it (intro and a deck);
+ * on a `stage-deep` band, the portfolio (intro and a deck) and Plus; on `stage-brand`, the closing line, which the
+ * footer continues. Market rows and counts come from the cached catalogue (dated verified closes), the same server
+ * path as `/mercado`. The hero's title rises once on load (`motion-entrance-lift`, no fade); the sections below ease
+ * in as they enter the viewport (`data-reveal`, driven by `Reveal`).
  */
 export default async function HomePage() {
   const t = await getTranslations();
@@ -64,51 +66,40 @@ export default async function HomePage() {
   const translate = (key: string) => t(key as never);
   const market = await homeMarket(requestTime());
   const format = createFormat(locale as FormatLocale, (key, values) => t(key as never, values as never));
-  const signIn = t("onboarding.navigation.signIn");
 
   return (
     <main id="main">
       <OrganizationData />
       <Reveal />
 
-      <div className="relative isolate overflow-hidden">
-        <HeroBackdrop />
-        {/* Phones (below 640 px): three groups with room between them, one action (the top bar already signs in). */}
-        <section className={cn(PAGE_CONTAINER, "flex flex-col items-center gap-8 pt-12 pb-12 text-center sm:pt-10 sm:pb-10 md:pt-20 md:pb-14 lg:pt-24")}>
-          <div className="flex max-w-4xl flex-col items-center gap-4 sm:gap-5">
-            <h1 className={cn(HERO_TITLE, "motion-entrance-lift")}>{t("common.yourMarketUpClose")}</h1>
-            <p className="max-w-xl motion-entrance entrance-delay-70 text-body text-balance text-secondary-text max-sm:max-w-80 max-sm:leading-[1.45] sm:text-[1.1875rem] sm:leading-normal">
-              {t("site.home.heroSubtitle")}
-            </p>
-          </div>
-          <div className="flex w-full max-w-xl motion-entrance entrance-delay-140 flex-col items-center gap-3 sm:gap-4">
-            <HeroSearch
+      <HeroPanel labelledBy="home-title">
+        <h1 id="home-title" className="max-w-[13ch] motion-entrance-lift text-hero text-balance">
+          {t("common.yourMarketUpClose")}
+        </h1>
+        <div className="flex max-w-full motion-entrance entrance-delay-70">
+          <StoreButton size="large" fill="bg-on-stage-deep text-stage-deep hover:bg-on-stage-deep/90 max-sm:whitespace-normal" />
+        </div>
+      </HeroPanel>
+
+      <section aria-labelledby="home-market" className={cn(STAGE_SPACE, "flex flex-col gap-12 md:gap-16")}>
+        <SectionIntro id="home-market" title={t("onboarding.page.marketTitle")} action={{ href: INDEXABLE_PAGES.market, label: t("common.explore") }} />
+        <div className={cn(PAGE_CONTAINER, "flex flex-col items-center gap-6")}>
+          <div className="w-full max-w-xl">
+            <MarketSearch
               action={getPathname({ locale, href: INDEXABLE_PAGES.market })}
               hidden={{ categoria: marketQueryParams({ ...MARKET_DEFAULT_QUERY, category: "all" }).categoria }}
             />
-            <div className="flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row">
-              <ButtonLink href={SIGN_IN_PATH} prefetch={false} className="max-sm:hidden sm:w-auto! sm:min-w-48">
-                {signIn}
-              </ButtonLink>
-              <StoreButton className="sm:hidden" />
-              <StoreButton kind="secondary" className="max-sm:hidden sm:w-auto!" />
-            </div>
           </div>
           {market ? (
-            <HeroFigures
-              className="motion-entrance entrance-delay-210 max-sm:mt-2"
+            <CoverageFigures
               total={{ value: format.count(market.total), label: t("common.instruments") }}
               items={market.categories.map(({ category, count }) => ({ value: format.count(count), label: translate(MARKET_CATEGORY_LABEL_KEYS[category]) }))}
             />
           ) : null}
-        </section>
-
+        </div>
         {market && market.categories.length > 0 ? (
-          <section aria-labelledby="home-market" className={cn(PAGE_CONTAINER, "motion-entrance entrance-delay-280 pb-16 md:pb-24")}>
-            <h2 id="home-market" className="sr-only">
-              {t("common.market")}
-            </h2>
-            <Showcase>
+          <div data-reveal className={PAGE_CONTAINER}>
+            <div className="mx-auto w-full max-w-5xl">
               <MarketPreview
                 label={t("common.market")}
                 tabs={market.categories.map(({ category, rows }) => ({
@@ -117,113 +108,96 @@ export default async function HomePage() {
                   rows,
                 }))}
               />
-            </Showcase>
-          </section>
+            </div>
+          </div>
         ) : null}
-      </div>
-
-      <section aria-labelledby="all-in-one" className={cn(PAGE_CONTAINER, "flex flex-col gap-10 pb-8 md:gap-12 md:pb-10")}>
-        <h2 id="all-in-one" data-reveal className={cn(HOME_HEADING, "mx-auto max-w-2xl text-center")}>
-          {t("site.home.allInOneTitle")}
-        </h2>
-        <Bento>
-          <BentoCard href="/simulador" title={t("common.simulateInvestment")} wide wash bleed="corner">
-            <SimulatorMiniature />
-          </BentoCard>
-          <BentoCard href="/atividade-invulgar" title={t("unusualActivity.title")}>
-            <UnusualActivityMiniature />
-          </BentoCard>
-          <BentoCard href={INDEXABLE_PAGES.news} title={t("common.news")}>
-            <NewsMiniature />
-          </BentoCard>
-          <BentoCard href={INDEXABLE_PAGES.learn} title={t("learn.title")}>
-            <LearnMiniature />
-          </BentoCard>
-          <BentoCard href="/semana" title={t("weekAhead.header.navigationTitle")}>
-            <WeekAheadMiniature />
-          </BentoCard>
-        </Bento>
       </section>
 
-      <FeatureRows>
-        <FeatureRow
-          id="theme-market"
-          icon="markets"
-          title={t("onboarding.page.marketTitle")}
-          message={t("onboarding.page.marketMessage")}
-          action={
-            <ButtonLink href={INDEXABLE_PAGES.market} prefetch={false} className="sm:w-auto!">
-              {t("common.explore")}
-            </ButtonLink>
-          }
-          visual={<InstrumentVisual label={t("site.home.instrumentAlt")} />}
-        />
-        <FeatureRow
-          id="theme-watchlist"
-          icon="watchlist"
-          flip
-          title={t("onboarding.page.watchlistTitle")}
-          message={t("onboarding.page.watchlistMessage")}
-          action={
-            <ButtonLink href="/lista" prefetch={false} className="sm:w-auto!">
-              {t("common.follow")}
-            </ButtonLink>
-          }
-          visual={<WatchlistVisual label={t("site.home.alertsAlt")} />}
-        />
-        <FeatureRow
-          id="theme-portfolio"
-          icon="portfolio"
-          title={t("onboarding.page.portfolioTitle")}
-          message={t("onboarding.page.portfolioMessage")}
-          action={
-            <ButtonLink href="/carteira" prefetch={false} className="sm:w-auto!">
-              {t("common.recordPurchase")}
-            </ButtonLink>
-          }
-          visual={<PortfolioVisual label={t("site.home.portfolioAlt")} />}
-        />
-      </FeatureRows>
+      <section aria-labelledby="home-follow" className={cn(STAGE_SPACE, "flex flex-col gap-12 pb-24 md:gap-16 md:pb-36")}>
+        <SectionIntro id="home-follow" title={t("onboarding.page.watchlistTitle")} action={{ href: "/lista", label: t("common.follow") }} />
+        <Deck
+          id="home-follow-deck"
+          label={t("common.watchlistTab")}
+          chip={<SectionChip icon="watchlist">{t("common.watchlistTab")}</SectionChip>}
+          caption={<IllustrativeCaption className={DECK_CAPTION} />}
+        >
+          <DeckCard href="/lista" tone="brand" statement={t("onboarding.page.watchlistMessage")}>
+            <WatchlistVisual />
+          </DeckCard>
+          <DeckCard href="/atividade-invulgar" tone="deep" statement={t("unusualActivity.title")}>
+            <UnusualActivityMiniature />
+          </DeckCard>
+          <DeckCard href="/semana" tone="pale" statement={t("weekAhead.header.navigationTitle")}>
+            <WeekAheadMiniature />
+          </DeckCard>
+          <DeckCard href={INDEXABLE_PAGES.news} tone="ink" statement={t("common.news")}>
+            <NewsMiniature />
+          </DeckCard>
+        </Deck>
+      </section>
 
-      <div className="relative isolate overflow-hidden">
-        <HeroBackdrop edge="bottom" />
-        <section aria-labelledby="plus" className={HOME_SECTION}>
-          <div data-reveal className="panel relative isolate grid items-center gap-10 overflow-hidden border-accent/25 p-5 max-[22.5rem]:px-4 sm:p-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 lg:p-14">
-            <div aria-hidden className="bento-wash absolute inset-0 -z-10" />
-            <div aria-hidden className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,var(--accent),transparent)] opacity-50" />
-            <div className="flex flex-col items-start gap-6">
-              <h2 id="plus" className={HOME_HEADING}>
-                {t("subscriptions.management.plusTitle")}
-              </h2>
-              <ul className="flex flex-col gap-4">
-                {(["benefitWatchlist", "benefitMovements", "benefitComparisons"] as const).map((key) => (
-                  <li key={key} className="flex items-start gap-3 text-body font-medium text-primary-text">
-                    <Icon name="check-circle" className="mt-px text-[1.25rem] text-accent" />
-                    {t(`subscriptions.gift.${key}`)}
-                  </li>
-                ))}
-              </ul>
-              <StoreButton className="mt-2 sm:w-auto!" />
+      <Stage tone="deep" className="pb-24 md:pb-36">
+        <section aria-labelledby="home-portfolio" className={cn(STAGE_SPACE, "flex flex-col gap-12 md:gap-16")}>
+          <SectionIntro
+            id="home-portfolio"
+            tone="deep"
+            title={t("onboarding.page.portfolioTitle")}
+            action={{ href: "/carteira", label: t("common.recordPurchase") }}
+          />
+          <Deck
+            id="home-portfolio-deck"
+            label={t("common.portfolio")}
+            chip={<SectionChip icon="portfolio">{t("common.portfolio")}</SectionChip>}
+            caption={<IllustrativeCaption className={cn(PAGE_CONTAINER, "text-on-stage-deep")} />}
+          >
+            <DeckCard href="/carteira" tone="brand" statement={t("onboarding.page.portfolioMessage")}>
+              <PortfolioVisual />
+            </DeckCard>
+            <DeckCard href="/simulador" tone="ink" statement={t("common.simulateInvestment")}>
+              <SimulatorMiniature />
+            </DeckCard>
+            <DeckCard href={INDEXABLE_PAGES.learn} tone="pale" statement={t("learn.title")}>
+              <LearnMiniature />
+            </DeckCard>
+          </Deck>
+        </section>
+
+        <section aria-labelledby="plus" className={cn(STAGE_SPACE, "flex flex-col gap-12 md:gap-16")}>
+          <SectionIntro id="plus" tone="deep" title={t("subscriptions.management.plusTitle")} />
+          <div className={PAGE_CONTAINER}>
+            {/* A pale card on the deep band: its controls ring in the accent again. */}
+            <div
+              data-reveal
+              className="grid items-center gap-10 rounded-card bg-stage-pale p-5 text-on-stage-pale [--focus-ring:var(--accent)] max-[22.5rem]:px-4 sm:p-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 lg:p-14"
+            >
+              <div className="flex flex-col items-start gap-8">
+                <ul className="flex flex-col gap-5">
+                  {(["benefitWatchlist", "benefitMovements", "benefitComparisons"] as const).map((key) => (
+                    <li key={key} className="flex items-start gap-3 font-display text-lead">
+                      <Icon name="check-circle" className="mt-[0.2em] shrink-0 text-[1.25rem] text-accent" />
+                      {t(`subscriptions.gift.${key}`)}
+                    </li>
+                  ))}
+                </ul>
+                <StoreButton className="sm:w-auto!" />
+              </div>
+              <PlusVisual label={t("site.home.plusAlt")} />
             </div>
-            <PlusVisual label={t("site.home.plusAlt")} />
           </div>
         </section>
+      </Stage>
 
-        <section aria-labelledby="download" data-reveal="stagger" className={cn(PAGE_CONTAINER, "flex flex-col items-center gap-8 pb-16 text-center md:pb-24")}>
-          <span className="flex size-16 items-center justify-center rounded-[1.25rem] bg-accent text-on-accent shadow-panel">
-            <PalancaMark className="size-10" />
-          </span>
-          <h2 id="download" className={cn(CLOSING_TITLE, "max-w-3xl")}>
-            {t("common.yourMarketUpClose")}
+      <Stage tone="brand" className="pb-20 md:pb-28">
+        <section aria-labelledby="download" data-reveal="stagger" className={cn(PAGE_CONTAINER, STAGE_SPACE, "flex flex-col items-center gap-6 text-center")}>
+          <p className="max-w-[24ch] font-display text-lead text-balance">{t("site.home.heroSubtitle")}</p>
+          <h2 id="download" className="max-w-5xl text-heading text-balance">
+            <MarkedText text={t("common.yourMarketUpClose")} mark="text-current" />
           </h2>
-          <div className="flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row">
-            <StoreButton className="sm:w-auto! sm:min-w-48" />
-            <ButtonLink href={SIGN_IN_PATH} prefetch={false} kind="outline" className="bg-card-background! hover:bg-action-surface! sm:w-auto! sm:min-w-48">
-              {signIn}
-            </ButtonLink>
+          <div className="mt-6 flex max-w-full">
+            <StoreButton size="large" fill="bg-card-background text-primary-text hover:bg-accent-soft max-sm:whitespace-normal" />
           </div>
         </section>
-      </div>
+      </Stage>
     </main>
   );
 }

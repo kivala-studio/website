@@ -4,7 +4,7 @@ import path from "node:path";
 import { ImageResponse } from "next/og";
 
 // Light tokens from src/ui/theme/tokens.css (the brand's default canvas for shared images).
-const CANVAS = "#f2f3f5";
+const CANVAS = "#f3f6fd";
 const PRIMARY_TEXT = "#182231";
 const ACCENT = "#1854c5";
 const CHART_GRID = "#cbd2dc";

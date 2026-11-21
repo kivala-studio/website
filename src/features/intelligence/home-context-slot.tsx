@@ -193,7 +193,7 @@ export function HomeContextSlot({ fallback }: { fallback: ReactNode }) {
       <Link
         href={card.href}
         onClick={watchlistInsight ? () => consume(watchlistInsight, "home") : undefined}
-        className="flex min-h-18 items-center gap-4 rounded-large bg-elevated-background p-4"
+        className="flex min-h-18 items-center gap-4 rounded-large bg-card-background p-4"
         data-testid="home-context"
         data-kind={feature!.content.kind}
       >

@@ -47,7 +47,7 @@ export default async function HomePage() {
               listing ? (
                 <Link
                   href={`/mercado/admissao/${listing.id}`}
-                  className="flex min-h-18 items-center gap-4 rounded-large bg-elevated-background p-4"
+                  className="flex min-h-18 items-center gap-4 rounded-large bg-card-background p-4"
                   data-testid="home-listing"
                 >
                   <span aria-hidden className="flex size-12 shrink-0 items-center justify-center rounded-full border-2 border-accent text-accent">

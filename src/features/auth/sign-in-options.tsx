@@ -51,7 +51,7 @@ export function SignInOptions({ next, available, failed: initiallyFailed }: { ne
       className: "border border-field-border bg-card-background text-primary-text hover:bg-action-surface",
       mark: <GoogleMark />,
     },
-    { provider: "apple", label: t("authentication.signIn.apple"), className: "bg-primary-text text-app-background", mark: <AppleMark /> },
+    { provider: "apple", label: t("authentication.signIn.apple"), className: "bg-primary-text text-canvas", mark: <AppleMark /> },
   ];
 
   return (

@@ -8,7 +8,7 @@ import { Link } from "@/i18n/navigation";
 import { cn } from "../cn";
 import { Icon, type IconName } from "../icons/icon";
 import { ICON_IN, useChangeAnimation } from "../motion/use-change-animation";
-import { type ButtonKind as Kind, type ButtonSize as Size, buttonClass, iconButtonClass } from "./button-styles";
+import { type ButtonKind as Kind, type ButtonSize as Size, buttonClass, type IconButtonVariant, iconButtonClass } from "./button-styles";
 import { Spinner } from "./states";
 
 export { buttonClass, iconButtonClass };
@@ -68,8 +68,11 @@ export function ButtonLink({
 type IconButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
   icon: IconName;
   label: string;
-  /** `filled` sits on a grey disc; `plain` is a bare icon with a hover disc (top bar, toolbars); `outline` a hairline ring. */
-  variant?: "filled" | "plain" | "outline";
+  /**
+   * `filled` sits on the soft accent tint; `surface` on the card fill (an opaque disc on the canvas); `plain` is a bare
+   * icon with a hover disc (toolbars, dialogs); `outline` a hairline ring.
+   */
+  variant?: IconButtonVariant;
 };
 
 /** Circular icon-only button; the label is required. A new icon (eye ↔ eye-off) grows in. */

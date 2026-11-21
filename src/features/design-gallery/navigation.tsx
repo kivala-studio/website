@@ -47,11 +47,11 @@ export function Navigation({ initialTheme }: { initialTheme: Theme }) {
             ]}
             wideActions={
               <>
-                <span className={LANGUAGE_CONTROL}>
+                <span className={cn(LANGUAGE_CONTROL, "bg-card-background")}>
                   <LanguageFlag locale="en" />
                   EN
                 </span>
-                <ThemeMenu initial={initialTheme} />
+                <ThemeMenu initial={initialTheme} triggerClassName={iconButtonClass("surface")} />
               </>
             }
             actions={
@@ -66,13 +66,13 @@ export function Navigation({ initialTheme }: { initialTheme: Theme }) {
       <Specimen name="LANGUAGE_CONTROL · LanguageFlag">
         <div className="flex flex-wrap items-center gap-4">
           <Variant label='Bar, pt page: locale="en"'>
-            <span className={LANGUAGE_CONTROL}>
+            <span className={cn(LANGUAGE_CONTROL, "bg-card-background")}>
               <LanguageFlag locale="en" />
               EN
             </span>
           </Variant>
           <Variant label='Menu, en page: locale="pt"'>
-            <span className={cn(LANGUAGE_CONTROL, "bg-action-surface")}>
+            <span className={cn(LANGUAGE_CONTROL, "bg-accent-soft")}>
               <LanguageFlag locale="pt" />
               PT
             </span>
@@ -100,12 +100,12 @@ export function Navigation({ initialTheme }: { initialTheme: Theme }) {
             }
             actions={
               <>
-                <Link href={HERE} className={iconButtonClass("plain")}>
+                <Link href={HERE} className={iconButtonClass("surface")}>
                   <Icon name="chart" label={t("unusualActivity.title")} scale="l" />
                 </Link>
-                <Link href={HERE} aria-current="page" className={iconButtonClass("plain", "aria-[current=page]:bg-action-surface")}>
+                <Link href={HERE} aria-current="page" className={iconButtonClass("surface", "aria-[current=page]:bg-accent-soft")}>
                   <Icon name="notification" label={t("common.activity")} scale="l" />
-                  <span aria-hidden className="absolute top-2 right-2 size-2.5 rounded-full bg-negative ring-2 ring-elevated-background" />
+                  <span aria-hidden className="absolute top-2 right-2 size-2.5 rounded-full bg-negative ring-2 ring-card-background" />
                 </Link>
                 <span aria-hidden className="ml-1 inline-flex size-9 items-center justify-center rounded-full bg-accent-soft font-display text-secondary font-semibold text-accent">
                   AB

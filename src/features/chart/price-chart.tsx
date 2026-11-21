@@ -207,7 +207,7 @@ export function PriceChart({
                 vectorEffect="non-scaling-stroke"
                 className="stroke-secondary-text"
               />
-              {dot(selectedCoordinate, 13, "stroke-app-background")}
+              {dot(selectedCoordinate, 13, "stroke-canvas")}
               {dot(selectedCoordinate, 9, tone.stroke)}
             </>
           ) : null}

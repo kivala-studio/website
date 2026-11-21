@@ -2,7 +2,7 @@
 
 invest.ao website: Next.js App Router, TypeScript strict, Tailwind. Plan: `docs/plan/WEBSITE_IMPLEMENTATION_PLAN.md`. References: `docs/reference/`. Golden fixtures: `tests/fixtures/` (unchanged copies; never edit).
 
-Commands: `npm run check` (lint, typecheck, unit tests), `npm run build` (build + client bundle scan), `npm run e2e` (Playwright, demo mode), `npm run lhci` (Lighthouse budgets), `npm run messages` (regenerate `messages/*.json` from the iOS catalogue), `npm run icons` (regenerate the icon pack). Design gallery: `/dev/design` (not in production builds). Web layer: content grouped in cards under a top bar, no sidebar; `lg:` for page layout and the `panel` surface, `desk:` (≥ 1024 px with a mouse or trackpad) for the web type scale and tighter padding; colour tokens stay the iOS ones. Copy `.env.example` to `.env.local` for development.
+Commands: `npm run check` (lint, typecheck, unit tests), `npm run build` (build + client bundle scan), `npm run e2e` (Playwright, demo mode), `npm run lhci` (Lighthouse budgets), `npm run messages` (regenerate `messages/*.json` from the iOS catalogue), `npm run icons` (regenerate the icon pack). Design gallery: `/dev/design` (not in production builds). Web layer: content grouped in flat cards on a tinted canvas under a floating top bar, no sidebar; stage fills for the landing's bands and the footer; `lg:` for page layout and the `panel` surface, `desk:` (≥ 1024 px with a mouse or trackpad) for the web type scale and tighter padding; the iOS semantic colour tokens stay unchanged, web-only tokens sit beside them. Copy `.env.example` to `.env.local` for development.
 
 ## Design system
 
@@ -11,7 +11,7 @@ Commands: `npm run check` (lint, typecheck, unit tests), `npm run build` (build 
 - Use an existing primitive before writing a new one.
 - A new primitive goes into `components.md` and the gallery in the same PR.
 - Tokens only: no raw hex, no arbitrary colours.
-- Group content in `Card` or `Panel`.
+- Group content in `Card` or `Panel`: flat, no border, no shadow.
 - Actions are pills (`Button`, `ButtonLink`, `buttonClass`).
 - `font-display` for headings and values.
 - Fields never show an outline: accent border and `shadow-focus` instead.

@@ -10,7 +10,7 @@ import { Icon } from "@/ui/icons/icon";
 export function MaintenanceScreen() {
   const t = useTranslations();
   return (
-    <main id="main" className="flex flex-1 flex-col items-center justify-center bg-app-background px-4 py-16">
+    <main id="main" className="flex flex-1 flex-col items-center justify-center bg-canvas px-4 py-16">
       <MessageCard className="items-center text-center">
         <span aria-hidden className="flex size-13 items-center justify-center rounded-full bg-warning/12 text-[1.75rem] text-warning">
           <Icon name="warning" />

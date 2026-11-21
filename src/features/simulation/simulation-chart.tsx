@@ -137,7 +137,7 @@ export function SimulationChart({
         {selected !== null ? (
           <span
             aria-hidden
-            className="pointer-events-none absolute size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent ring-2 ring-app-background"
+            className="pointer-events-none absolute size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent ring-2 ring-canvas"
             style={{
               left: `${(geometry.x(selected) / WIDTH) * 100}%`,
               top: `${(geometry.y(geometry.balances[selected]) / HEIGHT) * 100}%`,
