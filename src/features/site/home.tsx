@@ -45,9 +45,11 @@ export function Stage({ tone, className, children }: { tone: StageTone; classNam
 
 /**
  * The text with the brand mark set inline before its last word, at the cap height, kept on one line with that word
- * (`O teu mercado, de ▲ perto.`). The mark is decorative, so the text reads the same to assistive technology.
+ * (`O teu mercado, de ▲ perto.`), in the brand colour of the fill it sits on: `mark` is its colour class (the accent on
+ * the canvas, `text-stage-brand` on `stage-deep`, `text-current` on `stage-brand`). The mark is decorative, so the
+ * text reads the same to assistive technology.
  */
-export function MarkedText({ text }: { text: string }) {
+export function MarkedText({ text, mark = "text-accent" }: { text: string; mark?: string }) {
   const split = text.lastIndexOf(" ");
   if (split < 0) return text;
   return (
@@ -55,17 +57,20 @@ export function MarkedText({ text }: { text: string }) {
       {text.slice(0, split)}{" "}
       <span className="whitespace-nowrap">
         {/* The glyph sits left in its square, so its own right margin is the gap before the word. */}
-        <PalancaMark className="size-[0.78em] align-[-0.04em]" />
+        <PalancaMark className={cn("size-[0.78em] align-[-0.04em]", mark)} />
         {text.slice(split + 1)}
       </span>
     </>
   );
 }
 
-/** The soft pill under a section intro, per fill it sits on: the soft accent tint on the canvas, a light veil on a stage. */
-const INTRO_PILL = {
-  canvas: buttonClass("secondary", undefined, "compact"),
-  deep: cn(buttonShape("compact"), "bg-on-stage-deep/12 text-on-stage-deep hover:bg-on-stage-deep/20"),
+/**
+ * Per fill a section intro sits on: the inline mark's brand colour, and the soft pill under the heading (the soft accent
+ * tint on the canvas, a light veil on a stage).
+ */
+const INTRO = {
+  canvas: { mark: "text-accent", pill: buttonClass("secondary", undefined, "compact") },
+  deep: { mark: "text-stage-brand", pill: cn(buttonShape("compact"), "bg-on-stage-deep/12 text-on-stage-deep hover:bg-on-stage-deep/20") },
 } as const;
 
 /**
@@ -81,15 +86,15 @@ export function SectionIntro({
   id: string;
   title: string;
   action?: { href: string; label: string };
-  tone?: keyof typeof INTRO_PILL;
+  tone?: keyof typeof INTRO;
 }) {
   return (
     <div data-reveal="stagger" className={cn(PAGE_CONTAINER, "flex flex-col items-center gap-8 text-center md:gap-10")}>
       <h2 id={id} className="max-w-5xl text-heading text-balance">
-        <MarkedText text={title} />
+        <MarkedText text={title} mark={INTRO[tone].mark} />
       </h2>
       {action ? (
-        <Link href={action.href} prefetch={false} className={INTRO_PILL[tone]}>
+        <Link href={action.href} prefetch={false} className={INTRO[tone].pill}>
           {action.label}
           <Icon name="arrow-up-right" className="text-[1rem]" />
         </Link>
@@ -160,8 +165,9 @@ export function CoverageFigures({ total, items, className }: { total?: Figure; i
 
 /**
  * One card of a deck, a whole-card link: a tall flat card in a stage fill, its statement (`text-statement`, the link's
- * name) at the top and the product visual in a frame that runs off its bottom edge. The visual is decorative:
- * hidden, inert and unselectable. 85 % of the row on phones (the next card peeks in), 352 px from 640 px, 472 px
+ * name) at the top and the product visual in a frame that runs off its bottom edge and takes all the height the
+ * statement leaves (a short statement gets a taller frame, never an empty band). The visual is decorative: hidden,
+ * inert and unselectable. 85 % of the row on phones (the next card peeks in), 352 px from 640 px, 472 px
  * from 1024 px; it snaps to the row's start.
  */
 export function DeckCard({ href, statement, tone, children }: { href: string; statement: string; tone: StageTone; children: ReactNode }) {
@@ -171,12 +177,12 @@ export function DeckCard({ href, statement, tone, children }: { href: string; st
         href={href}
         prefetch={false}
         className={cn(
-          "group/card motion-lift flex h-[27rem] w-full flex-col justify-between overflow-hidden rounded-card sm:h-[31rem] lg:h-[36rem]",
+          "group/card motion-lift flex h-[27rem] w-full flex-col overflow-hidden rounded-card sm:h-[31rem] lg:h-[36rem]",
           STAGE_FILL[tone],
         )}
       >
         <h3 className="px-6 pt-6 font-display text-statement text-balance sm:px-8 sm:pt-8 lg:px-12 lg:pt-12">{statement}</h3>
-        <div aria-hidden inert className="mx-3 mt-8 h-60 shrink-0 overflow-hidden rounded-t-[1.25rem] bg-canvas p-3 select-none sm:mx-5 sm:h-68 lg:mx-8 lg:h-80">
+        <div aria-hidden inert className="mx-3 mt-8 min-h-56 grow overflow-hidden rounded-t-[1.25rem] bg-canvas p-3 select-none sm:mx-5 lg:mx-8 lg:mt-10">
           {children}
         </div>
       </Link>

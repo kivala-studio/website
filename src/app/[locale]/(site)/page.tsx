@@ -124,13 +124,13 @@ export default async function HomePage() {
           <DeckCard href="/lista" tone="brand" statement={t("onboarding.page.watchlistMessage")}>
             <WatchlistVisual />
           </DeckCard>
-          <DeckCard href="/atividade-invulgar" tone="ink" statement={t("unusualActivity.title")}>
+          <DeckCard href="/atividade-invulgar" tone="deep" statement={t("unusualActivity.title")}>
             <UnusualActivityMiniature />
           </DeckCard>
           <DeckCard href="/semana" tone="pale" statement={t("weekAhead.header.navigationTitle")}>
             <WeekAheadMiniature />
           </DeckCard>
-          <DeckCard href={INDEXABLE_PAGES.news} tone="deep" statement={t("common.news")}>
+          <DeckCard href={INDEXABLE_PAGES.news} tone="ink" statement={t("common.news")}>
             <NewsMiniature />
           </DeckCard>
         </Deck>
@@ -191,7 +191,7 @@ export default async function HomePage() {
         <section aria-labelledby="download" data-reveal="stagger" className={cn(PAGE_CONTAINER, STAGE_SPACE, "flex flex-col items-center gap-6 text-center")}>
           <p className="max-w-[24ch] font-display text-lead text-balance">{t("site.home.heroSubtitle")}</p>
           <h2 id="download" className="max-w-5xl text-heading text-balance">
-            <MarkedText text={t("common.yourMarketUpClose")} />
+            <MarkedText text={t("common.yourMarketUpClose")} mark="text-current" />
           </h2>
           <div className="mt-6 flex max-w-full">
             <StoreButton size="large" fill="bg-card-background text-primary-text hover:bg-accent-soft max-sm:whitespace-normal" />

@@ -68,7 +68,7 @@ export function Landing() {
       <Specimen name='Stage tone="brand" · MarkedText · StoreButton fill'>
         <Stage tone="brand" className="flex flex-col items-center gap-6 rounded-card px-4 py-12 text-center">
           <p className="text-heading text-balance">
-            <MarkedText text={t("common.yourMarketUpClose")} />
+            <MarkedText text={t("common.yourMarketUpClose")} mark="text-current" />
           </p>
           <StoreButton size="large" fill="bg-card-background text-primary-text hover:bg-accent-soft max-sm:whitespace-normal" />
         </Stage>
