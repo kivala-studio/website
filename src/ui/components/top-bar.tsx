@@ -125,7 +125,10 @@ function TopBarMenu({ label, nav, navLabel, content }: { label: string; nav: rea
   const id = useId();
   const button = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
-  /** `closing` keeps the panel on screen while it animates out. */
+  /**
+   * `closing` keeps the panel and the dim on screen while they leave (`data-state`, `motion-drop`, `motion-dim`):
+   * transitions, so opening again mid-exit turns them around from where they are.
+   */
   const [phase, setPhase] = useState<"closed" | "open" | "closing">("closed");
   const open = phase === "open";
 
@@ -173,7 +176,7 @@ function TopBarMenu({ label, nav, navLabel, content }: { label: string; nav: rea
     };
   }, [open]);
 
-  // The exit animation (`base`) ends the closing phase; the timer covers a browser that runs no animation.
+  // The exit transition (`base`) ends the closing phase; the timer covers a browser that runs none.
   useEffect(() => {
     if (phase !== "closing") return;
     const timer = window.setTimeout(() => setPhase("closed"), 400);
@@ -198,24 +201,26 @@ function TopBarMenu({ label, nav, navLabel, content }: { label: string; nav: rea
           {/* The dimmed page, behind the bar's pieces (the bar is its own stacking context). Not focusable; a tap closes. */}
           <div
             aria-hidden
+            data-state={phase}
             onMouseDown={(event) => event.preventDefault()}
             onClick={() => close(true)}
-            className={cn("absolute inset-x-0 top-0 -z-10 h-dvh bg-black/40 lg:hidden", open ? "motion-dim-in" : "motion-dim-out")}
+            className="motion-dim absolute inset-x-0 top-0 -z-10 h-dvh bg-black/40 lg:hidden"
           />
           <div className={cn(PAGE_CONTAINER, "absolute inset-x-0 top-full lg:hidden")}>
             <div
               ref={panel}
               id={id}
+              data-state={phase}
+              // Gone for the keyboard and assistive technology the moment it starts leaving.
+              inert={!open || undefined}
+              aria-hidden={!open || undefined}
               onClick={(event) => {
                 if ((event.target as Element).closest("a")) close();
               }}
-              onAnimationEnd={(event) => {
+              onTransitionEnd={(event) => {
                 if (event.target === event.currentTarget && phase === "closing") setPhase("closed");
               }}
-              className={cn(
-                "max-h-[calc(100dvh-var(--top-bar-height)-1rem)] overflow-y-auto overscroll-contain rounded-card bg-card-background p-3 shadow-panel",
-                open ? "motion-drop-in" : "motion-drop-out",
-              )}
+              className="motion-drop max-h-[calc(100dvh-var(--top-bar-height)-1rem)] overflow-y-auto overscroll-contain rounded-card bg-card-background p-3 shadow-panel"
             >
               <nav aria-label={navLabel}>
                 <ul className="flex flex-col gap-1">

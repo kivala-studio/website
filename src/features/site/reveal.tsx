@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-/** Targets that enter together are staggered up to this step (`data-reveal-step`, 60 ms each, `motion.css`). */
+/** Targets that enter together are staggered up to this step (`data-reveal-step`, 50 ms down to 30 ms apart, `motion.css`). */
 const LAST_STEP = 5;
 
 /**

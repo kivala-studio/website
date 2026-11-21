@@ -8,28 +8,33 @@
 /*
  * Durations: `fast` for hover, press, colour and small exits; `base` for small moves (indicators, chevrons, menus);
  * `slow` for panels and large moves (sheets, disclosures, the theme cross-fade). `reveal` is the landing's one-time
- * scroll reveal only; `flash` is the tint behind a live figure that changed, fading out. Curves: `standard` (calm ease-out) for colour and state changes, `emphasized` (fast start, long
- * settle) for anything that moves or enters, `exit` (accelerates away) for anything that leaves.
- * Tailwind: `duration-fast|base|slow`, `ease-standard|emphasized|exit`; a bare `transition-*` utility is fast and
- * standard. Scripts read the same values through `src/ui/motion/tokens.ts`.
+ * scroll reveal only, `draw` its chart lines; `flash` is the tint behind a live figure that changed, fading out.
+ * Curves: `standard` (calm ease-out) for colour and state changes, `emphasized` (fast start, long settle) for anything
+ * that moves or enters, `exit` for anything that leaves: the same fast start, so it is out of the way at once, on the
+ * shorter exit durations. Tailwind: `duration-fast|base|slow`, `ease-standard|emphasized|exit`; a bare `transition-*`
+ * utility is fast and standard. Scripts read the same values through `src/ui/motion/tokens.ts`.
  */
 @theme static {
   --duration-fast: 140ms;
   --duration-base: 220ms;
   --duration-slow: 340ms;
-  --duration-reveal: 550ms;
+  --duration-reveal: 400ms;
+  --duration-draw: 650ms;
   --duration-flash: 900ms;
   --transition-duration-fast: var(--duration-fast);
   --transition-duration-base: var(--duration-base);
   --transition-duration-slow: var(--duration-slow);
   --ease-standard: cubic-bezier(0.25, 0.8, 0.25, 1);
   --ease-emphasized: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-exit: var(--ease-emphasized);
   /* The landing's name for the emphasized curve. */
   --ease-reveal: var(--ease-emphasized);
   --default-transition-duration: var(--duration-fast);
   --default-transition-timing-function: var(--ease-standard);
 }
+
+/* Hover that moves something (a lift, a rise): only under a mouse or a trackpad, never after a tap on a touch screen. */
+@custom-variant fine-hover (@media (hover: hover) and (pointer: fine));
 
 @keyframes fade-in {
   from { opacity: 0; }
@@ -39,12 +44,6 @@
 }
 @keyframes presence-in {
   from { opacity: 0; transform: translateY(0.5rem); }
-}
-@keyframes toast-in {
-  from { opacity: 0; transform: translateY(-100%); }
-}
-@keyframes toast-out {
-  to { opacity: 0; transform: translateY(-0.75rem) scale(0.98); }
 }
 @keyframes skeleton-pulse {
   from { opacity: 0.9; }
@@ -62,14 +61,17 @@
  * Feedback on what the pointer does
  * ------------------------------------------------------------------------------------------------------------- */
 
-/* Press: pills, icon buttons, chips, tiles, segments. Owns the control's colour, opacity and shadow transitions too. */
+/*
+ * Press: pills, icon buttons, chips, tiles, segments. Owns the control's colour, opacity and shadow transitions too.
+ * A scale only, no dim: a solid fill would flash pale.
+ */
 @utility motion-press {
   transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, filter, scale;
   transition-duration: var(--duration-fast);
-  transition-timing-function: var(--ease-standard);
+  transition-timing-function: var(--ease-standard), var(--ease-standard), var(--ease-standard), var(--ease-standard),
+    var(--ease-standard), var(--ease-standard), var(--ease-standard), var(--ease-standard), var(--ease-emphasized);
   &:active:not(:disabled, [aria-disabled="true"]) {
-    opacity: 0.76;
-    scale: 0.98;
+    scale: 0.97;
   }
 }
 
@@ -83,12 +85,12 @@
   }
 }
 
-/* Lift: an interactive card rises 1 px under a mouse (never on touch) and dims when pressed. */
+/* Lift: an interactive card rises 1 px under a mouse or a trackpad (never on touch) and dims when pressed. */
 @utility motion-lift {
   transition-property: color, background-color, border-color, opacity, box-shadow, translate;
   transition-duration: var(--duration-base);
   transition-timing-function: var(--ease-emphasized);
-  @media (hover: hover) {
+  @media (hover: hover) and (pointer: fine) {
     &:hover {
       translate: 0 -1px;
     }
@@ -197,7 +199,8 @@
  * Modal and sheet: a `<dialog>` that enters from `@starting-style` and, where the browser keeps a closing dialog in
  * the top layer (`overlay`), leaves with the same motion after `close()`; elsewhere it leaves at once. The page is
  * usable again the moment it closes. `motion-modal` rises 0.5rem and grows from 96 %; `motion-sheet` slides up from
- * the bottom on phones and in from the right from 768 px. The backdrop fades with it.
+ * the bottom on phones and in from the right from 768 px. The backdrop fades with it. `data-instant` (`Dialog instant`,
+ * a dialog opened or closed from the keyboard) skips the motion both ways.
  */
 @utility motion-modal {
   transition-property: opacity, scale, translate, display, overlay;
@@ -232,6 +235,10 @@
     &[open]::backdrop {
       opacity: 0;
     }
+  }
+  &[data-instant],
+  &[data-instant]::backdrop {
+    transition: none;
   }
 }
 @utility motion-sheet {
@@ -274,6 +281,10 @@
       opacity: 0;
     }
   }
+  &[data-instant],
+  &[data-instant]::backdrop {
+    transition: none;
+  }
 }
 /* Without `overlay` a closed dialog leaves the top layer at once: close it at once rather than fade it in the page. */
 @supports not (overlay: auto) {
@@ -287,12 +298,27 @@
   }
 }
 
-/* Toast: slides down from the top on mount; `motion-toast-out` lifts and fades the one leaving. */
+/*
+ * Toast: slides down from the top on mount (`@starting-style`); `data-state="closing"` lifts and fades the one leaving.
+ * Transitions, so a toast dismissed or replaced while it is still arriving turns around from where it is. A swipe
+ * moves it with `transform` (`useSwipeDismiss`), which adds to the `translate` these transitions own.
+ */
 @utility motion-toast {
-  animation: toast-in var(--duration-slow) var(--ease-emphasized) backwards;
-}
-@utility motion-toast-out {
-  animation: toast-out var(--duration-base) var(--ease-exit) forwards;
+  transition-property: opacity, translate, scale;
+  transition-duration: var(--duration-slow);
+  transition-timing-function: var(--ease-emphasized);
+  @starting-style {
+    opacity: 0;
+    translate: 0 -100%;
+  }
+  &[data-state="closing"] {
+    opacity: 0;
+    translate: 0 -0.75rem;
+    scale: 0.98;
+    pointer-events: none;
+    transition-duration: var(--duration-base);
+    transition-timing-function: var(--ease-exit);
+  }
 }
 
 /*
@@ -325,28 +351,42 @@
 }
 
 /*
- * The top bar's menu (`TopBar mobileNav="menu"`): the card slides out from under the bar, clipped at its top edge,
- * and the page dims behind it. The clip leaves room for the card's shadow.
+ * The top bar's menu (`TopBar mobileNav="menu"`): the card (`motion-drop`) slides out from under the bar, clipped at
+ * its top edge, and the page dims behind it (`motion-dim`). Both enter from `@starting-style` and leave on
+ * `data-state="closing"`; transitions, so opening again mid-exit turns them around from where they are. The clip
+ * leaves room for the card's shadow.
  */
-@keyframes drop-in {
-  from { opacity: 0; transform: translateY(-0.5rem); clip-path: inset(0.5rem -1rem -1rem); }
-  to { clip-path: inset(0 -1rem -1rem); }
+@utility motion-drop {
+  clip-path: inset(0 -1rem -1rem);
+  transition-property: opacity, translate, clip-path;
+  transition-duration: var(--duration-slow);
+  transition-timing-function: var(--ease-emphasized);
+  @starting-style {
+    opacity: 0;
+    translate: 0 -0.5rem;
+    clip-path: inset(0.5rem -1rem -1rem);
+  }
+  &[data-state="closing"] {
+    opacity: 0;
+    translate: 0 -0.5rem;
+    clip-path: inset(0.5rem -1rem -1rem);
+    pointer-events: none;
+    transition-duration: var(--duration-base);
+    transition-timing-function: var(--ease-exit);
+  }
 }
-@keyframes drop-out {
-  from { clip-path: inset(0 -1rem -1rem); }
-  to { opacity: 0; transform: translateY(-0.5rem); clip-path: inset(0.5rem -1rem -1rem); }
-}
-@utility motion-drop-in {
-  animation: drop-in var(--duration-slow) var(--ease-emphasized) backwards;
-}
-@utility motion-drop-out {
-  animation: drop-out var(--duration-base) var(--ease-exit) forwards;
-}
-@utility motion-dim-in {
-  animation: fade-in var(--duration-slow) var(--ease-standard) backwards;
-}
-@utility motion-dim-out {
-  animation: fade-out var(--duration-base) var(--ease-exit) forwards;
+@utility motion-dim {
+  transition-property: opacity;
+  transition-duration: var(--duration-slow);
+  transition-timing-function: var(--ease-standard);
+  @starting-style {
+    opacity: 0;
+  }
+  &[data-state="closing"] {
+    opacity: 0;
+    pointer-events: none;
+    transition-duration: var(--duration-base);
+  }
 }
 
 /* ---------------------------------------------------------------------------------------------------------------
@@ -463,7 +503,8 @@
  * ------------------------------------------------------------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .motion-press:active:not(:disabled, [aria-disabled="true"]) { scale: none; }
+  /* No scale: a slight dim still acknowledges the press. */
+  .motion-press:active:not(:disabled, [aria-disabled="true"]) { scale: none; filter: brightness(0.9); }
   .motion-lift:hover { translate: none; }
   .motion-turn { transition: none; }
   .motion-swap > * { transition-property: opacity; }
@@ -479,10 +520,10 @@
   @starting-style {
     .motion-sheet[open] { opacity: 0; }
   }
-  .motion-toast { animation: fade-in var(--duration-base) var(--ease-standard) backwards; }
-  .motion-toast-out { animation: fade-out var(--duration-fast) var(--ease-exit) forwards; }
-  .motion-drop-in { animation: fade-in var(--duration-fast) var(--ease-standard) backwards; }
-  .motion-drop-out { animation: fade-out var(--duration-fast) var(--ease-exit) forwards; }
+  .motion-toast,
+  .motion-toast[data-state="closing"] { translate: none; scale: none; transition-property: opacity; transition-duration: var(--duration-fast); }
+  .motion-drop,
+  .motion-drop[data-state="closing"] { translate: none; clip-path: inset(0 -1rem -1rem); transition-property: opacity; transition-duration: var(--duration-fast); }
   .motion-collapse { transition-property: opacity, visibility; transition-duration: var(--duration-fast); }
   .motion-details::details-content { transition: none; }
   .motion-pulse, .motion-shimmer { animation: none; }
@@ -527,8 +568,8 @@
  * element in, `data-reveal="stagger"` eases its children in one after another. The start state exists only on a
  * screen that allows motion, and only once the script has set `data-reveal-state="pending"` on a target that was
  * still below the fold; without the script, before it runs, in print and with reduced motion, nothing is hidden.
- * A focused target shows at once. Inside a target, `reveal-line` draws a chart line from the left and
- * `reveal-after` fades in once the line is drawn.
+ * A focused target shows at once. Inside a target, `reveal-line` draws a chart line from the left as the target
+ * rises (`draw`) and `reveal-after` fades in as soon as the line is drawn.
  */
 @media screen and (prefers-reduced-motion: no-preference) {
   [data-reveal-state="pending"]:not([data-reveal="stagger"], :focus-within),
@@ -543,15 +584,15 @@
       opacity var(--duration-reveal) var(--ease-emphasized) var(--reveal-delay),
       transform var(--duration-reveal) var(--ease-emphasized) var(--reveal-delay);
   }
-  /* Targets that enter together (bento cards on one row) follow each other by 60 ms… */
-  [data-reveal-step="1"] { --reveal-step: 60ms; }
-  [data-reveal-step="2"] { --reveal-step: 120ms; }
-  [data-reveal-step="3"] { --reveal-step: 180ms; }
-  [data-reveal-step="4"] { --reveal-step: 240ms; }
-  [data-reveal-step="5"] { --reveal-step: 300ms; }
-  /* …and a group's children by 100 ms. */
-  [data-reveal="stagger"] > :nth-child(2) { --reveal-order: 100ms; }
-  [data-reveal="stagger"] > :nth-child(3) { --reveal-order: 200ms; }
+  /* Targets that enter together (the cards of one row) follow each other by shrinking steps, 50 ms down to 30 ms… */
+  [data-reveal-step="1"] { --reveal-step: 50ms; }
+  [data-reveal-step="2"] { --reveal-step: 95ms; }
+  [data-reveal-step="3"] { --reveal-step: 135ms; }
+  [data-reveal-step="4"] { --reveal-step: 170ms; }
+  [data-reveal-step="5"] { --reveal-step: 200ms; }
+  /* …and a group's children by 70 ms, then 50 ms. */
+  [data-reveal="stagger"] > :nth-child(2) { --reveal-order: 70ms; }
+  [data-reveal="stagger"] > :nth-child(3) { --reveal-order: 120ms; }
 
   [data-reveal-state="pending"]:not(:focus-within) .reveal-line {
     clip-path: inset(-25% 100% -25% -25%);
@@ -559,11 +600,12 @@
   [data-reveal-state="pending"]:not(:focus-within) .reveal-after {
     opacity: 0;
   }
+  /* The line draws as its card rises; the area and the dot fade in as it ends. */
   [data-reveal-state="shown"] .reveal-line {
-    animation: line-draw 1s var(--ease-emphasized) 0.35s backwards;
+    animation: line-draw var(--duration-draw) var(--ease-emphasized) var(--reveal-delay, 0ms) backwards;
   }
   [data-reveal-state="shown"] .reveal-after {
-    animation: fade-in 0.4s ease-out 1.05s backwards;
+    animation: fade-in var(--duration-base) var(--ease-standard) calc(var(--reveal-delay, 0ms) + var(--duration-draw)) backwards;
   }
 }
 

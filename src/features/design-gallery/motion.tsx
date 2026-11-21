@@ -206,6 +206,7 @@ export function MotionSection() {
   const [loading, setLoading] = useState<"idle" | "loading" | "loaded" | "empty">("idle");
   const [sheet, setSheet] = useState(false);
   const [dialog, setDialog] = useState(false);
+  const [instant, setInstant] = useState(false);
   const [range, setRange] = useState<keyof typeof SERIES>("month");
   const [drawn, setDrawn] = useState(0);
   const [share, setShare] = useState(42);
@@ -422,8 +423,17 @@ export function MotionSection() {
             <Button kind="secondary" size="compact" onClick={() => setSheet(true)}>
               Sheet
             </Button>
-            <Button kind="secondary" size="compact" onClick={() => setDialog(true)}>
+            <Button kind="secondary" size="compact" onClick={() => {
+                setInstant(false);
+                setDialog(true);
+              }}>
               Dialog
+            </Button>
+            <Button kind="secondary" size="compact" onClick={() => {
+                setInstant(true);
+                setDialog(true);
+              }}>
+              Dialog instant
             </Button>
             <Menu
               label={t("markets.picker.sortBy")}
@@ -446,11 +456,25 @@ export function MotionSection() {
             >
               Toast
             </Button>
+            <Button
+              kind="secondary"
+              size="compact"
+              onClick={() =>
+                show({
+                  title: t("components.emptyState.dataUnavailable"),
+                  message: t("components.placeholder.loadFailed"),
+                  actionTitle: t("common.tryAgain"),
+                  onRetry: () => new Promise<void>((resolve) => setTimeout(resolve, 900)),
+                })
+              }
+            >
+              Toast with retry
+            </Button>
           </div>
           <Dialog open={sheet} onClose={() => setSheet(false)} title={t("designSystem.gallery.valuesHeader")}>
             <p className="text-body">{t("designSystem.gallery.sampleInsightMessage")}</p>
           </Dialog>
-          <Dialog open={dialog} onClose={() => setDialog(false)} title={t("designSystem.gallery.surface")} variant="dialog">
+          <Dialog open={dialog} instant={instant} onClose={() => setDialog(false)} title={t("designSystem.gallery.surface")} variant="dialog">
             <p className="text-body">{t("designSystem.gallery.sampleInsightMessage")}</p>
           </Dialog>
         </Specimen>
