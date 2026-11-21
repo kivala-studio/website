@@ -118,13 +118,31 @@
   --color-comparison-purple: var(--comparison-purple);
 }
 
-/* Web-only surfaces (no iOS counterpart). Light: white cards with a faint border and a soft drop shadow on the
- * canvas, a top bar lifted by a hairline shadow. Dark: no shadows; hairline borders carry the structure.
- * hairline: row dividers · card-border: card and bar edges · field-border: search and text fields ·
+/* Web-only surfaces (no iOS counterpart). The page is one flat, faintly tinted canvas; cards are flat fills on it
+ * (white in light, a lighter fill in dark), with no border and no shadow. Full-bleed sections and solid cards use the
+ * stage fills, each with its readable on-colour (AA). Floating surfaces (menus, dialogs, toasts) keep a faint edge
+ * and the soft shadow.
+ * canvas: the page (`html`), bars and sticky strips that sit on it · panel-edge: the card's edge, drawn only with
+ * increased contrast · stage-brand / -deep / -ink / -pale: section and solid-card fills ·
+ * accent-soft-hover: hover of a soft accent fill (secondary pill, filled icon button) · float-shadow: the top bar's
+ * pieces once the page scrolls under them ·
+ * hairline: row dividers · card-border: menu, dialog and toast edges · field-border: search and text fields ·
  * track: segmented-control groove · raised: the selected segment and the current rail item ·
  * focus-glow: the soft accent ring a focused text field shows instead of an outline ·
  * hero-glow: the peak of the landing's accent light (a hint in light, stronger on the dark canvas). */
 :root {
+  --canvas: #f3f6fd;
+  --panel-edge: transparent;
+  --stage-brand: #5a9bff;
+  --on-stage-brand: #0a1a3f;
+  --stage-deep: #0c2257;
+  --on-stage-deep: #f5f7fa;
+  --stage-ink: #0e141f;
+  --on-stage-ink: #f5f7fa;
+  --stage-pale: #e4ebf7;
+  --on-stage-pale: #182231;
+  --accent-soft-hover: color-mix(in srgb, var(--accent) 10%, var(--accent-soft));
+  --float-shadow: 0 0 0 1px rgb(24 34 49 / 0.05), 0 8px 24px -10px rgb(24 34 49 / 0.22);
   --hairline: #e6e9ee;
   --card-border: rgb(24 34 49 / 0.07);
   --field-border: #dfe3e9;
@@ -138,6 +156,7 @@
 }
 @media (prefers-contrast: more) {
   :root {
+    --panel-edge: #778396;
     --hairline: #778396;
     --card-border: #778396;
     --field-border: #778396;
@@ -145,6 +164,18 @@
   }
 }
 :root[data-theme="dark"] {
+  --canvas: #080b12;
+  --panel-edge: transparent;
+  --stage-brand: #5a9bff;
+  --on-stage-brand: #0a1a3f;
+  --stage-deep: #0f2a66;
+  --on-stage-deep: #f5f7fa;
+  --stage-ink: #111722;
+  --on-stage-ink: #f5f7fa;
+  --stage-pale: #222b3b;
+  --on-stage-pale: #f5f7fa;
+  --accent-soft-hover: color-mix(in srgb, var(--accent) 14%, var(--accent-soft));
+  --float-shadow: 0 0 0 1px #232933, 0 8px 24px -10px rgb(0 0 0 / 0.7);
   --hairline: #232933;
   --card-border: #232933;
   --field-border: #2a303a;
@@ -158,6 +189,18 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
+    --canvas: #080b12;
+    --panel-edge: transparent;
+    --stage-brand: #5a9bff;
+    --on-stage-brand: #0a1a3f;
+    --stage-deep: #0f2a66;
+    --on-stage-deep: #f5f7fa;
+    --stage-ink: #111722;
+    --on-stage-ink: #f5f7fa;
+    --stage-pale: #222b3b;
+    --on-stage-pale: #f5f7fa;
+    --accent-soft-hover: color-mix(in srgb, var(--accent) 14%, var(--accent-soft));
+  --float-shadow: 0 0 0 1px #232933, 0 8px 24px -10px rgb(0 0 0 / 0.7);
     --hairline: #232933;
     --card-border: #232933;
     --field-border: #2a303a;
@@ -170,7 +213,29 @@
     --hero-glow: color-mix(in srgb, var(--accent) 22%, transparent);
   }
 }
+/* Increased contrast in dark: the flat card has no edge by default, so give it one (3:1 against canvas and fill). */
+@media (prefers-contrast: more) {
+  :root[data-theme="dark"] {
+    --panel-edge: #5d6778;
+  }
+}
+@media (prefers-contrast: more) and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --panel-edge: #5d6778;
+  }
+}
 @theme inline {
+  --color-canvas: var(--canvas);
+  --color-panel-edge: var(--panel-edge);
+  --color-stage-brand: var(--stage-brand);
+  --color-on-stage-brand: var(--on-stage-brand);
+  --color-stage-deep: var(--stage-deep);
+  --color-on-stage-deep: var(--on-stage-deep);
+  --color-stage-ink: var(--stage-ink);
+  --color-on-stage-ink: var(--on-stage-ink);
+  --color-stage-pale: var(--stage-pale);
+  --color-on-stage-pale: var(--on-stage-pale);
+  --color-accent-soft-hover: var(--accent-soft-hover);
   --color-hairline: var(--hairline);
   --color-card-border: var(--card-border);
   --color-field-border: var(--field-border);
@@ -180,6 +245,7 @@
   --shadow-raised: var(--raised-shadow);
   --shadow-bar: var(--bar-shadow);
   --shadow-focus: var(--focus-glow);
+  --shadow-float: var(--float-shadow);
 }
 
 /* Issuer monogram colour without a semantic token (iOS SecurityLogoView violet). */

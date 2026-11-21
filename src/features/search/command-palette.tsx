@@ -7,6 +7,7 @@ import { usePathname } from "@/i18n/navigation";
 
 import type { CatalogueRow } from "@/features/market/browse/price-cell";
 import { cn } from "@/ui/cn";
+import { TOP_BAR_FLOAT } from "@/ui/components/button-styles";
 import { iconButtonClass } from "@/ui/components/buttons";
 import { FIELD, KeyHint } from "@/ui/components/controls";
 import { Dialog } from "@/ui/components/dialog";
@@ -75,7 +76,7 @@ export function CommandPalette({ rows, renderedAt }: { rows: readonly CatalogueR
         aria-keyshortcuts="/ Control+K Meta+K"
         aria-haspopup="dialog"
         title={t("common.search")}
-        className={iconButtonClass("plain", "lg:hidden")}
+        className={iconButtonClass("surface", cn(TOP_BAR_FLOAT, "lg:hidden"))}
       >
         <Icon name="search" scale="l" />
       </button>

@@ -75,7 +75,7 @@ export function DesignGallery({ initialTheme }: { initialTheme: Theme }) {
           </div>
         </div>
 
-        <div className="sticky top-0 z-20 -mx-4 bg-app-background px-4 sm:-mx-6 sm:px-6" data-testid="gallery-nav">
+        <div className="sticky top-0 z-20 -mx-4 bg-canvas px-4 sm:-mx-6 sm:px-6" data-testid="gallery-nav">
           <NavTabs
             label="Component library"
             items={SECTIONS.map((section) => ({ href: `/dev/design#${section.id}`, title: section.title, current: section.id === current }))}

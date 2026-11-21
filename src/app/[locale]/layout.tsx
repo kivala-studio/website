@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 };
 
 // The browser chrome follows the theme the page is rendered in; "system" follows the OS.
-const THEME_COLOR = { light: "#f2f3f5", dark: "#090b0f" };
+const THEME_COLOR = { light: "#f3f6fd", dark: "#080b12" };
 
 export async function generateViewport(): Promise<Viewport> {
   const theme = parseTheme((await cookies()).get(THEME_COOKIE)?.value);

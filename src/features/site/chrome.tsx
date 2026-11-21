@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
+import { iconButtonClass, TOP_BAR_FLOAT } from "@/ui/components/button-styles";
 import { ButtonLink } from "@/ui/components/buttons";
 import { ThemeMenu, ThemeSwitch } from "@/ui/components/controls";
 import { PAGE_CONTAINER } from "@/ui/components/layout";
@@ -38,9 +39,9 @@ export function BrandLockup({ wordmarkFrom = 400 }: { wordmarkFrom?: keyof typeo
   );
 }
 
-/** The language link (flag and short code) styled as a 44 px top-bar pill. */
+/** The language link (flag and short code) styled as a 44 px pill; give it a fill for where it sits. */
 export const LANGUAGE_CONTROL =
-  "inline-flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-full pr-3 pl-2.5 font-display text-secondary font-semibold text-secondary-text transition-colors hover:bg-action-surface hover:text-primary-text";
+  "inline-flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-full pr-3 pl-2.5 font-display text-secondary font-semibold text-secondary-text transition-colors hover:text-primary-text";
 
 /**
  * Extra classes for the sign-in pill (`ButtonLink size="compact"`) in the public bar. Below 1024 px the pill is drawn
@@ -48,7 +49,7 @@ export const LANGUAGE_CONTROL =
  * target. From 1024 px it is the plain compact pill.
  */
 export const SIGN_IN_PILL =
-  "ml-1 max-lg:relative max-lg:min-h-9 max-lg:px-3 max-lg:after:absolute max-lg:after:inset-x-0 max-lg:after:-inset-y-1";
+  "max-lg:relative max-lg:min-h-9 max-lg:px-3 max-lg:after:absolute max-lg:after:inset-x-0 max-lg:after:-inset-y-1";
 
 /** The theme and the language on one row, in the public top bar's menu. */
 export function SiteControls({ theme }: { theme: Theme }) {
@@ -57,14 +58,15 @@ export function SiteControls({ theme }: { theme: Theme }) {
       <div className="min-w-0 flex-1">
         <ThemeSwitch initial={theme} />
       </div>
-      <LanguageSwitch className={cn(LANGUAGE_CONTROL, "bg-action-surface")} />
+      <LanguageSwitch className={cn(LANGUAGE_CONTROL, "bg-accent-soft hover:bg-accent-soft-hover")} />
     </div>
   );
 }
 
 /**
- * Public top bar: sections as pills, then the language, the theme and sign-in. Below 1024 px the sections, the theme
- * and the language move into the menu, whose button leads the bar; the smaller sign-in pill stays at the end.
+ * Public top bar: the logo, the sections in the centred capsule, then the language, the theme and sign-in. Below
+ * 1024 px the sections, the theme and the language move into the menu, whose round button ends the bar after the
+ * smaller sign-in pill.
  * Visitors get no search (it needs the app's market store).
  */
 export function SiteHeader({ theme }: { theme: Theme }) {
@@ -83,12 +85,12 @@ export function SiteHeader({ theme }: { theme: Theme }) {
       ]}
       wideActions={
         <>
-          <LanguageSwitch className={LANGUAGE_CONTROL} />
-          <ThemeMenu initial={theme} />
+          <LanguageSwitch className={cn(LANGUAGE_CONTROL, TOP_BAR_FLOAT, "bg-card-background hover:bg-accent-soft")} />
+          <ThemeMenu initial={theme} triggerClassName={iconButtonClass("surface", TOP_BAR_FLOAT)} />
         </>
       }
       actions={
-        <ButtonLink href={SIGN_IN_PATH} prefetch={false} size="compact" className={SIGN_IN_PILL}>
+        <ButtonLink href={SIGN_IN_PATH} prefetch={false} size="compact" className={cn(TOP_BAR_FLOAT, SIGN_IN_PILL)}>
           {t("onboarding.navigation.signIn")}
         </ButtonLink>
       }

@@ -150,7 +150,7 @@ export function InstrumentView({
   return (
     <div className="flex flex-col gap-6 lg:-mt-6 lg:grid lg:grid-cols-[19.5rem_minmax(0,1fr)] lg:items-start lg:gap-0">
       {/* Sticky under the 64 px top bar, as tall as the window, scrolling on its own when it runs longer. */}
-      <div className="flex min-w-0 flex-col gap-6 lg:sticky lg:top-16 lg:-ml-3 lg:h-[calc(100dvh-4rem)] lg:overflow-y-auto lg:overscroll-contain lg:border-r lg:border-hairline lg:py-6 lg:pr-6 lg:pl-3 lg:[scrollbar-width:thin]">
+      <div className="flex min-w-0 flex-col gap-6 lg:sticky lg:top-(--top-bar-height) lg:-ml-3 lg:h-[calc(100dvh-var(--top-bar-height))] lg:overflow-y-auto lg:overscroll-contain lg:border-r lg:border-hairline lg:py-6 lg:pr-6 lg:pl-3 lg:[scrollbar-width:thin]">
         <header className="flex flex-col gap-4">
           {back}
           <div className="flex items-center gap-3">

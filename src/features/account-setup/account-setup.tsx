@@ -284,7 +284,7 @@ export function AccountSetup({ userID, initialName, instruments, watchedIDs }: P
           )}
         </div>
 
-        <div className="sticky bottom-0 flex flex-col gap-2 bg-app-background pt-3 pb-4">
+        <div className="sticky bottom-0 flex flex-col gap-2 bg-canvas pt-3 pb-4">
           {errorKey ? (
             <p role="alert" className="motion-presence flex items-start gap-2 text-secondary text-negative">
               <Icon name="warning" className="mt-0.5" />

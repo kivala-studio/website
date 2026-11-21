@@ -288,7 +288,7 @@ export function MotionSection() {
                 className="motion-press relative inline-flex size-12 items-center justify-center rounded-full hover:bg-action-surface"
               >
                 <Icon name="notification" scale="l" />
-                <span aria-hidden data-hidden={unread ? undefined : true} className="motion-appear absolute top-2 right-2 size-2.5 rounded-full bg-negative ring-2 ring-app-background" />
+                <span aria-hidden data-hidden={unread ? undefined : true} className="motion-appear absolute top-2 right-2 size-2.5 rounded-full bg-negative ring-2 ring-canvas" />
               </button>
             </Variant>
           </div>
@@ -358,7 +358,7 @@ export function MotionSection() {
             {order.map((symbol) => {
               const item = SAMPLE_INSTRUMENTS.find((sample) => sample.symbol === symbol)!;
               return (
-                <li key={symbol} data-flip-key={symbol} className="flex min-h-14 items-center gap-3 bg-app-background">
+                <li key={symbol} data-flip-key={symbol} className="flex min-h-14 items-center gap-3 bg-canvas">
                   <SecurityLogo symbol={item.symbol} size="s" brandColor={item.color} />
                   <span className="flex-1 font-display text-body font-medium text-primary-text">{item.symbol}</span>
                   <ChangeBadge value={item.change} />

@@ -18,7 +18,7 @@ const EDGE = "first:pl-4 last:pr-4 desk:first:pl-6 desk:last:pr-6";
 export const TABLE_HEADER_CELL = cn("h-12 px-3 font-sans text-secondary font-normal whitespace-nowrap text-secondary-text", EDGE);
 /** A faint fill under the pointer, a firmer one while a row link is pressed. */
 export const TABLE_ROW =
-  "relative border-b border-hairline last:border-b-0 transition-colors hover:bg-app-background/70 has-[a:active]:bg-app-background";
+  "relative border-b border-hairline last:border-b-0 transition-colors hover:bg-canvas/70 has-[a:active]:bg-canvas";
 export const TABLE_CELL = cn("h-15 px-3 align-middle font-display text-body text-primary-text", EDGE);
 
 export function DataTable({ className, ...props }: HTMLAttributes<HTMLTableElement>) {

@@ -166,7 +166,7 @@ function Calculator({
           />
         ) : null}
       </Card>
-      <Card className="flex flex-col divide-y divide-hairline py-0! lg:sticky lg:top-24 lg:col-start-2 lg:row-span-2 lg:row-start-1" data-testid="simulation-controls">
+      <Card className="flex flex-col divide-y divide-hairline py-0! lg:sticky lg:top-[calc(var(--top-bar-height)+2rem)] lg:col-start-2 lg:row-span-2 lg:row-start-1" data-testid="simulation-controls">
         {SIMULATION_FIELDS.map((field) => (
           <ScenarioRow
             key={field}

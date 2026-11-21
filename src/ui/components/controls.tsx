@@ -429,13 +429,14 @@ export function ThemeSwitch({ initial }: { initial: Theme }) {
 }
 
 /** The same choice as a compact icon menu (top bar). */
-export function ThemeMenu({ initial, icon = "settings" }: { initial: Theme; icon?: IconName }) {
+export function ThemeMenu({ initial, icon = "settings", triggerClassName }: { initial: Theme; icon?: IconName; triggerClassName?: string }) {
   const t = useTranslations();
   const [theme, setTheme] = useTheme(initial);
   return (
     <Menu
       label={t("common.theme")}
       icon={icon}
+      triggerClassName={triggerClassName}
       entries={THEMES.map((value) => ({
         kind: "check" as const,
         label: t(`designSystem.appearance.${value}`),

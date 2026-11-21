@@ -150,7 +150,7 @@ export function BentoCard({
           >
             <div
               className={cn(
-                "flex h-full flex-col rounded-t-[1.125rem] border border-b-0 border-card-border bg-app-background p-2.5 *:grow",
+                "flex h-full flex-col rounded-t-[1.125rem] border border-b-0 border-card-border bg-canvas p-2.5 *:grow",
                 bleed === "corner" && "rounded-tr-none border-r-0 pr-0 *:rounded-r-none *:border-r-0",
               )}
             >

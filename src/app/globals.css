@@ -15,16 +15,18 @@
   --text-headline--line-height: 1.1;
   --text-headline--letter-spacing: -0.034em;
   --text-headline--font-weight: 600;
-  --text-display: 2.125rem; /* 34 · page titles, display values */
-  --text-display--line-height: 1.2;
-  --text-display--font-weight: 700;
-  --text-display--letter-spacing: normal;
+  /* Titles are set light and tight in the display face; financial values (headline, price) stay semibold. */
+  --text-display: 2.125rem; /* 34 · page titles */
+  --text-display--line-height: 1.15;
+  --text-display--font-weight: 500;
+  --text-display--letter-spacing: -0.02em;
   --text-price: 1.375rem; /* 22 · secondary financial values */
   --text-price--line-height: 1.27;
   --text-price--font-weight: 600;
   --text-section: 1.25rem; /* 20 · section headers */
   --text-section--line-height: 1.25;
-  --text-section--font-weight: 600;
+  --text-section--font-weight: 500;
+  --text-section--letter-spacing: -0.01em;
   --text-body: 1.0625rem; /* 17 · rows, body copy */
   --text-body--line-height: 1.3;
   --text-secondary: 0.9375rem; /* 15 · supporting text */
@@ -35,11 +37,43 @@
   --text-micro--line-height: 1.2;
   --text-micro--letter-spacing: 0.06em;
 
+  /*
+   * Marketing roles (the landing and other public stages), fluid from 320 px to wide screens, weight 400, tight.
+   * Pair them with `font-display` where the element is not a heading. hero: the page's h1 (40 → 80) · heading: a
+   * full-bleed section's title, centred, at most two lines (36 → 96) · statement: a card's one-line claim (24 → 30) ·
+   * lead: the line under a hero or a heading (18 → 24).
+   */
+  --text-hero: clamp(2.5rem, 1.5rem + 4.4vw, 5rem);
+  --text-hero--line-height: 1.1;
+  --text-hero--font-weight: 400;
+  --text-hero--letter-spacing: -0.025em;
+  --text-heading: clamp(2.25rem, 0.9rem + 5.8vw, 6rem);
+  --text-heading--line-height: 1.09;
+  --text-heading--font-weight: 400;
+  --text-heading--letter-spacing: -0.025em;
+  --text-statement: clamp(1.5rem, 1.25rem + 0.7vw, 1.875rem);
+  --text-statement--line-height: 1.2;
+  --text-statement--font-weight: 400;
+  --text-statement--letter-spacing: -0.025em;
+  --text-lead: clamp(1.125rem, 0.95rem + 0.6vw, 1.5rem);
+  --text-lead--line-height: 1.33;
+  --text-lead--font-weight: 400;
+
   /* Spacing uses Tailwind's 4 px step: 1 = 4, 2 = 8 … 10 = 40 (iOS space4…space40). */
   --radius-small: 0.75rem; /* 12 */
   --radius-medium: 1.125rem; /* 18 */
-  --radius-large: 1.5rem; /* 24 */
-  --radius-card: 1.375rem; /* 22 · web cards (the panel surface) */
+  --radius-large: 1.5rem; /* 24 · cards, tiles */
+  --radius-card: 1.5rem; /* 24 · web cards (the panel surface), dialogs, toasts */
+}
+
+/* The sticky top bar's height (its floating pieces and their inset): sticky columns and anchors start under it. */
+:root {
+  --top-bar-height: 4rem;
+}
+@media (min-width: 64rem) {
+  :root {
+    --top-bar-height: 5.5rem;
+  }
 }
 
 /* Web scale: 36 price · 32 title · 22 section · 18 value · 16 body and table cells · 14 secondary, buttons and table headers · 12 caption · 11 label. */
@@ -48,8 +82,6 @@
     --text-headline: 2.25rem;
     --text-headline--letter-spacing: -0.025em;
     --text-display: 2rem;
-    --text-display--font-weight: 600;
-    --text-display--letter-spacing: -0.015em;
     --text-price: 1.125rem;
     --text-section: 1.375rem;
     --text-body: 1rem;
@@ -58,16 +90,17 @@
     --text-secondary--line-height: 1.4;
     --radius-small: 0.5rem; /* 8 · small controls */
     --radius-medium: 0.75rem; /* 12 · fields, menus, segmented tracks */
-    --radius-large: 1.375rem; /* 22 · cards */
   }
 }
 
-/* A white card with a faint border and a soft shadow on the canvas (hairline only in dark): the web grouping surface. */
+/*
+ * The web grouping surface: a flat card, set apart from the tinted canvas by its fill alone (white in light, a
+ * lighter fill in dark). The edge is transparent, so the box keeps its size when increased contrast draws it.
+ */
 @utility panel {
-  border: 1px solid var(--card-border);
+  border: 1px solid var(--panel-edge);
   border-radius: var(--radius-card);
   background: var(--card-background);
-  box-shadow: var(--panel-shadow);
 }
 
 /*
@@ -121,7 +154,7 @@
       color-mix(in srgb, var(--hero-glow) 15%, transparent) 75%,
       transparent 100%
     ),
-    color-mix(in srgb, var(--accent-soft) 38%, var(--app-background));
+    color-mix(in srgb, var(--accent-soft) 38%, var(--canvas));
   &::before {
     --grid-line: color-mix(in srgb, var(--primary-text) 6%, transparent);
     content: "";
@@ -147,7 +180,9 @@
 }
 
 html {
-  background: var(--app-background);
+  background: var(--canvas);
+  /* Anchors and focused elements scroll clear of the sticky top bar. */
+  scroll-padding-top: var(--top-bar-height);
   color: var(--primary-text);
   font-family: var(--font-sans);
   /* Every number uses tabular figures so values never shift width. */
@@ -160,12 +195,13 @@ body {
   line-height: var(--text-body--line-height);
 }
 
-/* Headings use the display face; a utility on the element still wins. */
+/* Headings use the display face at a light weight (no browser bold); a utility on the element still wins. */
 @layer base {
   h1,
   h2,
   h3 {
     font-family: var(--font-display);
+    font-weight: 500;
   }
 }
 

@@ -124,7 +124,7 @@ export function MarketInformationSummary() {
   return (
     <Link
       href="/mercado/informacao"
-      className="flex min-h-14 items-center gap-3 rounded-large px-4 py-3 panel motion-tap hover:bg-app-background/70 desk:px-6"
+      className="flex min-h-14 items-center gap-3 rounded-large px-4 py-3 panel motion-tap hover:bg-canvas/70 desk:px-6"
       data-testid="market-information-summary"
     >
       <span aria-hidden className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent/12 text-accent">

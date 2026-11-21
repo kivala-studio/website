@@ -26,7 +26,7 @@ export function RelatedInstruments({ article, rows, now }: { article: NewsArticl
               href={`/mercado/${encodeURIComponent(row.symbol)}`}
               prefetch={false}
               aria-description={t("common.openSecurityDetailsHint")}
-              className="flex min-h-16 items-center gap-3 px-5 py-2 motion-tap hover:bg-app-background/70 desk:px-6"
+              className="flex min-h-16 items-center gap-3 px-5 py-2 motion-tap hover:bg-canvas/70 desk:px-6"
               data-testid="related-instrument"
             >
               <SecurityLogo symbol={row.symbol} logoUrl={row.logoURL} brandColor={row.bond ? "violet" : "blue"} size="s" />

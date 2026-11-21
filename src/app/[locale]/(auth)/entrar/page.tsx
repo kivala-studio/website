@@ -40,10 +40,10 @@ export default async function SignInPage({ params, searchParams }: Props) {
   const t = await getTranslations({ locale: locale as Locale });
   const reason = readSignInReason(first(query.motivo));
 
-  const notice = "flex flex-col gap-1 rounded-medium bg-app-background px-4 py-3";
+  const notice = "flex flex-col gap-1 rounded-medium bg-canvas px-4 py-3";
 
   return (
-    <main id="main" className="flex min-h-dvh w-full flex-col items-center justify-center bg-app-background px-4 py-10 sm:px-6">
+    <main id="main" className="flex min-h-dvh w-full flex-col items-center justify-center bg-canvas px-4 py-10 sm:px-6">
       <MessageCard>
         <Link href="/" prefetch={false} aria-label={t("site.header.homeLabel")} className="-ml-1 inline-flex min-h-11 items-center gap-2 self-start rounded-small px-1 text-primary-text">
           <PalancaMark className="size-10" />

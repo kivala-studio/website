@@ -6,7 +6,7 @@ import { useAccountStores } from "@/features/account/account-provider";
 
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
-import { INDICATOR_FILL, INDICATOR_IDLE } from "@/ui/components/button-styles";
+import { INDICATOR_FILL, INDICATOR_IDLE, TOP_BAR_FLOAT } from "@/ui/components/button-styles";
 import { iconButtonClass } from "@/ui/components/buttons";
 import { TopBar } from "@/ui/components/top-bar";
 import { Icon, type IconName } from "@/ui/icons/icon";
@@ -24,7 +24,7 @@ export function ShellNav({ items, label }: { items: readonly Item[]; label: stri
   const pathname = usePathname();
   const list = useSlidingIndicator<HTMLUListElement>(pathname, { selector: "[aria-current]", memory: `tab-bar:${label}` });
   return (
-    <nav aria-label={label} className="fixed inset-x-0 bottom-0 z-20 border-t border-separator bg-app-background pb-[env(safe-area-inset-bottom)] lg:hidden">
+    <nav aria-label={label} className="fixed inset-x-0 bottom-0 z-20 border-t border-separator bg-canvas pb-[env(safe-area-inset-bottom)] lg:hidden">
       <ul ref={list} className="mx-auto grid max-w-xl grid-cols-5 px-1">
         {items.map((item) => {
           const current = isCurrentTab(item.href, pathname);
@@ -90,17 +90,17 @@ export function ShellTopBar({ tabs, navLabel, homeLabel, logo, initials, profile
       search={search}
       actions={
         <>
-          <Link href="/atividade-invulgar" aria-current={current("/atividade-invulgar")} className={iconButtonClass("plain", "aria-[current=page]:bg-action-surface")}>
+          <Link href="/atividade-invulgar" aria-current={current("/atividade-invulgar")} className={iconButtonClass("surface", cn(TOP_BAR_FLOAT, "aria-[current=page]:bg-accent-soft"))}>
             <Icon name="chart" label={unusualLabel} scale="l" />
           </Link>
-          <Link href="/atividade" aria-current={current("/atividade")} className={iconButtonClass("plain", "aria-[current=page]:bg-action-surface")}>
+          <Link href="/atividade" aria-current={current("/atividade")} className={iconButtonClass("surface", cn(TOP_BAR_FLOAT, "aria-[current=page]:bg-accent-soft"))}>
             <Icon name="notification" scale="l" />
             <span className="sr-only">{`${activityLabel}, ${hasUnread ? activityStates.new : activityStates.none}`}</span>
             {/* Always drawn, so a new unread item grows the dot in and reading it shrinks it away. */}
             <span
               aria-hidden
               data-hidden={hasUnread ? undefined : true}
-              className="motion-appear absolute top-2 right-2 size-2.5 rounded-full bg-negative ring-2 ring-elevated-background"
+              className="motion-appear absolute top-2 right-2 size-2.5 rounded-full bg-negative ring-2 ring-card-background"
             />
           </Link>
           {/* The initials are decorative: the link is named by the profile label. The 44 px target overhangs the

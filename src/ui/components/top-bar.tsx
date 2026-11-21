@@ -6,16 +6,16 @@ import { Link, usePathname } from "@/i18n/navigation";
 
 import { cn } from "../cn";
 import { useSlidingIndicator } from "../motion/use-sliding-indicator";
-import { INDICATOR_FILL, INDICATOR_IDLE, iconButtonClass } from "./button-styles";
+import { INDICATOR_FILL, INDICATOR_IDLE, iconButtonClass, TOP_BAR_FLOAT } from "./button-styles";
 import { useLinkCurrent } from "./controls";
 import { PAGE_CONTAINER } from "./layout";
 import { IconSwap } from "./motion";
 
 export type TopBarLink = { href: string; label: string };
 
-/** A pill link of the top bar; the current section has the soft grey pill, which glides to the next section. */
+/** A link of the top bar's capsule: plain text; the current section sits on the soft accent fill, which glides to the next section. */
 export const TOP_BAR_PILL = "motion-press inline-flex min-h-11 shrink-0 items-center rounded-full px-4 font-display text-secondary font-medium whitespace-nowrap";
-const TOP_BAR_PILL_CURRENT = cn(INDICATOR_FILL, "font-semibold text-primary-text before:bg-action-surface");
+const TOP_BAR_PILL_CURRENT = cn(INDICATOR_FILL, "font-semibold text-primary-text before:bg-accent-soft");
 
 /** A link row of the top bar's menu: the pill's look at row size. */
 const MENU_ROW = "motion-tap flex min-h-12 items-center rounded-full px-4 font-display text-section";
@@ -24,16 +24,18 @@ type MobileNav =
   /** Below 1024 px the navigation is left to the bottom tab bar (the app). */
   | { mobileNav: "none"; menu?: never; wideActions?: never }
   /**
-   * Below 1024 px the navigation and `menu.content` (the theme, the language) move into a menu behind a button
-   * at the start of the bar, before the logo (the public site). `wideActions` show only from 1024 px, before `actions`.
+   * Below 1024 px the navigation and `menu.content` (the theme, the language) move into a menu behind a round button
+   * at the end of the bar, after the actions (the public site). `wideActions` show only from 1024 px, before `actions`.
    */
   | { mobileNav: "menu"; menu: { label: string; content: ReactNode }; wideActions?: ReactNode };
 
 /**
- * The one top bar of the site and the app: full width, 64 px, sticky, on the elevated surface with a hairline
- * shadow; its row sits in `PAGE_CONTAINER`, on the page's edges. Logo, pill navigation, then the search and the actions on the right. Below 1024 px the navigation either
- * moves into a menu whose button leads the bar (`mobileNav="menu"`, the public site) or is left to the bottom tab
- * bar (`"none"`, the app).
+ * The one top bar of the site and the app: not a strip but three opaque pieces floating over the canvas, sticky at
+ * the top with no background of their own, so the page passes under them. The logo on the left (it gains the card
+ * fill once the page scrolls under it), the navigation in a centred capsule on the card fill, then the search and the
+ * actions on the right; the row sits in `PAGE_CONTAINER`, on the page's edges. Below 1024 px the navigation either
+ * moves into a menu whose round button ends the bar (`mobileNav="menu"`, the public site) or is left to the bottom
+ * tab bar (`"none"`, the app). Actions bring their own opaque fill (`iconButtonClass("surface")`, a pill).
  */
 export function TopBar({
   home,
@@ -58,20 +60,26 @@ export function TopBar({
   // Remembered by name: route groups with their own layouts render the bar again on a route change.
   const pills = useSlidingIndicator<HTMLUListElement>(pathname, { selector: "[aria-current]", memory: `top-bar:${navLabel}` });
   return (
-    <header className="sticky top-0 z-30 bg-elevated-background shadow-bar">
-      {/* The row sits in the page column, so the logo and the last action line up with the content below. */}
-      <div className={cn(PAGE_CONTAINER, "flex flex-wrap items-center gap-x-1 sm:gap-x-2 lg:flex-nowrap lg:gap-x-3")}>
-        {mobileNav === "menu" ? <TopBarMenu label={menu.label} nav={nav} navLabel={navLabel} content={menu.content} /> : null}
+    // The bar itself takes no clicks: only its pieces do, so the page under the gaps stays usable.
+    <header className="pointer-events-none sticky top-0 z-30">
+      {/* The row sits in the page column, so the logo and the last action line up with the content below. From 1024 px
+          the capsule is centred on the page while both sides fit, and gives way to them when they don't. */}
+      <div
+        className={cn(
+          PAGE_CONTAINER,
+          "flex h-(--top-bar-height) items-center gap-2 lg:grid lg:grid-cols-[minmax(max-content,1fr)_auto_minmax(max-content,1fr)] lg:gap-4",
+        )}
+      >
         <Link
           href={home.href}
           prefetch={false}
           aria-label={home.label}
-          className="-ml-1 inline-flex min-h-16 shrink-0 items-center gap-2 rounded-small px-1 text-primary-text"
+          className="top-bar-backing pointer-events-auto -ml-3 inline-flex min-h-12 shrink-0 items-center gap-2 justify-self-start rounded-full bg-card-background px-3 text-primary-text lg:min-h-14 lg:pr-4"
         >
           {logo}
         </Link>
-        <nav aria-label={navLabel} className="hidden lg:block lg:ml-4">
-          <ul ref={pills} className="flex gap-1">
+        <nav aria-label={navLabel} className="pointer-events-auto hidden lg:block">
+          <ul ref={pills} className={cn(TOP_BAR_FLOAT, "flex gap-1 rounded-full bg-card-background p-1.5")}>
             {nav.map((link) => {
               const state = current(link.href);
               return (
@@ -80,7 +88,7 @@ export function TopBar({
                     href={link.href}
                     prefetch={false}
                     aria-current={state}
-                    className={cn(TOP_BAR_PILL, state ? TOP_BAR_PILL_CURRENT : cn(INDICATOR_IDLE, "text-primary-text hover:bg-action-surface"))}
+                    className={cn(TOP_BAR_PILL, state ? TOP_BAR_PILL_CURRENT : cn(INDICATOR_IDLE, "text-primary-text hover:bg-accent-soft/60"))}
                   >
                     {link.label}
                   </Link>
@@ -89,12 +97,11 @@ export function TopBar({
             })}
           </ul>
         </nav>
-        <div className="flex min-w-0 flex-1 items-center justify-end gap-1 py-2.5 sm:gap-2">
-          {search ? <div className="flex min-w-0 justify-end lg:w-72 xl:w-80">{search}</div> : null}
-          <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
-            {wideActions ? <div className="hidden lg:contents">{wideActions}</div> : null}
-            {actions}
-          </div>
+        <div className="ml-auto flex min-w-0 items-center justify-end gap-2 justify-self-end *:pointer-events-auto lg:ml-0">
+          {search ? <div className="flex min-w-0 justify-end lg:w-56 xl:w-72">{search}</div> : null}
+          {wideActions ? <div className="hidden lg:contents">{wideActions}</div> : null}
+          {actions}
+          {mobileNav === "menu" ? <TopBarMenu label={menu.label} nav={nav} navLabel={navLabel} content={menu.content} /> : null}
         </div>
       </div>
     </header>
@@ -106,9 +113,9 @@ const WIDE = "(min-width: 64rem)";
 
 /**
  * The menu button and its panel, below 1024 px: a disclosure (not a WAI-ARIA menu: it holds links and a segmented
- * control). The button leads the bar, its glyph on the gutter (the 48 px target overhangs it), and the panel follows
- * it in the DOM, so Tab goes from the button into the panel. The panel drops from under the bar, full width, over a
- * dimmed page that doesn't scroll. Escape or a tap on the dimmed page closes it and returns focus to the button;
+ * control). The round button ends the bar, and the panel follows it in the DOM, so Tab goes from the button into the
+ * panel. The panel is a card that drops from under the bar, in the page column, over a dimmed page (the bar's pieces
+ * stay above the dim) that doesn't scroll. Escape or a tap on the dimmed page closes it and returns focus to the button;
  * following a link, a tap elsewhere on the bar, moving focus out of the menu (to the logo, say) or widening the
  * window past 1024 px closes it too. Without JavaScript the footer still has the same links (not the controls).
  */
@@ -182,27 +189,34 @@ function TopBarMenu({ label, nav, navLabel, content }: { label: string; nav: rea
         aria-expanded={open}
         aria-controls={phase === "closed" ? undefined : id}
         onClick={() => (open ? close() : setPhase("open"))}
-        className={iconButtonClass("plain", "-ml-4 lg:hidden")}
+        className={iconButtonClass("surface", cn(TOP_BAR_FLOAT, "lg:hidden"))}
       >
         <IconSwap icons={["menu", "close"]} show={open ? 1 : 0} turn scale="l" />
       </button>
       {phase === "closed" ? null : (
-        <div className="absolute inset-x-0 top-full lg:hidden">
+        <>
+          {/* The dimmed page, behind the bar's pieces (the bar is its own stacking context). Not focusable; a tap closes. */}
           <div
-            ref={panel}
-            id={id}
-            onClick={(event) => {
-              if ((event.target as Element).closest("a")) close();
-            }}
-            onAnimationEnd={(event) => {
-              if (event.target === event.currentTarget && phase === "closing") setPhase("closed");
-            }}
-            className={cn(
-              "max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain border-t border-hairline bg-elevated-background pt-3 pb-5 shadow-bar",
-              open ? "motion-drop-in" : "motion-drop-out",
-            )}
-          >
-            <div className={PAGE_CONTAINER}>
+            aria-hidden
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={() => close(true)}
+            className={cn("absolute inset-x-0 top-0 -z-10 h-dvh bg-black/40 lg:hidden", open ? "motion-dim-in" : "motion-dim-out")}
+          />
+          <div className={cn(PAGE_CONTAINER, "absolute inset-x-0 top-full lg:hidden")}>
+            <div
+              ref={panel}
+              id={id}
+              onClick={(event) => {
+                if ((event.target as Element).closest("a")) close();
+              }}
+              onAnimationEnd={(event) => {
+                if (event.target === event.currentTarget && phase === "closing") setPhase("closed");
+              }}
+              className={cn(
+                "max-h-[calc(100dvh-var(--top-bar-height)-1rem)] overflow-y-auto overscroll-contain rounded-card bg-card-background p-3 shadow-panel",
+                open ? "motion-drop-in" : "motion-drop-out",
+              )}
+            >
               <nav aria-label={navLabel}>
                 <ul className="flex flex-col gap-1">
                   {nav.map((link) => {
@@ -213,7 +227,7 @@ function TopBarMenu({ label, nav, navLabel, content }: { label: string; nav: rea
                           href={link.href}
                           prefetch={false}
                           aria-current={state}
-                          className={cn(MENU_ROW, state ? "bg-action-surface font-semibold text-primary-text" : "font-medium text-primary-text hover:bg-action-surface")}
+                          className={cn(MENU_ROW, state ? "bg-accent-soft font-semibold text-primary-text" : "font-medium text-primary-text hover:bg-accent-soft/60")}
                         >
                           {link.label}
                         </Link>
@@ -222,17 +236,10 @@ function TopBarMenu({ label, nav, navLabel, content }: { label: string; nav: rea
                   })}
                 </ul>
               </nav>
-              <div className="mt-3 border-t border-hairline pt-4">{content}</div>
+              <div className="mt-3 border-t border-hairline px-1 pt-4">{content}</div>
             </div>
           </div>
-          {/* The dimmed page: from the panel's edge down, so the bar stays as it is. Not focusable; a tap closes. */}
-          <div
-            aria-hidden
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => close(true)}
-            className={cn("h-dvh bg-black/40", open ? "motion-dim-in" : "motion-dim-out")}
-          />
-        </div>
+        </>
       )}
     </>
   );

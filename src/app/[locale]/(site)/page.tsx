@@ -71,7 +71,8 @@ export default async function HomePage() {
       <OrganizationData />
       <Reveal />
 
-      <div className="relative isolate overflow-hidden">
+      {/* The hero runs up under the floating top bar, so its light starts at the top of the window. */}
+      <div className="relative isolate -mt-(--top-bar-height) overflow-hidden pt-(--top-bar-height)">
         <HeroBackdrop />
         {/* Phones (below 640 px): three groups with room between them, one action (the top bar already signs in). */}
         <section className={cn(PAGE_CONTAINER, "flex flex-col items-center gap-8 pt-12 pb-12 text-center sm:pt-10 sm:pb-10 md:pt-20 md:pb-14 lg:pt-24")}>

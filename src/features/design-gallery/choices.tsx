@@ -7,6 +7,7 @@ import { cn } from "@/ui/cn";
 import { ActionTile, Button, ButtonLink, IconButton } from "@/ui/components/buttons";
 import { buttonClass, chipClass, type ButtonKind } from "@/ui/components/button-styles";
 import { SegmentedControl, ThemeMenu, ThemeSwitch, type TimeRange, TimeRangePicker } from "@/ui/components/controls";
+import { SectionChip } from "@/ui/components/layout";
 import { SwitchRow } from "@/ui/components/menu";
 import { ICON_PACK } from "@/ui/icons/icon-pack";
 import type { Theme } from "@/ui/theme/theme";
@@ -93,10 +94,26 @@ export function Choices({ initialTheme }: { initialTheme: Theme }) {
             </div>
           </Specimen>
 
+          <Specimen name='Button size="large" (hero calls to action)'>
+            <div className="flex flex-wrap items-center gap-3 rounded-card bg-canvas p-4">
+              <ButtonLink size="large" href="/dev/design" icon="download">
+                {t("common.recordPurchase")}
+              </ButtonLink>
+              <ButtonLink size="large" kind="secondary" href="/dev/design">
+                {t("common.viewAll")}
+              </ButtonLink>
+            </div>
+          </Specimen>
+
           <Specimen name="IconButton">
             <div className="flex flex-wrap items-end gap-6">
               <Variant label='"filled"'>
                 <IconButton icon="share" label={ICON_PACK.share.label} />
+              </Variant>
+              <Variant label='"surface" (on the canvas)'>
+                <span className="rounded-full bg-canvas p-2">
+                  <IconButton icon="settings" label={t("common.theme")} variant="surface" />
+                </span>
               </Variant>
               <Variant label='"plain"'>
                 <IconButton icon="notification" label={t("common.notifications")} variant="plain" />
@@ -124,6 +141,18 @@ export function Choices({ initialTheme }: { initialTheme: Theme }) {
                 50 %
               </button>
             </div>
+          </Specimen>
+
+          <Specimen name="SectionChip">
+            <div className="flex flex-wrap items-center gap-3 rounded-card bg-canvas p-4">
+              <SectionChip icon="chart">{t("common.market")}</SectionChip>
+              <SectionChip>{t("common.news")}</SectionChip>
+            </div>
+            <Variant label='tone="soft" (on a card)'>
+              <SectionChip tone="soft" icon="portfolio">
+                {t("common.portfolio")}
+              </SectionChip>
+            </Variant>
           </Specimen>
 
           <Specimen name="ActionTile">

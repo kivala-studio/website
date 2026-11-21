@@ -12,7 +12,7 @@ import { cn } from "@/ui/cn";
 /** One group of the library, an anchor of the section nav (`#id`). */
 export function GallerySection({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (
-    <section id={id} aria-labelledby={`${id}-title`} data-gallery-section className="flex scroll-mt-16 flex-col gap-8 border-t border-hairline pt-8 first-of-type:border-t-0 first-of-type:pt-0">
+    <section id={id} aria-labelledby={`${id}-title`} data-gallery-section className="flex flex-col gap-8 border-t border-hairline pt-8 first-of-type:border-t-0 first-of-type:pt-0">
       <h2 id={`${id}-title`} className="text-display text-primary-text">
         {title}
       </h2>
