@@ -12,13 +12,15 @@ import { IconButton } from "./buttons";
  * `sheet` is a side panel on wide screens and a bottom sheet on phones (iOS sheets), sliding in from its edge;
  * `dialog` is a centred window that rises and grows in. Both leave the same way where the browser keeps a closing
  * dialog on top (`motion-sheet`, `motion-modal`), and the page is usable again the moment they close. Keep the
- * component mounted and drive `open`, or the exit has nothing to play on.
+ * component mounted and drive `open`, or the exit has nothing to play on. `instant` skips the motion both ways
+ * while it is set (a dialog opened or closed from the keyboard).
  */
 export function Dialog({
   open,
   onClose,
   title,
   variant = "sheet",
+  instant = false,
   children,
   footer,
 }: {
@@ -26,6 +28,8 @@ export function Dialog({
   onClose: () => void;
   title: string;
   variant?: "sheet" | "dialog";
+  /** Appear and leave at once, backdrop included; read when `open` changes. */
+  instant?: boolean;
   children: ReactNode;
   /** Persistent bottom area for the primary action. */
   footer?: ReactNode;
@@ -52,6 +56,7 @@ export function Dialog({
       // Gone for assistive technology and the pointer the moment it closes, while it plays its exit.
       aria-hidden={!open || undefined}
       inert={!open || undefined}
+      data-instant={instant || undefined}
       onClose={onClose}
       onClick={(event) => {
         // A click on the backdrop lands on the <dialog> element itself.

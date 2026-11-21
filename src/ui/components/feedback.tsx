@@ -16,6 +16,7 @@ import {
 import { cn } from "../cn";
 import { Icon } from "../icons/icon";
 import { useEntrance } from "../motion/use-entrance";
+import { useSwipeDismiss } from "../motion/use-swipe-dismiss";
 import { Spinner } from "./states";
 import { PRIVACY_MASK } from "@/domain/privacy/privacy";
 
@@ -44,15 +45,27 @@ const AUTO_DISMISS_MS = 7000;
 /** How long the leaving toast may take before it is removed anyway (its exit is `base`). */
 const LEAVE_MS = 400;
 
+/** What keeps the shown toast from timing out: the pointer over it, focus inside it, a finger dragging it. */
+type Hold = "hover" | "focus" | "drag";
+type Holds = { id: number } & Record<Hold, boolean>;
+
+const subscribeVisibility = (callback: () => void) => {
+  document.addEventListener("visibilitychange", callback);
+  return () => document.removeEventListener("visibilitychange", callback);
+};
+
 /**
  * One toast at a time, from the top, announced politely. A toast slides down on arrival and lifts away when it is
- * dismissed, times out or is replaced (the next one arrives over it).
+ * dismissed, times out or is replaced (the next one arrives over it); transitions, so one that leaves while it is
+ * still arriving turns around from where it is. Its 7 s pause while the pointer is over it, focus is inside it or
+ * the tab is hidden, and resume with the time that was left. A swipe up sends it away (`useSwipeDismiss`).
  */
 export function ToastHost({ children }: { children: ReactNode }) {
-  const t = useTranslations("components.toast");
   const [toast, setToast] = useState<Toast | null>(null);
   const [leaving, setLeaving] = useState<Toast | null>(null);
   const [retrying, setRetrying] = useState(false);
+  const [holds, setHolds] = useState<Holds>({ id: 0, hover: false, focus: false, drag: false });
+  const hidden = useSyncExternalStore(subscribeVisibility, () => document.hidden, () => false);
   const counter = useRef(0);
 
   const current = useRef<Toast | null>(null);
@@ -66,87 +79,141 @@ export function ToastHost({ children }: { children: ReactNode }) {
     return () => clearTimeout(timer);
   }, [leaving]);
 
-  const dismiss = useCallback(() => {
+  /** `swiped`: the swipe already took it off the top, so it goes without its exit. */
+  const close = useCallback((swiped: boolean) => {
     const closing = current.current;
     closing?.onDismiss?.();
     current.current = null;
     setToast(null);
-    setLeaving(closing);
+    if (!swiped) setLeaving(closing);
   }, []);
+  const dismiss = useCallback(() => close(false), [close]);
   const show = useCallback((next: ToastMessage) => {
     counter.current += 1;
     setLeaving(current.current);
     setToast({ ...next, id: counter.current });
   }, []);
 
+  const hold = useCallback((id: number, reason: Hold, on: boolean) => {
+    setHolds((now) => (now.id === id && now[reason] === on ? now : { ...(now.id === id ? now : { hover: false, focus: false, drag: false }), id, [reason]: on }));
+  }, []);
+  const held = toast !== null && holds.id === toast.id && (holds.hover || holds.focus || holds.drag);
+
+  // The time left survives a pause; a new toast starts from the full 7 s.
+  const remaining = useRef({ id: 0, ms: AUTO_DISMISS_MS });
   useEffect(() => {
-    if (!toast || toast.onRetry) return;
+    if (!toast || toast.onRetry || held || hidden) return;
+    if (remaining.current.id !== toast.id) remaining.current = { id: toast.id, ms: AUTO_DISMISS_MS };
+    const started = performance.now();
     const timer = setTimeout(() => {
       if (current.current?.id === toast.id) dismiss();
-    }, AUTO_DISMISS_MS);
-    return () => clearTimeout(timer);
-  }, [toast, dismiss]);
+    }, remaining.current.ms);
+    return () => {
+      clearTimeout(timer);
+      if (remaining.current.id === toast.id) remaining.current.ms = Math.max(remaining.current.ms - (performance.now() - started), 0);
+    };
+  }, [toast, held, hidden, dismiss]);
+
+  const retry = async () => {
+    if (retrying) return;
+    setRetrying(true);
+    try {
+      await toast?.onRetry?.();
+    } finally {
+      setRetrying(false);
+    }
+  };
 
   const value = useMemo(() => ({ show, dismiss }), [show, dismiss]);
 
   return (
     <ToastContext.Provider value={value}>
       {children}
-      {/* One grid cell: a leaving toast and the next one overlap instead of stacking. */}
+      {/* One grid cell: a leaving toast and the next one overlap instead of stacking, the next one on top. */}
       <div aria-live="polite" className="pointer-events-none fixed inset-x-0 top-0 z-50 grid justify-items-center px-4 pt-2">
-        {leaving ? (
-          <div
-            key={leaving.id}
-            aria-hidden
-            inert
-            onAnimationEnd={(event) => event.target === event.currentTarget && setLeaving(null)}
-            className={cn(TOAST, "motion-toast-out")}
-          >
-            <div className="flex min-w-0 flex-1 flex-col gap-1">
-              <p className="line-clamp-2 text-secondary font-semibold text-primary-text">{leaving.title}</p>
-              <p className="line-clamp-3 text-secondary text-secondary-text">{leaving.message}</p>
-            </div>
-            <span className="size-11 shrink-0" />
-          </div>
-        ) : null}
-        {toast ? (
-          <div key={toast.id} className={cn(TOAST, "motion-toast pointer-events-auto")}>
-            <div className="flex min-w-0 flex-1 flex-col gap-1">
-              <p className="line-clamp-2 text-secondary font-semibold text-primary-text">{toast.title}</p>
-              <p className="line-clamp-3 text-secondary text-secondary-text">{toast.message}</p>
-              {toast.onRetry && toast.actionTitle ? (
-                <button
-                  type="button"
-                  aria-busy={retrying || undefined}
-                  onClick={async () => {
-                    if (retrying) return;
-                    setRetrying(true);
-                    try {
-                      await toast.onRetry?.();
-                    } finally {
-                      setRetrying(false);
-                    }
-                  }}
-                  className="motion-press mt-1 inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-accent-soft px-4 text-secondary font-semibold text-primary-text hover:bg-accent-soft-hover"
-                >
-                  {retrying ? <Spinner /> : null}
-                  {retrying ? t("retrying") : toast.actionTitle}
-                </button>
-              ) : null}
-            </div>
-            <button
-              type="button"
-              aria-label={t("dismiss")}
-              disabled={retrying}
-              onClick={dismiss}
-              className="motion-press flex size-11 shrink-0 items-center justify-center rounded-full text-caption text-secondary-text hover:bg-action-surface"
-            >
-              <Icon name="close" />
-            </button>
-          </div>
-        ) : null}
+        {[leaving, toast].map((item) =>
+          item ? (
+            <ToastCard
+              key={item.id}
+              toast={item}
+              closing={item !== toast}
+              retrying={item === toast && retrying}
+              dragging={holds.id === item.id && holds.drag}
+              onRetry={retry}
+              // Only the shown toast closes: a swipe that ends after it was replaced leaves the next one alone.
+              onClose={(swiped) => current.current?.id === item.id && close(swiped)}
+              onHold={(reason, on) => hold(item.id, reason, on)}
+              onLeft={() => setLeaving((now) => (now?.id === item.id ? null : now))}
+            />
+          ) : null,
+        )}
       </div>
     </ToastContext.Provider>
+  );
+}
+
+function ToastCard({
+  toast,
+  closing,
+  retrying,
+  dragging,
+  onRetry,
+  onClose,
+  onHold,
+  onLeft,
+}: {
+  toast: Toast;
+  closing: boolean;
+  retrying: boolean;
+  dragging: boolean;
+  onRetry: () => void;
+  onClose: (swiped: boolean) => void;
+  onHold: (reason: Hold, on: boolean) => void;
+  onLeft: () => void;
+}) {
+  const t = useTranslations("components.toast");
+  const ref = useRef<HTMLDivElement>(null);
+  const swipe = useSwipeDismiss(ref, { onDismiss: onClose, onDrag: (on) => onHold("drag", on) });
+  return (
+    <div
+      ref={ref}
+      data-state={closing ? "closing" : "open"}
+      // Gone for assistive technology and the pointer the moment it starts leaving.
+      aria-hidden={closing || undefined}
+      inert={closing || undefined}
+      onTransitionEnd={(event) => closing && event.target === event.currentTarget && onLeft()}
+      onPointerEnter={() => onHold("hover", true)}
+      onPointerLeave={() => onHold("hover", false)}
+      onFocus={() => onHold("focus", true)}
+      onBlur={(event) => !event.currentTarget.contains(event.relatedTarget) && onHold("focus", false)}
+      {...swipe}
+      className={cn(TOAST, "motion-toast pointer-events-auto touch-pan-x touch-pinch-zoom", dragging && "select-none")}
+    >
+      <div className="flex min-w-0 flex-1 flex-col gap-1">
+        <p className="line-clamp-2 text-secondary font-semibold text-primary-text">{toast.title}</p>
+        <p className="line-clamp-3 text-secondary text-secondary-text">{toast.message}</p>
+        {toast.onRetry && toast.actionTitle ? (
+          <button
+            type="button"
+            aria-busy={retrying || undefined}
+            onClick={onRetry}
+            className="motion-press mt-1 inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-accent-soft px-4 text-secondary font-semibold text-primary-text hover:bg-accent-soft-hover"
+          >
+            {retrying ? <Spinner /> : null}
+            {retrying ? t("retrying") : toast.actionTitle}
+          </button>
+        ) : null}
+      </div>
+      <button
+        type="button"
+        aria-label={t("dismiss")}
+        disabled={retrying}
+        onClick={() => onClose(false)}
+        className="motion-press flex size-11 shrink-0 items-center justify-center rounded-full text-caption text-secondary-text hover:bg-action-surface"
+      >
+        <Icon name="close" />
+      </button>
+    </div>
   );
 }
 

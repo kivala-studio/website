@@ -36,8 +36,8 @@ export function IllustrativeCaption({ className = "text-secondary-text" }: { cla
   return <figcaption className={cn("text-micro font-medium uppercase", className)}>{t("illustrativeExample")}</figcaption>;
 }
 
-/** A floating card rises 4 px while the pointer is over its deck card (pointer devices; none with reduced motion). */
-const FLOAT_HOVER = "transition-[translate] duration-slow ease-emphasized motion-safe:group-hover/card:-translate-y-1";
+/** A floating card rises 4 px while a mouse or a trackpad is over its deck card (never on touch; none with reduced motion). */
+const FLOAT_HOVER = "transition-[translate] duration-base ease-emphasized motion-safe:fine-hover:group-hover/card:-translate-y-1";
 
 /** The card that leads a visual; it fills the frame's width. */
 const MAIN_CARD = "panel flex flex-col gap-4 p-4 lg:p-5";

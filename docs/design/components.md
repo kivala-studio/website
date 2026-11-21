@@ -252,7 +252,7 @@ A regular pill is `w-full`. To size it to its title write `w-auto!` (or `sm:w-au
 - One `primary` per view. Everything else is `secondary` or `outline`.
 - `destructive` for delete and sign-out confirmations only.
 - Disabled pills are at 42 % opacity; prefer `loading` over disabling during a request.
-- Pills press (`motion-press`: 98 %, dimmed) and fade between states; the spinner fades in rather than flashing.
+- Pills press (`motion-press`: 97 %, no dim) and fade between states; the spinner fades in rather than flashing.
 
 `buttonClass(kind?, className?, size?)` gives the same classes for elements that are not `Button`/`ButtonLink`: external links (`StoreButton`), `<summary>`, a server form's submit. `buttonShape(size?)` is a pill's shape, type and press without its fill, for a pill on a stage fill that brings its own colours (`StoreButton fill`, the section intro's pill on `stage-deep`). Both live in `button-styles.ts`, which server components can import.
 
@@ -520,6 +520,7 @@ A modal on `<dialog>`: focus is trapped, Escape and a backdrop click close it, f
 | `open`, `onClose` | `boolean`, `() => void` | | |
 | `title` | `string` | | |
 | `variant` | `"sheet" \| "dialog"` | `"sheet"` | `sheet`: a bottom sheet on phones, a 448 px side panel from 768 px. `dialog`: a centred window, 512 px max |
+| `instant` | `boolean` | `false` | Appear and leave at once, backdrop included (`data-instant`); read when `open` changes. For a dialog opened or closed from the keyboard: `CommandPalette` sets it when `/`, Ctrl/⌘ K or a key press on its button opens it, and when Escape or Enter closes it |
 | `footer` | `ReactNode` | | A persistent bottom area above a hairline for the primary action |
 | `children` | `ReactNode` | | Padded body that scrolls |
 
@@ -537,7 +538,7 @@ A sheet slides in from the bottom (from the right at 768 px and up), a dialog ri
 
 | Component | Props | |
 |---|---|---|
-| `ToastHost` | `children` | Wrap the tree once; one toast at a time from the top, announced politely, auto-dismissed after 7 s unless it has a retry; it slides in and lifts away, and a new toast replaces the shown one in the same place |
+| `ToastHost` | `children` | Wrap the tree once; one toast at a time from the top, announced politely, auto-dismissed after 7 s unless it has a retry. The 7 s pause while the pointer is over the toast, focus is inside it or the tab is hidden, and resume with what was left. It slides in and lifts away (turning around mid-way if it leaves while arriving), and a new toast replaces the shown one in the same place. A swipe up dismisses it (`useSwipeDismiss`): it follows the finger and settles back after a short, slow swipe; its buttons still take taps |
 | `useToast()` | | `{ show(toast), dismiss() }`; `toast: { title, message, actionTitle?, onRetry?, onDismiss? }` |
 | `OfflineBanner` | `forceVisible?` | "Sem ligação à Internet" while offline (`role="status"`). Put it first on pages that show market data; it fades and rises in when the connection drops |
 | `useOnline()` | | `navigator.onLine` as state |
@@ -580,7 +581,7 @@ From `@/features/site/home` (server-safe), `@/features/site/home-client` and `@/
 | `MarketPreview` (`home-client`) | `{ tabs, label }`: one flush `panel` card with `SectionTabs` on top, a table of the server's dated verified closes per kind and that kind's outline "Ver tudo" pill under it; never a current quote (cached HTML) |
 | `Deck` (`home-client`) | `{ id, label, chip, caption, children }`: a `<figure>` with the chip and round previous and next buttons (`IconButton variant="surface"`, shown once hydrated, disabled at the row's ends, hidden when every card fits) over a `<ul>` of `DeckCard`s that scrolls sideways with scroll snap and a hidden scrollbar. The row starts on the page column's edge and runs to the window's; the buttons scroll by one card (instantly with reduced motion), and a button that turns disabled under focus hands focus to the other. Touch, a trackpad and Tab move through it without JavaScript; no auto-play, no loop. `caption` is the deck's one "Exemplo ilustrativo". A scroll-reveal target |
 | `DeckCard` | `{ href, statement, tone, children }`: a whole-card link (`motion-lift`) in a stage fill: the statement (`text-statement`, an `h3`, the link's name) at the top, and the visual in a `bg-canvas` frame with rounded top corners anchored to the card's bottom edge. The frame hugs the visual, so a short statement leaves card fill between them, never an empty frame; a tall visual is clipped by the card's edge. The visual is `aria-hidden`, `inert` and unselectable. 85 % of the row on phones (at most 22rem), 22rem from 640 px, 29.5rem from 1024 px; 27, 31 and 36rem tall |
-| `WatchlistVisual`, `PortfolioVisual` (`visuals`) | Product visuals for a deck card: a main `panel` card and a smaller floating card (`border-field-border`) that overlaps it and rises 4 px while the pointer is over the deck card. Watchlist: a reached price alert over three rows of `/lista`; portfolio: the `/carteira` value, change and line under the allocation. Charts are SVG: an area fading to transparent, round caps, dashed grid, a dot with a soft halo on the last point; on reveal the line wipes in from the left, then the area and dot fade in |
+| `WatchlistVisual`, `PortfolioVisual` (`visuals`) | Product visuals for a deck card: a main `panel` card and a smaller floating card (`border-field-border`) that overlaps it and rises 4 px (`base`) while a mouse or a trackpad is over the deck card. Watchlist: a reached price alert over three rows of `/lista`; portfolio: the `/carteira` value, change and line under the allocation. Charts are SVG: an area fading to transparent, round caps, dashed grid, a dot with a soft halo on the last point; on reveal the line wipes in from the left, then the area and dot fade in |
 | `SimulatorMiniature`, `UnusualActivityMiniature`, `NewsMiniature`, `LearnMiniature`, `WeekAheadMiniature` (`visuals`) | A few rows of `/simulador`, `/atividade-invulgar`, `/noticias`, `/aprender` and `/semana` at small size on flat miniature cards, built from the real pieces (`SecurityLogo`, chips, lesson icons, the simulator's projected and invested lines); sample values and catalogue wording only, no controls |
 | `PlusVisual` (`visuals`) | `{ label }`: what Plus adds, on the `stage-pale` Plus card: a "Movimento relevante" notice (the activity centre's movements tint, `ChangeBadge`) lifted over a comparison card as in the instrument page's "Comparar" sheet (range track, one line per instrument from a shared start in `accent` and `brand-violet`, each instrument's `SecurityLogo`, line colour and change). A figure of its own: `label` is its accessible name; its caption takes the fill's text colour |
 | `IllustrativeCaption` (`visuals`) | `{ className? }`: the "Exemplo ilustrativo" `figcaption`; `className` replaces its colour on a stage fill |

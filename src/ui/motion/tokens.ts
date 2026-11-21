@@ -10,7 +10,8 @@ const DURATION_FALLBACK: Record<MotionDuration, number> = { fast: 140, base: 220
 const EASING_FALLBACK: Record<MotionEasing, string> = {
   standard: "cubic-bezier(0.25, 0.8, 0.25, 1)",
   emphasized: "cubic-bezier(0.22, 1, 0.36, 1)",
-  exit: "cubic-bezier(0.4, 0, 1, 1)",
+  // The emphasized curve under the name of the leaving side (`--ease-exit: var(--ease-emphasized)`).
+  exit: "cubic-bezier(0.22, 1, 0.36, 1)",
 };
 
 const token = (name: string) =>
