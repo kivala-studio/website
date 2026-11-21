@@ -10,7 +10,7 @@ import { PalancaMark } from "./chrome";
 
 /*
  * Landing page building blocks: flat stage fills that change from section to section, the hero panel, centred
- * section intros with the brand mark set inline, and the cards of a deck (`Deck` in `home-client.tsx` holds them).
+ * section intros, and the cards of a deck (`Deck` in `home-client.tsx` holds them).
  * Server components only.
  */
 
@@ -44,37 +44,16 @@ export function Stage({ tone, className, children }: { tone: StageTone; classNam
 }
 
 /**
- * The text with the brand mark set inline before its last word, at the cap height, kept on one line with that word
- * (`O teu mercado, de ▲ perto.`), in the brand colour of the fill it sits on: `mark` is its colour class (the accent on
- * the canvas, `text-stage-brand` on `stage-deep`, `text-current` on `stage-brand`). The mark is decorative, so the
- * text reads the same to assistive technology.
- */
-export function MarkedText({ text, mark = "text-accent" }: { text: string; mark?: string }) {
-  const split = text.lastIndexOf(" ");
-  if (split < 0) return text;
-  return (
-    <>
-      {text.slice(0, split)}{" "}
-      <span className="whitespace-nowrap">
-        {/* The glyph sits left in its square, so its own right margin is the gap before the word. */}
-        <PalancaMark className={cn("size-[0.78em] align-[-0.04em]", mark)} />
-        {text.slice(split + 1)}
-      </span>
-    </>
-  );
-}
-
-/**
- * Per fill a section intro sits on: the inline mark's brand colour, and the soft pill under the heading (the soft accent
- * tint on the canvas, a light veil on a stage).
+ * Per fill a section intro sits on: the soft pill under the heading (the soft accent tint on the canvas, a light veil on
+ * a stage).
  */
 const INTRO = {
-  canvas: { mark: "text-accent", pill: buttonClass("secondary", undefined, "compact") },
-  deep: { mark: "text-stage-brand", pill: cn(buttonShape("compact"), "bg-on-stage-deep/12 text-on-stage-deep hover:bg-on-stage-deep/20") },
+  canvas: { pill: buttonClass("secondary", undefined, "compact") },
+  deep: { pill: cn(buttonShape("compact"), "bg-on-stage-deep/12 text-on-stage-deep hover:bg-on-stage-deep/20") },
 } as const;
 
 /**
- * A section's intro: the giant centred heading (`text-heading`, two lines at most) with the mark inline, then an
+ * A section's intro: the giant centred heading (`text-heading`, two lines at most), then an
  * optional small soft pill to the section's page. `tone` is the fill the section sits on. A scroll-reveal group.
  */
 export function SectionIntro({
@@ -91,7 +70,7 @@ export function SectionIntro({
   return (
     <div data-reveal="stagger" className={cn(PAGE_CONTAINER, "flex flex-col items-center gap-8 text-center md:gap-10")}>
       <h2 id={id} className="max-w-5xl text-heading text-balance">
-        <MarkedText text={title} mark={INTRO[tone].mark} />
+        {title}
       </h2>
       {action ? (
         <Link href={action.href} prefetch={false} className={INTRO[tone].pill}>

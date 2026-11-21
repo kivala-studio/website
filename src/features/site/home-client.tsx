@@ -112,10 +112,9 @@ const DECK_INSET =
  * A deck: a row of `DeckCard`s that scrolls sideways (scroll snap, the scrollbar hidden), under the section's chip
  * and round previous and next buttons. The row is plain overflow, so touch, a trackpad and Tab (each card is a link)
  * move through it without JavaScript; the buttons, shown once hydrated, scroll it by one card and are disabled at
- * its ends (both hidden when every card fits). No auto-play, no loop. `label` names the list; `caption` is the
- * deck's one "Exemplo ilustrativo" (a `figcaption`). A scroll-reveal target.
+ * its ends (both hidden when every card fits). No auto-play, no loop. `label` names the list. A scroll-reveal target.
  */
-export function Deck({ id, label, chip, caption, children }: { id: string; label: string; chip: ReactNode; caption: ReactNode; children: ReactNode }) {
+export function Deck({ id, label, chip, children }: { id: string; label: string; chip: ReactNode; children: ReactNode }) {
   const t = useTranslations("site.home");
   const list = useRef<HTMLUListElement>(null);
   const controls = useRef<HTMLDivElement>(null);
@@ -157,7 +156,7 @@ export function Deck({ id, label, chip, caption, children }: { id: string; label
 
   const fits = edges?.start && edges.end;
   return (
-    <figure data-reveal className="flex flex-col gap-6">
+    <div data-reveal className="flex flex-col gap-6">
       <div className={cn(PAGE_CONTAINER, "flex min-h-12 items-center justify-between gap-4")}>
         {chip}
         <div ref={controls} className={cn("flex gap-2", (!edges || fits) && "invisible")}>
@@ -176,7 +175,6 @@ export function Deck({ id, label, chip, caption, children }: { id: string; label
       >
         {children}
       </ul>
-      {caption}
-    </figure>
+    </div>
   );
 }
