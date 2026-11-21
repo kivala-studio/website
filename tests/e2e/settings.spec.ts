@@ -1,6 +1,8 @@
 import AxeBuilder from "@axe-core/playwright";
 import { type BrowserContext, expect, test } from "@playwright/test";
 
+import { settled } from "./settled";
+
 /*
  * W10 in demo mode: privacy mode, the settings rows, and account deletion through the non-Apple path (demo
  * accounts sign in with Google). The Apple path's receipt checks are unit tests; here only its guards run.
@@ -145,6 +147,16 @@ test("/definicoes and /definicoes/conta have no serious axe issues, light and da
       for (const path of ["/definicoes", "/definicoes/conta"]) {
         await page.goto(path);
         await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+        // The notification settings mount once the preferences load, their sensitivity segments disabled (42 %) until
+        // the alert list loads, then fading to full opacity: wait for all of it, or axe samples a label mid-fade. The
+        // computed opacity also forces the style update that starts the fade, which `settled` alone could miss.
+        if (path === "/definicoes") {
+          const notifications = page.getByTestId("notification-settings");
+          await expect(notifications.getByRole("radio")).toHaveCount(3);
+          await expect(notifications.locator('[role="radio"][aria-disabled="true"]')).toHaveCount(0);
+          await page.waitForFunction(() => [...document.querySelectorAll('[role="radio"]')].every((radio) => getComputedStyle(radio).opacity === "1"));
+        }
+        await settled(page);
         const { violations } = await new AxeBuilder({ page }).analyze();
         expect(violations.filter((violation) => ["serious", "critical"].includes(violation.impact ?? "")).map((violation) => violation.id), `${path} ${scheme} ${width}`).toEqual([]);
       }
