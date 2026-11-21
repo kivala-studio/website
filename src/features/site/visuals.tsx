@@ -26,15 +26,9 @@ export function StoreButton({ kind = "primary", size, fill, className }: { kind?
 /*
  * Landing product visuals: a cropped piece of the web product, built from the same primitives. The feature visuals
  * and the miniatures sit in a deck card's frame, which hides them from assistive technology (the card's statement
- * names its link); the Plus visual is a figure of its own. Sample values only (the iOS onboarding's sample
+ * names its link); the Plus visual is a picture of its own. Sample values only (the iOS onboarding's sample
  * instruments and round invented figures), never market data.
  */
-
-/** The "Exemplo ilustrativo" caption under a deck or a visual; `className` replaces its colour on a stage fill. */
-export function IllustrativeCaption({ className = "text-secondary-text" }: { className?: string }) {
-  const t = useTranslations("onboarding.preview");
-  return <figcaption className={cn("text-micro font-medium uppercase", className)}>{t("illustrativeExample")}</figcaption>;
-}
 
 /** A floating card rises 4 px while a mouse or a trackpad is over its deck card (never on touch; none with reduced motion). */
 const FLOAT_HOVER = "transition-[translate] duration-base ease-emphasized motion-safe:fine-hover:group-hover/card:-translate-y-1";
@@ -231,15 +225,14 @@ const COMPARISON_RANGES = ["oneWeek", "oneMonth", "threeMonths", "sixMonths", "o
 /**
  * Plus: a significant-movement notice over a comparison of two stocks as in the instrument page's "Comparar" sheet
  * (the range track, one line each from a shared start, then each instrument with its line's colour and change). A
- * figure of its own: `label` is its accessible name, everything inside is hidden and inert, and its caption takes
- * the text colour of the fill it sits on.
+ * picture of its own: `label` is its accessible name, everything inside is hidden and inert.
  */
 export function PlusVisual({ label }: { label: string }) {
   const t = useTranslations();
   const format = useFormat();
   const [, mover] = COMPARISON;
   return (
-    <figure className="group/card flex w-full flex-col items-center gap-3">
+    <div className="group/card flex w-full flex-col items-center gap-3">
       <div role="img" aria-label={label} className="w-full">
         <div aria-hidden className="flex flex-col select-none">
           <div className={cn("panel relative z-10 flex w-[94%] flex-row items-center gap-3 self-start border-field-border p-3 sm:w-[62%] sm:p-4", FLOAT_HOVER)}>
@@ -301,8 +294,7 @@ export function PlusVisual({ label }: { label: string }) {
           </div>
         </div>
       </div>
-      <IllustrativeCaption className="text-current" />
-    </figure>
+    </div>
   );
 }
 

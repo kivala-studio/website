@@ -104,8 +104,7 @@ const FOOTER_LEGAL_LINK = "inline-flex min-h-11 items-center rounded-small under
 /**
  * The footer owns its band, `stage-brand`, so it closes every public page the same way (on the landing it continues
  * the closing section). On it: one big card on the card fill, inset from the window's edges, with the mark at the top
- * left, the product links on the right (one column under its muted title) and the standing disclaimers at the bottom
- * left (after the links on phones); under the card, one line in the band's on-colour with the copyright on the left
+ * left and the product links on the right (one column under its muted title); under the card, one line in the band's on-colour with the copyright on the left
  * and the legal links on the right. `year` is the server's (Luanda) year.
  */
 export function SiteFooter({ year }: { year: string }) {
@@ -124,12 +123,12 @@ export function SiteFooter({ year }: { year: string }) {
   return (
     <footer className="mt-auto bg-stage-brand px-2 pt-2 text-on-stage-brand [--focus-ring:var(--on-stage-brand)] sm:px-4 sm:pt-4 lg:px-6 lg:pt-6">
       {/* The card's controls ring in the accent again. */}
-      <div className="grid gap-x-10 gap-y-10 rounded-card bg-card-background px-5 py-8 text-primary-text [--focus-ring:var(--accent)] sm:grid-cols-[minmax(0,1fr)_auto] sm:grid-rows-[auto_1fr] sm:p-10 lg:min-h-96 lg:p-14">
+      <div className="grid gap-x-10 gap-y-10 rounded-card bg-card-background px-5 py-8 text-primary-text [--focus-ring:var(--accent)] sm:grid-cols-[minmax(0,1fr)_auto] sm:p-10 lg:min-h-96 lg:p-14">
         <Link href="/" prefetch={false} aria-label={t("site.header.homeLabel")} className="inline-flex min-h-12 items-center gap-2.5 self-start justify-self-start rounded-small">
           <PalancaMark className="size-11" />
           <span className="font-display text-[1.5rem] font-semibold tracking-tight">{t("common.appName")}</span>
         </Link>
-        <nav aria-label={t("site.footer.label")} className="flex min-w-40 flex-col gap-2 sm:row-span-2 lg:min-w-56">
+        <nav aria-label={t("site.footer.label")} className="flex min-w-40 flex-col gap-2 lg:min-w-56">
           <h2 className="text-caption font-medium text-secondary-text">{t("site.footer.product")}</h2>
           <ul className="flex flex-col">
             {product.map((link) => (
@@ -141,11 +140,6 @@ export function SiteFooter({ year }: { year: string }) {
             ))}
           </ul>
         </nav>
-        <div className="flex max-w-2xl flex-col gap-1.5 self-end text-caption text-secondary-text">
-          <p>{t("site.footer.independence")}</p>
-          <p>{t("settings.marketData.disclaimer")}</p>
-          <p>{t("onboarding.caption.simulationDisclaimer")}</p>
-        </div>
       </div>
       <div className="flex flex-col-reverse gap-x-8 gap-y-1 px-3 py-4 text-secondary sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
         <p className="py-3 sm:py-0">{`© ${year} ${t("common.appName")}`}</p>

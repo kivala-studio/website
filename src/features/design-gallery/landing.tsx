@@ -2,10 +2,9 @@
 
 import { useTranslations } from "next-intl";
 
-import { CoverageFigures, DeckCard, HeroPanel, MarkedText, SectionIntro, Stage } from "@/features/site/home";
+import { CoverageFigures, DeckCard, HeroPanel, SectionIntro, Stage } from "@/features/site/home";
 import { Deck, MarketSearch } from "@/features/site/home-client";
 import {
-  IllustrativeCaption,
   LearnMiniature,
   NewsMiniature,
   PlusVisual,
@@ -39,7 +38,7 @@ export function Landing() {
         </HeroPanel>
       </Specimen>
 
-      <Specimen name="SectionIntro · MarkedText (canvas)">
+      <Specimen name="SectionIntro (canvas)">
         <div className="rounded-card bg-canvas py-12">
           <SectionIntro id="gallery-intro" title={t("onboarding.page.watchlistTitle")} action={{ href: "/lista", label: t("common.follow") }} />
         </div>
@@ -48,7 +47,7 @@ export function Landing() {
       <Specimen name='Stage tone="deep" · SectionIntro tone="deep" · Deck · DeckCard'>
         <Stage tone="deep" className="flex flex-col gap-10 overflow-hidden rounded-card py-12">
           <SectionIntro id="gallery-deck-intro" tone="deep" title={t("onboarding.page.portfolioTitle")} action={{ href: "/carteira", label: t("common.recordPurchase") }} />
-          <Deck id="gallery-deck" label={t("common.portfolio")} caption={<IllustrativeCaption className="px-4 text-on-stage-deep sm:px-6" />} chip={null}>
+          <Deck id="gallery-deck" label={t("common.portfolio")} chip={null}>
             <DeckCard href="/carteira" tone="brand" statement={t("onboarding.page.portfolioMessage")}>
               <PortfolioVisual />
             </DeckCard>
@@ -74,10 +73,10 @@ export function Landing() {
         </Stage>
       </Specimen>
 
-      <Specimen name='Stage tone="brand" · MarkedText · StoreButton fill'>
+      <Specimen name='Stage tone="brand" · StoreButton fill'>
         <Stage tone="brand" className="flex flex-col items-center gap-6 rounded-card px-4 py-12 text-center">
           <p className="text-heading text-balance">
-            <MarkedText text={t("common.yourMarketUpClose")} mark="text-current" />
+            {t("common.yourMarketUpClose")}
           </p>
           <StoreButton size="large" fill="bg-card-background text-primary-text hover:bg-accent-soft max-sm:whitespace-normal" />
         </Stage>

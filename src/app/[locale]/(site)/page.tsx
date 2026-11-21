@@ -6,7 +6,7 @@ import { requestTime } from "@/data/clock";
 import { type FormatLocale, createFormat } from "@/domain/format";
 import { MARKET_CATEGORY_LABEL_KEYS, type MarketCategory } from "@/domain/market";
 import { MARKET_DEFAULT_QUERY, marketQueryParams } from "@/features/market/browse/query";
-import { CoverageFigures, DeckCard, HeroPanel, MarkedText, SectionIntro, STAGE_SPACE, Stage } from "@/features/site/home";
+import { CoverageFigures, DeckCard, HeroPanel, SectionIntro, STAGE_SPACE, Stage } from "@/features/site/home";
 import { Deck, MarketPreview, MarketSearch } from "@/features/site/home-client";
 import { homeMarket } from "@/features/site/home-market";
 import { pageMetadata } from "@/features/site/metadata";
@@ -14,7 +14,6 @@ import { INDEXABLE_PAGES } from "@/features/site/site";
 import { Reveal } from "@/features/site/reveal";
 import { OrganizationData } from "@/features/site/structured-data";
 import {
-  IllustrativeCaption,
   LearnMiniature,
   NewsMiniature,
   PlusVisual,
@@ -48,9 +47,6 @@ const marketHref = (category: MarketCategory) => ({
   pathname: INDEXABLE_PAGES.market,
   query: marketQueryParams({ ...MARKET_DEFAULT_QUERY, category }),
 });
-
-/** A deck's "Exemplo ilustrativo", on the page column's edge under the row. */
-const DECK_CAPTION = cn(PAGE_CONTAINER, "text-secondary-text");
 
 /**
  * The landing page, one flat fill per stretch: the hero panel (`stage-deep`: the title and the App Store pill); on the
@@ -119,7 +115,6 @@ export default async function HomePage() {
           id="home-follow-deck"
           label={t("common.watchlistTab")}
           chip={<SectionChip icon="watchlist">{t("common.watchlistTab")}</SectionChip>}
-          caption={<IllustrativeCaption className={DECK_CAPTION} />}
         >
           <DeckCard href="/lista" tone="brand" statement={t("onboarding.page.watchlistMessage")}>
             <WatchlistVisual />
@@ -148,7 +143,6 @@ export default async function HomePage() {
             id="home-portfolio-deck"
             label={t("common.portfolio")}
             chip={<SectionChip icon="portfolio">{t("common.portfolio")}</SectionChip>}
-            caption={<IllustrativeCaption className={cn(PAGE_CONTAINER, "text-on-stage-deep")} />}
           >
             <DeckCard href="/carteira" tone="brand" statement={t("onboarding.page.portfolioMessage")}>
               <PortfolioVisual />
@@ -191,7 +185,7 @@ export default async function HomePage() {
         <section aria-labelledby="download" data-reveal="stagger" className={cn(PAGE_CONTAINER, STAGE_SPACE, "flex flex-col items-center gap-6 text-center")}>
           <p className="max-w-[24ch] font-display text-lead text-balance">{t("site.home.heroSubtitle")}</p>
           <h2 id="download" className="max-w-5xl text-heading text-balance">
-            <MarkedText text={t("common.yourMarketUpClose")} mark="text-current" />
+            {t("common.yourMarketUpClose")}
           </h2>
           <div className="mt-6 flex max-w-full">
             <StoreButton size="large" fill="bg-card-background text-primary-text hover:bg-accent-soft max-sm:whitespace-normal" />
