@@ -27,19 +27,17 @@ export const generateMetadata = siteMetadata({ path: INDEXABLE_PAGES.market, ima
  * renders dated verified closes; current quotes, the session figures and the movers arrive in the browser.
  */
 export default async function MarketPage() {
-  const t = await getTranslations();
-  const locale = (await getLocale()) as FormatLocale;
-  const format = createFormat(locale, (key, values) => t(key as never, values as never));
-  let index: MarketIndex | undefined;
-  try {
-    index = await getPublicPulse();
-  } catch {
-    index = undefined;
-  }
   const now = requestTime();
-  const catalogue = await catalogueRows(now);
+  const [t, locale, index, catalogue, account] = await Promise.all([
+    getTranslations(),
+    getLocale() as Promise<FormatLocale>,
+    getPublicPulse(now).catch((): MarketIndex | undefined => undefined),
+    catalogueRows(now),
+    currentAccount(),
+  ]);
+  const format = createFormat(locale, (key, values) => t(key as never, values as never));
   // Visitors reach Notícias and Aprender from the top bar; the app shell has no such links, so the tab row carries them.
-  const links: MarketBrowserLink[] = (await currentAccount())
+  const links: MarketBrowserLink[] = account
     ? [
         { href: INDEXABLE_PAGES.news, title: t("common.news") },
         { href: INDEXABLE_PAGES.learn, title: t("learn.title") },
