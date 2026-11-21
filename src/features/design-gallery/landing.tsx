@@ -2,8 +2,8 @@
 
 import { useTranslations } from "next-intl";
 
-import { CoverageFigures, DeckCard, MarkedText, SectionIntro, Stage } from "@/features/site/home";
-import { Deck } from "@/features/site/home-client";
+import { CoverageFigures, DeckCard, HeroPanel, MarkedText, SectionIntro, Stage } from "@/features/site/home";
+import { Deck, MarketSearch } from "@/features/site/home-client";
 import {
   IllustrativeCaption,
   LearnMiniature,
@@ -30,6 +30,15 @@ export function Landing() {
   const t = useTranslations();
   return (
     <GallerySection id="landing" title="Landing pieces">
+      <Specimen name="HeroPanel (shortened) · text-hero · StoreButton large">
+        <HeroPanel labelledBy="gallery-hero" className="mx-0! min-h-96! w-full lg:min-h-96!">
+          <p id="gallery-hero" className="max-w-[13ch] font-display text-hero text-balance">
+            {t("common.yourMarketUpClose")}
+          </p>
+          <StoreButton size="large" fill="bg-on-stage-deep text-stage-deep hover:bg-on-stage-deep/90 max-sm:whitespace-normal" />
+        </HeroPanel>
+      </Specimen>
+
       <Specimen name="SectionIntro · MarkedText (canvas)">
         <div className="rounded-card bg-canvas py-12">
           <SectionIntro id="gallery-intro" title={t("onboarding.page.watchlistTitle")} action={{ href: "/lista", label: t("common.follow") }} />
@@ -74,7 +83,10 @@ export function Landing() {
         </Stage>
       </Specimen>
 
-      <Specimen name="CoverageFigures">
+      <Specimen name="MarketSearch · CoverageFigures">
+        <div className="w-full max-w-xl">
+          <MarketSearch action="/mercado" hidden={{}} />
+        </div>
         <CoverageFigures total={{ value: TOTAL.value, label: t(TOTAL.key) }} items={FIGURES.map((item) => ({ value: item.value, label: t(item.key) }))} />
       </Specimen>
 

@@ -24,7 +24,7 @@ Pick by intent:
 
 ### `panel` (utility, `src/app/globals.css`)
 
-The web card surface: `border: 1px solid var(--card-border)`, `rounded-card` (22 px), `bg-card-background`, `shadow-panel`. Use it directly for blocks that are not `Card`s (landing bands, a table card that must be a card on phones too: `<Card flush className="overflow-hidden panel">`). Variants work: `lg:panel`, `desk:panel`.
+The web card surface: a flat fill on the canvas, `rounded-card` (24 px), `bg-card-background`, no shadow, and `border: 1px solid var(--panel-edge)`, transparent unless increased contrast draws it (the box keeps its size). Use it directly for blocks that are not `Card`s (the market preview, a table card that must be a card on phones too: `<Card flush className="overflow-hidden panel">`). Variants work: `lg:panel`, `desk:panel`.
 
 ### `Icon` (`@/ui/icons/icon`)
 
@@ -50,7 +50,7 @@ The pack is generated from `design/icon-pack/masters.json` (the iOS masters plus
 
 ### `PAGE_CONTAINER`, `READING_COLUMN`
 
-Class strings, not components. See [layout.md](layout.md#the-page-column). `TopBar` puts its row (and its menu panel's content) in `PAGE_CONTAINER` too, so the bar lines up with the page. Page wrappers built on them: `SITE_PAGE`, `ReadingPage`, `MessagePage` (`@/features/site/pages`), `SIGNED_IN_PAGE`, `SignedInPage` (`@/features/shell/placeholder-page`).
+Class strings, not components. See [layout.md](layout.md#the-page-column). `TopBar` puts its row (and its menu card) in `PAGE_CONTAINER` too, so the bar lines up with the page. Page wrappers built on them: `SITE_PAGE`, `ReadingPage`, `MessagePage` (`@/features/site/pages`), `SIGNED_IN_PAGE`, `SignedInPage` (`@/features/shell/placeholder-page`).
 
 ### `Card`
 
@@ -79,8 +79,8 @@ The grouping surface. On phones a white (`card-background`) block with 24 px cor
 
 - Do give every titled card a `titleId` so it is a named region.
 - Do put tables in a `flush` card; add `panel` when the table must be a card on phones too.
-- Don't nest cards. Inside a card, use `StatTile`, hairline dividers or an inset `bg-app-background` notice.
-- Don't add `shadow-*` or `border` classes: the surface is the token.
+- Don't nest cards. Inside a card, use `StatTile`, hairline dividers or an inset `bg-canvas` notice.
+- Don't add `shadow-*` or `border` classes: the card is flat, its fill is the surface.
 
 ### `Panel`
 
@@ -122,7 +122,7 @@ A one-message page's card: `panel`, at most 448 px, centred, `gap-6`, 24 px padd
 
 ### `StatTile`
 
-A labelled figure inside a card: a hairline box, a muted label over a value in the display face, an optional detail line. Renders `dt`/`dd`, so place tiles in a `<dl>`.
+A labelled figure inside a card: a flat inset on the canvas fill (`bg-canvas`, edge only with increased contrast), a muted label over a value in the display face, an optional detail line. Only on a card, never on the canvas (it would vanish). Renders `dt`/`dd`, so place tiles in a `<dl>`.
 
 | Prop | Type | Default | |
 |---|---|---|---|
@@ -156,21 +156,21 @@ Use `grid` in narrow columns where values must not truncate; `strip` across a ca
 
 ### `TopBar` (`@/ui/components/top-bar`)
 
-The one top bar. Use it through `SiteHeader` (`@/features/site/chrome`) or `ShellTopBar` (`@/features/shell/shell-nav`); build a new bar only for a new area.
+The one top bar: three opaque pieces floating over the canvas (logo, nav capsule, actions), sticky, `--top-bar-height` tall; see [layout.md](layout.md#top-bar-topbar-srcuicomponentstop-bartsx). Use it through `SiteHeader` (`@/features/site/chrome`) or `ShellTopBar` (`@/features/shell/shell-nav`); build a new bar only for a new area.
 
 | Prop | Type | |
 |---|---|---|
-| `home` | `{ href: string; label: string }` | The logo link and its accessible name |
+| `home` | `{ href: string; label: string }` | The logo pill link and its accessible name |
 | `logo` | `ReactNode` | `<BrandLockup />` |
-| `nav` | `{ href: string; label: string }[]` | Pill links; the current one (path match) gets `aria-current` and the grey pill |
+| `nav` | `{ href: string; label: string }[]` | The capsule's links; the current one (path match) gets `aria-current` and the soft accent fill |
 | `navLabel` | `string` | The `<nav>` name |
-| `mobileNav` | `"menu" \| "none"` | Below 1024 px: the links move into a menu behind a button at the start of the bar, before the logo, or nothing (the bottom tab bar has them) |
-| `menu` | `{ label: string; content: ReactNode }` | With `"menu"` (required): the button's accessible name (`site.header.menuLabel`) and what follows the links in the menu, under a hairline (`<SiteControls />`) |
+| `mobileNav` | `"menu" \| "none"` | Below 1024 px: the links move into a menu behind a round button at the end of the bar, after the actions, or nothing (the bottom tab bar has them) |
+| `menu` | `{ label: string; content: ReactNode }` | With `"menu"` (required): the button's accessible name (`site.header.menuLabel`) and what follows the links in the menu card, under a hairline (`<SiteControls />`) |
 | `wideActions` | `ReactNode` | With `"menu"`: actions shown only from 1024 px, before `actions` (the language, `ThemeMenu`); below that they belong in `menu.content` |
-| `search` | `ReactNode` | From 1024 px a 288–320 px slot |
-| `actions` | `ReactNode` | Icon buttons and one compact pill, right-aligned, at every width |
+| `search` | `ReactNode` | From 1024 px a 224 px slot (288 px from 1280 px) |
+| `actions` | `ReactNode` | Icon buttons and one compact pill, right-aligned, at every width; each brings its own opaque fill |
 
-`TOP_BAR_PILL` is the pill link's class string. Actions are 44 px: `IconButton variant="plain"`, `iconButtonClass("plain")` on links, `LANGUAGE_CONTROL` (a pill: flag and code), `ThemeMenu`, a `size="compact"` pill (the public sign-in pill adds `SIGN_IN_PILL`: below 1024 px it is drawn at 36 px with 12 px padding and an `::after` keeps the 44 px target). The menu button is `iconButtonClass("plain")` (48 px on phones), first in the bar with `-ml-4` so its glyph sits on the gutter; its icon turns from menu to close (`IconSwap`). The current pill's grey fill glides to the new pill on navigation, also across a route change (`useSlidingIndicator` with `memory`).
+`TOP_BAR_PILL` is the capsule link's class string. Actions are 44 px on desk: `iconButtonClass("surface", TOP_BAR_FLOAT)` on links, `LANGUAGE_CONTROL` on the card fill, `ThemeMenu` with a surface `triggerClassName`, a `size="compact"` pill (the public sign-in pill adds `SIGN_IN_PILL`: 48 px below 1024 px, the height of the logo and the menu button). `TOP_BAR_FLOAT` (`button-styles.ts`) lifts a piece with `shadow-float` once the page scrolls under it; not for fields or ringed controls. The menu button is `iconButtonClass("surface")` (48 px on phones), last in the bar; its icon turns from menu to close (`IconSwap`). The current link's soft fill glides to the new link on navigation, also across a route change (`useSlidingIndicator` with `memory`).
 
 ### `ShellNav` (`@/features/shell/shell-nav`)
 
@@ -178,7 +178,7 @@ The bottom tab bar below 1024 px. Props: `items: { href; label; icon }[]`, `labe
 
 ### `SectionRail` (`@/ui/components/section-rail`)
 
-A section's own navigation: icon-over-label tiles in a 96 px vertical rail from 1024 px (sticky at `lg:top-20`), a horizontally scrolling strip below. The current tile is raised (`bg-raised shadow-raised`, accent icon) with `aria-current`; the raised fill glides to the next tile on navigation.
+A section's own navigation: icon-over-label tiles in a 96 px vertical rail from 1024 px (sticky 16 px under the top bar), a horizontally scrolling strip below. The current tile is raised (`bg-raised shadow-raised`, accent icon) with `aria-current`; the raised fill glides to the next tile on navigation.
 
 | Prop | Type | |
 |---|---|---|
@@ -225,18 +225,18 @@ All three share one look: text tabs in the display face on a hairline, the curre
 
 ### Site chrome (`@/features/site/chrome`)
 
-`SiteHeader({ theme })`, `SiteFooter({ year })` (`year`: the request's Luanda year from the layout; see [layout.md](layout.md#footer-sitefooter)), `SiteControls({ theme })` (`ThemeSwitch` and the language link on one row, in the header's menu), `BrandLockup({ wordmarkFrom? })` (mark + wordmark; the wordmark shows from `400` px by default, from `360` in the public bar), `PalancaMark({ className })` (the mark as a mask in `currentColor`), `SIGN_IN_PILL` (extra classes for the header's compact sign-in `ButtonLink`: 36 px drawn, 44 px target below 1024 px; unchanged from 1024 px), `LANGUAGE_CONTROL` (class string of the language link: a 44 px pill with the `LanguageFlag` and the code of the language it switches to, "EN" on Portuguese pages, "PT" on English ones; the accessible name is the language's name).
+`SiteHeader({ theme })`, `SiteFooter({ year })` (the `stage-brand` band with the inset footer card; `year`: the request's Luanda year from the layout; see [layout.md](layout.md#footer-sitefooter)), `SiteControls({ theme })` (`ThemeSwitch` and the language link on one row, in the header's menu), `BrandLockup({ wordmarkFrom? })` (mark + wordmark; the wordmark shows from `400` px by default, from `360` in the public bar), `PalancaMark({ className })` (the mark as a mask in `currentColor`), `SIGN_IN_PILL` (extra classes for the header's compact sign-in `ButtonLink`: 48 px below 1024 px, beside the 48 px logo and menu button; unchanged from 1024 px), `LANGUAGE_CONTROL` (class string of the language link: a 44 px pill with the `LanguageFlag` and the code of the language it switches to, "EN" on Portuguese pages, "PT" on English ones; the accessible name is the language's name; give it the card fill in the bar and the soft tint in the menu).
 
 ## Buttons and choices
 
 ### `Button`, `ButtonLink` (`@/ui/components/buttons`)
 
-Pills. Phones: full width, 56 px, 17 px semibold (iOS). `desk:`: 44 px, 14 px medium. `size="compact"`: 44 px everywhere, 14 px, sized to the title (card actions, toolbars, the top bar).
+Pills. Phones: full width, 56 px, 17 px semibold (iOS). `desk:`: 44 px, 14 px medium. `size="compact"`: 44 px everywhere, 14 px, sized to the title (card actions, toolbars, the top bar). `size="large"`: 64 px (72 on desk), 32 px of padding, 17 px (18 on desk) medium, sized to the title: the hero's and the close's call to action.
 
 | Prop | Type | Default | |
 |---|---|---|---|
-| `kind` | `"primary" \| "secondary" \| "outline" \| "destructive"` | `"primary"` | Accent fill · grey fill · hairline outline · red tint |
-| `size` | `"regular" \| "compact"` | `"regular"` | |
+| `kind` | `"primary" \| "secondary" \| "outline" \| "destructive"` | `"primary"` | Solid accent · soft accent tint (`accent-soft`, `accent-soft-hover` on hover) · hairline outline · red tint |
+| `size` | `"regular" \| "compact" \| "large"` | `"regular"` | |
 | `icon` | `IconName` | | Leading icon |
 | `loading` | `boolean` | `false` | `Button` only: spinner, `aria-busy`, `aria-disabled`, presses ignored, "processing" announced |
 | … | `button` attributes / `Link` props | | `type` defaults to `button` |
@@ -254,7 +254,7 @@ A regular pill is `w-full`. To size it to its title write `w-auto!` (or `sm:w-au
 - Disabled pills are at 42 % opacity; prefer `loading` over disabling during a request.
 - Pills press (`motion-press`: 98 %, dimmed) and fade between states; the spinner fades in rather than flashing.
 
-`buttonClass(kind?, className?, size?)` gives the same classes for elements that are not `Button`/`ButtonLink`: external links (`StoreButton`), `<summary>`, a server form's submit. It lives in `button-styles.ts`, which server components can import.
+`buttonClass(kind?, className?, size?)` gives the same classes for elements that are not `Button`/`ButtonLink`: external links (`StoreButton`), `<summary>`, a server form's submit. `buttonShape(size?)` is a pill's shape, type and press without its fill, for a pill on a stage fill that brings its own colours (`StoreButton fill`, the section intro's pill on `stage-deep`). Both live in `button-styles.ts`, which server components can import.
 
 ### `IconButton`, `iconButtonClass`
 
@@ -264,10 +264,14 @@ Round icon-only button: 48 px on phones, 44 on desk. `label` is required (it is 
 |---|---|---|---|
 | `icon` | `IconName` | | |
 | `label` | `string` | | |
-| `variant` | `"filled" \| "plain" \| "outline"` | `"filled"` | Grey disc · bare icon with a hover disc (top bar, toolbars, dialog close) · hairline ring |
+| `variant` | `"filled" \| "surface" \| "plain" \| "outline"` | `"filled"` | Soft accent disc · card-fill disc, opaque on the canvas (the top bar, a deck's buttons) · bare icon with a hover disc (toolbars, dialog close) · hairline ring |
 | … | `button` attributes | | |
 
-When `icon` changes (eye ↔ eye-off), the new glyph grows in. `iconButtonClass(variant?, className?)` styles a link as an icon button (the top bar's activity links). Mark the current one with `aria-current` and `aria-[current=page]:bg-action-surface`.
+When `icon` changes (eye ↔ eye-off), the new glyph grows in. `iconButtonClass(variant?, className?)` styles a link as an icon button (the top bar's activity links). Mark the current one with `aria-current` and `aria-[current=page]:bg-accent-soft`.
+
+### `SectionChip` (`@/ui/components/layout`), `sectionChipClass`
+
+A section's label on a stage: a small pill (36 px, 15 px medium, display face) on the card fill, or the soft accent tint with `tone="soft"` when it sits on a card, with an optional leading `icon` in the accent. Decorative text, not a control, so it has no target size. Props: `icon?: IconName`, `tone?: "card" \| "soft"`, `span` attributes. The landing's decks lead with one (`<SectionChip icon="watchlist">{t("common.watchlistTab")}</SectionChip>`). `sectionChipClass(tone?, className?)` in `button-styles.ts` is the class string.
 
 ### `ActionTile`
 
@@ -315,7 +319,7 @@ A WAI-ARIA menu button. Enter, Space or the arrows open it on the first or last 
 | `label` | `string` | | The trigger's name (and the menu's) |
 | `entries` | `MenuEntry[]` | | `{ kind: "item", label, icon?, onSelect, destructive?, disabled?, testID? }`, `{ kind: "check", label, checked, onToggle }`, `{ kind: "heading", label }`, `{ kind: "separator" }` |
 | `icon` | `IconName` | `"more"` | Icon trigger |
-| `trigger` | `ReactNode` | | Visible trigger content: a grey pill instead of the icon |
+| `trigger` | `ReactNode` | | Visible trigger content: a soft accent pill instead of the icon |
 | `align` | `"start" \| "end"` | `"end"` | |
 | `triggerClassName` | `string` | | Replaces the trigger's look (a rail tile) |
 | `testID`, `className` | | | |
@@ -561,27 +565,26 @@ A sheet slides in from the bottom (from the right at 768 px and up), a dialog ri
 
 `SettingsGroup({ id, title, children, className? })`: a titled `Card` whose rows are divided by hairlines. Rows: `LinkRow({ href, icon?, label, value?, external? })` (chevron or external arrow), `ValueRow({ icon?, label, children })`, `ControlRow({ icon?, label, children })` (the control under the label on phones, beside it from 640 px), `DisclosureRow({ icon?, label, children })` (an expandable `<details>` that grows open and folds closed, its chevron turning). All work without JavaScript.
 
-## Landing pieces (`@/features/site/home`, `@/features/site/visuals`)
+## Landing pieces
 
-Landing-only building blocks; reuse them for new marketing sections, not for app pages.
+From `@/features/site/home` (server-safe), `@/features/site/home-client` and `@/features/site/visuals`. Landing-only building blocks; reuse them for new marketing sections, not for app pages.
 
 | Export | |
 |---|---|
-| `HOME_SECTION`, `HOME_HEADING` | Section spacing (`py-16 md:py-24`) and the large centred section title (40 px from 1024 px) |
-| `HERO_TITLE` | The hero `h1`: display face, balanced, −0.02em (−0.025em from 640 px). Phones: fluid 38 → 44 px (42 px at 390, two lines), leading 1.08; from 640 px fluid 47 → 68 px, leading 1.04 |
-| `CLOSING_TITLE` | The closing line's `h2`: the same face and tracking, fluid 34 → 56 px (between `HOME_HEADING` and `HERO_TITLE`) |
-| `HeroBackdrop` | `{ edge? }`: decorative accent glow (`hero-glow`) over a fine grid (`hero-grid`); first child of a `relative isolate overflow-hidden` block. `edge="bottom"` mirrors it so the light rises from the block's bottom edge (the landing's close, onto the footer hairline) |
-| `HeroFigures` | `{ total?, items: { value; label }[], className? }`: a `<dl>` of real catalogue counts (display face). Phones: `items` only, as an even row of equal columns between hairlines, each 22 px count above its caption label (11 px at 360 px and below); `total` is hidden. From 640 px: one inline strip, `total` first, each count beside its label |
-| `Showcase` | Centres the product under the hero (max 1024 px) on an accent halo (`showcase-halo`) behind and around it, in a translucent bezel from 640 px |
-| `MarketPreview` (`@/features/site/home-client`) | `{ tabs, label }`: one flush card with `SectionTabs` on top, a table of dated verified closes per kind and that kind's "Ver tudo" pill in the footer |
-| `Bento` | The "all in one" grid: a `<figure>` with a `<ul>` of `BentoCard`s (6 columns from 1024 px, 2 from 768 px, 1 on phones) and one "Exemplo ilustrativo" caption for the whole grid |
-| `BentoCard` | `{ href, title, wide?, wash?, bleed?, children }`: a whole-card `Link` (`prefetch={false}`, focus ring, `motion-press`, border to `field-border` and a 1 px lift on hover (the `motion-lift` timing), no lift with reduced motion; a scroll-reveal target) holding a `panel` with the title (the link's name) and the miniature in an `aria-hidden`, unselectable frame that bleeds off the bottom under a fade (`bleed="corner"`: the right edge too). `wide` spans 4 of 6 columns (the whole row at 768 px); `wash` adds the accent light (`bento-wash`), for the largest card only |
-| `SimulatorMiniature`, `UnusualActivityMiniature`, `NewsMiniature`, `LearnMiniature`, `WeekAheadMiniature` (`@/features/site/visuals`) | A few rows of `/simulador`, `/atividade-invulgar`, `/noticias`, `/aprender` and `/semana` at small size, built from the real pieces (`SecurityLogo`, chips, lesson icons, the simulator's projected and invested lines); sample values and catalogue wording only, no controls |
-| `FeatureRows` | The feature rows' column: `PAGE_CONTAINER`, 64 px between rows and above them (96 px from 768 px); Plus's own top padding gives the same space below |
-| `FeatureRow` | `{ id, icon, title, message, action, visual, flip? }`: the icon in a 48 px `accent-soft` squircle, the `h2` (`HOME_HEADING`), the message and the action, then the visual. Stacked, text first, below 1024 px; from there two columns, the visual taking 7 of 12 on the left (on the right with `flip`), the text vertically centred. Marks the row `data-flip` so the visual's floating card leans towards the text, and `data-reveal="stagger"` so the text eases in before the visual |
-| `InstrumentVisual`, `WatchlistVisual`, `PortfolioVisual` | Product visuals on a tinted stage (`feature-stage`, hairline border, `rounded-card`): a main card the stage's width and a smaller floating card (`border-field-border`, above it) that overlaps it and leans out by the stage's `--lean` (24 px from 640 px, 32 px from 1024 px) towards the text. Instrument: price, change, range track and a month's line under the opening and high (the high alone below 368 px); watchlist: a reached price alert over three rows of `/lista`; portfolio: the `/carteira` value, change and line under the allocation. Charts are SVG: an area fading to transparent, round caps, dashed grid, a dot with a soft halo on the last point; on reveal the line wipes in from the left, then the area and dot fade in. On hover the stage's border turns `field-border` and the floating card rises 4 px. `{ label }` is the figure's accessible name; captioned "Exemplo ilustrativo" (`IllustrativeCaption`, `onboarding.preview.illustrativeExample`) |
-| `PlusVisual` | `{ label }`: what Plus adds, with no stage of its own (it sits on the Plus panel's light): a "Movimento relevante" notice (the activity centre's movements tint, `ChangeBadge`) lifted over a comparison card as in the instrument page's "Comparar" sheet (range track, one line per instrument from a shared start in `accent` and `brand-violet`, each instrument's `SecurityLogo`, line colour and change). From 1024 px the notice leans 32 px towards the text. Captioned "Exemplo ilustrativo" |
-| `StoreButton` | The App Store pill; `kind?`, `className?` |
-| `Reveal` (`@/features/site/reveal`) | The landing's scroll reveal, a client component that renders nothing: after mount it gives each `[data-reveal]` target still wholly below the fold its start state and eases it in once as it enters the viewport (an `IntersectionObserver`; utilities in `motion.css`, see [theme.md](theme.md#motion)). Targets: the bento heading, each `BentoCard`, each `FeatureRow` (`stagger`: text, then the visual), the Plus panel and the closing band (`stagger`). Mount it once per page |
+| `Stage` | `{ tone, className?, children }`: a full-bleed band (a plain `div`) in one flat stage fill, `tone`: `"brand" \| "deep" \| "ink" \| "pale"`; its text takes the on-colour and focus rings the on-colour too. `STAGE_FILL[tone]` and `STAGE_RING[tone]` are the class strings for other elements on a fill; `STAGE_SPACE` is a section's top space (`pt-24 md:pt-36`) |
+| `HeroPanel` | `{ labelledBy, className?, children }`: the hero `section`, a large `stage-deep` panel inset from the window's edges (8, 16, 24 px), right under the top bar and about one window tall (at least 30rem, 36rem from 1024 px), with decorative shapes and the mark at its edges (`aria-hidden`); `children` (the `h1` in `text-hero` and one large pill) are centred. `className` adjusts the frame (the gallery's shorter specimen) |
+| `SectionIntro` | `{ id, title, action?, tone? }`: a section's centred `h2` (`text-heading`, `text-balance`, two lines at most) with `MarkedText`, then an optional small pill to the section's page with an `arrow-up-right` icon (`action: { href, label }`): the secondary pill on the canvas, a light veil of the on-colour on `stage-deep` (`tone="deep"`). A `data-reveal="stagger"` group |
+| `MarkedText` | `{ text, mark? }`: the text with the brand mark set inline before its last word, at the cap height, kept on one line with that word; `mark` is the mark's colour class (`text-accent` on the canvas, `text-stage-brand` on `stage-deep`, `text-current` on `stage-brand`). The mark is decorative |
+| `MarketSearch` (`home-client`) | `{ action, hidden }`: the market search, a plain GET `form role="search"` to the market list with `q` and the hidden fields, so it works before and without JavaScript |
+| `CoverageFigures` | `{ total?, items: { value; label }[], className? }`: a `<dl>` of real catalogue counts (display face). Phones: `items` only, as an even row of equal columns between hairlines, each 22 px count above its caption label (11 px at 360 px and below); `total` is hidden. From 640 px: one inline strip, `total` first, each count beside its label |
+| `MarketPreview` (`home-client`) | `{ tabs, label }`: one flush `panel` card with `SectionTabs` on top, a table of the server's dated verified closes per kind and that kind's outline "Ver tudo" pill under it; never a current quote (cached HTML) |
+| `Deck` (`home-client`) | `{ id, label, chip, caption, children }`: a `<figure>` with the chip and round previous and next buttons (`IconButton variant="surface"`, shown once hydrated, disabled at the row's ends, hidden when every card fits) over a `<ul>` of `DeckCard`s that scrolls sideways with scroll snap and a hidden scrollbar. The row starts on the page column's edge and runs to the window's; the buttons scroll by one card (instantly with reduced motion), and a button that turns disabled under focus hands focus to the other. Touch, a trackpad and Tab move through it without JavaScript; no auto-play, no loop. `caption` is the deck's one "Exemplo ilustrativo". A scroll-reveal target |
+| `DeckCard` | `{ href, statement, tone, children }`: a whole-card link (`motion-lift`) in a stage fill: the statement (`text-statement`, an `h3`, the link's name) at the top, and the visual in a `bg-canvas` frame with rounded top corners anchored to the card's bottom edge. The frame hugs the visual, so a short statement leaves card fill between them, never an empty frame; a tall visual is clipped by the card's edge. The visual is `aria-hidden`, `inert` and unselectable. 85 % of the row on phones (at most 22rem), 22rem from 640 px, 29.5rem from 1024 px; 27, 31 and 36rem tall |
+| `WatchlistVisual`, `PortfolioVisual` (`visuals`) | Product visuals for a deck card: a main `panel` card and a smaller floating card (`border-field-border`) that overlaps it and rises 4 px while the pointer is over the deck card. Watchlist: a reached price alert over three rows of `/lista`; portfolio: the `/carteira` value, change and line under the allocation. Charts are SVG: an area fading to transparent, round caps, dashed grid, a dot with a soft halo on the last point; on reveal the line wipes in from the left, then the area and dot fade in |
+| `SimulatorMiniature`, `UnusualActivityMiniature`, `NewsMiniature`, `LearnMiniature`, `WeekAheadMiniature` (`visuals`) | A few rows of `/simulador`, `/atividade-invulgar`, `/noticias`, `/aprender` and `/semana` at small size on flat miniature cards, built from the real pieces (`SecurityLogo`, chips, lesson icons, the simulator's projected and invested lines); sample values and catalogue wording only, no controls |
+| `PlusVisual` (`visuals`) | `{ label }`: what Plus adds, on the `stage-pale` Plus card: a "Movimento relevante" notice (the activity centre's movements tint, `ChangeBadge`) lifted over a comparison card as in the instrument page's "Comparar" sheet (range track, one line per instrument from a shared start in `accent` and `brand-violet`, each instrument's `SecurityLogo`, line colour and change). A figure of its own: `label` is its accessible name; its caption takes the fill's text colour |
+| `IllustrativeCaption` (`visuals`) | `{ className? }`: the "Exemplo ilustrativo" `figcaption`; `className` replaces its colour on a stage fill |
+| `StoreButton` (`visuals`) | `{ kind?, size?, fill?, className? }`: the App Store pill; `fill` replaces the kind's colours on a stage fill (the hero's `on-stage-deep` pill, the close's card-fill pill) |
+| `Reveal` (`@/features/site/reveal`) | The landing's scroll reveal, a client component that renders nothing: after mount it gives each `[data-reveal]` target still wholly below the fold its start state and eases it in once as it enters the viewport (an `IntersectionObserver`; utilities in `motion.css`, see [theme.md](theme.md#motion)). Targets: each `SectionIntro` (`stagger`), the market preview, each `Deck`, the Plus card and the closing band (`stagger`). Mount it once per page |
 
 See [patterns.md](patterns.md#illustrative-visuals) for the visuals rule.

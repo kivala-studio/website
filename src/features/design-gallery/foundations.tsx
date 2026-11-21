@@ -86,6 +86,7 @@ const SHADOWS = [
   ["shadow-panel bg-card-background", "shadow-panel"],
   ["shadow-raised bg-raised", "shadow-raised + bg-raised"],
   ["shadow-bar bg-elevated-background", "shadow-bar"],
+  ["shadow-float bg-card-background", "shadow-float (top bar, scrolled)"],
   ["shadow-focus border border-accent bg-card-background", "shadow-focus + border-accent"],
 ] as const;
 
@@ -163,7 +164,7 @@ export function Foundations() {
               <span className="font-display text-statement">Aa 72 500</span>
               <span className="flex flex-col">
                 <code className="text-secondary">{token}</code>
-                <code className="text-caption opacity-80">{tokenValue(themeKey, token) || " "}</code>
+                <code className="text-caption">{tokenValue(themeKey, token) || " "}</code>
               </span>
             </li>
           ))}

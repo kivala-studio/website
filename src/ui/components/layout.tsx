@@ -166,8 +166,8 @@ export function Panel({
 }
 
 /**
- * A nested stat tile inside a card (the CoinStats summary look): a hairline box with a muted label over a value in
- * the display face, then an optional detail line. `large` is the card's lead figure. Use inside a `<dl>`.
+ * A nested stat tile inside a card: a flat inset on the canvas fill (an edge only with increased contrast) with a
+ * muted label over a value in the display face, then an optional detail line. Only on a card, never on the canvas. `large` is the card's lead figure. Use inside a `<dl>`.
  */
 export function StatTile({
   label,
@@ -183,7 +183,7 @@ export function StatTile({
   size?: "large" | "small";
 }) {
   return (
-    <div {...props} className={cn("flex min-w-0 flex-col gap-1 rounded-medium border border-hairline px-4 py-3", className)}>
+    <div {...props} className={cn("flex min-w-0 flex-col gap-1 rounded-medium border border-panel-edge bg-canvas px-4 py-3", className)}>
       <dt className="flex min-h-5 items-center gap-1 text-caption text-secondary-text desk:text-secondary">{label}</dt>
       <dd className={cn("mt-auto font-display font-semibold text-primary-text", size === "large" ? "text-[1.625rem] leading-tight tracking-tight desk:text-[1.5rem]" : "text-lg leading-snug")}>{value}</dd>
       {detail ? <dd className="text-caption text-secondary-text">{detail}</dd> : null}

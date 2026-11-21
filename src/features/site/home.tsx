@@ -106,9 +106,10 @@ export function SectionIntro({
 /**
  * The hero panel: a large rounded `stage-deep` panel inset from the window's edges, right under the floating top bar
  * and about one window tall, with a few decorative shapes at its edges; `children` (the title and one large pill) are
- * centred in it. The `h1` is the largest paint, so it never fades in.
+ * centred in it. The `h1` is the largest paint, so it never fades in. `className` adjusts the frame (the gallery's
+ * shorter specimen).
  */
-export function HeroPanel({ labelledBy, children }: { labelledBy: string; children: ReactNode }) {
+export function HeroPanel({ labelledBy, className, children }: { labelledBy: string; className?: string; children: ReactNode }) {
   return (
     <section
       aria-labelledby={labelledBy}
@@ -116,6 +117,7 @@ export function HeroPanel({ labelledBy, children }: { labelledBy: string; childr
         "relative isolate mx-2 flex min-h-[max(30rem,calc(100svh-var(--top-bar-height)-1rem))] flex-col items-center justify-center gap-10 overflow-hidden rounded-card px-5 py-20 text-center sm:mx-4 sm:px-10 lg:mx-6 lg:min-h-[max(36rem,calc(100svh-var(--top-bar-height)-1.5rem))]",
         STAGE_FILL.deep,
         STAGE_RING.deep,
+        className,
       )}
     >
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
@@ -165,9 +167,9 @@ export function CoverageFigures({ total, items, className }: { total?: Figure; i
 
 /**
  * One card of a deck, a whole-card link: a tall flat card in a stage fill, its statement (`text-statement`, the link's
- * name) at the top and the product visual in a frame that runs off its bottom edge and takes all the height the
- * statement leaves (a short statement gets a taller frame, never an empty band). The visual is decorative: hidden,
- * inert and unselectable. 85 % of the row on phones (the next card peeks in), 352 px from 640 px, 472 px
+ * name) at the top and the product visual in a frame anchored to its bottom edge. The frame hugs the visual, so a short
+ * statement leaves card fill between the two, never an empty frame; a tall visual is clipped by the card's bottom
+ * edge. The visual is decorative: hidden, inert and unselectable. 85 % of the row on phones (the next card peeks in), 352 px from 640 px, 472 px
  * from 1024 px; it snaps to the row's start.
  */
 export function DeckCard({ href, statement, tone, children }: { href: string; statement: string; tone: StageTone; children: ReactNode }) {
@@ -181,8 +183,8 @@ export function DeckCard({ href, statement, tone, children }: { href: string; st
           STAGE_FILL[tone],
         )}
       >
-        <h3 className="px-6 pt-6 font-display text-statement text-balance sm:px-8 sm:pt-8 lg:px-12 lg:pt-12">{statement}</h3>
-        <div aria-hidden inert className="mx-3 mt-8 min-h-56 grow overflow-hidden rounded-t-[1.25rem] bg-canvas p-3 select-none sm:mx-5 lg:mx-8 lg:mt-10">
+        <h3 className="mb-8 shrink-0 px-6 pt-6 font-display text-statement text-balance sm:px-8 sm:pt-8 lg:mb-10 lg:px-12 lg:pt-12">{statement}</h3>
+        <div aria-hidden inert className="mx-3 mt-auto min-h-0 overflow-hidden rounded-t-[1.25rem] bg-canvas p-3 select-none sm:mx-5 lg:mx-8">
           {children}
         </div>
       </Link>

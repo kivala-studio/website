@@ -59,16 +59,16 @@ Every data block has all four.
 
 ## Illustrative visuals
 
-The landing's product visuals (`InstrumentVisual`, `WatchlistVisual`, `PortfolioVisual`, `PlusVisual`) and the bento miniatures (`SimulatorMiniature` and the others in `BentoCard`):
+The landing's product visuals (`WatchlistVisual`, `PortfolioVisual`, `PlusVisual`) and the miniatures (`SimulatorMiniature` and the others), all but Plus inside a `DeckCard`:
 
-- One accessible name per figure (`role="img"` + `aria-label` from the catalogue) or per bento card (its title, the link's name); everything inside is `aria-hidden`, not selectable and has no controls, and no motion beyond the landing's one-time scroll reveal (the chart line wipes in, then its area and dot fade in). `ChangeBadge` and `FinancialValue` roll only when their value changes, so sample values never move.
-- Captioned "Exemplo ilustrativo" (`IllustrativeCaption`): under each visual's stage, and once under the whole bento grid, never per card.
+- One accessible name per deck card (its statement, the link's name) or per figure (`PlusVisual`: `role="img"` + `aria-label` from the catalogue); everything inside is `aria-hidden`, `inert`, not selectable and has no controls, and no motion beyond the landing's one-time scroll reveal (the chart line wipes in, then its area and dot fade in) and the floating card's 4 px rise on hover. `ChangeBadge` and `FinancialValue` roll only when their value changes, so sample values never move.
+- Captioned "Exemplo ilustrativo" (`IllustrativeCaption`): once under each deck, never per card, and under `PlusVisual`.
 - Sample values only: the iOS onboarding's sample instruments (BAI, BFA) and round invented figures; sample text is catalogue wording with sample arguments. Never market data, never a live or current price.
-- Built from the real primitives (`StatTile`, `ChangeBadge`, `SecurityLogo`, chips, the segmented track) so they match the product.
-- Composed, not pasted: on the feature rows the main card fills the stage and the floating card overlaps it without covering text (it sits over a chart's faded area or the main card's padding), so no strip of the stage is left empty and nothing is cut mid-content.
+- Built from the real primitives (`panel`, `StatTile`, `ChangeBadge`, `SecurityLogo`, chips, the segmented track) so they match the product, flat like it.
+- Composed, not pasted: the frame hugs the visual at the card's bottom, so no strip of the frame is left empty; the floating card overlaps the main one without covering text (it sits over a chart's faded area or the main card's padding), and nothing is cut mid-content except by the card's bottom edge.
 - No inline `style` attributes (the page is checked for them): a dot placed on a chart takes static position classes (`left-full top-[18.333%]`).
 
-Decorative backgrounds (`HeroBackdrop` at either edge, the `Showcase` halo, `bento-wash` in the largest bento card and the Plus panel) are `aria-hidden`; the `feature-stage` light and grid are backgrounds of the figure itself.
+The hero panel's shapes and mark are decorative (`aria-hidden`); the mark in a heading (`MarkedText`) is too, so headings read the same to assistive technology.
 
 ## Motion
 

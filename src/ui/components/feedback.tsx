@@ -127,7 +127,7 @@ export function ToastHost({ children }: { children: ReactNode }) {
                       setRetrying(false);
                     }
                   }}
-                  className="motion-press mt-1 inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-action-surface px-4 text-secondary font-semibold text-primary-text hover:bg-track"
+                  className="motion-press mt-1 inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-accent-soft px-4 text-secondary font-semibold text-primary-text hover:bg-accent-soft-hover"
                 >
                   {retrying ? <Spinner /> : null}
                   {retrying ? t("retrying") : toast.actionTitle}

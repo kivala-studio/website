@@ -107,7 +107,8 @@ export function ActivityCenter({ symbols, renderedAt }: { symbols: Readonly<Reco
   return (
     <div className={cn(READING_COLUMN, "gap-4")}>
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="min-w-0 flex-1 text-display text-primary-text">{t("common.activity")}</h1>
+        {/* Grows from its own width, so on a narrow phone the actions wrap under the title instead of covering it. */}
+        <h1 className="min-w-0 grow text-display text-primary-text">{t("common.activity")}</h1>
         <div className="flex items-center gap-2">
           <PrivacyModeButton />
           <IconButton icon="refresh" label={t("common.refresh")} onClick={() => void store.load()} />

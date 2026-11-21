@@ -119,7 +119,7 @@ export function Menu({
           triggerClassName ??
             cn(
               "motion-press inline-flex min-h-11 items-center justify-center rounded-full text-primary-text",
-              trigger ? "gap-2 bg-action-surface px-4 text-secondary font-semibold hover:bg-track" : "size-11 text-secondary-text hover:bg-action-surface hover:text-primary-text",
+              trigger ? "gap-2 bg-accent-soft px-4 text-secondary font-semibold hover:bg-accent-soft-hover" : "size-11 text-secondary-text hover:bg-action-surface hover:text-primary-text",
             ),
         )}
       >

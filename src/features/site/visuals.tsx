@@ -311,8 +311,8 @@ export function PlusVisual({ label }: { label: string }) {
  * from assistive technology and makes them unselectable). Same rules as the visuals above: sample values, no controls.
  */
 
-/** A small product card inside a miniature. */
-const MINI_SURFACE = "rounded-[0.875rem] border border-card-border bg-card-background shadow-(--panel-shadow)";
+/** A small product card inside a miniature: flat, as on the site (an edge only with increased contrast). */
+const MINI_SURFACE = "rounded-[0.875rem] border border-panel-edge bg-card-background";
 /** A row inside a miniature's surface. */
 const MINI_ROW = "flex min-h-11 items-center gap-3 border-b border-hairline last:border-b-0";
 /** A preset chip as in the simulator, at miniature size. */

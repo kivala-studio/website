@@ -43,12 +43,11 @@ export const LANGUAGE_CONTROL =
   "inline-flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-full pr-3 pl-2.5 font-display text-secondary font-semibold text-secondary-text transition-colors hover:text-primary-text";
 
 /**
- * Extra classes for the sign-in pill (`ButtonLink size="compact"`) in the public bar. Below 1024 px the pill is drawn
- * at 36 px with tighter padding so it doesn't outweigh the logo; an `::after` 4 px above and below keeps the 44 px
- * target. From 1024 px it is the plain compact pill.
+ * Extra classes for the sign-in pill (`ButtonLink size="compact"`) in the public bar. Below 1024 px it is 48 px tall,
+ * the height of the logo and the round menu button beside it, so the bar's pieces line up as one row. From 1024 px it
+ * is the plain compact pill.
  */
-export const SIGN_IN_PILL =
-  "max-lg:relative max-lg:min-h-9 max-lg:px-3 max-lg:after:absolute max-lg:after:inset-x-0 max-lg:after:-inset-y-1";
+export const SIGN_IN_PILL = "max-lg:min-h-12";
 
 /** The theme and the language on one row, in the public top bar's menu. */
 export function SiteControls({ theme }: { theme: Theme }) {

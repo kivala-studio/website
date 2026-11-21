@@ -65,7 +65,7 @@ export function IndexInfo() {
       </button>
       <Dialog open={open} onClose={() => setOpen(false)} title={name}>
         <div className="flex flex-col gap-6 px-5 pt-2 pb-8" data-testid="index-methodology">
-          <div className="flex flex-col gap-3 rounded-large border border-separator bg-elevated-background p-4">
+          <div className="flex flex-col gap-3 rounded-large border border-panel-edge bg-canvas p-4">
             <div className="flex items-center gap-3">
               <span aria-hidden className="flex size-11 items-center justify-center rounded-medium bg-accent text-on-accent">
                 <Icon name="trend-up" scale="l" />
@@ -93,7 +93,7 @@ export function IndexInfo() {
             </h3>
             <p className="text-secondary text-secondary-text">{t("market.index.methodology")}</p>
             <p className="text-secondary text-secondary-text">{t("market.index.unavailableMessage")}</p>
-            <ol className="flex flex-col gap-2 rounded-medium border border-separator bg-elevated-background p-4">
+            <ol className="flex flex-col gap-2 rounded-medium border border-panel-edge bg-canvas p-4">
               {steps.map((step, index) => (
                 <li key={step.title} className="flex items-start gap-3 py-1">
                   <span aria-hidden className="flex size-6 shrink-0 items-center justify-center rounded-full bg-accent/14 text-caption font-bold text-accent">
