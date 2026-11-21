@@ -10,6 +10,11 @@ const env = parseServerEnv(process.env);
 const nextConfig: NextConfig = {
   // Cache Components / Partial Prerendering are off: the nonce-based CSP needs every page rendered per request.
   poweredByHeader: false,
+  experimental: {
+    // A page visited in the last 30 s is shown again from the tab's client cache, without a server request. Current
+    // quotes come from the tab's market store either way; the server-rendered rest (dated closes, news) may be that old.
+    staleTimes: { dynamic: 30 },
+  },
   // `*.dev.tsx` routes (the /dev/design gallery) exist only outside production mode; `*.local.ts` routes (the
   // password sign-in for the seeded development accounts) only in `local` mode.
   pageExtensions: [
