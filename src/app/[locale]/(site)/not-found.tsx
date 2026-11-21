@@ -7,7 +7,7 @@ export default function NotFound() {
   const t = useTranslations();
   return (
     <MessagePage title={t("site.notFound.title")}>
-      <ButtonLink href="/" prefetch={false} className="sm:w-auto">
+      <ButtonLink href="/" className="sm:w-auto">
         {t("common.home")}
       </ButtonLink>
     </MessagePage>

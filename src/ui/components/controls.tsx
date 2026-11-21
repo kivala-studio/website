@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { type ComponentProps, type KeyboardEvent, type ReactNode, useRef, useSyncExternalStore } from "react";
 
-import { Link, usePathname } from "@/i18n/navigation";
+import { Link, useDestinationPathname } from "@/i18n/navigation";
 
 import { cn } from "../cn";
 import { Icon, type IconName } from "../icons/icon";
@@ -130,7 +130,8 @@ export function FilterTabs<T extends string>({
 
 /** Whether `href` is the current page or a section above it (`/carteira` on `/carteira/registos`). */
 export function useLinkCurrent(): (href: string, exact?: boolean) => "page" | "true" | undefined {
-  const pathname = usePathname();
+  // The destination while a link's page is on its way, so the pressed item is current at once.
+  const pathname = useDestinationPathname();
   return (href, exact = false) =>
     pathname === href ? "page" : !exact && href !== "/" && pathname.startsWith(`${href}/`) ? "true" : undefined;
 }
@@ -142,6 +143,8 @@ type NavTab = {
   exact?: boolean;
   /** Overrides the path match, for tabs that are filters on one page (`?categoria=…`). */
   current?: boolean;
+  /** Filters a list the browser already holds: change the URL in place instead of loading the page again. */
+  onNavigate?: ComponentProps<typeof Link>["onNavigate"];
 };
 
 /**
@@ -174,7 +177,7 @@ export function NavTabs({
           const state = states[index];
           return (
             <li key={item.title} className="flex shrink-0">
-              <Link {...linkProps} href={item.href} aria-current={state} className={cn(TAB, state ? TAB_CURRENT : TAB_OTHER)}>
+              <Link {...linkProps} href={item.href} onNavigate={item.onNavigate ?? linkProps?.onNavigate} aria-current={state} className={cn(TAB, state ? TAB_CURRENT : TAB_OTHER)}>
                 {item.title}
               </Link>
             </li>

@@ -289,7 +289,7 @@ function ActivityRow({
   return (
     <li data-testid="activity-row" data-read={item.read} data-flip-key={item.id} className="flex items-center gap-2">
       {href ? (
-        <Link href={href} prefetch={false} onClick={onOpen} className={body}>
+        <Link href={href} prefetch="intent" onClick={onOpen} className={body}>
           {content}
         </Link>
       ) : href === null ? (

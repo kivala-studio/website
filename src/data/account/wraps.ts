@@ -1,5 +1,7 @@
 import "server-only";
 
+import { unstable_cache } from "next/cache";
+
 import { publicEnv } from "@/config/public-env";
 import { demoScenario } from "@/data/demo/account";
 import { MarketCalendar } from "@/domain/market/calendar";
@@ -26,6 +28,13 @@ function decodeWrap(row: unknown): AvailableWrap | undefined {
   return { period: period as WrapPeriod, startsOn, endsOn };
 }
 
+/** Released wrap periods (anonymous, public, cached five minutes): a new release reaches Home within that. */
+const wrapRows = unstable_cache(
+  async () => unwrap(await anonymousSupabase().rpc("get_available_market_wraps")) as unknown[],
+  ["public-market-wraps-v1"],
+  { revalidate: 300, tags: ["public-wraps"] },
+);
+
 /**
  * Wrap periods released now (`get_available_market_wraps`, anonymous). The demo `closed` scenario has last
  * week's. A failed read is no recap menu.
@@ -37,8 +46,7 @@ export async function readAvailableWraps(now: number): Promise<AvailableWrap[]> 
       const week = MarketCalendar.week(addDays(now, -7));
       return week ? [{ period: "weekly", startsOn: civilDate(week.start), endsOn: civilDate(addDays(week.start, 4)) }] : [];
     }
-    const rows = unwrap(await anonymousSupabase().rpc("get_available_market_wraps")) as unknown[];
-    return rows.flatMap((row) => decodeWrap(row) ?? []);
+    return (await wrapRows()).flatMap((row) => decodeWrap(row) ?? []);
   } catch {
     return [];
   }

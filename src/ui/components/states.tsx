@@ -78,8 +78,9 @@ export function ErrorState({ title, message, action }: { title?: string; message
   );
 }
 
+/** A grey pulsing block shaped like what will load. Small corners unless `className` gives its own (`rounded-full` for a logo). */
 export function Skeleton({ className }: { className?: string }) {
-  return <span aria-hidden className={cn("motion-pulse block rounded-small bg-action-surface", className)} />;
+  return <span aria-hidden className={cn("motion-pulse block bg-action-surface", !className?.includes("rounded-") && "rounded-small", className)} />;
 }
 
 /** Placeholder for an asset row while its data loads. */

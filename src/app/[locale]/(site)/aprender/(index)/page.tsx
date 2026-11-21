@@ -25,7 +25,7 @@ export default function LearnPage() {
             <li key={lesson.id} className="border-b border-hairline last:border-b-0">
               <Link
                 href={`/aprender/${lesson.slug}`}
-                prefetch={false}
+                prefetch="intent"
                 className="flex min-h-15 items-center gap-4 motion-tap px-5 py-3 outline-offset-[-2px] hover:bg-canvas/70 desk:px-6"
                 data-testid="lesson-row"
               >

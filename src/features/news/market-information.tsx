@@ -79,6 +79,7 @@ function UpdateRow({ update }: { update: MarketUpdate }) {
   return (
     <Link
       href={updateHref(update)}
+      prefetch="intent"
       className="flex min-h-18 items-center gap-3 rounded-small py-3"
       aria-description={t("news.information.rowOpenHint")}
       data-testid="market-update-row"

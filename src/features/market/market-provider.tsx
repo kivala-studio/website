@@ -70,7 +70,7 @@ export function useMarketStore(): MarketStore {
 
 export function useMarketState(): MarketStoreState {
   const store = useMarketStore();
-  return useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
+  return useSyncExternalStore(store.subscribe, store.getSnapshot, store.getInitialSnapshot);
 }
 
 /**

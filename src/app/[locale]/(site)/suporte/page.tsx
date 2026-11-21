@@ -17,7 +17,7 @@ export default function SupportPage() {
   return (
     <DraftLegalPage title={t("site.legal.supportTitle")}>
       <Card title={t("common.account")} titleId="account">
-        <Link href={INDEXABLE_PAGES.deletion} prefetch={false} className={CARD_LINK}>
+        <Link href={INDEXABLE_PAGES.deletion} prefetch="intent" className={CARD_LINK}>
           {t("common.deleteAccount")}
         </Link>
       </Card>

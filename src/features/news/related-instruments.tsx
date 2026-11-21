@@ -24,7 +24,7 @@ export function RelatedInstruments({ article, rows, now }: { article: NewsArticl
           <li key={row.id} className="border-t border-hairline first:border-t-0">
             <Link
               href={`/mercado/${encodeURIComponent(row.symbol)}`}
-              prefetch={false}
+              prefetch="intent"
               aria-description={t("common.openSecurityDetailsHint")}
               className="flex min-h-16 items-center gap-3 px-5 py-2 motion-tap hover:bg-canvas/70 desk:px-6"
               data-testid="related-instrument"

@@ -2,7 +2,7 @@
 
 import { type ReactNode, useEffect, useId, useRef, useState } from "react";
 
-import { Link, usePathname } from "@/i18n/navigation";
+import { Link, useDestinationPathname, usePathname } from "@/i18n/navigation";
 
 import { cn } from "../cn";
 import { useSlidingIndicator } from "../motion/use-sliding-indicator";
@@ -56,7 +56,7 @@ export function TopBar({
   actions: ReactNode;
 } & MobileNav) {
   const current = useLinkCurrent();
-  const pathname = usePathname();
+  const pathname = useDestinationPathname();
   // Remembered by name: route groups with their own layouts render the bar again on a route change.
   const pills = useSlidingIndicator<HTMLUListElement>(pathname, { selector: "[aria-current]", memory: `top-bar:${navLabel}` });
   return (
@@ -72,7 +72,6 @@ export function TopBar({
       >
         <Link
           href={home.href}
-          prefetch={false}
           aria-label={home.label}
           className="top-bar-backing pointer-events-auto -ml-3 inline-flex min-h-12 shrink-0 items-center gap-2 justify-self-start rounded-full bg-card-background px-3 text-primary-text lg:min-h-14 lg:pr-4"
         >
@@ -86,7 +85,6 @@ export function TopBar({
                 <li key={link.href} className="flex shrink-0">
                   <Link
                     href={link.href}
-                    prefetch={false}
                     aria-current={state}
                     className={cn(TOP_BAR_PILL, state ? TOP_BAR_PILL_CURRENT : cn(INDICATOR_IDLE, "text-primary-text hover:bg-accent-soft/60"))}
                   >
@@ -230,7 +228,6 @@ function TopBarMenu({ label, nav, navLabel, content }: { label: string; nav: rea
                       <li key={link.href}>
                         <Link
                           href={link.href}
-                          prefetch={false}
                           aria-current={state}
                           className={cn(MENU_ROW, state ? "bg-accent-soft font-semibold text-primary-text" : "font-medium text-primary-text hover:bg-accent-soft/60")}
                         >

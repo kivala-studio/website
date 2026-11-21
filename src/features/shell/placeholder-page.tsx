@@ -4,10 +4,11 @@ import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
 import { cn } from "@/ui/cn";
-import { PAGE_CONTAINER, PageHeading, READING_COLUMN } from "@/ui/components/layout";
+import { PageHeading, READING_COLUMN } from "@/ui/components/layout";
 
-/** A signed-in page's `<main>`: the shared page column with the app's top and bottom spacing. */
-export const SIGNED_IN_PAGE = cn(PAGE_CONTAINER, "pt-4 pb-16 lg:pt-8");
+import { SIGNED_IN_PAGE } from "./route-skeletons";
+
+export { SIGNED_IN_PAGE };
 
 type Params = { params: Promise<{ locale: string }> };
 

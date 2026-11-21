@@ -6,6 +6,7 @@ import { useState } from "react";
 import { BrandLockup, LANGUAGE_CONTROL, SIGN_IN_PILL, SiteControls } from "@/features/site/chrome";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/ui/cn";
+import { buttonClass } from "@/ui/components/button-styles";
 import { ButtonLink, iconButtonClass } from "@/ui/components/buttons";
 import { FilterTabs, NavTabs, SearchField, SectionTabs, ThemeMenu } from "@/ui/components/controls";
 import { Card } from "@/ui/components/layout";
@@ -187,6 +188,23 @@ export function Navigation({ initialTheme }: { initialTheme: Theme }) {
       </div>
 
       <div className={SPECIMEN_GRID}>
+        <Specimen name="Link · pending ([data-link-pending] while its page loads)">
+          <div className="flex flex-wrap items-start gap-6">
+            <Variant label="motion-press: held">
+              <a href={HERE} className={buttonClass("secondary", undefined, "compact")}>
+                {t("common.market")}
+                <span hidden data-link-pending="" />
+              </a>
+            </Variant>
+            <Variant label="Any other link: dims">
+              <a href={HERE} aria-label={t("common.news")} className="inline-flex size-11 items-center justify-center text-accent">
+                <Icon name="chevron-right" />
+                <span hidden data-link-pending="" />
+              </a>
+            </Variant>
+          </div>
+        </Specimen>
+
         <Specimen name="FilterTabs (aria-pressed)">
           <FilterTabs
             label="Filter sample"

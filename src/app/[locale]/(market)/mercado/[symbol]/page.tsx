@@ -113,7 +113,6 @@ export default async function InstrumentPage({ params }: Props) {
         back={
           <Link
             href="/mercado"
-            prefetch={false}
             className="-ml-2 inline-flex min-h-11 items-center gap-1 self-start rounded-small px-2 text-secondary font-semibold text-accent"
           >
             <Icon name="chevron-left" />

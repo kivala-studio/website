@@ -16,11 +16,13 @@ import { IntelligenceContext as Context } from "./intelligence-provider";
 /* The weekly reading for the signed-in pages that show it (Watchlist, Portfolio, Home, Activity). */
 
 const NO_SUBSCRIPTION = () => () => {};
+const NO_COORDINATOR = () => null;
 const TICK_MS = 60_000;
 
 /** The coordinator and its state; null outside the signed-in shell. */
 export function useIntelligence(): { coordinator: IntelligenceCoordinator; state: IntelligenceState } | null {
-  const coordinator = useContext(Context);
+  const slot = useContext(Context);
+  const coordinator = useSyncExternalStore(slot?.subscribe ?? NO_SUBSCRIPTION, () => slot?.get() ?? null, NO_COORDINATOR);
   const state = useSyncExternalStore(
     coordinator?.subscribe ?? NO_SUBSCRIPTION,
     () => coordinator?.getSnapshot() ?? null,

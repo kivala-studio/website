@@ -13,7 +13,7 @@ import { Button } from "@/ui/components/buttons";
 import { SearchField } from "@/ui/components/controls";
 import { Card } from "@/ui/components/layout";
 import { FlipList } from "@/ui/components/flip-list";
-import { EmptyState, ErrorState, FadeIn, LoadingState } from "@/ui/components/states";
+import { EmptyState, ErrorState, FadeIn, LoadingState, Spinner } from "@/ui/components/states";
 
 import { ArticleMetadata } from "./article-metadata";
 
@@ -53,7 +53,7 @@ function Archive({ articles, now }: { articles: readonly NewsArticle[]; now: num
             <li key={article.id} data-flip-key={article.id} className="border-t border-hairline first:border-t-0">
               <Link
                 href={`/noticias/${article.slug}`}
-                prefetch={false}
+                prefetch="intent"
                 aria-description={t(article.isRecap ? "news.row.recapHint" : "news.row.articleHint")}
                 className="flex min-h-11 flex-col gap-2 px-5 py-4 motion-tap hover:bg-canvas/70 desk:px-6"
                 data-testid="news-row"
@@ -105,6 +105,8 @@ export function NewsFeed({
   const [search, setSearch] = useState(initialQuery);
   const [found, setFound] = useState<{ query: string; articles: NewsArticle[] | null }>({ query: initialQuery.trim(), articles: initialResults });
   const [now, setNow] = useState(renderedAt);
+  // The press on "Load more" until its page of articles is in: the control turns busy in place, the list stays.
+  const [loadingMore, setLoadingMore] = useState(false);
   const query = search.trim();
 
   useEffect(() => {
@@ -173,12 +175,17 @@ export function NewsFeed({
             scroll={false}
             onClick={(event) => {
               event.preventDefault();
-              void store.loadMore();
+              if (state.isLoading) return;
+              setLoadingMore(true);
+              void store.loadMore().finally(() => setLoadingMore(false));
             }}
             aria-disabled={state.isLoading || undefined}
+            aria-busy={loadingMore || undefined}
             className={buttonClass("secondary")}
           >
-            {t("common.loadMore")}
+            {loadingMore ? <Spinner /> : null}
+            <span>{t("common.loadMore")}</span>
+            {loadingMore ? <span className="sr-only">{t("components.button.processing")}</span> : null}
           </Link>
         </div>
       ) : null}
