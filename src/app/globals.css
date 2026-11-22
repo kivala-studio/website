@@ -80,10 +80,13 @@
   :root {
     --top-bar-height: 5.5rem;
   }
-  /* The signed-in app: the sidebar takes the top bar's place, and pages span the window beside it, from its left edge. */
+  /*
+   * The signed-in app: the sidebar takes the top bar's place, and pages span the window beside it up to 1600 px,
+   * centred in the space beyond that on wide screens.
+   */
   :root:has([data-shell="app"]) {
     --top-bar-height: 0rem;
-    --page-width: none;
+    --page-width: 100rem;
     --page-gutter: 2rem;
     --reading-start: 0;
   }
