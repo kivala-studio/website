@@ -18,6 +18,7 @@ export const INDEXABLE_PAGES = {
   market: "/mercado",
   news: "/noticias",
   learn: "/aprender",
+  plus: "/plus",
 } as const;
 
 export type IndexablePage = keyof typeof INDEXABLE_PAGES;

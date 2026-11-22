@@ -157,7 +157,12 @@ export default async function HomePage() {
         </section>
 
         <section aria-labelledby="plus" className={cn(STAGE_SPACE, "flex flex-col gap-12 md:gap-16")}>
-          <SectionIntro id="plus" tone="deep" title={t("subscriptions.management.plusTitle")} />
+          <SectionIntro
+            id="plus"
+            tone="deep"
+            title={t("subscriptions.management.plusTitle")}
+            action={{ href: INDEXABLE_PAGES.plus, label: t("site.plus.comparePlans") }}
+          />
           <div className={PAGE_CONTAINER}>
             {/* A pale card on the deep band: its controls ring in the accent again. */}
             <div

@@ -5,6 +5,7 @@ import { CheckoutSkeleton } from "@/features/billing/checkout-skeleton";
 import { LESSONS } from "@/features/learn/lessons";
 import { DashboardSkeleton } from "@/features/portfolio/dashboard-skeleton";
 import { HeroPanel } from "@/features/site/home";
+import { PlusHero } from "@/features/site/plus";
 import { ReadingPageSkeleton } from "@/features/site/pages";
 import { cn } from "@/ui/cn";
 import { Card, PAGE_CONTAINER, READING_COLUMN } from "@/ui/components/layout";
@@ -281,6 +282,18 @@ export function LandingSkeleton() {
   return (
     <PageSkeleton as="main">
       <HeroPanel />
+    </PageSkeleton>
+  );
+}
+
+/** Plus: the hero with its title over the place of its pill (`/plus`; the passes depend on the server). */
+export function PlusSkeleton() {
+  const t = useTranslations();
+  return (
+    <PageSkeleton as="main">
+      <PlusHero title={t("subscriptions.management.plusTitle")} still>
+        <Skeleton className="h-16 w-64 rounded-full desk:h-18" />
+      </PlusHero>
     </PageSkeleton>
   );
 }

@@ -2830,7 +2830,9 @@
       "instrumentDescription": "{arg1} on BODIVA: last verified close, one year of history and issuer information.",
       "newsDescription": "News and recaps from the Angolan market, with their sources.",
       "learnDescription": "Seven short lessons on how the Angolan market works.",
-      "shareTitle": "Shared portfolio"
+      "shareTitle": "Shared portfolio",
+      "plusDescription": "What invest.ao Plus includes and its price in kwanzas, with Multicaixa Express or a reference.",
+      "plusStoreDescription": "What invest.ao Plus includes, compared with the free plan."
     },
     "header": {
       "dashboard": "Go to dashboard",
@@ -2954,6 +2956,13 @@
         "notFound": "We couldn''t find this order.",
         "unavailable": "Couldn''t reach invest.ao. Try again."
       }
+    },
+    "plus": {
+      "nav": "Plus",
+      "includes": "What Plus includes",
+      "methods": "Pay with Multicaixa Express or by reference. No automatic renewal.",
+      "notIncluded": "Not included",
+      "comparePlans": "Compare plans"
     }
   }
 }

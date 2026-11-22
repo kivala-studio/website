@@ -65,9 +65,9 @@ export function SiteControls({ theme }: { theme: Theme }) {
  * Public top bar: the logo, the sections in the centred capsule, then the language, the theme and the account pill
  * (sign-in, or `dashboard`, the app's Início, when signed in). Below 1024 px the sections, the theme and the language move into the
  * menu, whose round button ends the bar after the smaller account pill.
- * Visitors get no search (it needs the app's market store).
+ * Visitors get no search (it needs the app's market store). `plus={false}` leaves Plus out (see `SiteFrame`).
  */
-export function SiteHeader({ theme, dashboard }: { theme: Theme; dashboard?: string }) {
+export function SiteHeader({ theme, plus, dashboard }: { theme: Theme; plus: boolean; dashboard?: string }) {
   const t = useTranslations();
   return (
     <TopBar
@@ -80,6 +80,7 @@ export function SiteHeader({ theme, dashboard }: { theme: Theme; dashboard?: str
         { href: INDEXABLE_PAGES.market, label: t("common.market") },
         { href: INDEXABLE_PAGES.news, label: t("common.news") },
         { href: INDEXABLE_PAGES.learn, label: t("learn.title") },
+        ...(plus ? [{ href: INDEXABLE_PAGES.plus, label: t("site.plus.nav") }] : []),
       ]}
       wideActions={
         <>
@@ -123,15 +124,16 @@ function FooterColumn({ label, title, links }: { label: string; title: string; l
  * the closing section). On it, inset from the window's edges on every side: one big card on the card fill, with the
  * mark at the top left and the copyright at the bottom left, and the legal and product columns on the right. On
  * phones the columns sit side by side under the mark and the copyright closes the card. `year` is the server's
- * (Luanda) year.
+ * (Luanda) year; `plus={false}` leaves Plus out of the product links (see `SiteFrame`).
  */
-export function SiteFooter({ year }: { year: string }) {
+export function SiteFooter({ year, plus }: { year: string; plus: boolean }) {
   const t = useTranslations();
   const product = [
     { href: INDEXABLE_PAGES.market, title: t("common.market") },
     { href: INDEXABLE_PAGES.news, title: t("common.news") },
     { href: INDEXABLE_PAGES.learn, title: t("learn.title") },
     { href: "/simulador", title: t("common.simulateInvestment") },
+    ...(plus ? [{ href: INDEXABLE_PAGES.plus, title: t("site.plus.nav") }] : []),
   ];
   const legal = [
     { href: INDEXABLE_PAGES.policy, title: t("common.privacyPolicy") },
