@@ -9,7 +9,7 @@ import { TopBar } from "@/ui/components/top-bar";
 import type { Theme } from "@/ui/theme/theme";
 
 import { LanguageSwitch } from "./language-switch";
-import { DASHBOARD_PATH, INDEXABLE_PAGES, SIGN_IN_PATH } from "./site";
+import { INDEXABLE_PAGES, SIGN_IN_PATH } from "./site";
 
 /** The palanca-negra mark. A template image used as a mask, so it takes the current text colour in both themes. */
 export function PalancaMark({ className }: { className?: string }) {
@@ -63,11 +63,11 @@ export function SiteControls({ theme }: { theme: Theme }) {
 
 /**
  * Public top bar: the logo, the sections in the centred capsule, then the language, the theme and the account pill
- * (sign-in, or the dashboard when `signedIn`). Below 1024 px the sections, the theme and the language move into the
+ * (sign-in, or `dashboard`, the app's Início, when signed in). Below 1024 px the sections, the theme and the language move into the
  * menu, whose round button ends the bar after the smaller account pill.
  * Visitors get no search (it needs the app's market store).
  */
-export function SiteHeader({ theme, signedIn = false }: { theme: Theme; signedIn?: boolean }) {
+export function SiteHeader({ theme, dashboard }: { theme: Theme; dashboard?: string }) {
   const t = useTranslations();
   return (
     <TopBar
@@ -88,8 +88,8 @@ export function SiteHeader({ theme, signedIn = false }: { theme: Theme; signedIn
         </>
       }
       actions={
-        <ButtonLink href={signedIn ? DASHBOARD_PATH : SIGN_IN_PATH} size="compact" className={cn(TOP_BAR_FLOAT, SIGN_IN_PILL)}>
-          {signedIn ? t("site.header.dashboard") : t("onboarding.navigation.signIn")}
+        <ButtonLink href={dashboard ?? SIGN_IN_PATH} size="compact" className={cn(TOP_BAR_FLOAT, SIGN_IN_PILL)}>
+          {dashboard ? t("site.header.dashboard") : t("onboarding.navigation.signIn")}
         </ButtonLink>
       }
     />

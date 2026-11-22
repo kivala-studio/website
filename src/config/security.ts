@@ -21,6 +21,8 @@ type CspInput = {
   secure: boolean;
   supabaseUrl: string | null;
   sentryDsn: string | null;
+  /** The site's and the app's origins when they have hosts of their own: a form may post on one and land on the other. */
+  formOrigins?: readonly string[];
 };
 
 const originOf = (value: string | null) => {
@@ -32,7 +34,7 @@ const originOf = (value: string | null) => {
   }
 };
 
-export function buildContentSecurityPolicy({ nonce, isDev, secure, supabaseUrl, sentryDsn }: CspInput): string {
+export function buildContentSecurityPolicy({ nonce, isDev, secure, supabaseUrl, sentryDsn, formOrigins = [] }: CspInput): string {
   const supabase = originOf(supabaseUrl);
   const realtime = supabase?.replace(/^http/, "ws") ?? null;
   const connect = ["'self'", supabase, realtime, POSTHOG_HOST, POSTHOG_ASSETS_HOST, originOf(sentryDsn)];
@@ -48,7 +50,7 @@ export function buildContentSecurityPolicy({ nonce, isDev, secure, supabaseUrl, 
     "manifest-src": ["'self'"],
     "object-src": ["'none'"],
     "base-uri": ["'self'"],
-    "form-action": ["'self'"],
+    "form-action": ["'self'", ...formOrigins],
     "frame-ancestors": ["'none'"],
   };
 

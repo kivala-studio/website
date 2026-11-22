@@ -5,6 +5,7 @@ export type DataMode = (typeof DATA_MODES)[number];
 export const SERVER_ONLY_ENV_NAMES = [
   "APPLE_WEBSITE_RECEIPT_SECRET",
   "SITE_URL",
+  "APP_URL",
   "ANDROID_APP_PACKAGE",
   "ANDROID_APP_SHA256_FINGERPRINTS",
 ] as const;
@@ -20,6 +21,8 @@ export type PublicEnv = {
 
 export type ServerEnv = PublicEnv & {
   siteUrl: string;
+  /** The signed-in app's own origin (`https://dashboard.invest.ao`); null serves the app beside the site. */
+  appUrl: string | null;
   appleWebsiteReceiptSecret: string | null;
   /** Android App Links (`/.well-known/assetlinks.json`); empty until the Android app exists. */
   androidApp: { packageName: string; sha256Fingerprints: string[] } | null;
@@ -39,7 +42,7 @@ const read = (source: Source, name: string) => {
   return value ? value : null;
 };
 
-const isLocalHost = (url: URL) => ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname);
+const isLocalHost = (url: URL) => ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname) || url.hostname.endsWith(".localhost");
 
 function checkUrl(name: string, value: string | null, problems: string[]) {
   if (value === null) return;
@@ -123,10 +126,13 @@ export function parseServerEnv(source: Source): ServerEnv {
   const siteUrl = read(source, "SITE_URL");
   if (siteUrl === null) problems.push("SITE_URL is missing");
   checkUrl("SITE_URL", siteUrl, problems);
+  const appUrl = read(source, "APP_URL");
+  checkUrl("APP_URL", appUrl, problems);
   if (problems.length > 0) throw new EnvError(problems);
   return {
     ...env,
     siteUrl: siteUrl!.replace(/\/+$/, ""),
+    appUrl: appUrl?.replace(/\/+$/, "") ?? null,
     appleWebsiteReceiptSecret: read(source, "APPLE_WEBSITE_RECEIPT_SECRET"),
     androidApp,
   };

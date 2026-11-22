@@ -3,7 +3,9 @@ import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 
 import { publicEnv } from "@/config/public-env";
+import { type HostSplit, isMarketPath, isRootPath } from "@/config/hosts";
 import { buildContentSecurityPolicy } from "@/config/security";
+import { hosts } from "@/config/server-env";
 import { PRIVATE_NO_STORE, hasSessionCookie } from "@/data/auth/cookies";
 import { REQUEST_PATH_HEADER, SESSION_STATE_HEADER, SESSION_UNAVAILABLE } from "@/data/auth/request-path";
 import { requestSupabase } from "@/data/auth/request-client";
@@ -35,6 +37,22 @@ async function refreshSession(request: NextRequest) {
   return { supabase, signedIn: data.session !== null, unavailable };
 }
 
+/**
+ * Where a request belongs when the site and the app have hosts of their own: the app has the signed-in pages and,
+ * for a signed-in visitor, the market; its root opens Início. The site has everything else, sign-in included. Null
+ * when the request is already on the right host (or on neither, such as a preview).
+ */
+function crossHostTarget(split: HostSplit, request: NextRequest, signedIn: boolean): URL | null {
+  const { pathname, search } = request.nextUrl;
+  // The host the browser asked for (`nextUrl` may carry the server's own in development).
+  const host = request.headers.get("host") ?? request.nextUrl.host;
+  const app = isSignedInPath(pathname) || (signedIn && isMarketPath(pathname));
+  if (host === split.siteHost && app) return new URL(`${pathname}${search}`, split.appOrigin);
+  if (host !== split.appHost || app) return null;
+  if (isRootPath(pathname)) return new URL(`${pathname.startsWith("/en") ? "/en" : ""}/inicio`, split.appOrigin);
+  return new URL(`${pathname}${search}`, split.siteOrigin);
+}
+
 export async function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const policy = buildContentSecurityPolicy({
@@ -43,6 +61,7 @@ export async function proxy(request: NextRequest) {
     secure: request.nextUrl.protocol === "https:",
     supabaseUrl: publicEnv.supabaseUrl,
     sentryDsn: publicEnv.sentryDsn,
+    formOrigins: hosts ? [hosts.siteOrigin, hosts.appOrigin] : [],
   });
 
   const hadSession = hasSessionCookie(request.cookies.getAll());
@@ -50,9 +69,18 @@ export async function proxy(request: NextRequest) {
   const path = `${request.nextUrl.pathname}${request.nextUrl.search}`;
   const signedInPath = isSignedInPath(request.nextUrl.pathname);
 
-  // Signed-in pages: one redirect to sign-in that returns here. Server actions answer for themselves.
+  // Each page on its own host (server actions answer where they are). Signed-in state decides the market's host,
+  // so these redirects are temporary and never cached.
+  const target = hosts && !request.headers.has("next-action") ? crossHostTarget(hosts, request, signedIn || unavailable) : null;
+  if (target) {
+    const response = NextResponse.redirect(target, 307);
+    response.headers.set("Cache-Control", PRIVATE_NO_STORE);
+    return supabase ? supabase.applyTo(response) : response;
+  }
+
+  // Signed-in pages: one redirect to sign-in (on the site, when it has its own host) that returns here.
   if (signedInPath && !signedIn && !unavailable && !request.headers.has("next-action")) {
-    const response = NextResponse.redirect(new URL(signInHref(path, hadSession ? "expired" : undefined), request.url));
+    const response = NextResponse.redirect(new URL(signInHref(path, hadSession ? "expired" : undefined), hosts?.siteOrigin ?? request.url));
     response.headers.set("Cache-Control", PRIVATE_NO_STORE);
     return supabase ? supabase.clearAll(supabase.applyTo(response)) : response;
   }

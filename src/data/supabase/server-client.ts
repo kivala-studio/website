@@ -3,6 +3,9 @@ import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { cookies, headers } from "next/headers";
 
+import { cookieDomainFor } from "@/config/hosts";
+import { hosts } from "@/config/server-env";
+
 import { sessionCookieOptions } from "../auth/cookies";
 import { CLIENT_OPTIONS, supabaseConfig } from "./options";
 
@@ -13,10 +16,12 @@ import { CLIENT_OPTIONS, supabaseConfig } from "./options";
 export async function serverSupabase() {
   const { url, key } = supabaseConfig();
   const store = await cookies();
-  const secure = (await headers()).get("x-forwarded-proto")?.split(",")[0]?.trim() === "https";
+  const request = await headers();
+  const secure = request.get("x-forwarded-proto")?.split(",")[0]?.trim() === "https";
+  const hostname = (request.get("host") ?? "").replace(/:\d+$/, "");
   return createServerClient(url, key, {
     ...CLIENT_OPTIONS,
-    cookieOptions: sessionCookieOptions(secure),
+    cookieOptions: sessionCookieOptions(secure, cookieDomainFor(hosts, hostname)),
     cookies: {
       getAll: () => store.getAll(),
       setAll: (values) => {
