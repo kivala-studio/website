@@ -14,11 +14,12 @@ import { cn } from "@/ui/cn";
 import { Button } from "@/ui/components/buttons";
 import { Card, READING_COLUMN } from "@/ui/components/layout";
 import { ErrorState, FadeIn } from "@/ui/components/states";
+import { useFormat } from "@/ui/format";
 
 import { type CheckoutRequest, CheckoutForm } from "./checkout-form";
 import { CheckoutSkeleton } from "./checkout-skeleton";
 import { OrderOutcome, PendingExpress, PendingReference } from "./order-views";
-import { PlanStatus, isLifetimePlus } from "./plan-status";
+import { PlanStatus, isLifetimePlus, passEndDate } from "./plan-status";
 import { cancelWebOrder, readPlansPage, readWebOrder, startWebCheckout } from "./repository";
 import { useOrderPolling } from "./use-order-polling";
 
@@ -41,6 +42,7 @@ const FOCUS_TARGETS = ["h2[tabindex]", "[role=radio][aria-checked=true]", "butto
  */
 export function PlansView() {
   const t = useTranslations();
+  const format = useFormat();
   const account = useAccount();
   const userID = account?.userID ?? "";
   const access = account?.access ?? null;
@@ -114,10 +116,14 @@ export function PlansView() {
       setFailure(null);
       setOrder(next);
       if (shown?.id === next.id && shown.status === next.status) return;
-      announce(t(orderTitleKey(next)));
-      if (next.status === "paid") void refreshAccess();
+      const title = t(orderTitleKey(next));
+      if (next.status !== "paid") return announce(title);
+      // The card shows only the title; the header's new status and end date are read with it.
+      const until = next.pass ? t("site.plans.until", { date: passEndDate(next.pass.endsAt, format) }) : null;
+      announce([title, t("subscriptions.status.activeTitle"), until].filter(Boolean).join(". "));
+      void refreshAccess();
     },
-    [announce, refreshAccess, t],
+    [announce, format, refreshAccess, t],
   );
 
   useOrderPolling(order, userID, show);

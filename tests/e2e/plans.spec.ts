@@ -50,7 +50,9 @@ test("a Free member pays a pass with Multicaixa Express and becomes Plus", async
 
   await expect(page.getByTestId("order-outcome")).toHaveAttribute("data-status", "paid");
   await expect(page.getByRole("heading", { name: "Pagamento confirmado" })).toBeVisible();
-  await expect(page.getByRole("status").filter({ hasText: "Pagamento confirmado" })).toBeAttached();
+  // The card shows no date (the header does); the announcement still says until when.
+  await expect(page.getByTestId("order-outcome")).not.toContainText("Até");
+  await expect(page.getByRole("status").filter({ hasText: "Pagamento confirmado" })).toHaveText(/^Pagamento confirmado\. O teu Plus está ativo\. Até \d{1,2} de \S+ de \d{4}$/);
   await expect(page.getByTestId("plan-status")).toHaveAttribute("data-plan", "plus");
   await expect(page.getByTestId("plan-status")).toContainText("O teu Plus está ativo");
   await axe(page);

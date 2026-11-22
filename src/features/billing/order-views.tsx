@@ -12,7 +12,6 @@ import { useFormat } from "@/ui/format";
 import { Icon, type IconName } from "@/ui/icons/icon";
 
 import { AMOUNT_HERO } from "./checkout-form";
-import { passEndDate } from "./plan-status";
 
 /** Seconds left as `9:41`; never negative. */
 function countdown(milliseconds: number) {
@@ -142,23 +141,20 @@ const OUTCOME: Record<Exclude<WebOrderStatus, "pending">, { icon: IconName; tone
   refunded: { icon: "info", tone: "bg-secondary-text/12 text-secondary-text" },
 };
 
-/** How an order of this visit ended, and the one way on: add time after a payment, start again otherwise. */
+/** How an order of this visit ended, and the one way on: add time after a payment, start again otherwise. The pass's end date is in the status header above. */
 export function OrderOutcome({ order, onNext }: { order: WebOrder & { status: Exclude<WebOrderStatus, "pending"> }; onNext: () => void }) {
   const t = useTranslations();
-  const format = useFormat();
   const { icon, tone } = OUTCOME[order.status];
   const paid = order.status === "paid";
-  const until = paid && order.pass ? passEndDate(order.pass.endsAt, format) : null;
   return (
     <Card className="flex flex-col gap-6" data-testid="order-outcome" data-status={order.status}>
-      <div className="flex items-start gap-4">
+      <div className="flex items-center gap-4">
         <span className={cn("flex size-12 shrink-0 items-center justify-center rounded-full text-[1.5rem]", tone)}>
           <Icon name={icon} />
         </span>
-        <div className="flex min-w-0 flex-col gap-1 pt-0.5">
-          <h2 tabIndex={-1} className="text-section text-primary-text outline-none">{t(`site.plans.outcome.${order.status}`)}</h2>
-          {until ? <p className="text-body text-secondary-text">{t("site.plans.until", { date: until })}</p> : null}
-        </div>
+        <h2 tabIndex={-1} className="min-w-0 text-section text-primary-text outline-none">
+          {t(`site.plans.outcome.${order.status}`)}
+        </h2>
       </div>
       <Button kind={paid ? "secondary" : "primary"} onClick={onNext} className="sm:w-auto sm:self-start" data-testid="order-next">
         {t(paid ? "site.plans.addTime" : "site.plans.startAgain")}
