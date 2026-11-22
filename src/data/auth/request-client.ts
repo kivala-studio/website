@@ -4,6 +4,9 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { NextRequest, NextResponse } from "next/server";
 
+import { cookieDomainFor } from "@/config/hosts";
+import { hosts } from "@/config/server-env";
+
 import { CLIENT_OPTIONS, supabaseConfig } from "../supabase/options";
 import { PRIVATE_NO_STORE, isSupabaseCookie, sessionCookieOptions } from "./cookies";
 
@@ -25,13 +28,14 @@ export interface RequestSupabase {
 export function requestSupabase(request: NextRequest): RequestSupabase {
   const { url, key } = supabaseConfig();
   const secure = request.nextUrl.protocol === "https:";
+  const options = sessionCookieOptions(secure, cookieDomainFor(hosts, (request.headers.get("host") ?? request.nextUrl.host).replace(/:\d+$/, "")));
   const writes = new Map<string, Write>();
   // Writes also delete from `request.cookies` (sign-out does), so the names the request arrived with are kept here.
   const arrived = request.cookies.getAll().map(({ name }) => name);
   let cacheHeaders: Record<string, string> = {};
   const client = createServerClient(url, key, {
     ...CLIENT_OPTIONS,
-    cookieOptions: sessionCookieOptions(secure),
+    cookieOptions: options,
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll: (values, headers) => {
@@ -58,7 +62,7 @@ export function requestSupabase(request: NextRequest): RequestSupabase {
     },
     clearAll(response) {
       for (const name of new Set([...arrived, ...writes.keys(), ...request.cookies.getAll().map((cookie) => cookie.name)])) {
-        if (isSupabaseCookie(name)) response.cookies.set(name, "", { ...sessionCookieOptions(secure), maxAge: 0 });
+        if (isSupabaseCookie(name)) response.cookies.set(name, "", { ...options, maxAge: 0 });
       }
       return markPrivate(response);
     },

@@ -14,7 +14,14 @@ export const hasSessionCookie = (cookies: readonly { name: string }[]) => cookie
  * `SameSite=Lax` keeps them off cross-site subrequests and form posts, and `Secure` applies on HTTPS (plain-HTTP
  * localhost would otherwise drop them in some engines).
  */
-export const sessionCookieOptions = (secure: boolean): CookieOptions => ({ path: "/", sameSite: "lax", httpOnly: true, secure });
+export const sessionCookieOptions = (secure: boolean, domain: string | null = null): CookieOptions => ({
+  path: "/",
+  sameSite: "lax",
+  httpOnly: true,
+  secure,
+  // On the parent domain when the site and the app have hosts of their own (`src/config/hosts.ts`).
+  ...(domain ? { domain } : {}),
+});
 
 /** Where `/auth/sign-in` keeps the post-sign-in path for `/auth/callback` (the redirect URL stays exact for the allow-list). */
 export const NEXT_PATH_COOKIE = "investao-next";
