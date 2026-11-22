@@ -35,7 +35,7 @@ Portuguese slugs for both languages; English lives under `/en/…`.
 | Referral | `/convite/[code]` | Landing that carries a referral code to sign-in or the stores |
 | Account entry | `/entrar`, `/auth/callback`, `/eliminar-conta` | `/eliminar-conta` is the public deletion URL the stores ask for |
 | Signed-in | `/inicio`, `/lista`, `/carteira`, `/carteira/posicao/[symbol]`, `/atividade`, `/atividade-invulgar`, `/semana`, `/simulador`, `/wrap/[period]`, `/planos`, `/definicoes` | Require a session; unknown visitors go to `/entrar?next=…` |
-| Server endpoints | `/api/market/snapshot`, `/api/billing/sync`, `/api/account/apple-deletion/start`, `/api/account/apple-deletion/complete` | **The `complete` path is the one the backend docs name as the web return URL** |
+| Server endpoints | `/api/market/snapshot`, `/api/billing/plans`, `/api/billing/checkout`, `/api/billing/order/[id]`, `/api/billing/order/[id]/cancel`, `/api/account/apple-deletion/start`, `/api/account/apple-deletion/complete` | **The `complete` path is the one the backend docs name as the web return URL** |
 | Well-known | `/.well-known/assetlinks.json` | Android App Links; `apple-app-site-association` when iOS adds universal links |
 
 ### 1.3 Standing rules (phase W0 writes these into the new repo's `AGENTS.md`)

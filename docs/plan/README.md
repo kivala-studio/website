@@ -39,7 +39,7 @@ Both plans proceed on the recommended option; change it before the phase named.
 | 1 | Lift the backend rule "do not add … FCM assumptions" so Android can receive push | Yes, transport only (FCM HTTP v1 from Edge Functions; no Firebase database or auth) | AB1 |
 | 2 | Android application id | `ao.invest.androidapp` (debug `ao.invest.androidapp.development`) | A0 |
 | 3 | Google Play product ids and prices for Plus and Pro | Same four ids as iOS (`ao.invest.plus.monthly`, …) | AB2 |
-| 4 | Sell subscriptions on the web | RevenueCat Web Billing (the backend already verifies through RevenueCat). If no, the web shows status and "manage in the store" only | WB2 / W16 |
+| 4 | Sell Plus on the web | Decided: a prepaid Plus pass (1 or 12 months, kwanzas, Multicaixa), no RevenueCat on the web | WB2 / W16 |
 | 5 | Public pages on the web show market data without sign-in (iOS shows nothing signed out) | Yes: market list, instrument page with daily history, news, lessons | W5 |
 | 6 | Web hosting and the `invest.ao` domain cut-over | Vercel, cut over in W18 | W0 / W18 |
 | 7 | Web Push | Build last (W17); the Activity centre is the notification channel until then | WB3 |

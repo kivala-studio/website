@@ -570,6 +570,8 @@ Executable by client roles only as a side effect of old default grants, not part
 | Plus | RevenueCat entitlement `plus`; or lifetime gift; or referral credit | `ao.invest.plus.monthly`, `ao.invest.plus.annual` |
 | Pro | RevenueCat entitlement `pro` (or `plus` entitlement on a pro product) | `ao.invest.pro.monthly`, `ao.invest.pro.annual` |
 
+**Plus is the only paid plan.** Pro was folded into Plus: `is_pro` equals `is_plus`, and clients show no Pro tier. A web pass (section 7.5) also grants Plus.
+
 Pro implies Plus (`has_plus` accepts any active entitlement row). Gifts and referral credits grant Plus only. `docs/subscriptions.md` predates Pro and still says "no lifetime product" and lists only Plus products; code wins.
 
 ### 7.2 How entitlement is established
@@ -599,6 +601,8 @@ Environment: `subscription_private.control.environment` (default `production`) s
 | `comparison_pair` | `[uuid, uuid]` or null | Free pair claimed this week |
 | `active_watchlist_ids` | uuid[] | Rows that count for a Free account |
 | `movement_security_id` | uuid or null | The instrument with active movement alerts |
+| `plus_until` | timestamptz or null | Latest known end of paid Plus across App Store, referral credit and web passes; null for Free or lifetime Plus |
+| `store_subscription` | boolean | An App Store subscription is active (the website tells the member to cancel it there). Absent on older backends |
 
 Error `28000` when signed out. Key set confirmed by replaying the two `do $$` patches in `20261111090000` and `20261112090000`.
 
@@ -632,6 +636,28 @@ Referral mechanics: referee must be an account younger than 30 days with no prev
 | Daily close watchlist line | no | yes | yes | `produce_account_notifications` |
 | Devices | 20 | 20 | 20 | trigger |
 | Intraday chart | signed-in only, all tiers | | | grants |
+
+### 7.5 Web passes
+
+Prepaid Plus bought on the website: 1 or 12 months, priced in kwanzas, paid with Multicaixa (Express push to a phone, or pay-by-reference). No renewal, no trial, no RevenueCat. Source: functions `docs/subscriptions.md` "Web passes" (migrations `20261122090000`, `20261122100000`). Behind `control.web_passes_enabled` (off in production; only `web_pass_testers` see plans). A pass starts at the latest of now, the end of a running App Store subscription, queued referral credit and the account's last pass.
+
+| RPC | Role | Returns |
+|---|---|---|
+| `get_web_plans()` | anon, auth | `[{id, months, price_aoa}]` by months; `[]` while passes are closed to the caller. `price_aoa` is numeric(14,2) as a JSON number |
+| `get_web_orders()` | auth | The caller's 50 latest orders, newest first |
+| `get_web_order(order_id uuid)` | auth | One of the caller's orders, or null |
+| `cancel_web_order(order_id uuid)` | auth | The order (`cancelled` if it was the caller's pending order), or null when not theirs |
+
+Order: `{id, product_id, months, amount_aoa, method: "mcx_express"|"reference", status: "pending"|"paid"|"expired"|"failed"|"refunded"|"cancelled", reference: {entity, reference}|null, expires_at, paid_at, created_at, pass: {starts_at, ends_at}|null}`. One pending order per account. Express orders expire after 10 minutes, reference orders after 48 hours. A late payment still settles an `expired`, `failed` or `cancelled` order.
+
+Member Edge Functions (POST JSON, user JWT, called only from the website's route handlers; errors `{error: {code, message, details?}}`):
+
+| Function | Body | 200 | Errors |
+|---|---|---|---|
+| `web-checkout` | `{product_id, method, phone?, nif?}`; `phone` required for `mcx_express` (`9XXXXXXXX`, `+244`/`00244`/`244`, spaces and dashes accepted), never logged or stored; `nif` 6–20 letters or digits | The pending order | 400 `INVALID_JSON`, `INVALID_INPUT`, `INVALID_PHONE`, `WEB_ORDER_NIF_INVALID`; 401 `UNAUTHENTICATED`; 403 `WEB_PASSES_CLOSED`; 409 `WEB_PRODUCT_UNAVAILABLE`, `WEB_PASS_NOT_NEEDED` (lifetime Plus), `WEB_ORDER_PENDING` (`details.order_id`); 429 `WEB_ORDER_RATE_LIMIT` (5 orders an hour); 502 `PAYMENT_GATEWAY_UNAVAILABLE`; 503 `PAYMENTS_NOT_CONFIGURED` |
+| `web-order-status` | `{order_id}` | The order, after the gateway was asked (settles a payment); poll every 3 s while `pending` | 400 `INVALID_INPUT`; 401; 404 `WEB_ORDER_NOT_FOUND` |
+
+Website endpoints (`private, no-store`; signed out → 401 `{error: "signed_out"}`; POSTs must come from the site's own origin): `GET /api/billing/plans` → `{userID, plans, orders}`; `POST /api/billing/checkout` `{productID, method, phone?, nif?}` → `{userID, order}`; `GET /api/billing/order/[id]` → `{userID, order}` (live status); `POST /api/billing/order/[id]/cancel` → `{userID, order}`. Failures answer `{error: <reason>, orderID?}`; reasons and statuses are `WEB_CHECKOUT_FAILURES` / `WEB_CHECKOUT_FAILURE_STATUS` in `src/domain/billing/web-pass.ts`. Money crosses route JSON as exact strings.
 
 ---
 
