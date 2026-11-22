@@ -18,13 +18,15 @@ const envSource = await readFile(ENV_SOURCE, "utf8");
 const namesBlock = envSource.match(/SERVER_ONLY_ENV_NAMES = \[([^\]]*)\]/);
 if (!namesBlock) throw new Error(`SERVER_ONLY_ENV_NAMES not found in ${ENV_SOURCE}`);
 const serverNames = [...namesBlock[1].matchAll(/"([A-Z0-9_]+)"/g)].map((match) => match[1]);
+// Public addresses: the pages link to the site and the app by these very values, so only their names are checked.
+const ADDRESS_NAMES = new Set(["SITE_URL", "APP_URL"]);
 
 const needles = [
   { label: "service_role", text: "service_role" },
   { label: "the development password sign-in", text: PASSWORD_SIGN_IN },
   ...serverNames.map((name) => ({ label: `name ${name}`, text: name })),
   ...serverNames
-    .filter((name) => (process.env[name] ?? "").trim().length >= 8)
+    .filter((name) => !ADDRESS_NAMES.has(name) && (process.env[name] ?? "").trim().length >= 8)
     .map((name) => ({ label: `value of ${name}`, text: process.env[name].trim() })),
 ];
 
