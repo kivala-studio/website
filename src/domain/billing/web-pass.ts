@@ -139,6 +139,23 @@ export type WebOrderJSON = ReturnType<typeof encodeWebOrder>;
 /** The order still waits for a payment: poll its status every `WEB_ORDER_POLL_MS`. */
 export const isPendingWebOrder = (order: Pick<WebOrder, "status">) => order.status === "pending";
 
+/** `/planos` lists at most this many past orders. */
+export const WEB_ORDER_HISTORY_LIMIT = 10;
+
+/** An order that left `pending`: how it ended is final. */
+export type SettledWebOrder = WebOrder & { readonly status: Exclude<WebOrderStatus, "pending"> };
+
+/** Past orders for `/planos`: every order but a pending one (the page shows that one), newest first. */
+export const webOrderHistory = (orders: readonly WebOrder[], limit = WEB_ORDER_HISTORY_LIMIT) =>
+  orders.filter((order): order is SettledWebOrder => !isPendingWebOrder(order)).slice(0, limit);
+
+/** The orders with `order`'s latest state: replaced in place, or first when it is new. */
+export const withWebOrder = (orders: readonly WebOrder[], order: WebOrder): WebOrder[] =>
+  orders.some((item) => item.id === order.id) ? orders.map((item) => (item.id === order.id ? order : item)) : [order, ...orders];
+
+/** The instant a history row is dated by: when a paid order was paid, otherwise when it was opened. */
+export const webOrderDate = (order: Pick<WebOrder, "status" | "paidAt" | "createdAt">) => (order.status === "paid" && order.paidAt ? order.paidAt : order.createdAt);
+
 /** A reference order is paid away from the site (an ATM, online banking): after its first minutes, once a minute is enough. */
 export const WEB_ORDER_SLOW_POLL_MS = 60_000;
 export const WEB_ORDER_SLOW_AFTER_MS = 10 * 60_000;

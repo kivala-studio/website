@@ -4,7 +4,15 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { decodeAccessJSON } from "@/domain/account/watchlist";
-import { type WebCheckoutFailure, type WebOrder, type WebOrderResult, type WebPlan, isPendingWebOrder } from "@/domain/billing/web-pass";
+import {
+  type WebCheckoutFailure,
+  type WebOrder,
+  type WebOrderResult,
+  type WebPlan,
+  isPendingWebOrder,
+  webOrderHistory,
+  withWebOrder,
+} from "@/domain/billing/web-pass";
 import { HttpError, isCancellation } from "@/domain/errors";
 import { useAccount } from "@/features/account/account-provider";
 import { readAccountRoute } from "@/features/account/results";
@@ -18,7 +26,7 @@ import { useFormat } from "@/ui/format";
 
 import { type CheckoutRequest, CheckoutForm } from "./checkout-form";
 import { CheckoutSkeleton } from "./checkout-skeleton";
-import { OrderOutcome, PendingExpress, PendingReference } from "./order-views";
+import { OrderHistory, OrderOutcome, PendingExpress, PendingReference } from "./order-views";
 import { PlanStatus, isLifetimePlus, passEndDate } from "./plan-status";
 import { cancelWebOrder, readPlansPage, readWebOrder, startWebCheckout } from "./repository";
 import { useOrderPolling } from "./use-order-polling";
@@ -50,6 +58,8 @@ export function PlansView() {
 
   const [load, setLoad] = useState<Load>({ status: "loading" });
   const [order, setOrder] = useState<WebOrder | null>(null);
+  // Every order of the account as last read, with the latest state of the ones this page showed.
+  const [orders, setOrders] = useState<WebOrder[]>([]);
   const [failure, setFailure] = useState<WebCheckoutFailure | null>(null);
   const [adding, setAdding] = useState(false);
   const [cancelling, setCancelling] = useState(false);
@@ -75,6 +85,7 @@ export function PlansView() {
         (page) => {
           if (!still(asked)) return;
           setLoad({ status: "ready", plans: page.plans });
+          setOrders(page.orders);
           // The account's one pending order comes back on every visit (a reference can wait 48 hours).
           const pending = page.orders.find(isPendingWebOrder) ?? null;
           setOrder((shown) => shown ?? pending);
@@ -115,6 +126,7 @@ export function PlansView() {
       shownOrder.current = next;
       setFailure(null);
       setOrder(next);
+      setOrders((list) => withWebOrder(list, next));
       if (shown?.id === next.id && shown.status === next.status) return;
       const title = t(orderTitleKey(next));
       if (next.status !== "paid") return announce(title);
@@ -250,7 +262,7 @@ export function PlansView() {
       ) : null}
 
       <div ref={slot} className="contents">
-        <FadeIn key={view} className="flex flex-col gap-6">
+        <FadeIn key={view} className="flex flex-col gap-6 empty:hidden">
           {view === "loading" ? (
             <div role="status" aria-busy="true">
               <span className="sr-only">{t("common.loading")}</span>
@@ -295,6 +307,8 @@ export function PlansView() {
           ) : null}
         </FadeIn>
       </div>
+
+      <OrderHistory orders={webOrderHistory(orders)} />
     </div>
   );
 }

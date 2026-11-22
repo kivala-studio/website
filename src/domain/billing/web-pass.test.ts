@@ -11,7 +11,10 @@ import {
   encodeWebOrder,
   encodeWebPlan,
   webCheckoutFailure,
+  webOrderDate,
+  webOrderHistory,
   webOrderPollDelay,
+  withWebOrder,
 } from "./web-pass";
 
 const ORDER = {
@@ -134,5 +137,30 @@ describe("webOrderPollDelay", () => {
     expect(webOrderPollDelay(order("mcx_express"), opened + 10 * 60_000 - 1_000)).toBe(1_000);
     expect(webOrderPollDelay(order("mcx_express"), opened + 10 * 60_000)).toBeNull();
     expect(webOrderPollDelay(order("mcx_express", "paid"), opened)).toBeNull();
+  });
+});
+
+describe("order history", () => {
+  const paid = decodeWebOrder(ORDER)!;
+  const at = (id: string, status: string, created: string) => decodeWebOrder({ ...ORDER, id, status, created_at: created, paid_at: null, pass: null })!;
+
+  it("lists every order but the pending one, newest first, at most ten", () => {
+    const orders = [at("p", "pending", "2026-11-23T00:00:00Z"), paid, ...Array.from({ length: 12 }, (_, index) => at(`o${index}`, "expired", "2026-11-01T00:00:00Z"))];
+    const history = webOrderHistory(orders);
+    expect(history).toHaveLength(10);
+    expect(history[0]).toBe(paid);
+    expect(history.map((order) => order.id)).not.toContain("p");
+  });
+
+  it("takes an order's new state in place, and a new order first", () => {
+    const pending = at("p", "pending", "2026-11-23T00:00:00Z");
+    const settled = { ...pending, status: "failed" as const };
+    expect(withWebOrder([pending, paid], settled)).toEqual([settled, paid]);
+    expect(withWebOrder([paid], pending)).toEqual([pending, paid]);
+  });
+
+  it("dates a paid order by its payment, any other by its creation", () => {
+    expect(webOrderDate(paid)).toBe(paid.paidAt);
+    expect(webOrderDate({ ...paid, status: "refunded" })).toBe(paid.createdAt);
   });
 });
