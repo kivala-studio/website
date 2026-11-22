@@ -16,7 +16,6 @@ export type PublicEnv = {
   supabaseKey: string | null;
   posthogToken: string | null;
   sentryDsn: string | null;
-  revenueCatWebKey: string | null;
 };
 
 export type ServerEnv = PublicEnv & {
@@ -84,7 +83,6 @@ function collectPublic(source: Source, problems: string[]): PublicEnv {
     supabaseKey,
     posthogToken: read(source, "NEXT_PUBLIC_POSTHOG_TOKEN"),
     sentryDsn,
-    revenueCatWebKey: read(source, "NEXT_PUBLIC_REVENUECAT_WEB_KEY"),
   };
 }
 

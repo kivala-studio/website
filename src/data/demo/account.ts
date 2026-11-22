@@ -8,7 +8,8 @@ import { DEFAULT_DEMO_SCENARIO, DEMO_SCENARIO_COOKIE, type DemoScenario, isDemoS
 import type { SubscriptionAccess } from "@/domain/account/access";
 import { civilDate } from "@/domain/market/zone";
 
-import { DEMO_ACCOUNT_COOKIE, DEMO_COOKIES, type DemoTier, isDemoTier } from "./tiers";
+import { DEMO_ACCOUNT_COOKIE, DEMO_COOKIES, DEMO_WEB_ORDERS_COOKIE, type DemoTier, isDemoTier } from "./tiers";
+import { decodeDemoOrders, demoWebPassAccess } from "./web-pass-ledger";
 
 export { DEMO_ACCOUNT_COOKIE, type DemoTier } from "./tiers";
 
@@ -21,7 +22,12 @@ const [, WATCHLIST_COOKIE, PAIR_COOKIE] = DEMO_COOKIES;
 
 export interface DemoAccount {
   readonly id: string;
+  /** Who signed in (the `demo-account` cookie); `plus` and `pro` stand for an App Store subscription. */
+  readonly login: DemoTier;
+  /** The plan in effect: the login's, or `plus` while a Free login's web pass runs. */
   readonly tier: DemoTier;
+  readonly plusUntil: string | null;
+  readonly storeSubscription: boolean;
 }
 
 const IDS: Record<DemoTier, string> = {
@@ -33,11 +39,23 @@ const IDS: Record<DemoTier, string> = {
 export const COOKIE_OPTIONS = { path: "/", sameSite: "lax", httpOnly: true, maxAge: 60 * 60 * 24 } as const;
 const UUID = /^[0-9a-f-]{36}$/i;
 
-/** The demo account of this request, or null (always null outside demo mode). */
+/**
+ * The demo account of this request, or null (always null outside demo mode). Web passes settle on the real
+ * clock (not `demo-clock`), so a paid order turns a Free login into Plus as it would on the server.
+ */
 export async function demoAccount(): Promise<DemoAccount | null> {
   if (publicEnv.dataMode !== "demo") return null;
-  const tier = (await cookies()).get(DEMO_ACCOUNT_COOKIE)?.value;
-  return isDemoTier(tier) ? { id: IDS[tier], tier } : null;
+  const jar = await cookies();
+  const login = jar.get(DEMO_ACCOUNT_COOKIE)?.value;
+  if (!isDemoTier(login)) return null;
+  const plan = demoWebPassAccess(login, decodeDemoOrders(jar.get(DEMO_WEB_ORDERS_COOKIE)?.value), Date.now());
+  return {
+    id: IDS[login],
+    login,
+    tier: login === "free" && plan.isPlus ? "plus" : login,
+    plusUntil: plan.plusUntil,
+    storeSubscription: plan.storeSubscription,
+  };
 }
 
 export async function demoScenario(): Promise<DemoScenario> {
@@ -81,6 +99,8 @@ export function demoAccess(
     comparisonPair: pair,
     activeWatchlistIDs: active,
     movementSecurityID: (automatic ? active.find((id) => automatic.has(id)) : watchlist[0]) ?? null,
+    plusUntil: account.plusUntil,
+    storeSubscription: account.storeSubscription,
   };
 }
 

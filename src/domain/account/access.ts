@@ -9,6 +9,10 @@ export interface SubscriptionAccess {
   /** Watchlist rows that count for a Free account. */
   readonly activeWatchlistIDs: readonly string[];
   readonly movementSecurityID: string | null;
+  /** Latest known end of paid Plus (App Store, referral credit, web passes); null for Free or lifetime Plus. */
+  readonly plusUntil: string | null;
+  /** An App Store subscription is active (cancel it there before relying on a web pass); null when not reported. */
+  readonly storeSubscription: boolean | null;
 }
 
 /** iOS `FreePlanLimits`. */
@@ -36,6 +40,8 @@ export function decodeSubscriptionAccess(body: unknown): SubscriptionAccess | nu
     comparisonPair: Array.isArray(row.comparison_pair) ? ids(row.comparison_pair) : null,
     activeWatchlistIDs: ids(row.active_watchlist_ids),
     movementSecurityID: text(row.movement_security_id),
+    plusUntil: text(row.plus_until),
+    storeSubscription: typeof row.store_subscription === "boolean" ? row.store_subscription : null,
   };
 }
 

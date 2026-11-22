@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 
+import { CheckoutSkeleton } from "@/features/billing/checkout-skeleton";
 import { LESSONS } from "@/features/learn/lessons";
 import { DashboardSkeleton } from "@/features/portfolio/dashboard-skeleton";
 import { HeroPanel } from "@/features/site/home";
@@ -215,6 +216,24 @@ export function SimulatorSkeleton() {
         <CardSkeleton lines={5} />
       </div>
     </SignedInPageSkeleton>
+  );
+}
+
+/** Planos: the title over the plan's status (`PlanStatus`), then the purchase card (`CheckoutForm`). */
+export function PlansSkeleton() {
+  const t = useTranslations();
+  return (
+    <PageSkeleton as="main" className={SIGNED_IN_PAGE}>
+      <div className={cn(READING_COLUMN, "gap-6")}>
+        <div className="flex flex-col gap-2">
+          <h1 className="text-display text-primary-text">{t("subscriptions.management.plusTitle")}</h1>
+          <span aria-hidden className="flex h-6 items-center">
+            <Skeleton className="h-4 w-36" />
+          </span>
+        </div>
+        <CheckoutSkeleton />
+      </div>
+    </PageSkeleton>
   );
 }
 

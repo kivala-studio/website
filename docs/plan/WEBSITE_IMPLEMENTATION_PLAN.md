@@ -18,7 +18,7 @@ Sources of truth: the live backend contract and the iOS app. See [README.md](REA
 | i18n | `next-intl`; `pt` default without prefix, `en` under `/en` | |
 | Charts | Own SVG chart on `d3-scale` / `d3-shape` | iOS chart rules are specific |
 | Telemetry | PostHog web without cookies or identification, Sentry (own project) | Same allow-list as iOS with `platform: "web"` |
-| Billing | RevenueCat Web Billing (`@revenuecat/purchases-js`) | Owner decision 4; backend verifies through RevenueCat |
+| Billing | Plus web pass: prepaid 1 or 12 months in kwanzas, Multicaixa Express or pay-by-reference, no renewal, no trial; no billing SDK | Owner decision 4; the backend opens, verifies and settles orders (WB2) |
 | Tests | Vitest (domain, data, components), Playwright (flows, screenshots, axe), Lighthouse CI budgets | Proportional: golden fixtures over mirrored tests |
 | Hosting | Vercel, preview deployment per pull request | Owner decision 6 |
 
@@ -38,7 +38,7 @@ Portuguese slugs for both languages; English lives under `/en/…`.
 | Referral | `/convite/[code]` | Landing that carries a referral code to sign-in or the stores |
 | Account entry | `/entrar`, `/auth/callback`, `/eliminar-conta` | `/eliminar-conta` is the public deletion URL the stores ask for |
 | Signed-in | `/inicio`, `/lista`, `/carteira`, `/carteira/posicao/[symbol]`, `/atividade`, `/atividade-invulgar`, `/semana`, `/simulador`, `/wrap/[period]`, `/planos`, `/definicoes` | Require a session; unknown visitors go to `/entrar?next=…` |
-| Server endpoints | `/api/market/snapshot`, `/api/billing/sync`, `/api/account/apple-deletion/start`, `/api/account/apple-deletion/complete` | **The `complete` path is the one the backend docs name as the web return URL** |
+| Server endpoints | `/api/market/snapshot`, `/api/billing/plans`, `/api/billing/checkout`, `/api/billing/order/[id]`, `/api/billing/order/[id]/cancel`, `/api/account/apple-deletion/start`, `/api/account/apple-deletion/complete` | **The `complete` path is the one the backend docs name as the web return URL** |
 | Well-known | `/.well-known/assetlinks.json` | Android App Links; `apple-app-site-association` when iOS adds universal links |
 
 ### 1.3 Standing rules (phase W0 writes these into the new repo's `AGENTS.md`)
@@ -131,30 +131,30 @@ Verify with "How to test". Finish per AGENTS.md: task branch, Conventional Commi
 
 ### WB2 — Web payments
 
-**Goal.** A subscription bought on the website grants the same Plus/Pro entitlement. Needs owner decision 4; skip the phase if the answer is no.
+**Goal.** Plus bought on the website as a prepaid pass grants the same Plus as the App Store. Plus is the only paid plan. Done (functions #138, #139); off in production behind `control.web_passes_enabled`.
 
 | # | Task | Done when |
 |---|---|---|
-| 1 | `_shared/subscriptions.ts` accepts the web store value(s) RevenueCat reports for Web Billing and the web product ids, mapped to tiers | `tests/subscriptions_test.ts`: a web `plus` and a web `pro` subscriber fixture yield the right tier; unknown stores still fail |
-| 2 | `docs/subscriptions.md`: web products, entitlement mapping, test mode ↔ sandbox, cross-store behaviour, customer-portal link | A reader can configure the web offering from the doc alone |
-| 3 | Owner checklist (payment account, RevenueCat web app, products and 7-day trial, webhook unchanged) | Each item verifiable |
+| 1 | Catalogue, orders and passes in `subscription_private`; a pass queues after paid App Store, referral and pass time; `get_subscription_access()` adds `plus_until` and `store_subscription` | `supabase/tests/web_pass_checkout.sql` |
+| 2 | Client RPCs `get_web_plans`, `get_web_orders`, `get_web_order`, `cancel_web_order`; member Edge Functions `web-checkout` and `web-order-status`; gateway webhook and cron reconciler | Contract §7.5 matches `docs/subscriptions.md` "Web passes" |
+| 3 | Multicaixa gateway behind one interface, with a fake for local and staging (never production) | `tests/payment_gateway_test.ts`, `tests/web_orders_test.ts` |
 
-**How to test.** `deno task test:unit`; locally stub the RevenueCat fetch with the web fixture, call `sync-subscription`, then `get_subscription_access()`.
+**How to test.** `deno task test:unit`; locally with `PAYMENT_GATEWAY=fake`, check out as a tester and poll `web-order-status` until the order leaves `pending`, then `get_subscription_access()`.
 
 **Exit criteria**
-- [ ] App Store (and Play, if AB2 is merged) fixtures give unchanged results.
-- [ ] Web fixture → `is_plus` / `is_pro` as expected.
+- [ ] App Store fixtures give unchanged results.
+- [ ] A paid fake order → `is_plus` with `plus_until` at the pass end.
 
 **Prompt**
 
 ```text
 Phase WB2 — web payments (invest.ao backend).
 
-Read AGENTS.md, docs/subscriptions.md, supabase/functions/_shared/subscriptions.ts, tests/subscriptions_test.ts, and ../plans/reference/backend-contract.md sections 7 and 12.2.
+Read AGENTS.md, docs/subscriptions.md section "Web passes", and ../plans/reference/backend-contract.md section 7.
 
-Implement section "WB2" of ../plans/WEBSITE_IMPLEMENTATION_PLAN.md. Confirm from RevenueCat's current documentation which `store` values a Web Billing subscriber reports before writing the allow-list, and cite the page in the PR.
+Implement section "WB2" of ../plans/WEBSITE_IMPLEMENTATION_PLAN.md: prepaid Plus passes (1 or 12 months, kwanzas, Multicaixa Express or reference), no renewal, no trial.
 
-Constraints: no migration; entitlement semantics unchanged; nothing the client sends may grant access.
+Constraints: nothing the client sends grants access; only the gateway's own payment read settles an order; a payment received is never stranded; the phone number and NIF are never logged.
 
 Verify with "How to test". Finish per AGENTS.md.
 ```
@@ -204,7 +204,7 @@ Every prompt below is run with Claude Code opened in the new website folder (W0 
 | # | Task | Done when |
 |---|---|---|
 | 1 | Create the project in a new folder `website/` (abort if it exists), `git init`, Next.js + TypeScript strict + Tailwind, source layout of §1.1 with the ESLint boundary rule for `src/domain` | `npm run build` succeeds from a clean clone |
-| 2 | Environment handling: `.env.example` with names only (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_KEY`, `NEXT_PUBLIC_DATA_MODE`, `NEXT_PUBLIC_POSTHOG_TOKEN`, `NEXT_PUBLIC_SENTRY_DSN`, `NEXT_PUBLIC_REVENUECAT_WEB_KEY`, `APPLE_WEBSITE_RECEIPT_SECRET`, `SITE_URL`); typed, validated at boot | Missing required variables fail the build with the variable's name |
+| 2 | Environment handling: `.env.example` with names only (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_KEY`, `NEXT_PUBLIC_DATA_MODE`, `NEXT_PUBLIC_POSTHOG_TOKEN`, `NEXT_PUBLIC_SENTRY_DSN`, `APPLE_WEBSITE_RECEIPT_SECRET`, `SITE_URL`); typed, validated at boot | Missing required variables fail the build with the variable's name |
 | 3 | `AGENTS.md` with §1.2–§1.5 verbatim; `docs/plan/` and `docs/reference/` copied from `../plans`; fixtures copied to `tests/fixtures/` unchanged | Checksums equal the sources |
 | 4 | Scripts: `check` (lint, typecheck, Vitest), `e2e` (Playwright against `demo`), `build`; a bundle scan that fails if a server-only variable name or the string `service_role` appears in client chunks | The scan fails on a deliberately leaked value (demonstrated, then reverted) |
 | 5 | Security baseline: headers (HSTS, `X-Content-Type-Options`, `Referrer-Policy: strict-origin-when-cross-origin`, frame denial, Permissions-Policy) and a Content-Security-Policy with nonces, allowing only the Supabase project, PostHog and Sentry hosts | Playwright asserts the headers on `/` |
@@ -836,28 +836,28 @@ Verify: npm run check, npm run e2e including the keyboard walk-through. Tick exi
 
 ### W16 — Subscriptions
 
-**Goal.** Tier status, locks, the plans page, referrals and — if approved — checkout on the web. Needs WB2 for checkout.
+**Goal.** Tier status, locks, the plans page, referrals and the Plus web pass checkout. Needs WB2 for checkout.
 
 **Source of truth.** Product §6; platform §8; contract §7; iOS `Core/Subscriptions`, `Features/Subscriptions`.
 
 | # | Task | Done when |
 |---|---|---|
 | 1 | Access store from `get_subscription_access()`; everything open unless `enforcement_enabled` | Ports the iOS subscription-store cases |
-| 2 | `/planos` (always dark, own palette): hero with reason sentence, comparison tables Grátis/Plus and Plus/Pro, membership block, referral block, status lines, terms and privacy links, "prefer free" disclosure with the Free selection link | Every element of product §6.3 that applies to the web is present |
+| 2 | `/planos` (always dark, own palette): hero with reason sentence, comparison table Grátis/Plus (Plus is the only paid plan), membership block, referral block, status lines, terms and privacy links, "prefer free" disclosure with the Free selection link | Every element of product §6.3 that applies to the web is present |
 | 3 | Lock presentation: every typed limit reason from W7, W8, W11, W12 opens `/planos` (as a dialog over the current page) with its sentence; after access changes, the blocked action resumes once | Matrix of the 17 triggers attached, each verified |
-| 4 | Checkout (if decision 4 is yes): RevenueCat Web Billing with app user id = Supabase user id, annual preselected with savings pill, 7-day trial copy, prices only from the provider; on return `POST /api/billing/sync` calls `sync-subscription` server-side, then access is re-read | A test-mode purchase flips `free@…` to Plus on the local stack; `BILLING_RATE_LIMIT` handled |
-| 5 | No checkout (if decision 4 is no): the page shows status and how to subscribe in the mobile apps | No dead purchase button |
-| 6 | Manage: web purchases → provider customer portal; App Store / Play purchases → instructions and links to the store where the subscription was bought | The store of origin comes from the billing SDK's customer info, not guessed |
+| 4 | Web pass checkout: plans from `GET /api/billing/plans` (12 months preselected with the savings pill, prices only from the server), Multicaixa Express (phone) or reference, optional NIF; `POST /api/billing/checkout`, then poll `GET /api/billing/order/[id]` every 3 s while `pending`, cancel with `POST /api/billing/order/[id]/cancel`; a pending order resumes; access is re-read once paid | Demo and a fake-gateway order on the local stack flip `free@…` to Plus; every checkout failure has its sentence |
+| 5 | No plans (`[]`: closed, or an older backend): status and how to subscribe in the mobile apps | No dead purchase button |
+| 6 | Status: Plus until `plus_until`; with `store_subscription`, instructions and a link to cancel in the App Store before relying on a pass; past orders with their state | Nothing guessed beyond the access document and orders |
 | 7 | Referral: code with copy and share, redeem dialog with all error messages, credit-until line; hidden when referrals are closed; pending code from `/convite/[code]` offered once | Verified on the local stack |
 | 8 | Lifetime gift announcement (`claim_lifetime_plus_announcement`), shown once | |
 | 9 | Downgrade: nothing deleted; Free selection from W8 | Lapsed seed account sees paused instruments |
 
-**How to test.** `npm run check`. `local` mode: stub RevenueCat as in WB2 to flip tiers and confirm locks open and the blocked action resumes. Test-mode checkout end to end on a preview.
+**How to test.** `npm run check`. `demo` mode: phone `…0001` pays after 5 s, `…0002` fails, a reference pays after 20 s, `demo-plans=closed` empties the plans. `local` mode: the fake gateway (WB2) flips tiers; confirm locks open and the blocked action resumes.
 
 **Exit criteria**
-- [ ] A web purchase shows as Plus on iOS for the same account (owner cross-check), or the no-checkout variant is live.
+- [ ] A web pass shows as Plus on iOS for the same account (owner cross-check).
 - [ ] With enforcement off, no lock appears anywhere.
-- [ ] No price is hard-coded; no RevenueCat secret is in the bundle.
+- [ ] No price is hard-coded outside demo mode; no Edge Function is called from the browser.
 - [ ] All triggers show their own reason sentence.
 
 **Prompt**
@@ -865,14 +865,14 @@ Verify: npm run check, npm run e2e including the keyboard walk-through. Tick exi
 ```text
 Phase W16 — subscriptions (invest.ao website).
 
-Precondition: tell me whether web checkout is approved (owner decision 4). If yes, backend phase WB2 must be merged and deployed; if it is not, stop. If no, build the status-only variant.
+Precondition: backend phase WB2 is merged and deployed (web passes may still be closed by the server flag; then plans are empty).
 
 Read AGENTS.md, docs/plan/WEBSITE_IMPLEMENTATION_PLAN.md section "W16", docs/reference/ios-product.md section 6, docs/reference/ios-platform.md section 8, and docs/reference/backend-contract.md section 7.
 iOS source (read-only): ../.reference/ios/Invest.AO/Core/Subscriptions, Features/Subscriptions, docs/subscription-foundation.md.
 
 Implement every task of W16 and replace the neutral limit dialogs left by earlier phases.
 
-Constraints: the backend snapshot is the only authority for access. sync-subscription is called from a route handler with the user's session, never from the browser. Prices, periods and trial eligibility come from the billing provider. Purchase requires a signed-in user. The site must not be embedded as a checkout inside the mobile apps.
+Constraints: the backend snapshot is the only authority for access. web-checkout and web-order-status are called only from route handlers with the user's session, never from the browser. Prices and periods come from get_web_plans(); there is no trial and no renewal. The phone number and NIF are never logged or put in a URL. Purchase requires a signed-in user. The site must not be embedded as a checkout inside the mobile apps.
 
 Verify: npm run check, npm run e2e, local-mode lock/resume checks, and a test-mode purchase if checkout is enabled. Attach the trigger matrix. Tick exit criteria with evidence. Finish per AGENTS.md.
 ```

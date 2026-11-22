@@ -21,6 +21,7 @@ export function Choices({ initialTheme }: { initialTheme: Theme }) {
   const t = useTranslations();
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<"price" | "percent">("price");
+  const [plan, setPlan] = useState<"month" | "year">("year");
   const [range, setRange] = useState<TimeRange>("oneMonth");
   const [chartRange, setChartRange] = useState<TimeRange>("oneWeek");
   const [preset, setPreset] = useState<string>("10");
@@ -178,6 +179,22 @@ export function Choices({ initialTheme }: { initialTheme: Theme }) {
           />
           <Variant label="ThemeSwitch" className="items-stretch">
             <ThemeSwitch initial={initialTheme} />
+          </Variant>
+          <Variant label="trailing (a saving)" className="items-stretch">
+            <SegmentedControl
+              label="Plan"
+              value={plan}
+              onChange={setPlan}
+              options={[
+                { value: "month", title: "1 mês" },
+                {
+                  value: "year",
+                  title: "12 meses",
+                  spoken: "12 meses, Poupa 16%",
+                  trailing: <span className="rounded-full bg-accent-soft px-2 py-0.5 text-caption font-semibold text-accent">−16%</span>,
+                },
+              ]}
+            />
           </Variant>
         </Specimen>
 
