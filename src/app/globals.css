@@ -66,13 +66,26 @@
   --radius-card: 1.5rem; /* 24 · web cards (the panel surface), dialogs, toasts */
 }
 
-/* The sticky top bar's height (its floating pieces and their inset): sticky columns and anchors start under it. */
+/*
+ * The sticky top bar's height (its floating pieces and their inset): sticky columns and anchors start under it. The
+ * page column's cap, its gutter from 1024 px, and where a reading column starts.
+ */
 :root {
   --top-bar-height: 4rem;
+  --page-width: 75rem;
+  --page-gutter: 1.5rem;
+  --reading-start: auto;
 }
 @media (min-width: 64rem) {
   :root {
     --top-bar-height: 5.5rem;
+  }
+  /* The signed-in app: the sidebar takes the top bar's place, and pages span the window beside it, from its left edge. */
+  :root:has([data-shell="app"]) {
+    --top-bar-height: 0rem;
+    --page-width: none;
+    --page-gutter: 2rem;
+    --reading-start: 0;
   }
 }
 
