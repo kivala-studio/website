@@ -2,6 +2,8 @@ export const APP_STORE_URL = "https://apps.apple.com/app/id6812907673";
 export const APP_STORE_SUBSCRIPTIONS_URL = "https://apps.apple.com/account/subscriptions";
 export const SUPPORT_EMAIL = "suporte@invest.ao";
 export const SIGN_IN_PATH = "/entrar";
+/** The signed-in home, where the public bar sends a visitor who already has a session. */
+export const DASHBOARD_PATH = "/inicio";
 
 /**
  * Fixed public pages that search engines may index. The sitemap lists these in both languages, plus every
