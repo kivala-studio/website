@@ -17,7 +17,8 @@ import { DEMO_WEB_PLANS, type DemoWebOrder, decodeDemoOrders, demoCancel, demoCh
  */
 export const DEMO_PLANS_COOKIE = "demo-plans";
 
-async function demoPlans(): Promise<WebPlan[]> {
+/** The demo plans on sale: `[]` with `demo-plans=closed`. Read by `/api/billing/plans` and the public `/plus`. */
+export async function demoPlans(): Promise<WebPlan[]> {
   return (await cookies()).get(DEMO_PLANS_COOKIE)?.value === "closed" ? [] : [...DEMO_WEB_PLANS];
 }
 

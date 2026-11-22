@@ -21,9 +21,9 @@ export default async function MarketAreaLayout({ children }: Readonly<{ children
   const theme = parseTheme((await cookies()).get(THEME_COOKIE)?.value);
   return (
     <>
-      <SiteHeader theme={theme} />
+      <SiteHeader theme={theme} plus />
       <PendingPage>{children}</PendingPage>
-      <SiteFooter year={civilDate(requestTime()).slice(0, 4)} />
+      <SiteFooter year={civilDate(requestTime()).slice(0, 4)} plus />
     </>
   );
 }

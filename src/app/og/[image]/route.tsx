@@ -20,6 +20,7 @@ const TITLE_KEYS = {
   market: "common.market",
   news: "common.news",
   learn: "learn.title",
+  plus: "subscriptions.management.plusTitle",
   invite: "referral.redeem.title",
 } as const satisfies Record<OgImage, string>;
 

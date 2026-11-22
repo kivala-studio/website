@@ -24,6 +24,7 @@ import { useFormat } from "@/ui/format";
 import { Icon } from "@/ui/icons/icon";
 
 import { MarketSessionSheet } from "./market-session-sheet";
+import { PlusPrompt } from "./plus-prompt";
 
 type Loaded = { snapshot: MarketSnapshot; at: number };
 
@@ -94,25 +95,29 @@ export function HomeView({
               <OverviewCard loaded={loaded} stale={state.refreshError !== null} />
             )}
           </div>
-          <div className="empty:hidden max-lg:order-3">{context}</div>
+          {/* Under the overview, so the index never moves when the prompt arrives after the plans are read. */}
+          <div className="empty:hidden max-lg:order-2">
+            <PlusPrompt />
+          </div>
+          <div className="empty:hidden max-lg:order-4">{context}</div>
           {failed ? null : (
-            <div className="max-lg:order-4">
+            <div className="max-lg:order-5">
               <MovementFeed loaded={loaded} rows={byID} />
             </div>
           )}
         </div>
         <div className="contents lg:flex lg:flex-col lg:gap-6">
           {failed ? null : (
-            <div className="max-lg:order-2">
+            <div className="max-lg:order-3">
               <WatchlistRail loaded={loaded} rows={byID} />
             </div>
           )}
-          <div className="max-lg:order-5">{news}</div>
-          <div className="empty:hidden max-lg:order-6">
+          <div className="max-lg:order-6">{news}</div>
+          <div className="empty:hidden max-lg:order-7">
             <HomeMarketUpdates />
           </div>
-          {recaps ? <div className="max-lg:order-7">{recaps}</div> : null}
-          <div className="max-lg:order-8">{simulator}</div>
+          {recaps ? <div className="max-lg:order-8">{recaps}</div> : null}
+          <div className="max-lg:order-9">{simulator}</div>
         </div>
       </div>
     </div>

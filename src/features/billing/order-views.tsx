@@ -3,9 +3,10 @@
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-import type { WebOrder, WebOrderStatus } from "@/domain/billing/web-pass";
+import { type SettledWebOrder, type WebOrder, type WebOrderStatus, webOrderDate } from "@/domain/billing/web-pass";
 import { cn } from "@/ui/cn";
 import { Button, IconButton } from "@/ui/components/buttons";
+import { FlipList } from "@/ui/components/flip-list";
 import { Card } from "@/ui/components/layout";
 import { Spinner } from "@/ui/components/states";
 import { useFormat } from "@/ui/format";
@@ -159,6 +160,33 @@ export function OrderOutcome({ order, onNext }: { order: WebOrder & { status: Ex
       <Button kind={paid ? "secondary" : "primary"} onClick={onNext} className="sm:w-auto sm:self-start" data-testid="order-next">
         {t(paid ? "site.plans.addTime" : "site.plans.startAgain")}
       </Button>
+    </Card>
+  );
+}
+
+/** The account's past orders (`webOrderHistory`): length, amount, the day and how it ended. Absent when there are none. */
+export function OrderHistory({ orders }: { orders: readonly SettledWebOrder[] }) {
+  const t = useTranslations();
+  const format = useFormat();
+  if (orders.length === 0) return null;
+  return (
+    <Card title={t("site.plans.history")} titleId="order-history-title" data-testid="order-history">
+      <FlipList className="flex flex-col divide-y divide-hairline">
+        {orders.map((order) => (
+          <li
+            key={order.id}
+            data-flip-key={order.id}
+            data-status={order.status}
+            className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-0.5 py-3 first:pt-0 last:pb-0"
+          >
+            <span className="font-display text-body font-medium text-primary-text">{t("site.plans.months", { count: order.months })}</span>
+            <span className="text-right font-display text-body font-medium text-primary-text">{format.currency(order.amountAOA, { digits: 2 })}</span>
+            <span className="col-span-2 text-secondary text-secondary-text">
+              {format.date(Date.parse(webOrderDate(order)))} · {t(`site.plans.outcome.${order.status}`)}
+            </span>
+          </li>
+        ))}
+      </FlipList>
     </Card>
   );
 }

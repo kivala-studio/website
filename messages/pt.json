@@ -2830,7 +2830,9 @@
       "instrumentDescription": "{arg1} na BODIVA: último fecho verificado, histórico de um ano e informação do emitente.",
       "newsDescription": "Notícias e recaps do mercado angolano, com fontes indicadas.",
       "learnDescription": "Sete lições curtas sobre o funcionamento do mercado angolano.",
-      "shareTitle": "Carteira partilhada"
+      "shareTitle": "Carteira partilhada",
+      "plusDescription": "O que o invest.ao Plus inclui e o preço em kwanzas, com Multicaixa Express ou referência.",
+      "plusStoreDescription": "O que o invest.ao Plus inclui, comparado com o plano gratuito."
     },
     "header": {
       "dashboard": "Ir para o painel",
@@ -2924,6 +2926,10 @@
       "storeNotice": "O passe começa quando terminar o período atual da tua subscrição da App Store, por isso desativa a renovação na App Store.",
       "storeOnly": "Subscreve o Plus na app invest.ao para iPhone.",
       "addTime": "Adicionar tempo",
+      "seePlans": "Ver planos",
+      "offerPrompt": "Paga o Plus em kwanzas com Multicaixa.",
+      "renewPrompt": "O teu Plus termina a {date}.",
+      "history": "Pedidos anteriores",
       "startAgain": "Começar de novo",
       "expressPending": "Confirma o pagamento na app Multicaixa Express",
       "expiresIn": "Expira em {time}",
@@ -2954,6 +2960,13 @@
         "notFound": "Não encontrámos este pedido.",
         "unavailable": "Não foi possível ligar ao invest.ao. Tenta novamente."
       }
+    },
+    "plus": {
+      "nav": "Plus",
+      "includes": "O que o Plus inclui",
+      "methods": "Paga com Multicaixa Express ou por referência. Sem renovação automática.",
+      "notIncluded": "Não incluído",
+      "comparePlans": "Comparar planos"
     }
   }
 }

@@ -20,6 +20,7 @@ const PAGES = [
   "/noticias/fecho-da-sessao",
   "/aprender",
   "/aprender/acoes",
+  "/plus",
 ];
 const localized = (path: string) => [path, path === "/" ? "/en" : `/en${path}`];
 /** Functional cookies only: the saved theme and next-intl's language choice. */
@@ -134,7 +135,7 @@ test("unknown pages render the translated 404", async ({ page }) => {
 test("sitemap lists only the public indexable pages; robots points to it", async ({ request, baseURL }) => {
   const sitemap = await (await request.get("/sitemap.xml")).text();
   const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(([, url]) => url.replace(baseURL!, ""));
-  const fixed = ["/", "/policy", "/termos", "/suporte", "/eliminar-conta", "/mercado", "/noticias", "/aprender"];
+  const fixed = ["/", "/policy", "/termos", "/suporte", "/eliminar-conta", "/mercado", "/noticias", "/aprender", "/plus"];
   expect(urls.filter((url) => !/^(\/en)?\/(mercado|noticias|aprender)\/./.test(url)).sort()).toEqual(
     fixed.flatMap((path) => [path, path === "/" ? "/en" : `/en${path}`]).sort(),
   );
