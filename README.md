@@ -15,4 +15,8 @@ npm run dev
 | `npm run e2e` | Playwright against a production build in `demo` mode |
 | `npm run lhci` | Lighthouse CI budgets (mobile: LCP ≤ 2.5 s, CLS ≤ 0.1, TBT ≤ 200 ms) |
 
+## Hosts
+
+Production serves the site at `invest.ao` (`SITE_URL`) and the signed-in app at `dashboard.invest.ao` (`APP_URL`, production only). The proxy keeps each page on its host, sign-in stays on the site, and session cookies are shared on `invest.ao`. Without `APP_URL` (local, previews) one host serves both. To try the split locally, run with `SITE_URL=http://invest.localhost:3000 APP_URL=http://dashboard.invest.localhost:3000`.
+
 Rules, routes and run modes: [AGENTS.md](AGENTS.md). Plan: [docs/plan](docs/plan). References: [docs/reference](docs/reference).
