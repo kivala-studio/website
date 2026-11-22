@@ -185,11 +185,14 @@ From 1024 px: a `19.5rem | 1fr` grid. The sidebar is `lg:sticky lg:top-(--top-ba
 ┌ overview card ──────────────┐ ┌ watchlist ─┐   main column | 20 rem column
 │ headline index, sparkline   │ │ CompactRow │
 └─────────────────────────────┘ └────────────┘
- context slot                     news, updates, recaps
-┌ movers panel ───────────────┐   simulator link card
+ Plus prompt (when it applies)    news, updates, recaps
+ context slot                     simulator link card
+┌ movers panel ───────────────┐
 ```
 
 `grid-cols-1 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start gap-6`. On phones the two columns interleave in iOS order: each column is `contents` below 1024 px and every block has a `max-lg:order-N`.
+
+The Plus prompt (`PlusPrompt`, `src/features/home/plus-prompt.tsx`) sits under the overview card (before the watchlist on phones), so it never moves the index when it arrives after the plans are read: one compact card with an icon disc, one line, a secondary compact pill to `/planos` and a plain close button. The rules are `plusPrompt` in `src/domain/billing/plus-prompt.ts`.
 
 ### 6. Centred reading or settings column — `ReadingPage` in `src/features/site/pages.tsx`, `SignedInPage narrow` in `src/features/shell/placeholder-page.tsx`
 
@@ -200,7 +203,7 @@ From 1024 px: a `19.5rem | 1fr` grid. The sidebar is `lg:sticky lg:top-(--top-ba
         └───────────────────────┘
 ```
 
-Legal pages, support, account deletion, invites, lessons, news, settings (`/definicoes` with `SettingsGroup` cards), search, plans (`/planos`: the title over the plan's status, then one card: the purchase, a pending order or how it ended).
+Legal pages, support, account deletion, invites, lessons, news, settings (`/definicoes` with `SettingsGroup` cards), search, plans (`/planos`: the title over the plan's status, then one card: the purchase, a pending order or how it ended; then the past orders card, when there are any).
 
 ### 7. Centred message or auth card — `MessagePage` in `src/features/site/pages.tsx`, `src/app/[locale]/(auth)/entrar/page.tsx`
 
