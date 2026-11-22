@@ -77,6 +77,8 @@ export function decodeAccessJSON(value: unknown): SubscriptionAccess | null {
     comparison_pair: value.comparisonPair,
     active_watchlist_ids: value.activeWatchlistIDs,
     movement_security_id: value.movementSecurityID,
+    plus_until: value.plusUntil,
+    store_subscription: value.storeSubscription,
   });
 }
 

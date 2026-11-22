@@ -6,6 +6,9 @@ export type DemoTier = (typeof DEMO_TIERS)[number];
 
 export const isDemoTier = (value: unknown): value is DemoTier => typeof value === "string" && (DEMO_TIERS as readonly string[]).includes(value);
 
+/** The demo account's web pass orders (`./web-passes.ts`). */
+export const DEMO_WEB_ORDERS_COOKIE = "demo-web-orders";
+
 /** Every cookie the demo account keeps its data in; sign-out clears them. */
 export const DEMO_COOKIES = [
   DEMO_ACCOUNT_COOKIE,
@@ -22,4 +25,5 @@ export const DEMO_COOKIES = [
   "demo-portfolio-books",
   "demo-portfolio-cash",
   "demo-portfolio-shares",
+  DEMO_WEB_ORDERS_COOKIE,
 ] as const;

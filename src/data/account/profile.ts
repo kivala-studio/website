@@ -27,7 +27,7 @@ export const providersOf = (user: Pick<User, "identities" | "app_metadata">): st
  */
 export async function readAccountProfile(session: AccountSession): Promise<AccountProfile | null> {
   if (session.kind === "demo") {
-    return { email: `${session.account.tier}@example.test`, displayName: null, providers: ["google"], apple: false };
+    return { email: `${session.account.login}@example.test`, displayName: null, providers: ["google"], apple: false };
   }
   const { data, error } = await session.client.auth.getUser();
   const user = data.user;
