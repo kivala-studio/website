@@ -6,7 +6,8 @@ import { sectionChipClass } from "./button-styles";
 
 /**
  * The page column for site and app pages: `--page-width` (1200 px) at most, centred, 16 px gutters on phones, 24 px
- * from 640 px and 32 px in the app from 1024 px, where it spans the window beside the sidebar (see `globals.css`).
+ * from 640 px and 32 px in the app from 1024 px, where it spans the window beside the sidebar up to 1600 px (see
+ * `globals.css`).
  */
 export const PAGE_CONTAINER = "mx-auto w-full max-w-(--page-width) px-4 sm:px-6 lg:px-(--page-gutter)";
 
