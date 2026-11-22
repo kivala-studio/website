@@ -9,7 +9,7 @@ import { TopBar } from "@/ui/components/top-bar";
 import type { Theme } from "@/ui/theme/theme";
 
 import { LanguageSwitch } from "./language-switch";
-import { INDEXABLE_PAGES, SIGN_IN_PATH } from "./site";
+import { DASHBOARD_PATH, INDEXABLE_PAGES, SIGN_IN_PATH } from "./site";
 
 /** The palanca-negra mark. A template image used as a mask, so it takes the current text colour in both themes. */
 export function PalancaMark({ className }: { className?: string }) {
@@ -43,9 +43,9 @@ export const LANGUAGE_CONTROL =
   "inline-flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-full pr-3 pl-2.5 font-display text-secondary font-semibold text-secondary-text transition-colors hover:text-primary-text";
 
 /**
- * Extra classes for the sign-in pill (`ButtonLink size="compact"`) in the public bar. Below 1024 px it is 48 px tall,
- * the height of the logo and the round menu button beside it, so the bar's pieces line up as one row. From 1024 px it
- * is the plain compact pill.
+ * Extra classes for the account pill (`ButtonLink size="compact"`: sign-in, or the dashboard when signed in) in the
+ * public bar. Below 1024 px it is 48 px tall, the height of the logo and the round menu button beside it, so the bar's
+ * pieces line up as one row. From 1024 px it is the plain compact pill.
  */
 export const SIGN_IN_PILL = "max-lg:min-h-12";
 
@@ -62,12 +62,12 @@ export function SiteControls({ theme }: { theme: Theme }) {
 }
 
 /**
- * Public top bar: the logo, the sections in the centred capsule, then the language, the theme and sign-in. Below
- * 1024 px the sections, the theme and the language move into the menu, whose round button ends the bar after the
- * smaller sign-in pill.
+ * Public top bar: the logo, the sections in the centred capsule, then the language, the theme and the account pill
+ * (sign-in, or the dashboard when `signedIn`). Below 1024 px the sections, the theme and the language move into the
+ * menu, whose round button ends the bar after the smaller account pill.
  * Visitors get no search (it needs the app's market store).
  */
-export function SiteHeader({ theme }: { theme: Theme }) {
+export function SiteHeader({ theme, signedIn = false }: { theme: Theme; signedIn?: boolean }) {
   const t = useTranslations();
   return (
     <TopBar
@@ -88,8 +88,8 @@ export function SiteHeader({ theme }: { theme: Theme }) {
         </>
       }
       actions={
-        <ButtonLink href={SIGN_IN_PATH} size="compact" className={cn(TOP_BAR_FLOAT, SIGN_IN_PILL)}>
-          {t("onboarding.navigation.signIn")}
+        <ButtonLink href={signedIn ? DASHBOARD_PATH : SIGN_IN_PATH} size="compact" className={cn(TOP_BAR_FLOAT, SIGN_IN_PILL)}>
+          {signedIn ? t("site.header.dashboard") : t("onboarding.navigation.signIn")}
         </ButtonLink>
       }
     />
