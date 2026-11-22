@@ -13,6 +13,8 @@ test.use({ locale: "pt-AO" });
 /** The demo passes' prices in either language's format (1 111,11 Kz · AOA 1,111.11 and the 12-month one). */
 const DEMO_PRICE = /1[\s  .,]?111[.,]11/;
 const STORE_LINKED = ["/policy", "/termos", "/suporte", "/eliminar-conta"];
+/** Shared portfolios (links the iOS app creates): the demo's valid token, and a revoked one (the not-found state). */
+const SHARES = ["/partilha/demoShareToken_0123456789abcdefg", "/partilha/demoRevokedToken-0123456789abcde"];
 
 async function closePasses(context: BrowserContext) {
   await context.addCookies([{ name: "demo-plans", value: "closed", domain: "localhost", path: "/" }]);
@@ -55,18 +57,20 @@ test("with passes closed, /plus names no price and no payment but keeps the comp
   expect(await seriousAxeIssues(page)).toEqual([]);
 });
 
-test("the pages the app and the stores open never link to /plus or name a price; the rest of the site does link to it", async ({ page, request }) => {
+test("the pages the app and the stores open or link to never link to /plus or name a price; the rest of the site does link to it", async ({ page, request }) => {
   await page.goto("/");
   await expect(page.getByRole("banner").getByRole("link", { name: "Plus", exact: true })).toHaveAttribute("href", "/plus");
   await expect(page.getByRole("contentinfo").getByRole("link", { name: "Plus", exact: true })).toHaveAttribute("href", "/plus");
 
-  for (const path of STORE_LINKED.flatMap((path) => [path, `/en${path}`])) {
+  for (const path of [...STORE_LINKED, ...SHARES].flatMap((path) => [path, `/en${path}`])) {
     const html = await (await request.get(path)).text();
-    expect(html, path).not.toMatch(/href="[^"]*\/plus"/);
+    expect(html, path).not.toMatch(/href="[^"]*\/(plus|planos)"/);
     expect(html, path).not.toMatch(DEMO_PRICE);
   }
-  for (const path of ["/policy", "/en/policy"]) {
+  for (const path of ["/policy", "/en/policy", ...SHARES]) {
     await page.goto(path);
+    if (path === SHARES[0]) await expect(page.getByTestId("shared-portfolio")).toBeVisible();
+    if (path === SHARES[1]) await expect(page.getByTestId("share-not-found")).toBeVisible();
     await expect(page.locator('a[href$="/plus"]'), path).toHaveCount(0);
     await expect(page.getByRole("contentinfo"), path).not.toContainText("Plus");
   }

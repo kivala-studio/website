@@ -14,7 +14,7 @@ import { DASHBOARD_PATH } from "./site";
 
 /**
  * A public area layout's frame: the header, the page and the footer. `plus={false}` leaves Plus out of the header and
- * the footer, for the pages the iOS app and the store listings open (App Store rules: no link to the web offer there).
+ * the footer, for the pages the iOS app and the store listings open or link to (App Store rules: no link to the web offer there).
  */
 export async function SiteFrame({ plus, children }: { plus: boolean; children: ReactNode }) {
   const [cookieStore, account, locale] = await Promise.all([cookies(), currentAccount(), getLocale()]);
