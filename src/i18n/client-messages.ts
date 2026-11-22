@@ -18,6 +18,7 @@ export const SKELETON_MESSAGE_KEYS = [
   "home.contextCard.availableSummaries",
   "learn.title",
   "portfolio.header.loading",
+  "subscriptions.management.plusTitle",
   "unusualActivity.title",
   "weekAhead.summary.title",
 ] as const;
@@ -150,6 +151,8 @@ export const AREA_KEYS = {
   unusualActivity: ["unusualActivity", "notification.unusual.trade", "notification.unusual.order", "legacy.notificationUnusualTradeFundUnit"],
   weekAhead: ["weekAhead", "legacy.eventoAnunciado", "legacy.eventosAnunciados", "legacy.eventoRelacionado", "legacy.eventosRelacionados"],
   share: ["portfolio.summary"],
+  /** `/planos`: the plan status and the web pass checkout (its own wording lives in `site.plans`). */
+  plans: ["subscriptions.status", "subscriptions.plan.chooseTitle", "subscriptions.plan.savings", "subscriptions.plan.loadError"],
   auth: ["authentication.signIn"],
   setup: [
     "onboarding.accessibility",

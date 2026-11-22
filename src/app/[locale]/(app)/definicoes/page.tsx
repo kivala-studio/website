@@ -19,9 +19,12 @@ import { THEME_COOKIE, parseTheme } from "@/ui/theme/theme";
 
 export const generateMetadata = signedInMetadata("profile.navigation.title");
 
+/** The plan and the Plus web pass. */
+const PLANS_PAGE = "/planos";
+
 /**
- * Perfil (iOS `ProfileView` + `SettingsView`), in the iOS group order. iOS-only rows are left out: subscription
- * (no web purchases yet), notification permission, lock screen and widget privacy.
+ * Perfil (iOS `ProfileView` + `SettingsView`), in the iOS group order; the subscription row opens `/planos`. iOS-only
+ * rows are left out: notification permission, lock screen and widget privacy.
  */
 export default async function ProfilePage() {
   const t = await getTranslations();
@@ -43,6 +46,7 @@ export default async function ProfilePage() {
       </div>
 
       <SettingsGroup id="settings-account" title={t("common.account")}>
+        <LinkRow href={PLANS_PAGE} icon="wallet" label={t("subscriptions.management.plusTitle")} />
         <LinkRow href={ACCOUNT_PAGE} icon="profile" label={t("common.manageAccount")} />
         <SignOutForm>
           <button type="submit" className="flex min-h-12 w-full items-center gap-3 py-2 text-left text-body text-negative">

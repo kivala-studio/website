@@ -2909,6 +2909,51 @@
       "copyLink": "Copy link",
       "linkCopied": "Link copied",
       "remindersInApps": "Reminders are in the iPhone and Android apps."
+    },
+    "plans": {
+      "until": "Until {date}",
+      "months": "{count, plural, one {# month} other {# months}}",
+      "saving": "−{percent}",
+      "method": "Payment method",
+      "express": "Multicaixa Express",
+      "reference": "Reference",
+      "phone": "Mobile number",
+      "phonePrefix": "+244",
+      "nif": "NIF (optional)",
+      "pay": "Pay {amount}",
+      "storeNotice": "Your pass starts when your current App Store subscription period ends, so turn off renewal in the App Store.",
+      "storeOnly": "Subscribe to Plus in the invest.ao iPhone app.",
+      "addTime": "Add time",
+      "startAgain": "Start again",
+      "expressPending": "Confirm the payment in the Multicaixa Express app",
+      "expiresIn": "Expires in {time}",
+      "referencePending": "Pay at a Multicaixa ATM or in online banking",
+      "entity": "Entity",
+      "validUntil": "Valid until {date}",
+      "copy": "Copy {item}",
+      "copied": "Copied: {item}",
+      "outcome": {
+        "paid": "Payment confirmed",
+        "failed": "The payment didn''t go through",
+        "expired": "The order expired",
+        "cancelled": "Order cancelled",
+        "refunded": "Payment refunded"
+      },
+      "failure": {
+        "invalidInput": "Couldn''t start the payment. Try again.",
+        "invalidPhone": "Enter an Angolan mobile number starting with 9.",
+        "invalidNIF": "The NIF must have 6 to 20 letters or digits.",
+        "signedOut": "Your session ended. Sign in again.",
+        "closed": "Plus passes aren''t on sale right now.",
+        "productUnavailable": "This plan is no longer available.",
+        "notNeeded": "You already have lifetime Plus.",
+        "pending": "You already have a payment to finish.",
+        "rateLimited": "Too many orders. Try again in an hour.",
+        "gatewayUnavailable": "Multicaixa didn''t respond. Try again shortly.",
+        "notConfigured": "Payments aren''t available right now.",
+        "notFound": "We couldn''t find this order.",
+        "unavailable": "Couldn''t reach invest.ao. Try again."
+      }
     }
   }
 }

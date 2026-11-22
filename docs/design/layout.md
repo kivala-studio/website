@@ -196,7 +196,7 @@ From 1024 px: a `19.5rem | 1fr` grid. The sidebar is `lg:sticky lg:top-(--top-ba
         └───────────────────────┘
 ```
 
-Legal pages, support, account deletion, invites, lessons, news, settings (`/definicoes` with `SettingsGroup` cards), search.
+Legal pages, support, account deletion, invites, lessons, news, settings (`/definicoes` with `SettingsGroup` cards), search, plans (`/planos`: the title over the plan's status, then one card: the purchase, a pending order or how it ended).
 
 ### 7. Centred message or auth card — `MessagePage` in `src/features/site/pages.tsx`, `src/app/[locale]/(auth)/entrar/page.tsx`
 

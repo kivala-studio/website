@@ -139,6 +139,23 @@ export type WebOrderJSON = ReturnType<typeof encodeWebOrder>;
 /** The order still waits for a payment: poll its status every `WEB_ORDER_POLL_MS`. */
 export const isPendingWebOrder = (order: Pick<WebOrder, "status">) => order.status === "pending";
 
+/** A reference order is paid away from the site (an ATM, online banking): after its first minutes, once a minute is enough. */
+export const WEB_ORDER_SLOW_POLL_MS = 60_000;
+export const WEB_ORDER_SLOW_AFTER_MS = 10 * 60_000;
+
+/**
+ * How long to wait before reading a pending order's live status again: `WEB_ORDER_POLL_MS`, or once a minute for a
+ * reference order older than ten minutes, never past `expiresAt`. Null once the order left `pending` or its time is
+ * up: the caller then reads it one last time and stops.
+ */
+export function webOrderPollDelay(order: Pick<WebOrder, "status" | "method" | "createdAt" | "expiresAt">, now: number): number | null {
+  if (!isPendingWebOrder(order)) return null;
+  const remaining = Date.parse(order.expiresAt) - now;
+  if (!(remaining > 0)) return null;
+  const slow = order.method === "reference" && now - Date.parse(order.createdAt) >= WEB_ORDER_SLOW_AFTER_MS;
+  return Math.min(slow ? WEB_ORDER_SLOW_POLL_MS : WEB_ORDER_POLL_MS, remaining);
+}
+
 /**
  * The 12-month plan against twelve 1-month plans, for a savings pill: null unless both exist and the year is
  * cheaper. `percent` is rounded down so the pill never overstates the saving.

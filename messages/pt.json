@@ -2909,6 +2909,51 @@
       "copyLink": "Copiar link",
       "linkCopied": "Link copiado",
       "remindersInApps": "Os lembretes estão nas aplicações para iPhone e Android."
+    },
+    "plans": {
+      "until": "Até {date}",
+      "months": "{count, plural, one {# mês} other {# meses}}",
+      "saving": "−{percent}",
+      "method": "Forma de pagamento",
+      "express": "Multicaixa Express",
+      "reference": "Referência",
+      "phone": "Número de telemóvel",
+      "phonePrefix": "+244",
+      "nif": "NIF (opcional)",
+      "pay": "Pagar {amount}",
+      "storeNotice": "O passe começa quando terminar o período atual da tua subscrição da App Store, por isso desativa a renovação na App Store.",
+      "storeOnly": "Subscreve o Plus na app invest.ao para iPhone.",
+      "addTime": "Adicionar tempo",
+      "startAgain": "Começar de novo",
+      "expressPending": "Confirma o pagamento na app Multicaixa Express",
+      "expiresIn": "Expira em {time}",
+      "referencePending": "Paga num ATM Multicaixa ou no internet banking",
+      "entity": "Entidade",
+      "validUntil": "Válida até {date}",
+      "copy": "Copiar {item}",
+      "copied": "Copiado: {item}",
+      "outcome": {
+        "paid": "Pagamento confirmado",
+        "failed": "O pagamento não foi concluído",
+        "expired": "O pedido expirou",
+        "cancelled": "Pedido cancelado",
+        "refunded": "Pagamento reembolsado"
+      },
+      "failure": {
+        "invalidInput": "Não foi possível iniciar o pagamento. Tenta novamente.",
+        "invalidPhone": "Introduz um número de telemóvel angolano começado por 9.",
+        "invalidNIF": "O NIF tem de ter entre 6 e 20 letras ou números.",
+        "signedOut": "A tua sessão terminou. Inicia sessão novamente.",
+        "closed": "Os passes Plus não estão à venda neste momento.",
+        "productUnavailable": "Este plano já não está disponível.",
+        "notNeeded": "Já tens Plus vitalício.",
+        "pending": "Já tens um pagamento por concluir.",
+        "rateLimited": "Fizeste demasiados pedidos. Tenta novamente daqui a uma hora.",
+        "gatewayUnavailable": "O Multicaixa não respondeu. Tenta novamente daqui a pouco.",
+        "notConfigured": "Os pagamentos não estão disponíveis neste momento.",
+        "notFound": "Não encontrámos este pedido.",
+        "unavailable": "Não foi possível ligar ao invest.ao. Tenta novamente."
+      }
     }
   }
 }

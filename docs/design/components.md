@@ -301,7 +301,7 @@ A WAI-ARIA `radiogroup` with roving focus. The segmented look is a `track` groov
 
 | Component | Props |
 |---|---|
-| `SegmentedControl<T>` | `options: { value: T; title; spoken?; disabled?; leading? }[]`, `value`, `onChange`, `label` |
+| `SegmentedControl<T>` | `options: { value: T; title; spoken?; disabled?; leading?; trailing? }[]`, `value`, `onChange`, `label` |
 | `OptionGroup<T>` | the same, plus `variant?: "segmented" \| "ranges"` (`ranges`: small pills, the chosen one in `accent-soft`) and `scroll?` (each option keeps 44 px and the track scrolls) |
 | `TimeRangePicker` | `value: TimeRange`, `onChange`, `label`, `ranges?` (default `TIME_RANGES`: 1D · 1S · 1M · 3M · 6M · 1A · Tudo), `isEnabled?` (disabled ranges stay visible and inert; arrows skip them), `variant?: "ranges" \| "segmented"` (`segmented` is the chart card's range track) |
 
@@ -310,7 +310,7 @@ A WAI-ARIA `radiogroup` with roving focus. The segmented look is a `track` groov
 <TimeRangePicker variant="segmented" label={t("components.chart.priceAccessibility")} value={range} onChange={setRange} />
 ```
 
-`spoken` is the option's accessible name when the title is an abbreviation (`1M` → "One month"). `leading` is a decorative mark before the title: the settings' language choice (`LanguageChoice`) puts each language's `LanguageFlag` there.
+`spoken` is the option's accessible name when the title is an abbreviation (`1M` → "One month") or when a `trailing` badge must be read too. `leading` is a decorative mark before the title: the settings' language choice (`LanguageChoice`) puts each language's `LanguageFlag` there. `trailing` is a small badge after the title: `/planos` puts the 12-month plan's saving there (`rounded-full bg-accent-soft px-2 py-0.5 text-caption font-semibold text-accent`, "−16%"), with `spoken` saying it in words ("12 meses, Poupa 16%"). Title and badge wrap onto two lines in a narrow segment.
 
 ### `SwitchRow` (`@/ui/components/menu`)
 

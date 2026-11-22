@@ -11,6 +11,7 @@ import {
   encodeWebOrder,
   encodeWebPlan,
   webCheckoutFailure,
+  webOrderPollDelay,
 } from "./web-pass";
 
 const ORDER = {
@@ -111,5 +112,27 @@ describe("checkout failures", () => {
     expect(decodeWebCheckoutInput({ productID: "Plus 1m", method: "reference" })).toBeNull();
     expect(decodeWebCheckoutInput({ productID: "plus_1m", method: "card" })).toBeNull();
     expect(decodeWebCheckoutInput({ productID: "plus_1m", method: "reference", nif: 123 })).toBeNull();
+  });
+});
+
+describe("webOrderPollDelay", () => {
+  const opened = Date.parse("2026-11-22T10:00:00Z");
+  const order = (method: "mcx_express" | "reference", status: "pending" | "paid" = "pending") => ({
+    method,
+    status,
+    createdAt: "2026-11-22T10:00:00Z",
+    expiresAt: method === "reference" ? "2026-11-24T10:00:00Z" : "2026-11-22T10:10:00Z",
+  });
+
+  it("polls every 3 s, a reference order once a minute after its first 10 minutes", () => {
+    expect(webOrderPollDelay(order("mcx_express"), opened + 1_000)).toBe(3_000);
+    expect(webOrderPollDelay(order("reference"), opened + 9 * 60_000)).toBe(3_000);
+    expect(webOrderPollDelay(order("reference"), opened + 10 * 60_000)).toBe(60_000);
+  });
+
+  it("never waits past expiry and stops once the order is settled or expired", () => {
+    expect(webOrderPollDelay(order("mcx_express"), opened + 10 * 60_000 - 1_000)).toBe(1_000);
+    expect(webOrderPollDelay(order("mcx_express"), opened + 10 * 60_000)).toBeNull();
+    expect(webOrderPollDelay(order("mcx_express", "paid"), opened)).toBeNull();
   });
 });

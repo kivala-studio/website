@@ -188,8 +188,8 @@ export function NavTabs({
   );
 }
 
-/** `leading`: a decorative mark before the title (a language's flag). */
-type Option<T extends string> = { value: T; title: string; spoken?: string; disabled?: boolean; leading?: ReactNode };
+/** `leading`: a decorative mark before the title (a language's flag). `trailing`: a small badge after it (a saving); say it in `spoken` too. */
+type Option<T extends string> = { value: T; title: string; spoken?: string; disabled?: boolean; leading?: ReactNode; trailing?: ReactNode };
 
 export function OptionGroup<T extends string>({
   options,
@@ -250,10 +250,11 @@ export function OptionGroup<T extends string>({
                   ),
             )}
           >
-            {option.leading ? (
-              <span className="inline-flex items-center justify-center gap-2">
+            {option.leading || option.trailing ? (
+              <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5">
                 {option.leading}
                 {option.title}
+                {option.trailing}
               </span>
             ) : (
               option.title
