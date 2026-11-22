@@ -4,11 +4,17 @@ import { cn } from "../cn";
 import { Icon, type IconName } from "../icons/icon";
 import { sectionChipClass } from "./button-styles";
 
-/** The page column for site and app pages: 1200 px at most, centred, 16 px gutters on phones and 24 px from 640 px. */
-export const PAGE_CONTAINER = "mx-auto w-full max-w-300 px-4 sm:px-6";
+/**
+ * The page column for site and app pages: `--page-width` (1200 px) at most, centred, 16 px gutters on phones, 24 px
+ * from 640 px and 32 px in the app from 1024 px, where it spans the window beside the sidebar (see `globals.css`).
+ */
+export const PAGE_CONTAINER = "mx-auto w-full max-w-(--page-width) px-4 sm:px-6 lg:px-(--page-gutter)";
 
-/** A narrow reading column inside the page container (lists, settings, articles, legal text): 768 px, centred. */
-export const READING_COLUMN = "mx-auto flex w-full max-w-3xl flex-col";
+/**
+ * A narrow reading column inside the page container (lists, settings, articles, legal text): 768 px, centred on the
+ * site, on the page's left edge in the app from 1024 px (`--reading-start`), under the page title.
+ */
+export const READING_COLUMN = "mr-auto ml-(--reading-start) flex w-full max-w-3xl flex-col";
 
 /**
  * A page that is one message and its actions (sign-in, not found, maintenance): a card centred on the canvas with

@@ -11,18 +11,20 @@ import type { CatalogueRow } from "@/features/market/browse/price-cell";
 import { MarketArea } from "@/features/market/market-provider";
 import { IntelligenceProvider } from "@/features/intelligence/intelligence-provider";
 import { PrivacyModeProvider } from "@/features/privacy/privacy-mode";
-import { CommandPalette } from "@/features/search/command-palette";
+import { CommandPalette, SearchButton, SearchField } from "@/features/search/command-palette";
 import { BrandLockup } from "@/features/site/chrome";
 import { AreaMessages } from "@/i18n/area-messages";
 
 import { TABS } from "./destinations";
 import { PendingPage } from "./pending-page";
-import { ShellNav, ShellTopBar } from "./shell-nav";
+import { type ShellChromeProps, ShellNav, ShellSidebar, ShellTopBar } from "./shell-nav";
 
 /**
- * The signed-in app: the shared top bar (tabs as pills from 1024 px, the search palette, unusual activity, the
- * activity bell and the profile initials) and, below 1024 px, the bottom tab bar (iOS tab bar). One market store
- * and one account store serve every page of the tab. Pages render their own `<main>`.
+ * The signed-in app. From 1024 px: the sidebar down the left edge (tabs, search, unusual activity, the activity inbox,
+ * the profile) and the page across the rest of the window (`data-shell="app"` lifts the page column's width cap in
+ * `globals.css`). Below: the top bar (search, unusual activity, the bell, the profile initials) and the bottom tab bar
+ * (iOS tab bar). One search palette, one market store and one account store serve every page. Pages render their own
+ * `<main>`.
  */
 export async function AppShell({
   name,
@@ -48,7 +50,17 @@ export async function AppShell({
     icon,
     label: t(labelKey as never),
   }));
-  const navLabel = t("site.header.navLabel");
+  const chrome: Omit<ShellChromeProps, "search"> = {
+    tabs,
+    navLabel: t("site.header.navLabel"),
+    homeLabel: t("site.header.homeLabel"),
+    logo: <BrandLockup />,
+    initials: profileInitials(displayName),
+    profileLabel: t("home.accessibility.profile", { arg1: displayName }),
+    unusualLabel: t("unusualActivity.title"),
+    activityLabel: t("common.activity"),
+    activityStates: { new: t("home.accessibility.activityNew"), none: t("home.accessibility.activityNone") },
+  };
 
   return (
     <AreaMessages area="app">
@@ -56,24 +68,18 @@ export async function AppShell({
         <AccountProvider initial={account}>
           <PrivacyModeProvider initial={privacy}>
             <IntelligenceProvider>
-              <div className="flex min-h-dvh flex-col pb-20 lg:pb-0">
-                <ShellTopBar
-                  tabs={tabs}
-                  navLabel={navLabel}
-                  homeLabel={t("site.header.homeLabel")}
-                  logo={<BrandLockup />}
-                  initials={profileInitials(displayName)}
-                  profileLabel={t("home.accessibility.profile", {
-                    arg1: displayName,
-                  })}
-                  unusualLabel={t("unusualActivity.title")}
-                  activityLabel={t("common.activity")}
-                  activityStates={{ new: t("home.accessibility.activityNew"), none: t("home.accessibility.activityNone") }}
-                  search={<CommandPalette rows={rows} renderedAt={requestTime()} />}
-                />
-                <PendingPage>{children}</PendingPage>
-                <ShellNav items={tabs} label={navLabel} />
-              </div>
+              <CommandPalette rows={rows} renderedAt={requestTime()}>
+                <div data-shell="app" className="flex min-h-dvh pb-20 lg:pb-0">
+                  <ShellSidebar {...chrome} name={displayName} search={<SearchField />} />
+                  <div className="flex min-w-0 flex-1 flex-col">
+                    <div className="contents lg:hidden">
+                      <ShellTopBar {...chrome} search={<SearchButton />} />
+                    </div>
+                    <PendingPage>{children}</PendingPage>
+                  </div>
+                  <ShellNav items={tabs} label={chrome.navLabel} />
+                </div>
+              </CommandPalette>
             </IntelligenceProvider>
           </PrivacyModeProvider>
         </AccountProvider>

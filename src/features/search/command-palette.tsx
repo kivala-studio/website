@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { type MouseEvent, useEffect, useState } from "react";
+import { createContext, type MouseEvent, type ReactNode, use, useEffect, useState } from "react";
 
 import { useDestinationPathname, usePathname } from "@/i18n/navigation";
 
@@ -22,12 +22,13 @@ const isTyping = (target: EventTarget | null) =>
 
 /**
  * Search from anywhere in the app: `/` or Ctrl/⌘ K opens the search panel in a dialog, and the next page
- * closes it. From 1024 px the top bar shows it as the search field (with the `/` hint); below, as a search button.
+ * closes it. Its triggers sit anywhere inside it: the sidebar's search field (with the `/` hint) from 1024 px, the
+ * top bar's search button below. One palette serves both, so the shortcut opens one dialog.
  * The motion follows the input: opened from the keyboard (the shortcut, or the button pressed with Enter or Space) the
  * dialog is there at once, and closed with Escape or by following a result with Enter it is gone at once; a click or
  * a tap keeps the rise and the fade.
  */
-export function CommandPalette({ rows, renderedAt }: { rows: readonly CatalogueRow[]; renderedAt: number }) {
+export function CommandPalette({ rows, renderedAt, children }: { rows: readonly CatalogueRow[]; renderedAt: number; children: ReactNode }) {
   const t = useTranslations();
   const [open, setOpen] = useState(false);
   // The panel stays while the dialog leaves, then unmounts: each opening starts with an empty search.
@@ -81,34 +82,46 @@ export function CommandPalette({ rows, renderedAt }: { rows: readonly CatalogueR
   });
 
   return (
-    <>
-      <button
-        type="button"
-        onClick={onButton}
-        aria-keyshortcuts="/ Control+K Meta+K"
-        aria-haspopup="dialog"
-        // Looks like the search field, so it takes the field's focus (accent border and glow) instead of the outline.
-        className={cn(FIELD, "hidden w-full hover:border-control-outline focus-visible:border-accent focus-visible:shadow-focus focus-visible:outline-none lg:flex")}
-        data-testid="search-palette-button"
-      >
-        <Icon name="search" />
-        <span className="flex-1 truncate text-left text-secondary">{t("common.search")}</span>
-        <KeyHint>/</KeyHint>
-      </button>
-      <button
-        type="button"
-        onClick={onButton}
-        aria-label={t("common.search")}
-        aria-keyshortcuts="/ Control+K Meta+K"
-        aria-haspopup="dialog"
-        title={t("common.search")}
-        className={iconButtonClass("surface", cn(TOP_BAR_FLOAT, "lg:hidden"))}
-      >
-        <Icon name="search" scale="l" />
-      </button>
+    <OpenSearch value={onButton}>
+      {children}
       <Dialog variant="dialog" open={open} instant={instant} onClose={() => setOpen(false)} title={t("common.search")}>
         {mounted || following ? <SearchPanel rows={rows} renderedAt={renderedAt} autoFocus /> : null}
       </Dialog>
-    </>
+    </OpenSearch>
+  );
+}
+
+/** Opens the palette from a trigger; a click from a key press has no pointer position (`detail` 0). */
+const OpenSearch = createContext<(event: MouseEvent<HTMLButtonElement>) => void>(() => {});
+
+const SEARCH_TRIGGER = { type: "button", "aria-keyshortcuts": "/ Control+K Meta+K", "aria-haspopup": "dialog" } as const;
+
+/** The palette's trigger drawn as the search field, with the `/` hint. */
+export function SearchField({ className }: { className?: string }) {
+  const t = useTranslations();
+  const open = use(OpenSearch);
+  return (
+    <button
+      {...SEARCH_TRIGGER}
+      onClick={open}
+      // Looks like the search field, so it takes the field's focus (accent border and glow) instead of the outline.
+      className={cn(FIELD, "flex w-full hover:border-control-outline focus-visible:border-accent focus-visible:shadow-focus focus-visible:outline-none", className)}
+      data-testid="search-palette-button"
+    >
+      <Icon name="search" />
+      <span className="flex-1 truncate text-left text-secondary">{t("common.search")}</span>
+      <KeyHint>/</KeyHint>
+    </button>
+  );
+}
+
+/** The palette's trigger as a round search button. */
+export function SearchButton({ className }: { className?: string }) {
+  const t = useTranslations();
+  const open = use(OpenSearch);
+  return (
+    <button {...SEARCH_TRIGGER} onClick={open} aria-label={t("common.search")} title={t("common.search")} className={iconButtonClass("surface", cn(TOP_BAR_FLOAT, className))}>
+      <Icon name="search" scale="l" />
+    </button>
   );
 }

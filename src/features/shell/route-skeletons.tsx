@@ -249,7 +249,7 @@ export function AdmissionSkeleton() {
 /** Market information and one update: the reading column of cards. */
 export function MarketInformationSkeleton() {
   return (
-    <PageSkeleton className="mx-auto flex w-full max-w-3xl flex-col gap-6">
+    <PageSkeleton className={cn(READING_COLUMN, "gap-6")}>
       <PageHeadingSkeleton />
       <CardSkeleton lines={3} />
       <CardSkeleton lines={4} />
