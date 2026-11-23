@@ -6,10 +6,10 @@ Written 2026-11-10 from two sources only: the backend (`investao-functions`, `or
 |---|---|
 | [ANDROID_IMPLEMENTATION_PLAN.md](ANDROID_IMPLEMENTATION_PLAN.md) | Native Kotlin + Compose app, full parity with iOS 1.1.5, 18 app phases + 4 backend phases, one prompt per phase |
 | [WEBSITE_IMPLEMENTATION_PLAN.md](WEBSITE_IMPLEMENTATION_PLAN.md) | Next.js full web app (marketing, public market pages, signed-in app), 19 web phases + 4 backend phases, one prompt per phase |
-| [reference/backend-contract.md](reference/backend-contract.md) | Client contract of the backend: every table, RPC, Edge Function, limit, payload, and the gaps for Android and web |
-| [reference/ios-product.md](reference/ios-product.md) | What the iOS app shows and does, screen by screen, plus design system, copy and formatting rules |
-| [reference/ios-platform.md](reference/ios-platform.md) | What the iOS app does beneath the UI: backend call map, auth, caching, push, subscriptions, telemetry, logic to port |
-| [fixtures/](fixtures/) | Golden files copied unchanged from iOS/backend, to be loaded by Android and web tests |
+| [reference/backend-contract.md](../data-layer.md) | Client contract of the backend: every table, RPC, Edge Function, limit, payload, and the gaps for Android and web |
+| [reference/ios-product.md](https://github.com/kivala-studio/invest.ao) | What the iOS app shows and does, screen by screen, plus design system, copy and formatting rules |
+| [reference/ios-platform.md](https://github.com/kivala-studio/invest.ao) | What the iOS app does beneath the UI: backend call map, auth, caching, push, subscriptions, telemetry, logic to port |
+| [fixtures/](../../tests/fixtures/) | Golden files copied unchanged from iOS/backend, to be loaded by Android and web tests |
 
 ## How to run a phase
 
