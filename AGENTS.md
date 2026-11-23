@@ -1,80 +1,7 @@
-# AGENTS.md
+## Important Rules
 
-invest.ao website: Next.js App Router, TypeScript strict, Tailwind. Plan: `docs/plan/WEBSITE_IMPLEMENTATION_PLAN.md`. References: `docs/reference/`. Golden fixtures: `tests/fixtures/` (unchanged copies; never edit).
-
-Commands: `npm run check` (lint, typecheck, unit tests), `npm run build` (build + client bundle scan), `npm run e2e` (Playwright, demo mode), `npm run lhci` (Lighthouse budgets), `npm run messages` (regenerate `messages/*.json` from the iOS catalogue), `npm run icons` (regenerate the icon pack). Design gallery: `/dev/design` (not in production builds). Web layer: content grouped in flat cards on a tinted canvas under a floating top bar, no sidebar; stage fills for the landing's bands and the footer; `lg:` for page layout and the `panel` surface, `desk:` (≥ 1024 px with a mouse or trackpad) for the web type scale and tighter padding; the iOS semantic colour tokens stay unchanged, web-only tokens sit beside them. Copy `.env.example` to `.env.local` for development.
-
-## Design system
-
-`docs/design/` describes how the web looks and is built: principles and the new-page checklist (`README.md`), tokens (`theme.md`), page templates and responsive rules (`layout.md`), every component with its props (`components.md`), and prices, states and copy (`patterns.md`). `/dev/design` shows the same components live, in the same order. Read them before building a page or a component.
-
-- Use an existing primitive before writing a new one.
-- A new primitive goes into `components.md` and the gallery in the same PR.
-- Tokens only: no raw hex, no arbitrary colours.
-- Group content in `Card` or `Panel`: flat, no border, no shadow.
-- Actions are pills (`Button`, `ButtonLink`, `buttonClass`).
-- `font-display` for headings and values.
-- Fields never show an outline: accent border and `shadow-focus` instead.
-- Targets ≥ 44 px.
-- Check light and dark.
-- Strings come from the catalogue.
-
-The sections below are copied word for word from the plan (sections 1.2 to 1.5). Rule 12 was amended by the design system on 2026-11-18.
-
-### 1.2 Routes
-
-Portuguese slugs for both languages; English lives under `/en/…`.
-
-| Area | Route | Notes |
-|---|---|---|
-| Marketing | `/` | Landing page, store links |
-| Legal and help | `/policy`, `/termos`, `/suporte` | **`/policy` is linked from the iOS app and must keep that exact path** |
-| Public market | `/mercado`, `/mercado/[symbol]` | One instrument page for everyone; signed-in visitors get more on the same URL |
-| Public content | `/noticias`, `/noticias/[slug]`, `/aprender`, `/aprender/[lesson]` | |
-| Shared portfolio | `/partilha/[token]` | **Linked from iOS Pro share links; exact path** |
-| Referral | `/convite/[code]` | Landing that carries a referral code to sign-in or the stores |
-| Account entry | `/entrar`, `/auth/callback`, `/eliminar-conta` | `/eliminar-conta` is the public deletion URL the stores ask for |
-| Signed-in | `/inicio`, `/lista`, `/carteira`, `/carteira/posicao/[symbol]`, `/atividade`, `/atividade-invulgar`, `/semana`, `/simulador`, `/wrap/[period]`, `/planos`, `/definicoes` | Require a session; unknown visitors go to `/entrar?next=…` |
-| Server endpoints | `/api/market/snapshot`, `/api/billing/plans`, `/api/billing/checkout`, `/api/billing/order/[id]`, `/api/billing/order/[id]/cancel`, `/api/account/apple-deletion/start`, `/api/account/apple-deletion/complete` | **The `complete` path is the one the backend docs name as the web return URL** |
-| Well-known | `/.well-known/assetlinks.json` | Android App Links; `apple-app-site-association` when iOS adds universal links |
-
-### 1.3 Standing rules (phase W0 writes these into the new repo's `AGENTS.md`)
-
-1. **Sources, in order of authority:** live backend behaviour → `docs/reference/backend-contract.md` → iOS code in `../.reference/ios` → iOS docs → `docs/reference/ios-*.md`. Where iOS docs and code disagree, code wins. Never read or copy from any earlier website or Android project.
-2. **Prices.** A price is shown as current only with valid, unexpired evidence (`data_quality.status = valid`, no reasons, Luanda trading date = today, now < `validUntilEpoch`, calendar unexpired). Otherwise show the dated verified close or `Preço por confirmar`. Never zero, never a stale number as current, never "live" or "tempo real".
-3. **Cached HTML never contains a current price.** Server-rendered and statically cached pages show the dated verified close; the current quote is added in the browser after its own validity check.
-4. **Market state** comes from the server calendar evaluated in `Africa/Luanda`. No hard-coded trading hours, no browser time zone.
-5. **Numbers.** `Decimal` for every ledger, cash, threshold and valuation value; civil dates as date strings. No JavaScript `number` arithmetic in portfolio or simulator maths.
-6. **Edge Functions are called only from the server** (route handlers), never from the browser. PostgREST, Auth and Realtime may be called from the browser with the publishable key.
-7. **Secrets** (`service_role`, receipt secret, RevenueCat secret) never reach the browser bundle and are never committed. Only `NEXT_PUBLIC_*` values are public, and only the project URL, the publishable key and public tokens may use that prefix.
-8. **Limits are the server's.** Tier limits arrive as PostgREST errors (`P0001` + message). Features are open unless `get_subscription_access().enforcement_enabled` is true.
-9. **No automatic request retries.** Only the market poll loop retries, with full-jitter backoff and `retry_after_seconds`. Polling pauses while the tab is hidden; current quotes are revoked when the tab is hidden or offline. Re-check the signed-in user id after every await before applying a result.
-10. **Privacy.** Telemetry is cookieless, allow-listed and never identified; it reports route templates, not concrete paths. Share tokens, account data and amounts never appear in analytics, logs, referrers or cached responses.
-11. **Copy.** Angolan Portuguese addressing the user as "tu", sentence case; reuse iOS wording verbatim from the message catalogue; cut taglines, helper text and secondary labels.
-12. **Design.** Cards are the web grouping surface; financial values stay the hero. Gain/loss colour applies to changes only. Light and dark are first-class. Every control is reachable by keyboard with a visible focus ring; targets ≥ 44 px; layouts hold at 200 % zoom and 320 px width.
-13. **Backend changes are never worked around.** If a phase needs something the backend lacks, stop and report.
-14. **Git.** One task branch per phase, Conventional Commits, push, open a PR to `main` with the verification performed. No mention of AI tooling in commits, code or docs.
-15. **Tests are proportional.** Golden fixtures and contract tests for logic; one flow or screenshot for UI.
-
-### 1.4 Run modes and test data
-
-| Mode (`NEXT_PUBLIC_DATA_MODE`) | Backend | Use |
-|---|---|---|
-| `demo` | None. Repositories return recorded fixtures from `tests/fixtures/`; scenario chosen by a cookie or `?scenario=` in non-production builds | Playwright flows and screenshots, offline development |
-| `local` | Local Supabase stack (`http://127.0.0.1:54321`) seeded by backend phase B0, with a development-only password sign-in for B0's accounts | Integration of auth, writes and limits |
-| `production` | Hosted project | Deployed site and owner smoke tests only. No automated test targets it |
-
-Demo mode cookies: `demo-scenario` picks the market (`open`, `closed`, `stale`, `empty`, `partial`, `offline`, `listing`; default `open`); `demo-account` signs in a demo account (`free`, `plus`, `pro`) whose watchlist and comparison pair live in cookies. Without `demo-account` the app is signed out.
-
-A single public `GET /functions/v1/market-snapshot` may be recorded once into fixtures; nothing else touches production from a test.
-
-### 1.5 Definition of done for every phase
-
-- All tasks in the phase section meet their "Done when".
-- `npm run check` (ESLint, `tsc --noEmit`, Vitest) and `npm run build` pass; `npm run e2e` passes in `demo` mode.
-- New UI verified at 375, 768 and 1440 px, light and dark, `pt` and `en`, keyboard only, and at 200 % zoom; Playwright axe scan of each new page has no serious or critical issue.
-- Exit criteria ticked in the PR description, each with evidence (test name, screenshot, command output, preview URL).
-- No user-visible string outside the message catalogue, no `number` in money paths, no secret in the client bundle (checked by the bundle scan from W0), no new dependency without a line of justification.
+1. Cut taglines, helper text and secondary labels. If a screen needs them to make sense, fix the layout.
+2. Always make the best decision that elevates user experience (UX), developer experience (DX), and agent experience (AX) together, without breaking anything.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
@@ -85,3 +12,74 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## What this repository is
+
+The invest.ao website: the public site and the signed-in web app in one Next.js App Router project, TypeScript strict, Tailwind. The backend (Supabase) and the iOS app live in other repositories and are the source of truth when this code disagrees with them.
+
+Start with `docs/README.md`. It indexes the architecture, every route, every backend call, the feature areas, the design system, configuration, testing and deployment. `docs/divergences.md` lists where the web differs from the backend and iOS.
+
+`docs/plan/` holds implementation plans. They are not descriptions of the current state.
+
+## Commands
+
+| Command | Use |
+|---|---|
+| `npm run check` | ESLint (no warnings allowed), `tsc --noEmit`, Vitest |
+| `npm run build` | Production build, then the client bundle scan |
+| `npm run e2e` | Playwright in `demo` mode against a build |
+| `npm run e2e:local` | Playwright against a `local` build and a local Supabase stack |
+| `npm run lhci` | Lighthouse budgets |
+| `npm run messages` | Regenerate `messages/*.json` from the iOS string catalogue |
+| `npm run icons` | Regenerate `src/ui/icons/icon-pack.ts` |
+
+Copy `.env.example` to `.env.local`; `NEXT_PUBLIC_DATA_MODE=demo` needs no backend. Details: `docs/configuration.md`, `docs/testing.md`.
+
+## Working rules
+
+Each rule matches the code today; the file that enforces or shows it is named.
+
+### Sources and scope
+
+1. When the web and the backend or iOS disagree, the backend and iOS code win. Record the difference in `docs/divergences.md`; do not work around a missing backend capability in this repository.
+2. Docs state only what the code does. Cite the file. Update the doc in the same change as the code.
+
+### Money, prices and time
+
+3. Financial values are `Decimal` in `src/domain`. No `parseFloat`, `.toNumber()` or `.toNearestNumber()` there (`eslint.config.mjs`). Money crosses server-to-browser boundaries as exact strings.
+4. A price is shown as current only when the quote policy accepts it (`src/domain/market/quote-policy.ts`, `src/domain/market/quality.ts`). Otherwise show the dated verified close or `common.priceUnconfirmed`. Never show zero or a stale number as current.
+5. Server-rendered and cached HTML never contains a current price. Current quotes are added in the browser by the market store.
+6. Market state and dates come from the server calendar in `Africa/Luanda` (`src/domain/market/calendar.ts`, `src/domain/market/zone.ts`). Do not hard-code trading hours or use the browser's time zone.
+
+### Layers and data
+
+7. `src/domain` is pure TypeScript and imports only from `src/domain` (`eslint.config.mjs`).
+8. Edge Functions are called only from the server. The browser reaches the market snapshot through `/api/market/snapshot` (`tests/e2e/market.spec.ts` asserts this).
+9. Account reads go through `/api/account/*` or `/api/billing/*`; account writes are server actions built on `accountWrite` (`src/features/account/write.ts`). Every answer is applied only if it is for the account that asked.
+10. No automatic request retries. Supabase clients run with `db.retry: false` (`src/data/supabase/options.ts`); only the market poll loop retries, with backoff (`src/domain/market/refresh.ts`). Polling pauses while the tab is hidden.
+11. Plan limits are the server's. The web locks a Plus feature only when `unlocksPlus(access)` is false (`src/domain/account/access.ts`). Prices of web passes come only from `get_web_plans()`; never write a price in code outside demo data.
+12. Golden fixtures in `tests/fixtures/` are copies from the backend and iOS. Do not edit them. Demo mode reads the market snapshot fixture at run time.
+
+### Secrets and privacy
+
+13. This repository is public. Never commit a secret value, key or token. Only `NEXT_PUBLIC_*` values may reach the browser, and `NEXT_PUBLIC_SUPABASE_KEY` must be the publishable key (`src/config/env.ts`). The bundle scan must pass (`scripts/scan-client-bundle.mjs`).
+14. Share tokens, invite codes, phone numbers, NIFs and amounts never go into URLs the server requests, cache keys, logs, analytics or referrers (`src/data/portfolio/shared-portfolio.ts`, `src/data/billing/web-passes.ts`).
+15. Telemetry is cookieless and allow-listed and reports route templates, not paths (`src/data/telemetry`). When adding a route, add its template to `ROUTE_TEMPLATES` (`src/data/telemetry/route-template.ts`).
+16. Pages under `src/app/[locale]/(store-linked)` are opened by the iOS app or the store listings. They must not link to the web offer, show a price or promote Plus (`src/app/[locale]/(store-linked)/layout.tsx`). `/policy` and `/partilha/[token]` must keep their exact paths.
+
+### UI
+
+17. Read `docs/design/README.md` before building a page or a component. Use an existing component from `src/ui` before writing a new one; add a new one to `docs/design/components.md` and the gallery (`src/features/design-gallery`) in the same change.
+18. Colours come from tokens (`src/ui/theme/tokens.css`). No raw hex, no arbitrary colours, no inline styles (the CSP forbids them in production).
+19. Text fields never show an outline: accent border and `shadow-focus` (`src/ui/components/field-styles.ts`). Other controls keep the focus ring.
+20. No phone screenshots on the landing page.
+21. Group content in `Card` or `Panel`: flat, no border, no shadow. Actions are pills (`Button`, `ButtonLink`, `buttonClass`). Headings and financial values use `font-display`. Targets are at least 44 px.
+22. Check light and dark, `pt` and `en`, phone and wide widths, and keyboard use.
+23. Every user-visible string comes from the message catalogue. Strings shared with iOS are regenerated with `npm run messages`, not edited by hand; web-only strings go in the `site` namespace of both `messages/pt.json` and `messages/en.json`. A client component that reads a new key needs it listed in `src/i18n/client-messages.ts`.
+24. Portuguese copy is Angolan Portuguese addressing the reader as "tu", in sentence case.
+25. Use `Link` from `@/i18n/navigation` for every internal link.
+
+### Process
+
+26. Keep tests proportional to the change. Logic gets a unit test beside the module; a UI flow gets one Playwright test. Do not run the full suites for a small, reversible change.
+27. One branch per task, Conventional Commits, a pull request to `main` that states the verification performed. Do not mention AI tooling in commits, code or docs.
